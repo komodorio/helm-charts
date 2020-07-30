@@ -1,0 +1,19 @@
+#!/bin/sh
+set -e
+set -o pipefail
+echo '>> Prepare...'
+mkdir -p /tmp/helm/bin
+mkdir -p /tmp/helm/publish
+apk update
+apk add ca-certificates git openssh
+
+[ -z "$HELM_VERSION" ] && HELM_VERSION=2.8.1
+
+echo '>> Installing Helm...'
+cd /tmp/helm/bin
+wget "https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz"
+tar -zxf "helm-v${HELM_VERSION}-linux-amd64.tar.gz"
+chmod +x linux-amd64/helm
+alias helm=/tmp/helm/bin/linux-amd64/helm
+helm version -c
+helm init -c
