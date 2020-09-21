@@ -7,7 +7,7 @@ mkdir -p /tmp/helm/publish
 apk update
 apk add ca-certificates git openssh
 
-[ -z "$HELM_VERSION" ] && HELM_VERSION=2.8.1
+[ -z "$HELM_VERSION" ] && HELM_VERSION=3.2.4
 
 echo '>> Installing Helm...'
 cd /tmp/helm/bin
