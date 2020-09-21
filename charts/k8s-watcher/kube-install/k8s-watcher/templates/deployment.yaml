@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-watcher
+  namespace: k8s-watcher
+  labels:
+    helm.sh/chart: k8s-watcher-0.1.0
+    app.kubernetes.io/name: k8s-watcher
+    app.kubernetes.io/instance: k8s-watcher
+    app.kubernetes.io/version: "0.1.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: k8s-watcher
+      app.kubernetes.io/instance: k8s-watcher
+  template:
+    metadata:
+      annotations:
+        checksum/config: b7fcff14d9f1b5b2f5b257a469f404f674b0bd929850eddb81881868e82ea109
+      labels:
+        app.kubernetes.io/name: k8s-watcher
+        app.kubernetes.io/instance: k8s-watcher
+    spec:
+      serviceAccountName: k8s-watcher
+      containers:
+        - name: k8s-watcher
+          image: "634375685434.dkr.ecr.us-east-1.amazonaws.com/k8s-watcher:latest"
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1024Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          volumeMounts:
+            - name: configuration
+              mountPath: /etc/komodor
+          env:
+            - name: KOMOKW_SECRET_INSTALLATION_ID
+              valueFrom:
+                secretKeyRef:
+                  name: k8s-watcher-secret
+                  key: installationId
+            - name: KOMOKW_SECRET_KIALI_INSTALLATION_ID
+              valueFrom:
+                secretKeyRef:
+                  name: k8s-watcher-secret
+                  key: kialiInstallationId
+      volumes:
+        - name: configuration
+          configMap:
+            name: k8s-watcher-config
+            items:
+              - key: komodor-k8s-watcher.yaml
+                path: komodor-k8s-watcher.yaml

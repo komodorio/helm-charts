@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: k8s-watcher-config
+  namespace: k8s-watcher
+data:
+  komodor-k8s-watcher.yaml: |
+    listExisting: true
+    nameBlacklist:
+    - leader
+    - election
+    namespacesBlacklist:
+    - kube-system
+    resources:
+      clusterRole: true
+      configMap: true
+      daemonSet: true
+      deployment: true
+      event: true
+      ingress: true
+      job: true
+      namespace: true
+      node: true
+      persistentVolume: true
+      persistentVolumeClaim: true
+      pod: true
+      replicaSet: true
+      replicationController: true
+      secret: true
+      service: true
+      serviceAccount: true
+    secret:
+      installationId: YOUR_INSTALLATION_ID_HERE
+    sinks:
+      webhook:
+        enabled: true
+        headers: {}
+        url: ""
+    sources:
+      kiali:
+        password: ""
+        url: ""
+        username: ""
+    watchNamespace: all
+---

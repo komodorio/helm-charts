@@ -11,6 +11,6 @@ generate-kube:
 	--set watcher.listExisting=true \
 	--set watcher.nameBlacklist="{leader,election}" \
 	--set watcher.secret.installationId="YOUR_INSTALLATION_ID_HERE" \
-	> ../generated.yaml
+	> generated.yaml
 	cat generated.yaml | ./helm-fan-out.sh kube-install
 	rm generated.yaml
