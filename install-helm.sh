@@ -7,11 +7,11 @@ mkdir -p /tmp/helm/publish
 apk update
 apk add ca-certificates git openssh
 
-[ -z "$HELM_VERSION" ] && HELM_VERSION=3.2.4
+[ -z "$HELM_VERSION" ] && HELM_VERSION=3.3.3
 
 echo '>> Installing Helm...'
 cd /tmp/helm/bin
-wget "https://storage.googleapis.com/kubernetes-helm/helm-v${HELM_VERSION}-linux-amd64.tar.gz"
+wget "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz"
 tar -zxf "helm-v${HELM_VERSION}-linux-amd64.tar.gz"
 chmod +x linux-amd64/helm
 alias helm=/tmp/helm/bin/linux-amd64/helm
