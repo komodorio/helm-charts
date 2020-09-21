@@ -27,6 +27,7 @@ watcher:
   namespacesBlacklist:
     - kube-system
   nameBlacklist: []
+  secret: {}
   resources:
       event: true
       deployment: true
