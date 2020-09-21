@@ -10,7 +10,7 @@ jobs:
           command: |
             sh install-helm.sh
             alias helm=/tmp/helm/bin/linux-amd64/helm
-            # helm template charts/k8s-watcher -f charts/k8s-watcher/values.yaml
+            helm template charts/k8s-watcher -f charts/k8s-watcher/values.yaml
       - run:
           name: Publish Helm charts to Github Pages
           command: sh publish.sh
@@ -26,7 +26,7 @@ jobs:
               helm repo add komodorio https://helm-charts.komodor.io
               helm repo update
               helm repo list
-              # helm inspect komodorio/k8s-watcher
+              helm inspect komodorio/k8s-watcher
             fi
 workflows:
   version: 2
