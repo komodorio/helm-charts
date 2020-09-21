@@ -34,7 +34,7 @@ The command deploys the Komodor K8S-Watcher on the Kubernetes cluster in the def
 #### Alternative: Install without Helm
 
 To install the chart directly with kubectl, use the manifests located in `./kube-install`.
-Make sure to modify the installationId secret value in `./kube-install/k8s-watcher/templates/secret-installation-id.yaml`
+Make sure to set the installationId secret value in `./kube-install/k8s-watcher/templates/secret-installation-id.yaml`
 
 ## Uninstalling the Chart
 
