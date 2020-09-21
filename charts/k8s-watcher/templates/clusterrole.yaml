@@ -1,0 +1,78 @@
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "k8s-watcher.serviceAccountName" . }}
+  {{- if hasKey .Values "namespace" }}
+  namespace: {{ .Values.namespace }}
+  {{- end }}
+rules:
+  - apiGroups:
+    - ""
+    resources:
+    - events
+    - pods
+    - replicationcontrollers
+    - secrets
+    - services
+    - namespaces
+    - configmaps
+    - nodes
+    - persistentvolumes
+    - persistentvolumeclaims
+    - serviceaccounts
+    verbs:
+    - get
+    - watch
+    - list
+  - apiGroups:
+    - rbac
+    - rbac.authorization.k8s.io
+    resources:
+    - clusterroles
+    verbs:
+    - get
+    - watch
+    - list
+  - apiGroups:
+    - apps
+    resources:
+    - deployments
+    - daemonsets
+    - replicasets
+    verbs:
+    - get
+    - watch
+    - list
+  - apiGroups:
+    - batch
+    resources:
+    - jobs
+    verbs:
+    - get
+    - watch
+    - list
+  - apiGroups:
+    - extensions
+    resources:
+    - ingresses
+    verbs:
+    - get
+    - watch
+    - list
+        
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "k8s-watcher.serviceAccountName" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "k8s-watcher.serviceAccountName" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "k8s-watcher.serviceAccountName" . }}
+    {{- if hasKey .Values "namespace" }}
+    namespace: {{ .Values.namespace }}
+    {{- end }}

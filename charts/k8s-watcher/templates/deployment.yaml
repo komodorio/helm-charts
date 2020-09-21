@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "k8s-watcher.fullname" . }}
+  {{- if hasKey .Values "namespace" }}
+  namespace: {{ .Values.namespace }}
+  {{- end }}
+  labels:
+    {{- include "k8s-watcher.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "k8s-watcher.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "k8s-watcher.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "k8s-watcher.serviceAccountName" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: configuration
+              mountPath: /etc/komodor
+          env:
+            - name: KOMOKW_SECRET_INSTALLATION_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "k8s-watcher.name" . }}-secret
+                  key: installationId
+            - name: KOMOKW_SECRET_KIALI_INSTALLATION_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "k8s-watcher.name" . }}-secret
+                  key: kialiInstallationId
+      volumes:
+        - name: configuration
+          configMap:
+            name: {{ include "k8s-watcher.name" . }}-config
+            items:
+              - key: komodor-k8s-watcher.yaml
+                path: komodor-k8s-watcher.yaml

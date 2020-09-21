@@ -1,0 +1,57 @@
+# ReplicaCount should always be 1 - We do not properly support syncing state (yet) so it will cause the same events to be sent and overload the server.
+replicaCount: 1
+image:
+  repository: 634375685434.dkr.ecr.us-east-1.amazonaws.com/k8s-watcher
+  pullPolicy: Always
+  tag: "latest"
+
+namespace: k8s-watcher
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  # name: ""
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 1024Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+watcher:
+  watchNamespace: all
+  namespacesBlacklist:
+    - kube-system
+  nameBlacklist: []
+  resources:
+      event: true
+      deployment: true
+      replicationController: true
+      replicaSet: true
+      daemonSet: true
+      service: true
+      pod: true
+      job: true
+      node: true
+      clusterRole: true
+      serviceAccount: true
+      persistentVolume: true
+      persistentVolumeClaim: true
+      namespace: true
+      secret: true
+      configMap: true
+      ingress: true
+  sinks:
+      webhook:
+          enabled: true
+          url: ""
+          headers: {}
+  sources:
+    kiali:
+      url: ""
+      username: ""
+      password: ""

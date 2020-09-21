@@ -14,7 +14,7 @@
 
 ## Available charts
 
-[controller](https://github.com/komodorio/helm-charts/tree/master/charts/k8s-watcher) - 
+[k8s-watcher](https://github.com/komodorio/helm-charts/tree/master/charts/k8s-watcher) - 
 
 ---------------------------------------------------------------
 
