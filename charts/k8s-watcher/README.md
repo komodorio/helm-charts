@@ -55,46 +55,47 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the chart and their default values.
 
-|            Parameter                      |              Description                 |                          Default                        | 
-| ----------------------------------------- | ---------------------------------------- | ------------------------------------------------------- |
-| `watcher.secret.installationId`                           | Komodor unique installation ID (required)             | ``                   |  
-| `watcher.secret.kialiInstallationId`                           | Kiali Komodor unique installation ID (required if using kiali)             | ``                   |  
-| `watcher.watchNamespace`                           | Watch a specific namespace, or all namespaces ("", "all")             | `all`                   |  
-| `watcher.namespacesBlacklist`                           | Blacklist specific namespaces (list)            | `[kube-system]`                   |  
-| `watcher.nameBlacklist`                           | Blacklist specific resource names (name contains blacklisted arg) (list)            | `[]`                   |  
-| `watcher.listExisting`                           | List existing cluster resources (true / false)             | `false`                   |  
-| `watcher.sources.kiali.url`                           | Kiali URL             | ``                   |  
-| `watcher.sources.kiali.username`                           | Kiali Username             | ``                   |  
-| `watcher.sources.kiali.password`                           | Kiali Password             | ``                   |  
-| `watcher.sinks.webhook.enabled`                           | Enables a Webhook output             | `true`                   |  
-| `watcher.sinks.webhook.url`                           | URL to send webhooks to             | `https://app.komodor.io/k8s-events/event/`                  |  
-| `watcher.sinks.webhook.headers`                           | Headers to attach to the webhooks            | `{}`                  |  
-| `watcher.resources.event`                           | Enables watching Event              | `true`                   |  
-| `watcher.resources.deployment`                           | Enables watching Deployments              | `true`                   |  
-| `watcher.resources.replicationController`                           | Enables watching ReplicationControllers             | `true`                   |  
-| `watcher.resources.replicaSet`                           | Enables watching ReplicaSets             | `true`                   |  
-| `watcher.resources.daemonSet`                           | Enables watching DaemonSets             | `true`                   |  
-| `watcher.resources.service`                           | Enables watching Services             | `true`                   |  
-| `watcher.resources.pod`                           | Enables watching Pods             | `true`                   |  
-| `watcher.resources.job`                           | Enables watching Jobs             | `true`                   |  
-| `watcher.resources.node`                           | Enables watching Nodes             | `true`                   |  
-| `watcher.resources.clusterRole`                           | Enables watching ClusterRoles             | `true`                   |  
-| `watcher.resources.serviceAccount`                           | Enables watching ServiceAccounts             | `true`                   |  
-| `watcher.resources.persistentVolume`                           | Enables watching PersistentVolumes             | `true`                   |  
-| `watcher.resources.persistentVolumeClaim`                           | Enables watching PersistentVolumeClaims             | `true`                   |  
-| `watcher.resources.namespace`                           | Enables watching Namespaces             | `true`                   |  
-| `watcher.resources.secret`                           | Enables watching Secrets             | `true`                   |  
-| `watcher.resources.configMap`                           | Enables watching ConfigMaps             | `true`                   |  
-| `watcher.resources.ingress`                           | Enables watching Ingresses             | `true`                   |  
-| `resources.requests.cpu`          | CPU resource requests                    | `100m`                                                   |
-| `resources.limits.cpu`            | CPU resource limits                      | `500m`                                                 |
-| `resources.requests.memory`       | Memory resource requests                 | `128Mi`                                                  |
-| `resources.limits.memory`         | Memory resource limits                   | `1024Mi`                                                |
-| `image.repository`                        | Image registry/name                       | `docker.io/komodorio/k8s-watcher`                                         |
-| `image.tag`                               | Image tag                        | `latest`                                             |
-| `image.pullPolicy`                        | Image pull policy                        | `Always` |
-| `serviceAccount.create` | Creates a service account | `true` |
-| `serviceAccount.name` | Optional name for the service account | `{RELEASE_FULLNAME}` |
+| Parameter                                 | Description                                                              | Default                                    |
+|-------------------------------------------|--------------------------------------------------------------------------|--------------------------------------------|
+| `watcher.secret.installationId`           | Komodor unique installation ID (required)                                | ``                                         |
+| `watcher.secret.kialiInstallationId`      | Kiali Komodor unique installation ID (required if using kiali)           | ``                                         |
+| `watcher.watchNamespace`                  | Watch a specific namespace, or all namespaces ("", "all")                | `all`                                      |
+| `watcher.namespacesBlacklist`             | Blacklist specific namespaces (list)                                     | `[kube-system]`                            |
+| `watcher.nameBlacklist`                   | Blacklist specific resource names (name contains blacklisted arg) (list) | `[]`                                       |
+| `watcher.listExisting`                    | List existing cluster resources (true / false)                           | `false`                                    |
+| `watcher.sources.kiali.url`               | Kiali URL                                                                | ``                                         |
+| `watcher.sources.kiali.username`          | Kiali Username                                                           | ``                                         |
+| `watcher.sources.kiali.password`          | Kiali Password                                                           | ``                                         |
+| `watcher.sinks.webhook.enabled`           | Enables a Webhook output                                                 | `true`                                     |
+| `watcher.sinks.webhook.url`               | URL to send webhooks to                                                  | `https://app.komodor.io/k8s-events/event/` |
+| `watcher.sinks.webhook.headers`           | Headers to attach to the webhooks                                        | `{}`                                       |
+| `watcher.resources.event`                 | Enables watching Event                                                   | `true`                                     |
+| `watcher.resources.deployment`            | Enables watching Deployments                                             | `true`                                     |
+| `watcher.resources.replicationController` | Enables watching ReplicationControllers                                  | `true`                                     |
+| `watcher.resources.replicaSet`            | Enables watching ReplicaSets                                             | `true`                                     |
+| `watcher.resources.daemonSet`             | Enables watching DaemonSets                                              | `true`                                     |
+| `watcher.resources.service`               | Enables watching Services                                                | `true`                                     |
+| `watcher.resources.pod`                   | Enables watching Pods                                                    | `true`                                     |
+| `watcher.resources.job`                   | Enables watching Jobs                                                    | `true`                                     |
+| `watcher.resources.node`                  | Enables watching Nodes                                                   | `true`                                     |
+| `watcher.resources.clusterRole`           | Enables watching ClusterRoles                                            | `true`                                     |
+| `watcher.resources.serviceAccount`        | Enables watching ServiceAccounts                                         | `true`                                     |
+| `watcher.resources.persistentVolume`      | Enables watching PersistentVolumes                                       | `true`                                     |
+| `watcher.resources.persistentVolumeClaim` | Enables watching PersistentVolumeClaims                                  | `true`                                     |
+| `watcher.resources.namespace`             | Enables watching Namespaces                                              | `true`                                     |
+| `watcher.resources.secret`                | Enables watching Secrets                                                 | `true`                                     |
+| `watcher.resources.configMap`             | Enables watching ConfigMaps                                              | `true`                                     |
+| `watcher.resources.ingress`               | Enables watching Ingresses                                               | `true`                                     |
+| `resources.requests.cpu`                  | CPU resource requests                                                    | `100m`                                     |
+| `resources.limits.cpu`                    | CPU resource limits                                                      | `500m`                                     |
+| `resources.requests.memory`               | Memory resource requests                                                 | `128Mi`                                    |
+| `resources.limits.memory`                 | Memory resource limits                                                   | `1024Mi`                                   |
+| `image.repository`                        | Image registry/name                                                      | `docker.io/komodorio/k8s-watcher`          |
+| `image.tag`                               | Image tag                                                                | `latest`                                   |
+| `image.pullPolicy`                        | Image pull policy                                                        | `Always`                                   |
+| `serviceAccount.create`                   | Creates a service account                                                | `true`                                     |
+| `serviceAccount.name`                     | Optional name for the service account                                    | `{RELEASE_FULLNAME}`                       |
+
 
 
 The above parameters map to a yaml configuration file used by the watcher.
