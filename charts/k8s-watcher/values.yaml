@@ -27,7 +27,9 @@ watcher:
   namespacesBlacklist:
     - kube-system
   nameBlacklist: []
-  secret: {}
+  secret:
+      installationId: ""
+      kialiInstallationId: ""
   resources:
       event: true
       deployment: true
