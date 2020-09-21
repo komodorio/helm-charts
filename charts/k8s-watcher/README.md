@@ -2,8 +2,6 @@
 
 [Komodor.io](https://komodor.io/) - ``
 
-# TODO: Create the actual helm-charts.komodor.io repository
-
 ## TL;DR;
 
 ```bash
@@ -31,6 +29,12 @@ helm upgrade --install k8s-watcher komodorio/k8s-watcher --set watcher.secret.in
 The command deploys the Komodor K8S-Watcher on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
+
+
+#### Alternative: Install without Helm
+
+To install the chart directly with kubectl, use the manifests located in `./kube-install`.
+Make sure to modify the installationId secret value in `./kube-install/k8s-watcher/templates/secret-installation-id.yaml`
 
 ## Uninstalling the Chart
 
