@@ -14,7 +14,7 @@
 
 ## Available charts
 
-[k8s-watcher](https://github.com/komodorio/helm-charts/tree/master/charts/k8s-watcher) - 
+[k8s-watcher](https://github.com/komodorio/helm-charts/tree/master/charts/k8s-watcher) - Watch for Kubernetes events in your cluster and sends them to Komodor
 
 ---------------------------------------------------------------
 

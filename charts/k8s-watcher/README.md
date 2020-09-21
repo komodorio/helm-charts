@@ -7,7 +7,7 @@
 ```bash
 helm repo add komodorio https://helm-charts.komodor.io
 helm repo update
-helm upgrade --install k8s-watcher komodorio/k8s-watcher --set watcher.secret.installationId=YOUR_INSTALLATION_ID_HERE"
+helm upgrade --install k8s-watcher komodorio/k8s-watcher --set watcher.secret.installationId="YOUR_INSTALLATION_ID_HERE"
 ```
 
 ## Introduction
