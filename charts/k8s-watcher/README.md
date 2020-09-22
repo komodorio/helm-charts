@@ -59,14 +59,10 @@ The following table lists the configurable parameters of the chart and their def
 | Parameter                                 | Description                                                              | Default                                    |
 |-------------------------------------------|--------------------------------------------------------------------------|--------------------------------------------|
 | `apiKey`                                  | Komodor kubernetes api key (required)                                    | ``                                         |
-| `kialiApiKey`                             | Komodor kiali api key (required if using kiali)                          | ``                                         |
 | `watcher.watchNamespace`                  | Watch a specific namespace, or all namespaces ("", "all")                | `all`                                      |
 | `watcher.namespacesBlacklist`             | Blacklist specific namespaces (list)                                     | `[kube-system]`                            |
 | `watcher.nameBlacklist`                   | Blacklist specific resource names that contains any of these strings (list) - example: ```watcher.nameBlacklist=["dont-watch"] --> `pod/backend-dont-watch` wont be collected``` | `[]`                                                |
 | `watcher.collectHistory`                  | On startup collect existing cluster resources in addition to watching new resources (true / false)                        | `false`                                    |
-| `watcher.sources.kiali.url`               | Kiali URL                                                                | ``                                         |
-| `watcher.sources.kiali.username`          | Kiali Username                                                           | ``                                         |
-| `watcher.sources.kiali.password`          | Kiali Password                                                           | ``                                         |
 | `watcher.sinks.webhook.enabled`           | Enables a Webhook output                                                 | `true`                                     |
 | `watcher.sinks.webhook.url`               | URL to send webhooks to                                                  | `https://app.komodor.io/k8s-events/event/` |
 | `watcher.sinks.webhook.headers`           | Headers to attach to the webhooks                                        | `{}`                                       |
@@ -99,6 +95,8 @@ The following table lists the configurable parameters of the chart and their def
 
 
 
+
+
 The above parameters map to a yaml configuration file used by the watcher.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
@@ -121,3 +119,12 @@ KOMOKW_COLLECT_HISTORY=true
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Advanced Usage
+
+| Parameter                                 | Description                                                              | Default                                    |
+|-------------------------------------------|--------------------------------------------------------------------------|--------------------------------------------|
+| `kialiApiKey`      | Komodor Kiali API Key (required if using kiali)           | ``                                         
+| `watcher.sources.kiali.url`               | Kiali URL                                                                | ``                                         |
+| `watcher.sources.kiali.username`          | Kiali Username                                                           | ``                                         |
+| `watcher.sources.kiali.password`          | Kiali Password                                                           | ``                                         
