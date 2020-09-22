@@ -4,7 +4,7 @@ metadata:
   name: k8s-watcher
   namespace: k8s-watcher
   labels:
-    helm.sh/chart: k8s-watcher-0.1.0
+    helm.sh/chart: k8s-watcher-0.1.4
     app.kubernetes.io/name: k8s-watcher
     app.kubernetes.io/instance: k8s-watcher
     app.kubernetes.io/version: "0.1.0"
@@ -18,7 +18,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 7f83e7eb015a43f45fb742cc1ed28bb074c6ee77cf0f89a54320f0f16da73f36
+        checksum/config: 54443a701c99e325c20c2a2ffe7f54b21f1d61793eb6ac57aa0d390727ff5ecf
       labels:
         app.kubernetes.io/name: k8s-watcher
         app.kubernetes.io/instance: k8s-watcher
@@ -39,16 +39,11 @@ spec:
             - name: configuration
               mountPath: /etc/komodor
           env:
-            - name: KOMOKW_SECRET_INSTALLATION_ID
+            - name: KOMOKW_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: k8s-watcher-secret
-                  key: installationId
-            - name: KOMOKW_SECRET_KIALI_INSTALLATION_ID
-              valueFrom:
-                secretKeyRef:
-                  name: k8s-watcher-secret
-                  key: kialiInstallationId
+                  key: apiKey
       volumes:
         - name: configuration
           configMap:

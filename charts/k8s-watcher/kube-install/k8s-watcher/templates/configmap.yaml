@@ -5,7 +5,7 @@ metadata:
   namespace: k8s-watcher
 data:
   komodor-k8s-watcher.yaml: |
-    listExisting: true
+    collectHistory: true
     nameBlacklist:
     - leader
     - election
@@ -29,9 +29,6 @@ data:
       secret: true
       service: true
       serviceAccount: true
-    secret:
-      installationId: YOUR_INSTALLATION_ID_HERE
-      kialiInstallationId: ""
     sinks:
       webhook:
         enabled: true
