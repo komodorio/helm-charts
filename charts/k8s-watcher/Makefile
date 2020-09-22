@@ -9,6 +9,7 @@ deploy-with-kiali:
 	 helm repo update
 	 helm upgrade --install k8s-watcher komodorio/k8s-watcher --debug \
 	 --set apiKey=${KOMOKW_API_KEY} \
+	 --set kialiApiKey=${KOMOKW_KIALI_API_KEY} \
 	 --set watcher.collectHistory=true \
 	 --set watcher.nameBlacklist="{leader,election}" \
 	 --set watcher.sources.kiali.url="http://kiali.istio-system.svc.cluster.local:20001" \
