@@ -48,13 +48,3 @@ watcher:
       secret: true
       configMap: true
       ingress: true
-  sinks:
-      webhook:
-          enabled: true
-          url: ""
-          headers: {}
-  sources:
-    kiali:
-      url: ""
-      username: ""
-      password: ""
