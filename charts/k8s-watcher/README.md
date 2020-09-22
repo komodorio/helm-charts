@@ -62,8 +62,8 @@ The following table lists the configurable parameters of the chart and their def
 | `watcher.secret.kialiInstallationId`      | Kiali Komodor unique installation ID (required if using kiali)           | ``                                         |
 | `watcher.watchNamespace`                  | Watch a specific namespace, or all namespaces ("", "all")                | `all`                                      |
 | `watcher.namespacesBlacklist`             | Blacklist specific namespaces (list)                                     | `[kube-system]`                            |
-| `watcher.nameBlacklist`                   | Blacklist specific resource names (name contains blacklisted arg) (list) | `[]`                                       |
-| `watcher.listExisting`                    | List existing cluster resources (true / false)                           | `false`                                    |
+| `watcher.nameBlacklist`                   | Blacklist specific resource names that contains any of these strings (list) - example: ```watcher.nameBlacklist=["dont-watch"] --> `pod/backend-dont-watch` wont be collected``` | `[]`                                                |
+| `watcher.listExisting`                    | On startup collect existing cluster resources in addition to watching new resources (true / false)                        | `false`                                    |
 | `watcher.sources.kiali.url`               | Kiali URL                                                                | ``                                         |
 | `watcher.sources.kiali.username`          | Kiali Username                                                           | ``                                         |
 | `watcher.sources.kiali.password`          | Kiali Password                                                           | ``                                         |
