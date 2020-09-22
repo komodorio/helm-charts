@@ -7,7 +7,7 @@
 ```bash
 helm repo add komodorio https://helm-charts.komodor.io
 helm repo update
-helm upgrade --install k8s-watcher komodorio/k8s-watcher --set watcher.secret.installationId="YOUR_INSTALLATION_ID_HERE"
+helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey="YOUR_API_KEY_HERE"
 ```
 
 ## Introduction
@@ -24,7 +24,7 @@ This chart bootstraps a Kubernetes Resources/Event Watcher deployment on a [Kube
 To install the chart with the release name `k8s-watcher`:
 
 ```bash
-helm upgrade --install k8s-watcher komodorio/k8s-watcher --set watcher.secret.installationId=YOUR_INSTALLATION_ID_HERE"
+helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey="YOUR_API_KEY_HERE"
 ```
 
 The command deploys the Komodor K8S-Watcher on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -35,7 +35,7 @@ The command deploys the Komodor K8S-Watcher on the Kubernetes cluster in the def
 #### Alternative: Install without Helm
 
 To install the chart directly with kubectl, use the manifests located in `./kube-install`.
-Make sure to set the installationId secret value in `./kube-install/k8s-watcher/templates/secret-installation-id.yaml`
+Make sure to set the installationId secret value in `./kube-install/k8s-watcher/templates/secret-credentials.yaml`
 
 ## Uninstalling the Chart
 
@@ -58,13 +58,13 @@ The following table lists the configurable parameters of the chart and their def
 
 | Parameter                                 | Description                                                              | Default                                    |
 |-------------------------------------------|--------------------------------------------------------------------------|--------------------------------------------|
-| `watcher.secret.installationId`           | Komodor unique installation ID (required)                                | ``                                         |
+| `apiKey`                                  | Komodor kubernetes api key (required)                                    | ``                                         |
 | `watcher.watchNamespace`                  | Watch a specific namespace, or all namespaces ("", "all")                | `all`                                      |
 | `watcher.namespacesBlacklist`             | Blacklist specific namespaces (list)                                     | `[kube-system]`                            |
 | `watcher.nameBlacklist`                   | Blacklist specific resource names that contains any of these strings (list) - example: ```watcher.nameBlacklist=["dont-watch"] --> `pod/backend-dont-watch` wont be collected``` | `[]`                                                |
-| `watcher.listExisting`                    | On startup collect existing cluster resources in addition to watching new resources (true / false)                        | `false`                                    |
-| `watcher.sinks.webhook.enabled`           | Whether or not send the collected data to a webhook                                                 | `true`                                     |
-| `watcher.sinks.webhook.url`               | URL of the webhook                                                  | `https://app.komodor.io/k8s-events/event/` |
+| `watcher.collectHistory`                  | On startup collect existing cluster resources in addition to watching new resources (true / false)                        | `false`                                    |
+| `watcher.sinks.webhook.enabled`           | Enables a Webhook output                                                 | `true`                                     |
+| `watcher.sinks.webhook.url`               | URL to send webhooks to                                                  | `https://app.komodor.io/k8s-events/event/` |
 | `watcher.sinks.webhook.headers`           | Headers to attach to the webhooks                                        | `{}`                                       |
 | `watcher.resources.event`                 | Enables watching Event                                                   | `true`                                     |
 | `watcher.resources.deployment`            | Enables watching Deployments                                             | `true`                                     |
@@ -102,20 +102,20 @@ The above parameters map to a yaml configuration file used by the watcher.
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-helm upgrade --install k8s-watcher komodorio/k8s-watcher --set watcher.secret.installationId="YOUR_INSTALLATION_ID_HERE"
+helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey="YOUR_API_KEY_HERE"
 ```
 
 Alternativly, you can pass the configuration as environment variables using the `KOMOKW_` prefix and by replacing all the `.` to `_`, for the root items the camelcase transforms into underscores as well. For example,
 ```bash
-# watcher.secret.installationId
-KOMOKW_SECRET_INSTALLATIONID=1a2b3c4d5e6f7g7h
+# apiKey
+KOMOKW_API_KEY=1a2b3c4d5e6f7g7h
 # watcher.resources.replicaSet
 KOMOKW_RESOURCES_REPLICASET=false
 
 # watcher.watchNamespace
 KOMOKW_WATCH_NAMESPACE=my-namespace
-# watcher.listExisting
-KOMOKW_LIST_EXISTING=true
+# watcher.collectHistory
+KOMOKW_COLLECT_HISTORY=true
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

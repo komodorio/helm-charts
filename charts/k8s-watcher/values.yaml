@@ -22,14 +22,14 @@ resources:
     cpu: 100m
     memory: 128Mi
 
+installationId: ""
+kialiInstallationId: ""
+
 watcher:
   watchNamespace: all
   namespacesBlacklist:
     - kube-system
   nameBlacklist: []
-  secret:
-      installationId: ""
-      kialiInstallationId: ""
   resources:
       event: true
       deployment: true
