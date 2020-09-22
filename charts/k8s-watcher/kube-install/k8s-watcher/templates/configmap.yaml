@@ -31,6 +31,7 @@ data:
       serviceAccount: true
     secret:
       installationId: YOUR_INSTALLATION_ID_HERE
+      kialiInstallationId: ""
     sinks:
       webhook:
         enabled: true

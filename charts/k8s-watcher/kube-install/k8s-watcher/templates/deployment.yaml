@@ -18,7 +18,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: b7fcff14d9f1b5b2f5b257a469f404f674b0bd929850eddb81881868e82ea109
+        checksum/config: 7f83e7eb015a43f45fb742cc1ed28bb074c6ee77cf0f89a54320f0f16da73f36
       labels:
         app.kubernetes.io/name: k8s-watcher
         app.kubernetes.io/instance: k8s-watcher
@@ -26,7 +26,7 @@ spec:
       serviceAccountName: k8s-watcher
       containers:
         - name: k8s-watcher
-          image: "634375685434.dkr.ecr.us-east-1.amazonaws.com/k8s-watcher:latest"
+          image: "komodorio/k8s-watcher:latest"
           imagePullPolicy: Always
           resources:
             limits:
