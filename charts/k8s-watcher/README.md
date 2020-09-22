@@ -124,7 +124,7 @@ KOMOKW_COLLECT_HISTORY=true
 
 | Parameter                                 | Description                                                              | Default                                    |
 |-------------------------------------------|--------------------------------------------------------------------------|--------------------------------------------|
-| `KialiApiKey`      | Komodor Kiali API Key (required if using kiali)           | ``                                         
+| `kialiApiKey`      | Komodor Kiali API Key (required if using kiali)           | ``                                         
 | `watcher.sources.kiali.url`               | Kiali URL                                                                | ``                                         |
 | `watcher.sources.kiali.username`          | Kiali Username                                                           | ``                                         |
 | `watcher.sources.kiali.password`          | Kiali Password                                                           | ``                                         
