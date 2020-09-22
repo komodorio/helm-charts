@@ -3,7 +3,7 @@ entries:
   k8s-watcher:
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2020-09-22T13:46:52.554198503Z"
+    created: "2020-09-22T13:48:00.381147223Z"
     description: Watches and send kubernetes resource-related events
     digest: cd14b5628193d03dc563ab674022daeaedc0af70627c33d8878a557483bfe034
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -12,4 +12,4 @@ entries:
     urls:
     - k8s-watcher/k8s-watcher-0.1.0.tgz
     version: 0.1.0
-generated: "2020-09-22T13:46:52.553533023Z"
+generated: "2020-09-22T13:48:00.380409733Z"
