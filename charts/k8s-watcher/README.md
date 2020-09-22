@@ -59,16 +59,12 @@ The following table lists the configurable parameters of the chart and their def
 | Parameter                                 | Description                                                              | Default                                    |
 |-------------------------------------------|--------------------------------------------------------------------------|--------------------------------------------|
 | `watcher.secret.installationId`           | Komodor unique installation ID (required)                                | ``                                         |
-| `watcher.secret.kialiInstallationId`      | Kiali Komodor unique installation ID (required if using kiali)           | ``                                         |
 | `watcher.watchNamespace`                  | Watch a specific namespace, or all namespaces ("", "all")                | `all`                                      |
 | `watcher.namespacesBlacklist`             | Blacklist specific namespaces (list)                                     | `[kube-system]`                            |
 | `watcher.nameBlacklist`                   | Blacklist specific resource names that contains any of these strings (list) - example: ```watcher.nameBlacklist=["dont-watch"] --> `pod/backend-dont-watch` wont be collected``` | `[]`                                                |
 | `watcher.listExisting`                    | On startup collect existing cluster resources in addition to watching new resources (true / false)                        | `false`                                    |
-| `watcher.sources.kiali.url`               | Kiali URL                                                                | ``                                         |
-| `watcher.sources.kiali.username`          | Kiali Username                                                           | ``                                         |
-| `watcher.sources.kiali.password`          | Kiali Password                                                           | ``                                         |
-| `watcher.sinks.webhook.enabled`           | Enables a Webhook output                                                 | `true`                                     |
-| `watcher.sinks.webhook.url`               | URL to send webhooks to                                                  | `https://app.komodor.io/k8s-events/event/` |
+| `watcher.sinks.webhook.enabled`           | Whether or not send the collected data to a webhook                                                 | `true`                                     |
+| `watcher.sinks.webhook.url`               | URL of the webhook                                                  | `https://app.komodor.io/k8s-events/event/` |
 | `watcher.sinks.webhook.headers`           | Headers to attach to the webhooks                                        | `{}`                                       |
 | `watcher.resources.event`                 | Enables watching Event                                                   | `true`                                     |
 | `watcher.resources.deployment`            | Enables watching Deployments                                             | `true`                                     |
@@ -99,6 +95,8 @@ The following table lists the configurable parameters of the chart and their def
 
 
 
+
+
 The above parameters map to a yaml configuration file used by the watcher.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
@@ -121,3 +119,12 @@ KOMOKW_LIST_EXISTING=true
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Advanced Usage
+
+| Parameter                                 | Description                                                              | Default                                    |
+|-------------------------------------------|--------------------------------------------------------------------------|--------------------------------------------|
+| `watcher.secret.kialiInstallationId`      | Kiali Komodor unique installation ID (required if using kiali)           | ``                                         
+| `watcher.sources.kiali.url`               | Kiali URL                                                                | ``                                         |
+| `watcher.sources.kiali.username`          | Kiali Username                                                           | ``                                         |
+| `watcher.sources.kiali.password`          | Kiali Password                                                           | ``                                         
