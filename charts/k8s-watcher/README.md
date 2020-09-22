@@ -7,7 +7,7 @@
 ```bash
 helm repo add komodorio https://helm-charts.komodor.io
 helm repo update
-helm upgrade --install k8s-watcher komodorio/k8s-watcher --set watcher.secret.installationId="YOUR_INSTALLATION_ID_HERE"
+helm upgrade --install k8s-watcher komodorio/k8s-watcher --set installationId="YOUR_INSTALLATION_ID_HERE"
 ```
 
 ## Introduction
@@ -24,7 +24,7 @@ This chart bootstraps a Kubernetes Resources/Event Watcher deployment on a [Kube
 To install the chart with the release name `k8s-watcher`:
 
 ```bash
-helm upgrade --install k8s-watcher komodorio/k8s-watcher --set watcher.secret.installationId=YOUR_INSTALLATION_ID_HERE"
+helm upgrade --install k8s-watcher komodorio/k8s-watcher --set installationId=YOUR_INSTALLATION_ID_HERE"
 ```
 
 The command deploys the Komodor K8S-Watcher on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -58,8 +58,8 @@ The following table lists the configurable parameters of the chart and their def
 
 | Parameter                                 | Description                                                              | Default                                    |
 |-------------------------------------------|--------------------------------------------------------------------------|--------------------------------------------|
-| `watcher.secret.installationId`           | Komodor unique installation ID (required)                                | ``                                         |
-| `watcher.secret.kialiInstallationId`      | Kiali Komodor unique installation ID (required if using kiali)           | ``                                         |
+| `installationId`                          | Komodor unique installation ID (required)                                | ``                                         |
+| `kialiInstallationId`                     | Kiali Komodor unique installation ID (required if using kiali)           | ``                                         |
 | `watcher.watchNamespace`                  | Watch a specific namespace, or all namespaces ("", "all")                | `all`                                      |
 | `watcher.namespacesBlacklist`             | Blacklist specific namespaces (list)                                     | `[kube-system]`                            |
 | `watcher.nameBlacklist`                   | Blacklist specific resource names that contains any of these strings (list) - example: ```watcher.nameBlacklist=["dont-watch"] --> `pod/backend-dont-watch` wont be collected``` | `[]`                                                |
@@ -104,7 +104,7 @@ The above parameters map to a yaml configuration file used by the watcher.
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-helm upgrade --install k8s-watcher komodorio/k8s-watcher --set watcher.secret.installationId="YOUR_INSTALLATION_ID_HERE"
+helm upgrade --install k8s-watcher komodorio/k8s-watcher --set installationId="YOUR_INSTALLATION_ID_HERE"
 ```
 
 Alternativly, you can pass the configuration as environment variables using the `KOMOKW_` prefix and by replacing all the `.` to `_`, for the root items the camelcase transforms into underscores as well. For example,
