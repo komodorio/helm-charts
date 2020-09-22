@@ -33,16 +33,18 @@ spec:
             - name: configuration
               mountPath: /etc/komodor
           env:
-            - name: KOMOKW_SECRET_INSTALLATION_ID
+            - name: KOMOKW_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: {{ include "k8s-watcher.name" . }}-secret
-                  key: installationId
-            - name: KOMOKW_SECRET_KIALI_INSTALLATION_ID
+                  key: apiKey
+{{- if .Values.kialiApiKey }}
+            - name: KOMOKW_KIALI_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: {{ include "k8s-watcher.name" . }}-secret
-                  key: kialiInstallationId
+                  key: kialiApiKey
+{{- end }}
       volumes:
         - name: configuration
           configMap:
