@@ -20,7 +20,8 @@ generate-kube:
 	helm template k8s-watcher . -f values.yaml \
 	--set watcher.collectHistory=true \
 	--set watcher.nameBlacklist="{leader,election}" \
-	--set apiKey="YOUR_API_KEY_HERE" \
+	--set apiKey="YOUR_APIKEY_AS_BASE_64" \
 	> generated.yaml
 	cat generated.yaml | ./helm-fan-out.sh kube-install
 	rm generated.yaml
+	sed -i "s/WU9VUl9BUElLRVlfQVNfQkFTRV82NAo=/YOUR_APIKEY_AS_BASE_64/g" kube-install/k8s-watcher/templates/secret-credentials.yaml
