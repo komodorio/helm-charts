@@ -1,7 +1,5 @@
 # Komodor.io
 
-[Komodor.io](https://komodor.io/) - ``
-
 ## TL;DR;
 
 ```bash
@@ -32,11 +30,6 @@ The command deploys the Komodor K8S-Watcher on the Kubernetes cluster in the def
 > **Tip**: List all releases using `helm list`
 
 
-#### Alternative: Install without Helm
-
-To install the chart directly with kubectl, use the manifests located in `./kube-install`.
-Make sure to set the installationId secret value in `./kube-install/k8s-watcher/templates/secret-credentials.yaml`
-
 ## Uninstalling the Chart
 
 To uninstall/delete the `k8s-watcher` deployment:
@@ -51,6 +44,12 @@ helm delete --purge k8s-watcher
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
+
+## Alternative: Install without Helm
+
+To install the chart directly with kubectl, use the manifests located in `./kube-install`.
+1. Make sure to set the apiKey secret value in `./kube-install/k8s-watcher/templates/secret-credentials.yaml`
+2. Then just apply everything: `kubectl apply -f ./kube-install`
 
 ## Configuration
 
