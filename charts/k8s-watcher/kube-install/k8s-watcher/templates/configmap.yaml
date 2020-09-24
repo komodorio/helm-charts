@@ -29,15 +29,5 @@ data:
       secret: true
       service: true
       serviceAccount: true
-    sinks:
-      webhook:
-        enabled: true
-        headers: {}
-        url: ""
-    sources:
-      kiali:
-        password: ""
-        url: ""
-        username: ""
     watchNamespace: all
 ---

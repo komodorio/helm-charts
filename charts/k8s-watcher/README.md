@@ -48,7 +48,8 @@ The command removes all the Kubernetes components associated with the chart and 
 ## Alternative: Install without Helm
 
 To install the chart directly with kubectl, use the manifests located in `./kube-install`.
-1. Make sure to set the apiKey secret value in `./kube-install/k8s-watcher/templates/secret-credentials.yaml`
+1. Make sure to set the apiKey (as base 64) secret value in `./kube-install/k8s-watcher/templates/secret-credentials.yaml`
+    - `echo "API_KEY" | base64`
 2. Then just apply everything: `kubectl apply -f ./kube-install`
 
 ## Configuration
@@ -61,7 +62,7 @@ The following table lists the configurable parameters of the chart and their def
 | `watcher.watchNamespace`                  | Watch a specific namespace, or all namespaces ("", "all")                | `all`                                      |
 | `watcher.namespacesBlacklist`             | Blacklist specific namespaces (list)                                     | `[kube-system]`                            |
 | `watcher.nameBlacklist`                   | Blacklist specific resource names that contains any of these strings (list) - example: ```watcher.nameBlacklist=["dont-watch"] --> `pod/backend-dont-watch` wont be collected``` | `[]`                                                |
-| `watcher.collectHistory`                  | On startup collect existing cluster resources in addition to watching new resources (true / false)                        | `false`                                    |
+| `watcher.collectHistory`                  | On startup collect existing cluster resources in addition to watching new resources (true / false)                        | `true`                                    |
 | `watcher.sinks.webhook.enabled`           | Enables a Webhook output                                                 | `true`                                     |
 | `watcher.sinks.webhook.url`               | URL to send webhooks to                                                  | `https://app.komodor.io/k8s-events/event/` |
 | `watcher.sinks.webhook.headers`           | Headers to attach to the webhooks                                        | `{}`                                       |
@@ -121,9 +122,10 @@ KOMOKW_COLLECT_HISTORY=true
 
 ## Advanced Usage
 
-| Parameter                                 | Description                                                              | Default                                    |
-|-------------------------------------------|--------------------------------------------------------------------------|--------------------------------------------|
-| `kialiApiKey`      | Komodor Kiali API Key (required if using kiali)           | ``                                         
-| `watcher.sources.kiali.url`               | Kiali URL                                                                | ``                                         |
-| `watcher.sources.kiali.username`          | Kiali Username                                                           | ``                                         |
-| `watcher.sources.kiali.password`          | Kiali Password                                                           | ``                                         
+| Parameter                              | Description                                                              | Default                                    |
+|----------------------------------------|--------------------------------------------------------------------------|--------------------------------------------|
+| `kialiApiKey`                          | Komodor Kiali API Key (required if using kiali)                          | ``                                         |
+| `watcher.sources.kiali.enabled`        | Enables Kiali data collection                                            |`false`                                     |
+| `watcher.sources.kiali.url`            | Kiali URL                                                                | ``                                         |
+| `watcher.sources.kiali.username`       | Kiali Username                                                           | ``                                         |
+| `watcher.sources.kiali.password`       | Kiali Password                                                           | ``                                         |  
