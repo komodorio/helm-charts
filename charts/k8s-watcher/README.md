@@ -51,8 +51,8 @@ To install the chart directly with kubectl, use the manifests located in `./kube
 1. Make sure to set the apiKey (as base 64) secret value in `./kube-install/k8s-watcher/templates/secret-credentials.yaml`
     - `KOMOKW_APIKEY=YOUR_APIKEY sed -i "s/YOUR_APIKEY_AS_BASE_64/$(echo $KOMOKW_APIKEY | base64)/g" kube-install/k8s-watcher/templates/secret-credentials.yaml`
 2. Then just apply everything in order:
-    - `kubectl apply -f ./kube-install/k8s-watcher-templates/namespace.yaml`
-    - `kubectl apply -f ./kube-install/k8s-watcher-templates`
+    - `kubectl apply -f ./kube-install/k8s-watcher/templates/namespace.yaml`
+    - `kubectl apply -f ./kube-install/k8s-watcher/templates`
 
 ## Configuration
 
