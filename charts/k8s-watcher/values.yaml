@@ -5,7 +5,7 @@ image:
   pullPolicy: Always
   tag: "latest"
 
-namespace: k8s-watcher
+namespace: komodor
 
 serviceAccount:
   # Specifies whether a service account should be created

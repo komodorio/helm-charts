@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: k8s-watcher
-  namespace: k8s-watcher
+  namespace: komodor
   labels:
     helm.sh/chart: k8s-watcher-0.1.6
     app.kubernetes.io/name: k8s-watcher
