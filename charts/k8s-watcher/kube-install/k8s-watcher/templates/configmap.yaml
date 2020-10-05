@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: k8s-watcher-config
-  namespace: k8s-watcher
+  namespace: komodor
 data:
   komodor-k8s-watcher.yaml: |
     collectHistory: true
