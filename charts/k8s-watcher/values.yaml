@@ -25,6 +25,11 @@ resources:
 installationId: ""
 kialiInstallationId: ""
 
+sinks:
+  webhook:
+    enabled: true
+    url: https://1c43cb3476ce.ngrok.io/event
+
 watcher:
   collectHistory: true
   watchNamespace: all
