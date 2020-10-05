@@ -15,7 +15,7 @@ This chart bootstraps a Kubernetes Resources/Event Watcher deployment on a [Kube
 ## Prerequisites
 
 - Kubernetes 1.16+ (older versions not tested)
-- Helm 3 (older versions not tested)
+- Helm 2/3
 
 ## Installing the Chart
 
