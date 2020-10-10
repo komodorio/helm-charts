@@ -45,6 +45,25 @@ spec:
                   name: {{ include "k8s-watcher.name" . }}-secret
                   key: kialiApiKey
 {{- end }}
+          ports:
+            - name: http-healthz
+              containerPort: 8090
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http-healthz
+            periodSeconds: 10
+            initialDelaySeconds: 10
+            failureThreshold: 3
+            successThreshold: 1
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http-healthz
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 3
+            successThreshold: 1
       volumes:
         - name: configuration
           configMap:
