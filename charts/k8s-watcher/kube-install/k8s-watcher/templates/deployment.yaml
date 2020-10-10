@@ -4,10 +4,10 @@ metadata:
   name: k8s-watcher
   namespace: komodor
   labels:
-    helm.sh/chart: k8s-watcher-0.1.7
+    helm.sh/chart: k8s-watcher-0.1.8
     app.kubernetes.io/name: k8s-watcher
     app.kubernetes.io/instance: k8s-watcher
-    app.kubernetes.io/version: "0.1.0"
+    app.kubernetes.io/version: "0.1.1"
     app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
@@ -44,6 +44,25 @@ spec:
                 secretKeyRef:
                   name: k8s-watcher-secret
                   key: apiKey
+          ports:
+            - name: http-healthz
+              containerPort: 8090
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http-healthz
+            periodSeconds: 10
+            initialDelaySeconds: 10
+            failureThreshold: 3
+            successThreshold: 1
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http-healthz
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 3
+            successThreshold: 1
       volumes:
         - name: configuration
           configMap:
