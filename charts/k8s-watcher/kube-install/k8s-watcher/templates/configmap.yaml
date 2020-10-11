@@ -29,5 +29,7 @@ data:
       secret: true
       service: true
       serviceAccount: true
+    servers:
+      healthCheck: {}
     watchNamespace: all
 ---

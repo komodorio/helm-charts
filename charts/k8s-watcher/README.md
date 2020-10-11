@@ -67,7 +67,6 @@ The following table lists the configurable parameters of the chart and their def
 | `watcher.collectHistory`                  | On startup collect existing cluster resources in addition to watching new resources (true / false)                        | `true`                                    |
 | `watcher.sinks.webhook.enabled`           | Enables a Webhook output                                                 | `true`                                     |
 | `watcher.sinks.webhook.url`               | URL to send webhooks to                                                  | `https://app.komodor.io/k8s-events/event/` |
-| `watcher.sinks.webhook.healthCheckUrl`    | URL to verify health of webhook server (not required)                    | `https://app.komodor.io/k8s-events/status/health`                                         |
 | `watcher.sinks.webhook.headers`           | Headers to attach to the webhooks                                        | `{}`                                       |
 | `watcher.resources.event`                 | Enables watching Event                                                   | `true`                                     |
 | `watcher.resources.deployment`            | Enables watching Deployments                                             | `true`                                     |
@@ -86,6 +85,7 @@ The following table lists the configurable parameters of the chart and their def
 | `watcher.resources.secret`                | Enables watching Secrets                                                 | `true`                                     |
 | `watcher.resources.configMap`             | Enables watching ConfigMaps                                              | `true`                                     |
 | `watcher.resources.ingress`               | Enables watching Ingresses                                               | `true`                                     |
+| `watcher.servers.healthCheck.port`        | Port of the health check server                                          | `8090`                                     |
 | `resources.requests.cpu`                  | CPU resource requests                                                    | `100m`                                     |
 | `resources.limits.cpu`                    | CPU resource limits                                                      | `500m`                                     |
 | `resources.requests.memory`               | Memory resource requests                                                 | `128Mi`                                    |

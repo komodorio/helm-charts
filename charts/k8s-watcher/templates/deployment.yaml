@@ -47,7 +47,7 @@ spec:
 {{- end }}
           ports:
             - name: http-healthz
-              containerPort: 8090
+              containerPort: {{ .Values.watcher.servers.healthCheck.port | default 8090 }}
           livenessProbe:
             httpGet:
               path: /healthz
