@@ -10,7 +10,7 @@ jobs:
           command: |
             sh install-helm.sh
             alias helm=/tmp/helm/bin/linux-amd64/helm
-            helm template k8s-watcher charts/k8s-watcher -f charts/k8s-watcher/values.yaml --set apiKey="sanity"
+            helm template k8s-watcher charts/k8s-watcher -f charts/k8s-watcher/values.yaml --set watcher.apiKey="sanity"
       - run:
           name: Publish Helm charts to Github Pages
           command: sh publish.sh
