@@ -26,6 +26,8 @@ installationId: ""
 kialiInstallationId: ""
 
 watcher:
+  servers:
+    healthCheck: {}
   collectHistory: true
   watchNamespace: all
   namespacesBlacklist:
