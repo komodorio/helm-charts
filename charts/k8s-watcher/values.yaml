@@ -22,8 +22,8 @@ resources:
     cpu: 100m
     memory: 128Mi
 
-installationId: ""
-kialiInstallationId: ""
+apiKey: ""
+kialiApiKey: ""
 
 watcher:
   servers:
