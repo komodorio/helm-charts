@@ -82,7 +82,7 @@ The following table lists the configurable parameters of the chart and their def
 | `watcher.resources.persistentVolume`      | Enables watching PersistentVolumes                                       | `true`                                     |
 | `watcher.resources.persistentVolumeClaim` | Enables watching PersistentVolumeClaims                                  | `true`                                     |
 | `watcher.resources.namespace`             | Enables watching Namespaces                                              | `true`                                     |
-| `watcher.resources.secret`                | Enables watching Secrets                                                 | `true`                                     |
+| `watcher.resources.secret`                | Enables watching Secrets                                                 | `false`                                    |
 | `watcher.resources.configMap`             | Enables watching ConfigMaps                                              | `true`                                     |
 | `watcher.resources.ingress`               | Enables watching Ingresses                                               | `true`                                     |
 | `watcher.servers.healthCheck.port`        | Port of the health check server                                          | `8090`                                     |
