@@ -61,6 +61,7 @@ The following table lists the configurable parameters of the chart and their def
 | Parameter                                 | Description                                                              | Default                                    |
 |-------------------------------------------|--------------------------------------------------------------------------|--------------------------------------------|
 | `apiKey`                                  | Komodor kubernetes api key (required)                                    | ``                                         |
+| `watcher.clusterName`                     | Override auto-discovery of Cluster Name with one of your choosing        | ``                                         |
 | `watcher.watchNamespace`                  | Watch a specific namespace, or all namespaces ("", "all")                | `all`                                      |
 | `watcher.namespacesBlacklist`             | Blacklist specific namespaces (list)                                     | `[kube-system]`                            |
 | `watcher.nameBlacklist`                   | Blacklist specific resource names that contains any of these strings (list) - example: ```watcher.nameBlacklist=["dont-watch"] --> `pod/backend-dont-watch` wont be collected``` | `[]`                                                |
