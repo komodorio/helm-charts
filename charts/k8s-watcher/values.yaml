@@ -40,6 +40,7 @@ watcher:
       replicationController: true
       replicaSet: true
       daemonSet: true
+      statefulSet: true
       service: true
       pod: true
       job: true

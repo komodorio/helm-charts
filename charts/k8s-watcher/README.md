@@ -74,6 +74,7 @@ The following table lists the configurable parameters of the chart and their def
 | `watcher.resources.replicationController` | Enables watching ReplicationControllers                                  | `true`                                     |
 | `watcher.resources.replicaSet`            | Enables watching ReplicaSets                                             | `true`                                     |
 | `watcher.resources.daemonSet`             | Enables watching DaemonSets                                              | `true`                                     |
+| `watcher.resources.statefulSet`           | Enables watching StatefulSets                                            | `true`                                     |
 | `watcher.resources.service`               | Enables watching Services                                                | `true`                                     |
 | `watcher.resources.pod`                   | Enables watching Pods                                                    | `true`                                     |
 | `watcher.resources.job`                   | Enables watching Jobs                                                    | `true`                                     |
