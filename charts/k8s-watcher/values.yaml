@@ -26,6 +26,7 @@ apiKey: ""
 kialiApiKey: ""
 
 watcher:
+  # clusterName: ""
   servers:
     healthCheck: {}
   collectHistory: true
