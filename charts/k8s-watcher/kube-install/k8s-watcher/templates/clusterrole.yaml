@@ -37,6 +37,7 @@ rules:
     - deployments
     - daemonsets
     - replicasets
+    - statefulsets
     verbs:
     - get
     - watch
