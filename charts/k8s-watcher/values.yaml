@@ -2,8 +2,7 @@
 replicaCount: 1
 image:
   repository: komodorio/k8s-watcher
-  pullPolicy: Always
-  tag: "latest"
+  pullPolicy: IfNotPresent
 
 namespace: komodor
 
