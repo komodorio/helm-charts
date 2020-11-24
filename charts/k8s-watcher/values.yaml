@@ -3,7 +3,6 @@ replicaCount: 1
 image:
   repository: komodorio/k8s-watcher
   pullPolicy: IfNotPresent
-  tag: "0.1.10"
 
 namespace: komodor
 
