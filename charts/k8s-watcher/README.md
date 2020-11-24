@@ -61,6 +61,7 @@ The following table lists the configurable parameters of the chart and their def
 | Parameter                                 | Description                                                              | Default                                    |
 |-------------------------------------------|--------------------------------------------------------------------------|--------------------------------------------|
 | `apiKey`                                  | Komodor kubernetes api key (required)                                    | ``                                         |
+| `redact`                                  | List of ConfigMap keys to not send as clear text, this will show up at Komodor as "REDACTED:<SHA of config value>" | `[]`
 | `watcher.clusterName`                     | Override auto-discovery of Cluster Name with one of your choosing        | ``                                         |
 | `watcher.watchNamespace`                  | Watch a specific namespace, or all namespaces ("", "all")                | `all`                                      |
 | `watcher.namespacesBlacklist`             | Blacklist specific namespaces (list)                                     | `[kube-system]`                            |
@@ -93,7 +94,7 @@ The following table lists the configurable parameters of the chart and their def
 | `resources.requests.memory`               | Memory resource requests                                                 | `128Mi`                                    |
 | `resources.limits.memory`                 | Memory resource limits                                                   | `1024Mi`                                   |
 | `image.repository`                        | Image registry/name                                                      | `docker.io/komodorio/k8s-watcher`          |
-| `image.tag`                               | Image tag                                                                | `latest`                                   |
+| `image.tag`                               | Image tag                                                                | `0.1.10`                                   |
 | `image.pullPolicy`                        | Image pull policy                                                        | `Always`                                   |
 | `serviceAccount.create`                   | Creates a service account                                                | `true`                                     |
 | `serviceAccount.name`                     | Optional name for the service account                                    | `{RELEASE_FULLNAME}`                       |
