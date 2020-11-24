@@ -26,7 +26,7 @@ spec:
       serviceAccountName: k8s-watcher
       containers:
         - name: k8s-watcher
-          image: "komodorio/k8s-watcher:0.1.9"
+          image: "komodorio/k8s-watcher:0.1.10"
           imagePullPolicy: IfNotPresent
           resources:
             limits:
