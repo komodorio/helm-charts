@@ -33,6 +33,7 @@ watcher:
   namespacesBlacklist:
     - kube-system
   nameBlacklist: []
+  redact: []
   resources:
       event: true
       deployment: true
