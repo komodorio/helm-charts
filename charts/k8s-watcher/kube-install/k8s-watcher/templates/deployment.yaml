@@ -1,4 +1,38 @@
-apiVersion: apps/v1
+  "Allo","Allo 'Allo","Aye oop","Ay up","Ahoy","G'day","Greetings","Hello","Hey there","Hey","Hi there","Hi","Hiya","How are things","How are ya","How ya doin'","How's it goin'","How's it going","How's life","Howdy","Sup","What's new","What's up","
+
+ 19 2019, 23:04:32) 
+[GCC 5.4.0 20160609] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import paramiko
+>>> paramiko.SSHClient()
+<paramiko.client.SSHClient object at 0x7f78298ee5c0>
+>>> 
+>>> ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'ssh' is not defined
+>>> ssh = paramiko.SSHClient()
+>>> ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+>>> ssh.connect('iil-login.iil.intel.com', 22, 'itaamlausys', 'MLAisNumber1!')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/usr/local/lib/python3.6/dist-packages/paramiko/client.py", line 446, in connect
+    passphrase,
+  File "/usr/local/lib/python3.6/dist-packages/paramiko/client.py", line 735, in _auth
+    filename, pkey_class, passphrase
+  File "/usr/local/lib/python3.6/dist-packages/paramiko/client.py", line 596, in _key_from_filepath
+    key.load_certificate(cert_pa
+
+
+
+
+
+
+
+
+
+
+    apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: k8s-watcher
@@ -44,6 +78,14 @@ spec:
                 secretKeyRef:
                   name: k8s-watcher-secret
                   key: apiKey
+{{- if .Values.proxy.enabled }}
+            - name: http_proxy
+              value: {{ .Values.proxy.http }}
+            - name: https_proxy
+              value: {{ .Values.proxy.https }}
+            - name: no_proxy
+              value: {{ .Values.proxy.no-proxy }}
+{{- end }}
           ports:
             - name: http-healthz
               containerPort: 8090
