@@ -45,6 +45,7 @@ spec:
                   name: {{ include "k8s-watcher.name" . }}-secret
                   key: kialiApiKey
 {{- end }}
+{{- include "k8s-watcher.proxy-conf" . }}
           ports:
             - name: http-healthz
               containerPort: {{ .Values.watcher.servers.healthCheck.port | default 8090 }}

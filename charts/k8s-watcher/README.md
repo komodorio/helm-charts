@@ -98,6 +98,10 @@ The following table lists the configurable parameters of the chart and their def
 | `image.pullPolicy`                        | Image pull policy                                                        | `Always`                                   |
 | `serviceAccount.create`                   | Creates a service account                                                | `true`                                     |
 | `serviceAccount.name`                     | Optional name for the service account                                    | `{RELEASE_FULLNAME}`                       |
+| `proxy.enabled`                           | Configure proxy for watcher                                              | `true`                                     |
+| `proxy.http`                              | Configure Proxy setting (HTTP_PROXY)                                     | ``                                         |
+| `proxy.https`                             | Configure Proxy setting (HTTPS_PROXY)                                    | ``                                         |
+| `proxy.no_proxy`                          | Configure Proxy setting (NO_PROXY)                                       | ``                                         |
 
 
 
