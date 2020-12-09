@@ -54,9 +54,9 @@ spec:
             - name: https_proxy
               value: {{ .Values.proxy.https }}
 {{- end }}
-{{- if .Values.proxy.no-proxy }}
+{{- if .Values.proxy.no_proxy }}
             - name: no_proxy
-              value: {{ .Values.proxy.no-proxy }}
+              value: {{ .Values.proxy.no_proxy }}
 {{- end }}
 {{- end }}
           ports:

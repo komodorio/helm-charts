@@ -101,7 +101,7 @@ The following table lists the configurable parameters of the chart and their def
 | `proxy.enabled`                           | Configure proxy for watcher                                              | `true`                                     |
 | `proxy.http`                              | Configure Proxy setting (HTTP_PROXY)                                     | ``                                         |
 | `proxy.https`                             | Configure Proxy setting (HTTPS_PROXY)                                    | ``                                         |
-| `proxy.no-proxy`                          | Configure Proxy setting (NO_PROXY)                                       | ``                                         |
+| `proxy.no_proxy`                          | Configure Proxy setting (NO_PROXY)                                       | ``                                         |
 
 
 

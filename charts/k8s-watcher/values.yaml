@@ -17,7 +17,7 @@ proxy:
   enabled: false
   http: ""
   https: ""
-  no-proxy: ""
+  no_proxy: ""
 
 resources:
   limits:
