@@ -97,6 +97,11 @@ The following table lists the configurable parameters of the chart and their def
 | `image.tag`                               | Image tag                                                                | `0.1.10`                                   |
 | `image.pullPolicy`                        | Image pull policy                                                        | `Always`                                   |
 | `serviceAccount.create`                   | Creates a service account                                                | `true`                                     |
+| `proxy.enabled`                           | Configure proxy for watcher                                              | `true`    
+| `proxy.http`                              | Configure Proxy setting http                                             | `http://proxy.com`    
+| `proxy.https`                             | Configure Proxy setting https                                            | `https://proxy.com`    
+| `proxy.no-proxy`                          | Configure Proxy setting no_proxy                                         | `*mycorp.com`    
+|      
 | `serviceAccount.name`                     | Optional name for the service account                                    | `{RELEASE_FULLNAME}`                       |
 
 
