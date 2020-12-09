@@ -13,6 +13,12 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   # name: ""
 
+proxy:
+  enabled: false
+  http: ""
+  https: ""
+  no-proxy: ""
+
 resources:
   limits:
     cpu: 500m
