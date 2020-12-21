@@ -132,10 +132,10 @@ KOMOKW_COLLECT_HISTORY=true
 
 ## Advanced Usage
 
-| Parameter                              | Description                                                              | Default                                    |
-|----------------------------------------|--------------------------------------------------------------------------|--------------------------------------------|
-| `kialiApiKey`                          | Komodor Kiali API Key (required if using kiali)                          | ``                                         |
-| `watcher.sources.kiali.enabled`        | Enables Kiali data collection                                            |`false`                                     |
-| `watcher.sources.kiali.url`            | Kiali URL                                                                | ``                                         |
-| `watcher.sources.kiali.username`       | Kiali Username                                                           | ``                                         |
-| `watcher.sources.kiali.password`       | Kiali Password                                                           | ``                                         |  
+| Parameter                              | Description                                                              | Default                                    | Required |
+|----------------------------------------|--------------------------------------------------------------------------|--------------------------------------------|----------|
+| `kialiApiKey`                          | Komodor Kiali API Key (required if using kiali)                          | ``                                         | required if `wathcer.sources.kiali.enabled` is true         |
+| `watcher.sources.kiali.enabled`        | Enables Kiali data collection                                            |`false`                                     |         |
+| `watcher.sources.kiali.url`            | Kiali URL                                                                | ``                                         | required if `wathcer.sources.kiali.enabled` is true        |
+| `watcher.sources.kiali.username`       | Kiali Username                                                           | ``                                         | false  |
+| `watcher.sources.kiali.password`       | Kiali Password                                                           | ``                                         | false| |
