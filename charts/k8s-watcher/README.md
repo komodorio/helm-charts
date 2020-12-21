@@ -134,7 +134,7 @@ KOMOKW_COLLECT_HISTORY=true
 
 | Parameter                              | Description                                                              | Default                                    | Required |
 |----------------------------------------|--------------------------------------------------------------------------|--------------------------------------------|----------|
-| `kialiApiKey`                          | Komodor Kiali API Key (required if using kiali)                          | ``                                         | required if `wathcer.sources.kiali.enabled` is true         |
+| `kialiApiKey`                          | Komodor Kiali API Key (required if using kiali)                          | ``                                         | required if `watcher.sources.kiali.enabled` is true         |
 | `watcher.sources.kiali.enabled`        | Enables Kiali data collection                                            |`false`                                     |         |
 | `watcher.sources.kiali.url`            | Kiali URL                                                                | ``                                         | required if `wathcer.sources.kiali.enabled` is true        |
 | `watcher.sources.kiali.username`       | Kiali Username                                                           | ``                                         | false  |
