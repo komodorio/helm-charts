@@ -22,7 +22,7 @@ This chart bootstraps a Kubernetes Resources/Event Watcher deployment on a [Kube
 To install the chart with the release name `k8s-watcher`:
 
 ```bash
-helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey="YOUR_API_KEY_HERE"
+helm upgrade --install k8s-watcher komodorio/k8s-watcher --create-namespace --set apiKey="YOUR_API_KEY_HERE"
 ```
 
 The command deploys the Komodor K8S-Watcher on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
