@@ -1,4 +1,4 @@
-{{- if hasKey .Values "namespace" }}
+{{- if hasKey .Values "komodor_namespace" }}
 apiVersion: v1
 kind: Namespace
 metadata:
