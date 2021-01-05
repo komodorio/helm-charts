@@ -24,7 +24,7 @@ echo "HELM_CHARTS_SOURCE=$HELM_CHARTS_SOURCE"
 echo "BUILDKITE_BRANCH=$BUILDKITE_BRANCH"
 
 echo ">> Checking out $GITHUB_PAGES_BRANCH branch from $GITHUB_PAGES_REPO"
-cd /tmp/helm/publish
+mkdir -p /tmp/helm/publish && cd /tmp/helm/publish
 mkdir -p "$HOME/.ssh"
 ssh-keyscan -H github.com >> "$HOME/.ssh/known_hosts"
 git clone -b "$GITHUB_PAGES_BRANCH" "git@github.com:$GITHUB_PAGES_REPO.git" .
