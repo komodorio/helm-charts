@@ -13,7 +13,7 @@ WORKING_DIRECTORY="$PWD"
   echo "ERROR: Could not find Helm charts in $HELM_CHARTS_SOURCE"
   exit 1
 }
-[ "$CURRENT_BRANCH" ] || {
+[ "$BUILDKITE_BRANCH" ] || {
   echo "ERROR: Environment variable CURRENT_BRANCH is required"
   exit 1
 }
@@ -21,7 +21,7 @@ WORKING_DIRECTORY="$PWD"
 echo "GITHUB_PAGES_REPO=$GITHUB_PAGES_REPO"
 echo "GITHUB_PAGES_BRANCH=$GITHUB_PAGES_BRANCH"
 echo "HELM_CHARTS_SOURCE=$HELM_CHARTS_SOURCE"
-echo "CURRENT_BRANCH=$BRANCH"
+echo "CURRENT_BRANCH=$BUILDKITE_BRANCH"
 
 echo ">> Checking out $GITHUB_PAGES_BRANCH branch from $GITHUB_PAGES_REPO"
 cd /tmp/helm/publish
