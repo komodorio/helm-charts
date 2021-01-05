@@ -21,7 +21,7 @@ WORKING_DIRECTORY="$PWD"
 echo "GITHUB_PAGES_REPO=$GITHUB_PAGES_REPO"
 echo "GITHUB_PAGES_BRANCH=$GITHUB_PAGES_BRANCH"
 echo "HELM_CHARTS_SOURCE=$HELM_CHARTS_SOURCE"
-echo "CURRENT_BRANCH=$BUILDKITE_BRANCH"
+echo "BUILDKITE_BRANCH=$BUILDKITE_BRANCH"
 
 echo ">> Checking out $GITHUB_PAGES_BRANCH branch from $GITHUB_PAGES_REPO"
 cd /tmp/helm/publish
@@ -50,7 +50,7 @@ done
 echo '>>> helm repo index'
 helm repo index .
 
-if [ "$CURRENT_BRANCH" != "master" ]; then
+if [ "$BUILDKITE_BRANCH" != "master" ]; then
   echo "Current branch is not master and do not publish"
   exit 0
 fi
