@@ -4,10 +4,10 @@ metadata:
   name: k8s-watcher
   namespace: komodor
   labels:
-    helm.sh/chart: k8s-watcher-0.1.16
+    helm.sh/chart: k8s-watcher-0.1.26
     app.kubernetes.io/name: k8s-watcher
     app.kubernetes.io/instance: k8s-watcher
-    app.kubernetes.io/version: "0.1.9"
+    app.kubernetes.io/version: "0.1.16"
     app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
@@ -18,7 +18,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 714e3aa05eb07176ca6bf57ba06dd0bbbecc906e9db659d20bb1a5222c8bdd94
+        checksum/config: 055e618b5372cb4b7b9bcb80d2ff6dfa3f903da2fe9a5f69bc0b9ddb9ca53fe4
       labels:
         app.kubernetes.io/name: k8s-watcher
         app.kubernetes.io/instance: k8s-watcher
@@ -26,7 +26,7 @@ spec:
       serviceAccountName: k8s-watcher
       containers:
         - name: k8s-watcher
-          image: "komodorio/k8s-watcher:0.1.10"
+          image: "komodorio/k8s-watcher:0.1.16"
           imagePullPolicy: IfNotPresent
           resources:
             limits:

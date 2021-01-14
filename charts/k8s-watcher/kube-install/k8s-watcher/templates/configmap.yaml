@@ -6,12 +6,12 @@ metadata:
 data:
   komodor-k8s-watcher.yaml: |
     collectHistory: true
-    redact: []
     nameBlacklist:
     - leader
     - election
     namespacesBlacklist:
     - kube-system
+    redact: []
     resources:
       clusterRole: true
       configMap: true
