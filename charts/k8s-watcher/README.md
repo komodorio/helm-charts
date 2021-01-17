@@ -61,7 +61,7 @@ The following table lists the configurable parameters of the chart and their def
 | Parameter                                 | Description                                                              | Default                                    |
 |-------------------------------------------|--------------------------------------------------------------------------|--------------------------------------------|
 | `apiKey`                                  | Komodor kubernetes api key (required)                                    | ``                                         |
-| `watcher.redact`                                  | List of ConfigMap keys to not send as clear text, this will show up at Komodor as "REDACTED:<SHA of config value>" | `[]`
+| `watcher.redact`                                  | List of regular expressions. Config values for keys that matches one of these expressions will show up at Komodor as "REDACTED:\<SHA of config value\>" | `[]`
 | `watcher.clusterName`                     | Override auto-discovery of Cluster Name with one of your choosing        | ``                                         |
 | `watcher.watchNamespace`                  | Watch a specific namespace, or all namespaces ("", "all")                | `all`                                      |
 | `watcher.namespacesBlacklist`             | Blacklist specific namespaces (list)                                     | `[kube-system]`                            |
