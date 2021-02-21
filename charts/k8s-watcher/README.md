@@ -5,12 +5,18 @@
 ```bash
 helm repo add komodorio https://helm-charts.komodor.io
 helm repo update
-helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey="YOUR_API_KEY_HERE" --set watcher.clusterName="CLUSTER_NAME"
+helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=YOUR_API_KEY_HERE --set watcher.clusterName=CLUSTER_NAME
 ```
 
 ## Introduction
 
 This chart bootstraps a Kubernetes Resources/Event Watcher deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+
+### Supported architectures
+- [x] linux/amd64
+- [x] linux/arm64 (v8) - starting from agent version 0.1.28
+
+The default is `linux/amd64`. If you wish to install the chart for `linux/arm64` all you need to do is set the image tag and append `-arm`. For example: `--set image.tag=0.1.28-arm`
 
 ## Prerequisites
 
@@ -22,7 +28,7 @@ This chart bootstraps a Kubernetes Resources/Event Watcher deployment on a [Kube
 To install the chart with the release name `k8s-watcher`:
 
 ```bash
-helm upgrade --install k8s-watcher komodorio/k8s-watcher --create-namespace --set apiKey="YOUR_API_KEY_HERE"
+helm upgrade --install k8s-watcher komodorio/k8s-watcher --create-namespace --set apiKey=YOUR_API_KEY_HERE --set watcher.clusterName=CLUSTER_NAME
 ```
 
 The command deploys the Komodor K8S-Watcher on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
