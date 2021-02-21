@@ -14,7 +14,7 @@ This chart bootstraps a Kubernetes Resources/Event Watcher deployment on a [Kube
 
 ### Supported architectures
 - [x] linux/amd64
-- [x] linux/arm64 (v8) - starting from agent version 0.1.28
+- [x] linux/arm64 (v8) - starting from agent version 0.1.29
 
 The default is `linux/amd64`. If you wish to install the chart for `linux/arm64` all you need to do is set image.arm flag. For example: `--set image.arm=true`
 
