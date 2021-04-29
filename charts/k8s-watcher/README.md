@@ -95,10 +95,10 @@ The following table lists the configurable parameters of the chart and their def
 | `watcher.resources.configMap`             | Enables watching ConfigMaps                                              | `true`                                     |
 | `watcher.resources.ingress`               | Enables watching Ingresses                                               | `true`                                     |
 | `watcher.servers.healthCheck.port`        | Port of the health check server                                          | `8090`                                     |
-| `resources.requests.cpu`                  | CPU resource requests                                                    | `100m`                                     |
-| `resources.limits.cpu`                    | CPU resource limits                                                      | `500m`                                     |
-| `resources.requests.memory`               | Memory resource requests                                                 | `128Mi`                                    |
-| `resources.limits.memory`                 | Memory resource limits                                                   | `1024Mi`                                   |
+| `resources.requests.cpu`                  | CPU resource requests                                                    | `0.25`                                     |
+| `resources.limits.cpu`                    | CPU resource limits                                                      | `1`                                     |
+| `resources.requests.memory`               | Memory resource requests                                                 | `256Mi`                                    |
+| `resources.limits.memory`                 | Memory resource limits                                                   | `4096Mi`                                   |
 | `image.repository`                        | Image registry/name                                                      | `docker.io/komodorio/k8s-watcher`          |
 | `image.tag`                               | Image tag                                                                | `0.1.10`                                   |
 | `image.pullPolicy`                        | Image pull policy                                                        | `Always`                                   |
