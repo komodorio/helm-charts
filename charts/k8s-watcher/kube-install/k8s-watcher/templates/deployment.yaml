@@ -4,7 +4,7 @@ metadata:
   name: k8s-watcher
   namespace: komodor
   labels:
-    helm.sh/chart: k8s-watcher-0.1.38
+    helm.sh/chart: k8s-watcher-0.1.39
     app.kubernetes.io/name: k8s-watcher
     app.kubernetes.io/instance: k8s-watcher
     app.kubernetes.io/version: "0.1.33"
@@ -30,11 +30,11 @@ spec:
           imagePullPolicy: IfNotPresent
           resources:
             limits:
-              cpu: 500m
-              memory: 1024Mi
+              cpu: 1
+              memory: 4Gi
             requests:
-              cpu: 100m
-              memory: 128Mi
+              cpu: 0.25
+              memory: 256Mi
           volumeMounts:
             - name: configuration
               mountPath: /etc/komodor
