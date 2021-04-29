@@ -22,11 +22,11 @@ proxy:
 
 resources:
   limits:
-    cpu: 500m
-    memory: 1024Mi
+    cpu: 1
+    memory: 4Gi
   requests:
-    cpu: 100m
-    memory: 128Mi
+    cpu: 0.25
+    memory: 256Mi
 
 apiKey: ""
 kialiApiKey: ""
