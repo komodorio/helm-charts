@@ -35,6 +35,10 @@ The command deploys the Komodor K8S-Watcher on the Kubernetes cluster in the def
 
 > **Tip**: List all releases using `helm list`
 
+## Api Key
+
+The Komodor kubernetes api key can provided in the helm upgrade command or `values.yaml` file or can be taken from an existing kubernetes secret resource.
+When using an existing kubernetes secret resource, specify the secret name in `existingSecret` and store the api key under the name 'apiKey'.
 
 ## Uninstalling the Chart
 
@@ -66,7 +70,8 @@ The following table lists the configurable parameters of the chart and their def
 
 | Parameter                                 | Description                                                              | Default                                    |
 |-------------------------------------------|--------------------------------------------------------------------------|--------------------------------------------|
-| `apiKey`                                  | Komodor kubernetes api key (required)                                    | ``                                         |
+| `apiKey`                                  | Komodor kubernetes api key (required if `existingSecret` not specified)                                    | ``                                         |
+| `existingSecret`                          | Existing kubernetes secret resource containing Komodor kubernetes apiKey (required if `apiKey` not specified)                                    | ``                                         |
 | `watcher.redact`                                  | List of regular expressions. Config values for keys that matches one of these expressions will show up at Komodor as "REDACTED:\<SHA of config value\>" | `[]`
 | `watcher.clusterName`                     | Override auto-discovery of Cluster Name with one of your choosing        | ``                                         |
 | `watcher.watchNamespace`                  | Watch a specific namespace, or all namespaces ("", "all")                | `all`                                      |
