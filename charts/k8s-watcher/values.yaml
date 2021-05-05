@@ -28,6 +28,8 @@ resources:
     cpu: 0.25
     memory: 256Mi
 
+existingSecret: ""
+
 apiKey: ""
 kialiApiKey: ""
 
