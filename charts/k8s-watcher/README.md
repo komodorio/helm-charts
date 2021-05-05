@@ -38,7 +38,7 @@ The command deploys the Komodor K8S-Watcher on the Kubernetes cluster in the def
 ## Api Key
 
 The Komodor kubernetes api key can provided in the helm upgrade command or `values.yaml` file or can be taken from an existing kubernetes secret resource.
-When using an existing kubernetes secret resource, specify the secret name in `existingSecret` (and `kialiExistingSecret` is using Kiali) and store the api key under the name 'apiKey' (or 'kialiApiKey' if using Kiali).
+When using an existing kubernetes secret resource, specify the secret name in `existingSecret` (and `kialiExistingSecret` is using Kiali) and store the api key under the name 'apiKey' (or 'kialiApiKey' for the `kialiExistingSecret`).
 
 ## Uninstalling the Chart
 
