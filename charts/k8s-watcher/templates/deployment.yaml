@@ -43,12 +43,16 @@ spec:
                   name: {{ include "k8s-watcher.name" . }}-secret
                   key: apiKey
 {{- end }}
-{{- if .Values.kialiApiKey }}
+{{- if or .Values.kialiApiKey .Values.kialiExistingSecret }}
             - name: KOMOKW_KIALI_API_KEY
               valueFrom:
-                secretKeyRef:
+{{- if .Values.kialiExistingSecret }}
+                  name: {{ .Values.kialiExistingSecret | required "Existing secret name required!" }}
+                  key: kialiApiKey
+{{- else }}
                   name: {{ include "k8s-watcher.name" . }}-secret
                   key: kialiApiKey
+{{- end }}
 {{- end }}
 {{- include "k8s-watcher.proxy-conf" . }}
           ports:
