@@ -32,6 +32,8 @@ spec:
           volumeMounts:
             - name: configuration
               mountPath: /etc/komodor
+            - name: podinfo
+              mountPath: /etc/podinfo
           env:
             - name: KOMOKW_API_KEY
               valueFrom:
@@ -81,3 +83,11 @@ spec:
             items:
               - key: komodor-k8s-watcher.yaml
                 path: komodor-k8s-watcher.yaml
+        - name: podinfo
+          downwardAPI:
+            items:
+              - path: "mem_limit"
+                resourceFieldRef:
+                  containerName: {{ .Chart.Name }}
+                  resource: limits.memory
+                  divisor: 1Mi
