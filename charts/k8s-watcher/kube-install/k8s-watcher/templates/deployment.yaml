@@ -4,10 +4,10 @@ metadata:
   name: k8s-watcher
   namespace: komodor
   labels:
-    helm.sh/chart: k8s-watcher-0.1.41
+    helm.sh/chart: k8s-watcher-0.1.42
     app.kubernetes.io/name: k8s-watcher
     app.kubernetes.io/instance: k8s-watcher
-    app.kubernetes.io/version: "0.1.34"
+    app.kubernetes.io/version: "0.1.35"
     app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
@@ -26,7 +26,7 @@ spec:
       serviceAccountName: k8s-watcher
       containers:
         - name: k8s-watcher
-          image: "komodorio/k8s-watcher:0.1.34"
+          image: "komodorio/k8s-watcher:0.1.35"
           imagePullPolicy: IfNotPresent
           resources:
             limits:
@@ -38,6 +38,8 @@ spec:
           volumeMounts:
             - name: configuration
               mountPath: /etc/komodor
+            - name: podinfo
+              mountPath: /etc/podinfo
           env:
             - name: KOMOKW_API_KEY
               valueFrom:
@@ -70,3 +72,11 @@ spec:
             items:
               - key: komodor-k8s-watcher.yaml
                 path: komodor-k8s-watcher.yaml
+        - name: podinfo
+          downwardAPI:
+            items:
+              - path: "mem_limit"
+                resourceFieldRef:
+                  containerName: k8s-watcher
+                  resource: limits.memory
+                  divisor: 1Mi
