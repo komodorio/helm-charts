@@ -13,7 +13,6 @@ rules:
     - events
     - pods
     - replicationcontrollers
-    - secrets
     - services
     - namespaces
     - configmaps
@@ -21,6 +20,9 @@ rules:
     - persistentvolumes
     - persistentvolumeclaims
     - serviceaccounts
+{{- if .Values.resources.secret }}
+    - secrets
+{{- end }}
     verbs:
     - get
     - watch
