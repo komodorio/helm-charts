@@ -16,7 +16,6 @@ rules:
     - nodes
     - persistentvolumes
     - persistentvolumeclaims
-    - serviceaccounts
     verbs:
     - get
     - watch
