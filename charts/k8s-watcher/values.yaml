@@ -7,6 +7,11 @@ image:
 
 namespace: komodor
 
+# enableMemLimitChecks will use downward API to tell the pod what is the allocated memory
+# when the allocated memory is almost full the agent will stop receiving new events
+# the process resumes once there is free memory to use
+enableMemLimitChecks: true
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
