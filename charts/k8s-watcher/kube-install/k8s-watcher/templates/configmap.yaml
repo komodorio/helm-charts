@@ -17,7 +17,7 @@ data:
       configMap: true
       daemonSet: true
       deployment: true
-      event: true
+      event: false
       ingress: true
       job: true
       namespace: true
