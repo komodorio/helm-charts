@@ -49,7 +49,7 @@ watcher:
   nameBlacklist: []
   redact: []
   resources:
-      event: true
+      event: false
       deployment: true
       replicationController: true
       replicaSet: true
