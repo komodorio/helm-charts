@@ -67,3 +67,6 @@ watcher:
       secret: false
       configMap: true
       ingress: true
+  controller:
+    resync:
+      prediod: "0"

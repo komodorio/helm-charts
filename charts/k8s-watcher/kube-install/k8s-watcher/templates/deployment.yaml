@@ -4,7 +4,7 @@ metadata:
   name: k8s-watcher
   namespace: komodor
   labels:
-    helm.sh/chart: k8s-watcher-0.1.45
+    helm.sh/chart: k8s-watcher-0.1.46
     app.kubernetes.io/name: k8s-watcher
     app.kubernetes.io/instance: k8s-watcher
     app.kubernetes.io/version: "0.1.35"
@@ -18,7 +18,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: cc1bcad24de60c9e35f784966ba43e2215a49c30d463a3a8496ca54e7ed35f46
+        checksum/config: 1cf9022a9e72822a841728125e8dacf71e8af23d0946bec2526edf769ed54b18
       labels:
         app.kubernetes.io/name: k8s-watcher
         app.kubernetes.io/instance: k8s-watcher
