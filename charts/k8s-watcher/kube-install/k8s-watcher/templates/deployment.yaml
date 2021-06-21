@@ -7,7 +7,7 @@ metadata:
     helm.sh/chart: k8s-watcher-0.1.46
     app.kubernetes.io/name: k8s-watcher
     app.kubernetes.io/instance: k8s-watcher
-    app.kubernetes.io/version: "0.1.35"
+    app.kubernetes.io/version: "0.1.37"
     app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
@@ -26,7 +26,7 @@ spec:
       serviceAccountName: k8s-watcher
       containers:
         - name: k8s-watcher
-          image: "komodorio/k8s-watcher:0.1.35"
+          image: "komodorio/k8s-watcher:0.1.37"
           imagePullPolicy: IfNotPresent
           resources:
             limits:
