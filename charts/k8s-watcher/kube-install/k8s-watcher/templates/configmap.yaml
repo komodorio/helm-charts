@@ -8,7 +8,7 @@ data:
     collectHistory: true
     controller:
       resync:
-        prediod: "0"
+        period: "0"
     nameBlacklist:
     - leader
     - election

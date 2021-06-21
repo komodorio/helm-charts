@@ -69,4 +69,4 @@ watcher:
       ingress: true
   controller:
     resync:
-      prediod: "0"
+      period: "0"
