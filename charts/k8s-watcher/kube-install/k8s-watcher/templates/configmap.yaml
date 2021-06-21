@@ -6,6 +6,9 @@ metadata:
 data:
   komodor-k8s-watcher.yaml: |
     collectHistory: true
+    controller:
+      resync:
+        prediod: "0"
     nameBlacklist:
     - leader
     - election
