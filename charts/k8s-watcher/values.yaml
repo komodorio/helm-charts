@@ -36,7 +36,6 @@ resources:
 existingSecret: ""
 
 apiKey: ""
-kialiApiKey: ""
 
 watcher:
   # clusterName: ""
