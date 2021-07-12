@@ -7,7 +7,6 @@ rules:
   - apiGroups:
     - ""
     resources:
-    - events
     - pods
     - replicationcontrollers
     - services
@@ -16,6 +15,7 @@ rules:
     - nodes
     - persistentvolumes
     - persistentvolumeclaims
+    - serviceaccounts
     verbs:
     - get
     - watch
@@ -29,7 +29,7 @@ rules:
     - get
     - watch
     - list
-  - apiGroups:
+  - apiGroups: # Required as minimum installation
     - apps
     resources:
     - deployments

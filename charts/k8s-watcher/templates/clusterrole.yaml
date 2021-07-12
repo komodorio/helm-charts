@@ -10,17 +10,37 @@ rules:
   - apiGroups:
     - ""
     resources:
+{{- if .Values.watcher.resources.event }}
     - events
+{{- end }}
+{{- if .Values.watcher.resources.pod }}
     - pods
+{{- end }}
+{{- if .Values.watcher.resources.replicationController }}
     - replicationcontrollers
+{{- end }}
+{{- if .Values.watcher.resources.service }}
     - services
+{{- end }}
+{{- if .Values.watcher.resources.namespace }}
     - namespaces
+{{- end }}
+{{- if .Values.watcher.resources.configMap }}
     - configmaps
+{{- end }}
+{{- if .Values.watcher.resources.node }}
     - nodes
+{{- end }}
+{{- if .Values.watcher.resources.persistentVolume }}
     - persistentvolumes
+{{- end }}
+{{- if .Values.watcher.resources.persistentVolumeClaim }}
     - persistentvolumeclaims
+{{- end }}
+{{- if .Values.watcher.resources.serviceAccount }}
     - serviceaccounts
-{{- if .Values.resources.secret }}
+{{- end }}
+{{- if .Values.watcher.resources.secret }}
     - secrets
 {{- end }}
     verbs:
@@ -36,7 +56,7 @@ rules:
     - get
     - watch
     - list
-  - apiGroups:
+  - apiGroups: # Required as minimum installation
     - apps
     resources:
     - deployments
@@ -47,6 +67,7 @@ rules:
     - get
     - watch
     - list
+{{- if .Values.watcher.resources.job }}
   - apiGroups:
     - batch
     resources:
@@ -55,6 +76,8 @@ rules:
     - get
     - watch
     - list
+{{- end }}
+{{- if .Values.watcher.resources.ingress }}
   - apiGroups:
     - extensions
     resources:
@@ -63,6 +86,7 @@ rules:
     - get
     - watch
     - list
+{{- end }}
         
 ---
 apiVersion: rbac.authorization.k8s.io/v1
