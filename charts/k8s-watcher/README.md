@@ -38,7 +38,7 @@ The command deploys the Komodor K8S-Watcher on the Kubernetes cluster in the def
 ## Api Key
 
 The Komodor kubernetes api key can provided in the helm upgrade command or `values.yaml` file or can be taken from an existing kubernetes secret resource.
-When using an existing kubernetes secret resource, specify the secret name in `existingSecret` (and `kialiExistingSecret` is using Kiali) and store the api key under the name 'apiKey' (or 'kialiApiKey' for the `kialiExistingSecret`).
+When using an existing kubernetes secret resource, specify the secret name in `existingSecret` and store the api key under the name 'apiKey'.
 
 ## Uninstalling the Chart
 
@@ -72,7 +72,6 @@ The following table lists the configurable parameters of the chart and their def
 |-------------------------------------------|--------------------------------------------------------------------------|--------------------------------------------|
 | `apiKey`                                  | Komodor kubernetes api key (required if `existingSecret` not specified)                                    | ``                                         |
 | `existingSecret`                          | Existing kubernetes secret resource containing Komodor kubernetes apiKey (required if `apiKey` not specified)                                    | ``                                         |
-| `kialiExistingSecret`                          | Existing kubernetes secret resource containing Komodor kiali kialiApiKey (required if `kialiApiKey` not specified)                                    | ``                                         |
 | `watcher.redact`                                  | List of regular expressions. Config values for keys that matches one of these expressions will show up at Komodor as "REDACTED:\<SHA of config value\>" | `[]`
 | `watcher.clusterName`                     | Override auto-discovery of Cluster Name with one of your choosing        | ``                                         |
 | `watcher.watchNamespace`                  | Watch a specific namespace, or all namespaces ("", "all")                | `all`                                      |
@@ -82,7 +81,7 @@ The following table lists the configurable parameters of the chart and their def
 | `watcher.sinks.webhook.enabled`           | Enables a Webhook output                                                 | `true`                                     |
 | `watcher.sinks.webhook.url`               | URL to send webhooks to                                                  | `https://app.komodor.io/k8s-events/event/` |
 | `watcher.sinks.webhook.headers`           | Headers to attach to the webhooks                                        | `{}`                                       |
-| `watcher.resources.event`                 | Enables watching Event                                                   | `true`                                     |
+| `watcher.resources.event`                 | Enables watching Event                                                   | `false`                                    |
 | `watcher.resources.deployment`            | Enables watching Deployments                                             | `true`                                     |
 | `watcher.resources.replicationController` | Enables watching ReplicationControllers                                  | `true`                                     |
 | `watcher.resources.replicaSet`            | Enables watching ReplicaSets                                             | `true`                                     |
@@ -115,6 +114,7 @@ The following table lists the configurable parameters of the chart and their def
 | `proxy.http`                              | Configure Proxy setting (HTTP_PROXY)                                     | ``                                         |
 | `proxy.https`                             | Configure Proxy setting (HTTPS_PROXY)                                    | ``                                         |
 | `proxy.no_proxy`                          | Configure Proxy setting (NO_PROXY)                                       | ``                                         |
+| `controller.resync.period`                | Resync period (in minutes, minimum 5) to resync the state of selected controllers (deployment, daemonset, statefulset)   | `"0"`                                      |
 
 
 
@@ -142,13 +142,3 @@ KOMOKW_COLLECT_HISTORY=true
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
-
-## Advanced Usage
-
-| Parameter                              | Description                                                              | Default                                    | Required |
-|----------------------------------------|--------------------------------------------------------------------------|--------------------------------------------|----------|
-| `kialiApiKey`                          | Komodor Kiali API Key (required if using kiali)                          | ``                                         | required if `watcher.sources.kiali.enabled` is true         |
-| `watcher.sources.kiali.enabled`        | Enables Kiali data collection                                            |`false`                                     |         |
-| `watcher.sources.kiali.url`            | Kiali URL                                                                | ``                                         | required if `watcher.sources.kiali.enabled` is true        |
-| `watcher.sources.kiali.username`       | Kiali Username                                                           | ``                                         | false  |
-| `watcher.sources.kiali.password`       | Kiali Password                                                           | ``                                         | false| |

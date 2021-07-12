@@ -7,6 +7,11 @@ image:
 
 namespace: komodor
 
+# enableMemLimitChecks will use downward API to tell the pod what is the allocated memory
+# when the allocated memory is almost full the agent will stop receiving new events
+# the process resumes once there is free memory to use
+enableMemLimitChecks: true
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -31,7 +36,6 @@ resources:
 existingSecret: ""
 
 apiKey: ""
-kialiApiKey: ""
 
 watcher:
   # clusterName: ""
@@ -44,7 +48,7 @@ watcher:
   nameBlacklist: []
   redact: []
   resources:
-      event: true
+      event: false
       deployment: true
       replicationController: true
       replicaSet: true
@@ -62,3 +66,6 @@ watcher:
       secret: false
       configMap: true
       ingress: true
+  controller:
+    resync:
+      period: "0"

@@ -32,8 +32,10 @@ spec:
           volumeMounts:
             - name: configuration
               mountPath: /etc/komodor
+{{- if .Values.enableMemLimitChecks }}
             - name: podinfo
               mountPath: /etc/podinfo
+{{- end }}
           env:
             - name: KOMOKW_API_KEY
               valueFrom:
@@ -44,17 +46,6 @@ spec:
 {{- else }}
                   name: {{ include "k8s-watcher.name" . }}-secret
                   key: apiKey
-{{- end }}
-{{- if or .Values.kialiApiKey .Values.kialiExistingSecret }}
-            - name: KOMOKW_KIALI_API_KEY
-              valueFrom:
-{{- if .Values.kialiExistingSecret }}
-                  name: {{ .Values.kialiExistingSecret | required "Existing secret name required!" }}
-                  key: kialiApiKey
-{{- else }}
-                  name: {{ include "k8s-watcher.name" . }}-secret
-                  key: kialiApiKey
-{{- end }}
 {{- end }}
 {{- include "k8s-watcher.proxy-conf" . }}
           ports:
@@ -83,6 +74,7 @@ spec:
             items:
               - key: komodor-k8s-watcher.yaml
                 path: komodor-k8s-watcher.yaml
+{{- if .Values.enableMemLimitChecks }}
         - name: podinfo
           downwardAPI:
             items:
@@ -91,3 +83,4 @@ spec:
                   containerName: {{ .Chart.Name }}
                   resource: limits.memory
                   divisor: 1Mi
+{{- end }}

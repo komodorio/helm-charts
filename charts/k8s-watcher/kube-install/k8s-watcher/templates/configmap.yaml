@@ -6,6 +6,9 @@ metadata:
 data:
   komodor-k8s-watcher.yaml: |
     collectHistory: true
+    controller:
+      resync:
+        period: "0"
     nameBlacklist:
     - leader
     - election
@@ -17,7 +20,7 @@ data:
       configMap: true
       daemonSet: true
       deployment: true
-      event: true
+      event: false
       ingress: true
       job: true
       namespace: true
