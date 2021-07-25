@@ -38,6 +38,7 @@ existingSecret: ""
 apiKey: ""
 
 watcher:
+  enableAgentTaskExecution: false
   # clusterName: ""
   servers:
     healthCheck: {}

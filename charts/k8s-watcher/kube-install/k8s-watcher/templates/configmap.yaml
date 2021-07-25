@@ -9,6 +9,7 @@ data:
     controller:
       resync:
         period: "0"
+    enableAgentTaskExecution: false
     nameBlacklist:
     - leader
     - election
