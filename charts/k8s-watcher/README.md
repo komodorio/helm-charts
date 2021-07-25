@@ -114,7 +114,8 @@ The following table lists the configurable parameters of the chart and their def
 | `proxy.http`                              | Configure Proxy setting (HTTP_PROXY)                                     | ``                                         |
 | `proxy.https`                             | Configure Proxy setting (HTTPS_PROXY)                                    | ``                                         |
 | `proxy.no_proxy`                          | Configure Proxy setting (NO_PROXY)                                       | ``                                         |
-| `controller.resync.period`                | Resync period (in minutes, minimum 5) to resync the state of selected controllers (deployment, daemonset, statefulset)   | `"0"`                                      |
+| `watcher.controller.resync.period`                | Resync period (in minutes, minimum 5) to resync the state of selected controllers (deployment, daemonset, statefulset)   | `"0"`                                      |
+| `watcher.enableAgentTaskExecution`        | Enable to the agent to execute tasks in the cluster such as log streaming | `false` |
 
 
 

@@ -87,6 +87,16 @@ rules:
     - watch
     - list
 {{- end }}
+{{- if .Values.watcher.enableAgentTaskExecution }}
+  - apiGroups:
+    - ""
+    resources:
+    - pods
+    - pods/log
+    verbs:
+    - "get"
+    - "list"
+{{- end }}
         
 ---
 apiVersion: rbac.authorization.k8s.io/v1
