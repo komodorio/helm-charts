@@ -15,3 +15,7 @@ generate-kube:
 	cat generated.yaml | ./helm-fan-out.sh kube-install
 	rm generated.yaml
 	sed -i "s/WU9VUl9BUElLRVlfQVNfQkFTRV82NA==/YOUR_APIKEY_AS_BASE_64/g" kube-install/k8s-watcher/templates/secret-credentials.yaml
+
+# for MacOS
+docker-generate-kube:
+	docker run -v $(PWD):/app --workdir /app --entrypoint sh  -it alpine/helm "-c" "apk add bash make && make generate-kube"
