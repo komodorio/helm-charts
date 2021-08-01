@@ -2,8 +2,18 @@ apiVersion: v1
 entries:
   k8s-watcher:
   - apiVersion: v1
+    appVersion: 0.1.43
+    created: "2021-08-01T08:48:26.656800003Z"
+    description: Watches and send kubernetes resource-related events
+    digest: 2626b760a2e27e9cd4d9ba9e6ded2cd79bab264a3d306f19c00471cd9d5f401d
+    icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
+    name: k8s-watcher
+    urls:
+    - k8s-watcher/k8s-watcher-0.1.57.tgz
+    version: 0.1.57
+  - apiVersion: v1
     appVersion: 0.1.42
-    created: "2021-07-28T11:19:28.662587026Z"
+    created: "2021-08-01T08:48:26.656210484Z"
     description: Watches and send kubernetes resource-related events
     digest: 3037fd950235e83b87d441af93791c00047bec507f608ff8618479bf5784c33e
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -13,7 +23,7 @@ entries:
     version: 0.1.56
   - apiVersion: v1
     appVersion: 0.1.42
-    created: "2021-07-28T11:19:28.662016007Z"
+    created: "2021-08-01T08:48:26.570673868Z"
     description: Watches and send kubernetes resource-related events
     digest: e69b873d6a4ec4efe26e43e4f9c528941201a97b55ff1f53c36b47cc88605466
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -23,7 +33,7 @@ entries:
     version: 0.1.55
   - apiVersion: v1
     appVersion: 0.1.41
-    created: "2021-07-28T11:19:28.661394667Z"
+    created: "2021-08-01T08:48:26.568720737Z"
     description: Watches and send kubernetes resource-related events
     digest: 777748ace261eebc15c5a6bba688acc31179ace7ef5da928aec0c6a1c7f5b02a
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -33,7 +43,7 @@ entries:
     version: 0.1.54
   - apiVersion: v1
     appVersion: 0.1.40
-    created: "2021-07-28T11:19:28.660804889Z"
+    created: "2021-08-01T08:48:26.568123098Z"
     description: Watches and send kubernetes resource-related events
     digest: ac1b008998367169b87c55944971f2ec7fe75c17e6488ea0ad482eba91c4708b
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -43,7 +53,7 @@ entries:
     version: 0.1.53
   - apiVersion: v1
     appVersion: 0.1.39
-    created: "2021-07-28T11:19:28.660224589Z"
+    created: "2021-08-01T08:48:26.567506769Z"
     description: Watches and send kubernetes resource-related events
     digest: fb11bc60f58b343ea0f8ab823d98b43adda6bf16c94d306c855b927804d26611
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -53,7 +63,7 @@ entries:
     version: 0.1.52
   - apiVersion: v1
     appVersion: 0.1.38
-    created: "2021-07-28T11:19:28.659607139Z"
+    created: "2021-08-01T08:48:26.566907479Z"
     description: Watches and send kubernetes resource-related events
     digest: d44de79f129353f5ed45eab74157e668d5c94b2d0ae93e38f3ec0cb41bb2f9d0
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -63,7 +73,7 @@ entries:
     version: 0.1.51
   - apiVersion: v1
     appVersion: 0.1.37
-    created: "2021-07-28T11:19:28.658921439Z"
+    created: "2021-08-01T08:48:26.56632866Z"
     description: Watches and send kubernetes resource-related events
     digest: a754a74a764256e31a6fc6efe64dee7b4deee03dfc5e36e4f19644f86c013de2
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -73,7 +83,7 @@ entries:
     version: 0.1.50
   - apiVersion: v1
     appVersion: 0.1.37
-    created: "2021-07-28T11:19:28.657651559Z"
+    created: "2021-08-01T08:48:26.565098851Z"
     description: Watches and send kubernetes resource-related events
     digest: 8642a0a5354b885d53cfb4e5ecbb4f20f6d7a213956c04cabddfc06e1f5563d3
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -83,7 +93,7 @@ entries:
     version: 0.1.49
   - apiVersion: v1
     appVersion: 0.1.37
-    created: "2021-07-28T11:19:28.65704693Z"
+    created: "2021-08-01T08:48:26.564556532Z"
     description: Watches and send kubernetes resource-related events
     digest: 15bf56c261f18e284480cf7247e273ef453476d738ab59f4c837ab5aee5c88b3
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -93,7 +103,7 @@ entries:
     version: 0.1.48
   - apiVersion: v1
     appVersion: 0.1.37
-    created: "2021-07-28T11:19:28.65642959Z"
+    created: "2021-08-01T08:48:26.563972763Z"
     description: Watches and send kubernetes resource-related events
     digest: 70b332a50ddc0306735b5005fc68c1560ad92f075fac8bfe6822a468a58fca81
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -103,7 +113,7 @@ entries:
     version: 0.1.46
   - apiVersion: v1
     appVersion: 0.1.35
-    created: "2021-07-28T11:19:28.6557834Z"
+    created: "2021-08-01T08:48:26.563384204Z"
     description: Watches and send kubernetes resource-related events
     digest: 7b624596557a3466597d97dd829580075576a08a602ed5ecff790c928955e210
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -113,7 +123,7 @@ entries:
     version: 0.1.45
   - apiVersion: v1
     appVersion: 0.1.35
-    created: "2021-07-28T11:19:28.570384099Z"
+    created: "2021-08-01T08:48:26.562730134Z"
     description: Watches and send kubernetes resource-related events
     digest: 061ac14d8b972cf0c4afec11e6ef96b10e1bdb473f3d0465e5f39de8e553c6a6
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -123,7 +133,7 @@ entries:
     version: 0.1.43
   - apiVersion: v1
     appVersion: 0.1.35
-    created: "2021-07-28T11:19:28.569620107Z"
+    created: "2021-08-01T08:48:26.562184515Z"
     description: Watches and send kubernetes resource-related events
     digest: 67330173887494b146db8d58f6412c19004c501f5972684a3b22addfc5459e40
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -133,7 +143,7 @@ entries:
     version: 0.1.42
   - apiVersion: v1
     appVersion: 0.1.34
-    created: "2021-07-28T11:19:28.568877806Z"
+    created: "2021-08-01T08:48:26.561618017Z"
     description: Watches and send kubernetes resource-related events
     digest: eac01a34cacc501b08f39c90d9aec408c3a899d389ccb37ecb3dec7c8b35ccbd
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -143,7 +153,7 @@ entries:
     version: 0.1.41
   - apiVersion: v1
     appVersion: 0.1.33
-    created: "2021-07-28T11:19:28.568062983Z"
+    created: "2021-08-01T08:48:26.561078618Z"
     description: Watches and send kubernetes resource-related events
     digest: 645d2602e4eb00ee1459a914caa5e9e38c53fa72aa7dc761c9f9e23e714a2c99
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -153,7 +163,7 @@ entries:
     version: 0.1.40
   - apiVersion: v1
     appVersion: 0.1.33
-    created: "2021-07-28T11:19:28.56527499Z"
+    created: "2021-08-01T08:48:26.5599223Z"
     description: Watches and send kubernetes resource-related events
     digest: 4c86c864a4a10befc2293ef42589333b9f92007d445ed18e0f1bc617de6cd930
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -163,7 +173,7 @@ entries:
     version: 0.1.39
   - apiVersion: v1
     appVersion: 0.1.33
-    created: "2021-07-28T11:19:28.564734501Z"
+    created: "2021-08-01T08:48:26.559376821Z"
     description: Watches and send kubernetes resource-related events
     digest: c52f875826ed6fb7c5b4a8b3953d50b1fb04228bce679ba2ffa21d8845e72ccf
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -173,7 +183,7 @@ entries:
     version: 0.1.38
   - apiVersion: v1
     appVersion: 0.1.31
-    created: "2021-07-28T11:19:28.564219073Z"
+    created: "2021-08-01T08:48:26.558772112Z"
     description: Watches and send kubernetes resource-related events
     digest: d1f519f924499ffe186d44c84d658cb1423d978889842bdeb2eea2c001be8cb4
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -183,7 +193,7 @@ entries:
     version: 0.1.37
   - apiVersion: v1
     appVersion: 0.1.30
-    created: "2021-07-28T11:19:28.563682054Z"
+    created: "2021-08-01T08:48:26.558207613Z"
     description: Watches and send kubernetes resource-related events
     digest: 185fb26b63ba76659f9e44265ad5baeb1fc654a5c88afe8f0dc4f18ce2f5727f
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -193,7 +203,7 @@ entries:
     version: 0.1.36
   - apiVersion: v1
     appVersion: 0.1.29
-    created: "2021-07-28T11:19:28.563170597Z"
+    created: "2021-08-01T08:48:26.557612483Z"
     description: Watches and send kubernetes resource-related events
     digest: 64aba6245dddf2229f2dcc9cf3fa9b7c5142fc2cfa710b970e9787371e74e260
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -203,7 +213,7 @@ entries:
     version: 0.1.35
   - apiVersion: v1
     appVersion: 0.1.29
-    created: "2021-07-28T11:19:28.562643148Z"
+    created: "2021-08-01T08:48:26.557051175Z"
     description: Watches and send kubernetes resource-related events
     digest: eb62118c6b91747632fa9796c8116138d79cc3e8d4e178ecb76b323f03f67fc0
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -213,7 +223,7 @@ entries:
     version: 0.1.34
   - apiVersion: v1
     appVersion: 0.1.26
-    created: "2021-07-28T11:19:28.56211455Z"
+    created: "2021-08-01T08:48:26.556473666Z"
     description: Watches and send kubernetes resource-related events
     digest: 3cda1cc0c6676c1288fe6c5a877b2997755cec7b642ca1056d23ed192e02adfd
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -223,7 +233,7 @@ entries:
     version: 0.1.33
   - apiVersion: v1
     appVersion: 0.1.25
-    created: "2021-07-28T11:19:28.561578582Z"
+    created: "2021-08-01T08:48:26.468655064Z"
     description: Watches and send kubernetes resource-related events
     digest: c67ec510fc961d276c943a1a30b9de9c2cf13d6311cfbcc1c1b395d49533be7f
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -233,7 +243,7 @@ entries:
     version: 0.1.32
   - apiVersion: v1
     appVersion: 0.1.24
-    created: "2021-07-28T11:19:28.561068894Z"
+    created: "2021-08-01T08:48:26.467929283Z"
     description: Watches and send kubernetes resource-related events
     digest: 2c67ce5a286b4e8865940b402690b556013f670b8a08f67d4401fcb5375b7aaf
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -243,7 +253,7 @@ entries:
     version: 0.1.31
   - apiVersion: v1
     appVersion: 0.1.23
-    created: "2021-07-28T11:19:28.560551726Z"
+    created: "2021-08-01T08:48:26.467213082Z"
     description: Watches and send kubernetes resource-related events
     digest: 521a4c7f2c19f79400bb75e87fadc71a9a5ebce9b8847d2e1aa67314fe3219b9
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -253,7 +263,7 @@ entries:
     version: 0.1.30
   - apiVersion: v1
     appVersion: 0.1.20
-    created: "2021-07-28T11:19:28.559509989Z"
+    created: "2021-08-01T08:48:26.465670668Z"
     description: Watches and send kubernetes resource-related events
     digest: f8c43fcbe424f18e5da508669e73ef7673e7e5ecf4ca7eb77e30a627ff95d9df
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -263,7 +273,7 @@ entries:
     version: 0.1.29
   - apiVersion: v1
     appVersion: 0.1.19
-    created: "2021-07-28T11:19:28.558950471Z"
+    created: "2021-08-01T08:48:26.464926656Z"
     description: Watches and send kubernetes resource-related events
     digest: 1f4a1e6cb72ddcc3266d1fa6fdaa1fd1fb4fe17bf3275e6ae044f2ff6a289ea9
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -273,7 +283,7 @@ entries:
     version: 0.1.28
   - apiVersion: v1
     appVersion: 0.1.17
-    created: "2021-07-28T11:19:28.558276021Z"
+    created: "2021-08-01T08:48:26.464045963Z"
     description: Watches and send kubernetes resource-related events
     digest: 9c02dcfbaf3cf14bc9782a3c14312a8685c61af361e8c8ee49865ed58c2c6c0b
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -283,7 +293,7 @@ entries:
     version: 0.1.27
   - apiVersion: v1
     appVersion: 0.1.15
-    created: "2021-07-28T11:19:28.557740302Z"
+    created: "2021-08-01T08:48:26.46258756Z"
     description: Watches and send kubernetes resource-related events
     digest: 57197dbf88dba8ab0182c8ef1fd0980e6b0a04aa6f2485e49f6ba2c3a9f9f233
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -293,7 +303,7 @@ entries:
     version: 0.1.25
   - apiVersion: v1
     appVersion: 0.1.14
-    created: "2021-07-28T11:19:28.557221234Z"
+    created: "2021-08-01T08:48:26.461712056Z"
     description: Watches and send kubernetes resource-related events
     digest: 41618643fb5ab16a7f4e80ace0f6bac72755ed193c421b28b8a09f6b65ec0355
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -303,7 +313,7 @@ entries:
     version: 0.1.24
   - apiVersion: v1
     appVersion: 0.1.14
-    created: "2021-07-28T11:19:28.556680555Z"
+    created: "2021-08-01T08:48:26.461169338Z"
     description: Watches and send kubernetes resource-related events
     digest: fedb80bbf4785c292cff3f97484602e8b1ce1b7d44b7a6567ffa82891db14e83
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -313,7 +323,7 @@ entries:
     version: 0.1.23
   - apiVersion: v1
     appVersion: 0.1.13
-    created: "2021-07-28T11:19:28.556127027Z"
+    created: "2021-08-01T08:48:26.460582088Z"
     description: Watches and send kubernetes resource-related events
     digest: 6ee46c5e3f3928be1beb165d5c6d2887ce96b7e0a611cd8babbe5a03bee400b7
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -323,7 +333,7 @@ entries:
     version: 0.1.22
   - apiVersion: v1
     appVersion: 0.1.12
-    created: "2021-07-28T11:19:28.555560878Z"
+    created: "2021-08-01T08:48:26.459974069Z"
     description: Watches and send kubernetes resource-related events
     digest: e911a82c9b5f76f0f2d7074a219fd2eba7dedf6b1b86df8f13fa4d4d8c7f3193
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -333,7 +343,7 @@ entries:
     version: 0.1.21
   - apiVersion: v1
     appVersion: 0.1.11
-    created: "2021-07-28T11:19:28.466640422Z"
+    created: "2021-08-01T08:48:26.4594115Z"
     description: Watches and send kubernetes resource-related events
     digest: 4d11fa6b3f4ea6c4df1eb554f095a3acc4f923b86b0cc6112949bfb58eaf9394
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -343,7 +353,7 @@ entries:
     version: 0.1.20
   - apiVersion: v1
     appVersion: 0.1.10
-    created: "2021-07-28T11:19:28.464153013Z"
+    created: "2021-08-01T08:48:26.458276592Z"
     description: Watches and send kubernetes resource-related events
     digest: cd02b58c69bd7fd12e53c554b460f43a3363f8f7b4101d516196c1e87707b8f5
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -353,7 +363,7 @@ entries:
     version: 0.1.19
   - apiVersion: v1
     appVersion: 0.1.10
-    created: "2021-07-28T11:19:28.463620694Z"
+    created: "2021-08-01T08:48:26.457712014Z"
     description: Watches and send kubernetes resource-related events
     digest: 810c3d9b1af386fd8618ec2030efaaa908db2b27e51d2e6f5f025a778af65f17
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -363,7 +373,7 @@ entries:
     version: 0.1.18
   - apiVersion: v1
     appVersion: 0.1.10
-    created: "2021-07-28T11:19:28.463111677Z"
+    created: "2021-08-01T08:48:26.457192155Z"
     description: Watches and send kubernetes resource-related events
     digest: 5011e3a5bd63079a0e4c91bedf903fb6e255b707c5f62aee256c56414f71137d
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -373,7 +383,7 @@ entries:
     version: 0.1.17
   - apiVersion: v1
     appVersion: 0.1.9
-    created: "2021-07-28T11:19:28.462600008Z"
+    created: "2021-08-01T08:48:26.456653147Z"
     description: Watches and send kubernetes resource-related events
     digest: d1861c9b9daa3cd659079b4d08c8cece702c929f7cfd9676817ece5357c5a6b8
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -383,7 +393,7 @@ entries:
     version: 0.1.16
   - apiVersion: v1
     appVersion: 0.1.8
-    created: "2021-07-28T11:19:28.462118421Z"
+    created: "2021-08-01T08:48:26.455667952Z"
     description: Watches and send kubernetes resource-related events
     digest: 43c70bf0340bcb7780355596965ed6b11112610a42f7cf86dadd605088d86885
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -393,7 +403,7 @@ entries:
     version: 0.1.15
   - apiVersion: v1
     appVersion: 0.1.5
-    created: "2021-07-28T11:19:28.461617744Z"
+    created: "2021-08-01T08:48:26.366724623Z"
     description: Watches and send kubernetes resource-related events
     digest: 9699bf90f1e3d03de2a6ca06250cc306f9463be7ae8ce7e91f8336145f09d54e
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -403,7 +413,7 @@ entries:
     version: 0.1.14
   - apiVersion: v1
     appVersion: 0.1.3
-    created: "2021-07-28T11:19:28.461129556Z"
+    created: "2021-08-01T08:48:26.366154683Z"
     description: Watches and send kubernetes resource-related events
     digest: f268c1a9b86202c3de9f9dbc745086f99751fea29d61d26546f4aaa4f84f0543
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -413,7 +423,7 @@ entries:
     version: 0.1.13
   - apiVersion: v1
     appVersion: 0.1.3
-    created: "2021-07-28T11:19:28.460647608Z"
+    created: "2021-08-01T08:48:26.365650686Z"
     description: Watches and send kubernetes resource-related events
     digest: a82699660141001ed1c7d6b5b31a17fedb55376a315d7a3cf674c458c6bb39fa
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -423,7 +433,7 @@ entries:
     version: 0.1.12
   - apiVersion: v1
     appVersion: 0.1.3
-    created: "2021-07-28T11:19:28.46016454Z"
+    created: "2021-08-01T08:48:26.365129607Z"
     description: Watches and send kubernetes resource-related events
     digest: 7bb841d9dbee53ca918b9f9bdb2e17929d5f426b37ba1fed6b1789a3a3b7e07d
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -433,7 +443,7 @@ entries:
     version: 0.1.11
   - apiVersion: v1
     appVersion: 0.1.2
-    created: "2021-07-28T11:19:28.459653693Z"
+    created: "2021-08-01T08:48:26.364586659Z"
     description: Watches and send kubernetes resource-related events
     digest: 39985b3fc1eaf8e89af82236ee20ce9c8d7e15924d58a06450817d807a091f61
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -443,7 +453,7 @@ entries:
     version: 0.1.10
   - apiVersion: v1
     appVersion: 0.1.1
-    created: "2021-07-28T11:19:28.664547656Z"
+    created: "2021-08-01T08:48:26.658822044Z"
     description: Watches and send kubernetes resource-related events
     digest: 822d6347ec1b124509fcca73b9bbd44a79999df86ae76f05bc1805ce8c6b21a5
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -453,7 +463,7 @@ entries:
     version: 0.1.9
   - apiVersion: v1
     appVersion: 0.1.1
-    created: "2021-07-28T11:19:28.664058509Z"
+    created: "2021-08-01T08:48:26.658335407Z"
     description: Watches and send kubernetes resource-related events
     digest: e58142d962e7d613b0087698af8d379d22be5809ad08a03bfb9f24e96a3cab39
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -463,7 +473,7 @@ entries:
     version: 0.1.8
   - apiVersion: v1
     appVersion: 0.1.0
-    created: "2021-07-28T11:19:28.663564712Z"
+    created: "2021-08-01T08:48:26.657799449Z"
     description: Watches and send kubernetes resource-related events
     digest: 99ffc6016c56eca48aa0e7028249d97fa23b45969b81a954b2e65ad76c96168d
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -473,7 +483,7 @@ entries:
     version: 0.1.7
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-07-28T11:19:28.663084954Z"
+    created: "2021-08-01T08:48:26.657322701Z"
     description: Watches and send kubernetes resource-related events
     digest: b14ecfed59ce446f54132df4c31351358cdf247794e84d449630c59c98c17c8b
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -484,7 +494,7 @@ entries:
     version: 0.1.6
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-07-28T11:19:28.658274108Z"
+    created: "2021-08-01T08:48:26.5656973Z"
     description: Watches and send kubernetes resource-related events
     digest: 8fd685003a52ef330b2969746453c00fbb891b7302bd137b4f75d1fe88fcc5f6
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -495,7 +505,7 @@ entries:
     version: 0.1.5
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-07-28T11:19:28.565792017Z"
+    created: "2021-08-01T08:48:26.560475448Z"
     description: Watches and send kubernetes resource-related events
     digest: d4d5e2774a724efebfd2a654a66a6401769c99b1f452f35c9944e21366b4a382
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -506,7 +516,7 @@ entries:
     version: 0.1.4
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-07-28T11:19:28.560046268Z"
+    created: "2021-08-01T08:48:26.46642452Z"
     description: Watches and send kubernetes resource-related events
     digest: 9d5e28fb647eea437a415e12ee5dd74c1388affbb3137d35272b0c73a2c39efa
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -517,7 +527,7 @@ entries:
     version: 0.1.3
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-07-28T11:19:28.46590176Z"
+    created: "2021-08-01T08:48:26.458810341Z"
     description: Watches and send kubernetes resource-related events
     digest: 8362053115dbc913a4f9060d16dcfa8425a38f1d255c9a755dd855ce8ec12d63
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -528,7 +538,7 @@ entries:
     version: 0.1.2
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-07-28T11:19:28.459146696Z"
+    created: "2021-08-01T08:48:26.364072731Z"
     description: Watches and send kubernetes resource-related events
     digest: b210f29a62bc730d35ce784c2bc9d1d906e9d90d8c7131c3663b0ee527bd1785
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -539,7 +549,7 @@ entries:
     version: 0.1.1
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2021-07-28T11:19:28.458525916Z"
+    created: "2021-08-01T08:48:26.363414941Z"
     description: Watches and send kubernetes resource-related events
     digest: cd14b5628193d03dc563ab674022daeaedc0af70627c33d8878a557483bfe034
     icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
@@ -548,4 +558,4 @@ entries:
     urls:
     - k8s-watcher/k8s-watcher-0.1.0.tgz
     version: 0.1.0
-generated: "2021-07-28T11:19:28.457760124Z"
+generated: "2021-08-01T08:48:26.361760475Z"
