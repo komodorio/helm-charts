@@ -9,6 +9,10 @@ metadata:
     {{- include "k8s-watcher.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   selector:
     matchLabels:
       {{- include "k8s-watcher.selectorLabels" . | nindent 6 }}
