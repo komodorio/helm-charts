@@ -92,7 +92,9 @@ rules:
     - ""
     resources:
     - pods
+{{- if .Values.watcher.allowReadingPodLogs }}
     - pods/log
+{{- end }}
     verbs:
     - "get"
     - "list"

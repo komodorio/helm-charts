@@ -5,6 +5,7 @@ metadata:
   namespace: komodor
 data:
   komodor-k8s-watcher.yaml: |
+    allowReadingPodLogs: false
     collectHistory: true
     controller:
       resync:

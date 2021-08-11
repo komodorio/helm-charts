@@ -39,6 +39,7 @@ apiKey: ""
 
 watcher:
   enableAgentTaskExecution: false
+  allowReadingPodLogs: false
   # clusterName: ""
   servers:
     healthCheck: {}
