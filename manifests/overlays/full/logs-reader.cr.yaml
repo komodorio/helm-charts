@@ -1,0 +1,25 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: k8s-watcher-log-reader
+rules:
+  - apiGroups:
+    - ""
+    resources:
+    - pods
+    - pods/log
+    verbs:
+    - "get"
+    - "list"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: k8s-watcher-log-reader
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: k8s-watcher-log-reader
+subjects:
+  - kind: ServiceAccount
+    name: k8s-watcher

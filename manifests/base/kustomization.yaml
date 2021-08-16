@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: komodor
+commonLabels:
+  app.kubernetes.io/name: k8s-watcher
+  app.kubernetes.io/instance: k8s-watcher
+  app.kubernetes.io/watcher-version: "0.1.46"
+resources:
+- clusterrole.yaml
+- deployment.yaml
+- serviceaccount.yaml
+configMapGenerator:
+  - behavior: create
+    name: k8s-watcher-config
+    files:
+      - "komodor-k8s-watcher.yaml"
+  - behavior: merge
+    name: k8s-watcher-config
+    envs:
+    - "config.env"
+secretGenerator:
+  - behavior: create
+    name: k8s-watcher-secret
+    envs:
+    - "api.env"
