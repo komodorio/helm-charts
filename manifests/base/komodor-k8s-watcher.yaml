@@ -1,0 +1,34 @@
+allowReadingPodLogs: false
+collectHistory: false
+controller:
+  resync:
+    period: "0"
+enableAgentTaskExecution: false
+nameBlacklist:
+- leader
+- election
+namespacesBlacklist:
+- kube-system
+redact: []
+resources:
+  clusterRole: true
+  configMap: true
+  daemonSet: true
+  deployment: true
+  event: false
+  ingress: true
+  job: true
+  namespace: true
+  node: true
+  persistentVolume: true
+  persistentVolumeClaim: true
+  pod: true
+  replicaSet: true
+  replicationController: true
+  secret: false
+  service: true
+  serviceAccount: true
+  statefulSet: true
+servers:
+  healthCheck: {}
+watchNamespace: all
