@@ -2,13 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: k8s-watcher
-  namespace: komodor
-  labels:
-    helm.sh/chart: k8s-watcher-0.1.63
-    app.kubernetes.io/name: k8s-watcher
-    app.kubernetes.io/instance: k8s-watcher
-    app.kubernetes.io/version: "0.1.46"
-    app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
   strategy:
@@ -22,7 +15,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 8da1d60901cb3b5c38b137c822b1c027db88f0d43d672528f1d2b7beb802c8dd
+        checksum/config: 464460024ca7f0df1e56d4b0d2db144da5f6f84acf741df64a281d355bae2c6e
       labels:
         app.kubernetes.io/name: k8s-watcher
         app.kubernetes.io/instance: k8s-watcher
@@ -44,12 +37,15 @@ spec:
               mountPath: /etc/komodor
             - name: podinfo
               mountPath: /etc/podinfo
+          envFrom:
+            - configMapRef:
+                name: k8s-watcher-config 
           env:
             - name: KOMOKW_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: k8s-watcher-secret
-                  key: apiKey
+                  key: KOMOKW_API_KEY
           ports:
             - name: http-healthz
               containerPort: 8090

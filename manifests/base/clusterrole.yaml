@@ -2,7 +2,6 @@ kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: k8s-watcher
-  namespace: komodor
 rules:
   - apiGroups:
     - ""
@@ -56,14 +55,7 @@ rules:
     - get
     - watch
     - list
-  - apiGroups:
-    - ""
-    resources:
-    - pods
-    - pods/log
-    verbs:
-    - "get"
-    - "list"
+
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -76,5 +68,3 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: k8s-watcher
-    namespace: komodor
----

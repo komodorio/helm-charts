@@ -5,12 +5,12 @@ metadata:
   namespace: komodor
 data:
   komodor-k8s-watcher.yaml: |
-    allowReadingPodLogs: false
+    allowReadingPodLogs: true
     collectHistory: true
     controller:
       resync:
         period: "0"
-    enableAgentTaskExecution: false
+    enableAgentTaskExecution: true
     nameBlacklist:
     - leader
     - election

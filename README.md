@@ -1,5 +1,14 @@
 # Komodor.io Helm Charts Repository
 
+## Install with Kustomize
+* Create namespace `kubectl create ns komodor`
+* Install
+  * `export KOMOKW_API_KEY=$KOMODOR_API_KEY` (required)
+  * `export KOMOKW_CLUSTER_NAME=$KOMOKW_CLUSTER_NAME`
+  * Using `kubectl` - `kubectl apply -n komodor -k manifests/overlays/full`
+  * Using `kustomize` - `kustomize build ./manifests/overlays/full | kubectl apply -n komodor -f -`
+  
+[Read more](./manifests/overlays/full/README.md)
 ## How to install a chart from this repository
 
 - Add the repository to helm  
