@@ -22,4 +22,4 @@ secretGenerator:
   - behavior: create
     name: k8s-watcher-secret
     envs:
-    - "api.env"
+    - "secret.env"
