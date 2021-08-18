@@ -5,7 +5,7 @@
 ```bash
 helm repo add komodorio https://helm-charts.komodor.io
 helm repo update
-helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=YOUR_API_KEY_HERE --set watcher.clusterName=CLUSTER_NAME
+helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=YOUR_API_KEY_HERE --set watcher.clusterName=CLUSTER_NAME --wait --timeout=300
 ```
 
 ## Introduction
@@ -28,7 +28,7 @@ The default is `linux/amd64`. If you wish to install the chart for `linux/arm64`
 To install the chart with the release name `k8s-watcher`:
 
 ```bash
-helm upgrade --install k8s-watcher komodorio/k8s-watcher --create-namespace --set apiKey=YOUR_API_KEY_HERE --set watcher.clusterName=CLUSTER_NAME
+helm upgrade --install k8s-watcher komodorio/k8s-watcher --create-namespace --set apiKey=YOUR_API_KEY_HERE --set watcher.clusterName=CLUSTER_NAME --wait --timeout=300
 ```
 
 The command deploys the Komodor K8S-Watcher on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -126,7 +126,7 @@ The above parameters map to a yaml configuration file used by the watcher.
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey="YOUR_API_KEY_HERE" --set watcher.enableAgentTaskExecution=true --set watcher.allowReadingPodLogs=true
+helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey="YOUR_API_KEY_HERE" --set watcher.enableAgentTaskExecution=true --set watcher.allowReadingPodLogs=true --wait --timeout=300
 ```
 
 Alternativly, you can pass the configuration as environment variables using the `KOMOKW_` prefix and by replacing all the `.` to `_`, for the root items the camelcase transforms into underscores as well. For example,

@@ -1,0 +1,29 @@
+{{- if .Values.k8s-watcher.enabled }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ .Release.Name }}-test"
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: {{ .Release.Name }}-connectivity-test
+      image: {{ template "k8s-watcher.image" . }}
+      imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
+      env:
+        - name: HOST
+          value: "localhost"
+        - name: PORT
+          value: "{{ .Values.watcher.servers.healthCheck.port | default 8090 }}"
+        - name: URL
+          value: "{{$HOST:$PORT}}/healthz"
+      command:
+        - /bin/sh
+        - -c
+        - "curl '$URL'"
+  restartPolicy: Never
+{{- end }}
