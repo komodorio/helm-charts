@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ .Release.Name }}-test"
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: {{ .Release.Name }}-test
+      image: "komodorio/k8s-watcher:0.1.46"
+      imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+      env:
+      command:
+        - /bin/sh
+        - -c
+        - "echo 'OK'"
+  restartPolicy: Never
+  #- echo 'OK'
+  #- curl localhost:{{ .Values.watcher.servers.healthCheck.port | default 8090 }}/healthz

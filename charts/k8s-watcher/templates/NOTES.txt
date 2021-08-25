@@ -4,7 +4,7 @@ The watcher was installed on namespace: {{ default "default" .Values.namespace }
 
 To test if the watcher installed successfully do the next command:
 
-helm test k8s-watcher --namespace {{ default "default" .Values.namespace }}
+helm test k8s-watcher
 
 If the test is ok - go to https://app.komodor.com/ to see your k8s cluster
 If the test is not ok - please visit: https://docs.komodor.com/index.html
