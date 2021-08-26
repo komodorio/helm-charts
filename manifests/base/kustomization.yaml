@@ -4,14 +4,14 @@ namespace: komodor
 commonLabels:
   app.kubernetes.io/name: k8s-watcher
   app.kubernetes.io/instance: k8s-watcher
-  app.kubernetes.io/watcher-version: "0.1.48"
+  app.kubernetes.io/watcher-version: "0.1.49"
 resources:
 - clusterrole.yaml
 - deployment.yaml
 - serviceaccount.yaml
 images:
 - name: "komodorio/k8s-watcher:latest"
-  newTag: "0.1.48"
+  newTag: "0.1.49"
 configMapGenerator:
   - behavior: create
     name: k8s-watcher-config
