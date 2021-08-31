@@ -37,6 +37,8 @@ existingSecret: ""
 
 apiKey: ""
 
+namespaceLabels: {}
+
 watcher:
   enableAgentTaskExecution: false
   allowReadingPodLogs: false

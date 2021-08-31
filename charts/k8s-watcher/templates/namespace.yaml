@@ -3,4 +3,8 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: {{ .Values.namespace }}
+  labels:
+    {{- range $key, $val := .Values.namespaceLabels }}
+    {{ $key }}: {{ $val | quote }}
+    {{- end }}
 {{- end }}
