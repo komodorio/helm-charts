@@ -3,7 +3,6 @@ replicaCount: 1
 image:
   repository: komodorio/k8s-watcher
   pullPolicy: IfNotPresent
-  arm: false
 
 namespace: komodor
 
