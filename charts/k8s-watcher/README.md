@@ -14,9 +14,7 @@ This chart bootstraps a Kubernetes Resources/Event Watcher deployment on a [Kube
 
 ### Supported architectures
 - [x] linux/amd64
-- [x] linux/arm64 (v8) - starting from agent version 0.1.29
-
-The default is `linux/amd64`. If you wish to install the chart for `linux/arm64` all you need to do is set image.arm flag. For example: `--set image.arm=true`
+- [x] linux/arm64
 
 ## Prerequisites
 
@@ -107,7 +105,6 @@ The following table lists the configurable parameters of the chart and their def
 | `image.repository`                        | Image registry/name                                                      | `docker.io/komodorio/k8s-watcher`          |
 | `image.tag`                               | Image tag                                                                | `0.1.10`                                   |
 | `image.pullPolicy`                        | Image pull policy                                                        | `Always`                                   |
-| `image.arm`                               | arm64v8 image architecture                                               | `false`                                   |
 | `serviceAccount.create`                   | Creates a service account                                                | `true`                                     |
 | `serviceAccount.name`                     | Optional name for the service account                                    | `{RELEASE_FULLNAME}`                       |
 | `proxy.enabled`                           | Configure proxy for watcher                                              | `true`                                     |
