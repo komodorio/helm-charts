@@ -2,4 +2,8 @@ Thank you for installing {{ .Chart.Name }}.
 
 The watcher was installed on namespace: {{ default "default" .Values.namespace }}
 
-To learn more about Komodor please visit: https://docs.komodor.com
+Visit our site at:
+https://app.komodor.com
+
+To learn more about Komodor please visit:
+https://docs.komodor.com
