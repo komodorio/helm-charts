@@ -28,6 +28,12 @@ cat stderr.txt
 helm status k8s-watcher
 ```
 
+4. Reinstall
+
+```bash
+helm uninstall helm-k8s-watcher
+```
+
 ## Introduction
 
 This chart bootstraps a Kubernetes Resources/Event Watcher deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
