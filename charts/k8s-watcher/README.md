@@ -5,7 +5,7 @@
 ```bash
 helm repo add komodorio https://helm-charts.komodor.io
 helm repo update
-helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=YOUR_API_KEY_HERE --set watcher.clusterName=CLUSTER_NAME --set watcher.allowReadingPodLogs=true --set watcher.enableAgentTaskExecution=true --wait --timeout=90s || echo "\n\nInstallation failed! \nTry running 'kubectl logs --tail=10 deployment/k8s-watcher -n komodor' \nOr contact us for assistance via intercom at: https://app.komodor.com \n"
+helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=YOUR_API_KEY_HERE --set watcher.clusterName=CLUSTER_NAME --set watcher.allowReadingPodLogs=true --set watcher.enableAgentTaskExecution=true --wait --timeout=90s
 ```
 
 In case of error try contact us or run:
@@ -16,19 +16,13 @@ In case of error try contact us or run:
 kubectl logs --tail=10 deployment/k8s-watcher  -n komodor
 ```
 
-2. Errors in helm installation:
-
-```bash
-cat stderr.txt
-```
-
-3. Helm status
+2. Helm status
 
 ```bash
 helm status k8s-watcher
 ```
 
-4. Reinstall
+3. Reinstall
 
 ```bash
 helm uninstall helm-k8s-watcher
