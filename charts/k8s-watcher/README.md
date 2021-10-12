@@ -5,7 +5,27 @@
 ```bash
 helm repo add komodorio https://helm-charts.komodor.io
 helm repo update
-helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=YOUR_API_KEY_HERE --set watcher.clusterName=CLUSTER_NAME --set watcher.enableAgentTaskExecution=true --set watcher.allowReadingPodLogs=true
+helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=06ce9a63-a037-4caf-ad57-e5a6073a48c1 --set watcher.clusterName=nirproduction --set watcher.allowReadingPodLogs=true --set watcher.enableAgentTaskExecution=true --wait --timeout=30s 2> stderr.txt || echo "\n\n----------\nInstallation failed! \n\nTry running 'kubectl logs --tail=10 deployment/k8s-watcher  -n komodor' / 'cat stderr.txt'\nOr contact us for assistance via intercom at: https://app.komodor.com.\n----------"
+```
+
+In case of error try contact us or run:
+
+1. Logs of k8s-watcher
+
+```bash
+kubectl logs --tail=10 deployment/k8s-watcher  -n komodor
+```
+
+2. Errors in helm installation:
+
+```bash
+cat stderr.txt
+```
+
+3. Helm status
+
+```bash
+helm status k8s-watcher
 ```
 
 ## Introduction
@@ -13,6 +33,7 @@ helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=YOUR_API_K
 This chart bootstraps a Kubernetes Resources/Event Watcher deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ### Supported architectures
+
 - [x] linux/amd64
 - [x] linux/arm64
 
@@ -43,10 +64,13 @@ When using an existing kubernetes secret resource, specify the secret name in `e
 To uninstall/delete the `k8s-watcher` deployment:
 
 Helm 3:
+
 ```bash
 helm uninstall k8s-watcher
 ```
+
 Helm 2:
+
 ```bash
 helm delete --purge k8s-watcher
 ```
@@ -56,68 +80,65 @@ The command removes all the Kubernetes components associated with the chart and 
 ## Alternative: Install without Helm
 
 To install the chart directly with kubectl, use the manifests located in `./kube-install`.
+
 1. Make sure to set the apiKey (as base 64) secret value in `./kube-install/k8s-watcher/templates/secret-credentials.yaml`
-    - `KOMOKW_APIKEY=YOUR_APIKEY sed -i "s/YOUR_APIKEY_AS_BASE_64/$(echo $KOMOKW_APIKEY | base64)/g" kube-install/k8s-watcher/templates/secret-credentials.yaml`
+   - `KOMOKW_APIKEY=YOUR_APIKEY sed -i "s/YOUR_APIKEY_AS_BASE_64/$(echo $KOMOKW_APIKEY | base64)/g" kube-install/k8s-watcher/templates/secret-credentials.yaml`
 2. Then just apply everything in order:
-    - `kubectl apply -f ./kube-install/k8s-watcher/templates/namespace.yaml`
-    - `kubectl apply -f ./kube-install/k8s-watcher/templates`
+   - `kubectl apply -f ./kube-install/k8s-watcher/templates/namespace.yaml`
+   - `kubectl apply -f ./kube-install/k8s-watcher/templates`
 
 ## Configuration
 
 The following table lists the configurable parameters of the chart and their default values.
 
-| Parameter                                 | Description                                                              | Default                                    |
-|-------------------------------------------|--------------------------------------------------------------------------|--------------------------------------------|
-| `apiKey`                                  | Komodor kubernetes api key (required if `existingSecret` not specified)                                    | ``                                         |
-| `existingSecret`                          | Existing kubernetes secret resource containing Komodor kubernetes apiKey (required if `apiKey` not specified)                                    | ``                                         |
-| `watcher.redact`                                  | List of regular expressions. Config values for keys that matches one of these expressions will show up at Komodor as "REDACTED:\<SHA of config value\>" | `[]`
-| `watcher.clusterName`                     | Override auto-discovery of Cluster Name with one of your choosing        | ``                                         |
-| `watcher.watchNamespace`                  | Watch a specific namespace, or all namespaces ("", "all")                | `all`                                      |
-| `watcher.namespacesBlacklist`             | Blacklist specific namespaces (list)                                     | `[kube-system]`                            |
-| `watcher.nameBlacklist`                   | Blacklist specific resource names that contains any of these strings (list) - example: ```watcher.nameBlacklist=["dont-watch"] --> `pod/backend-dont-watch` wont be collected``` | `[]`                                                |
-| `watcher.collectHistory`                  | On startup collect existing cluster resources in addition to watching new resources (true / false)                        | `true`                                    |
-| `watcher.sinks.webhook.enabled`           | Enables a Webhook output                                                 | `true`                                     |
-| `watcher.sinks.webhook.url`               | URL to send webhooks to                                                  | `https://app.komodor.io/k8s-events/event/` |
-| `watcher.sinks.webhook.headers`           | Headers to attach to the webhooks                                        | `{}`                                       |
-| `watcher.resources.event`                 | Enables watching Event                                                   | `false`                                    |
-| `watcher.resources.deployment`            | Enables watching Deployments                                             | `true`                                     |
-| `watcher.resources.replicationController` | Enables watching ReplicationControllers                                  | `true`                                     |
-| `watcher.resources.replicaSet`            | Enables watching ReplicaSets                                             | `true`                                     |
-| `watcher.resources.daemonSet`             | Enables watching DaemonSets                                              | `true`                                     |
-| `watcher.resources.statefulSet`           | Enables watching StatefulSets                                            | `true`                                     |
-| `watcher.resources.service`               | Enables watching Services                                                | `true`                                     |
-| `watcher.resources.pod`                   | Enables watching Pods                                                    | `true`                                     |
-| `watcher.resources.job`                   | Enables watching Jobs                                                    | `true`                                     |
-| `watcher.resources.node`                  | Enables watching Nodes                                                   | `true`                                     |
-| `watcher.resources.clusterRole`           | Enables watching ClusterRoles                                            | `true`                                     |
-| `watcher.resources.serviceAccount`        | Enables watching ServiceAccounts                                         | `true`                                     |
-| `watcher.resources.persistentVolume`      | Enables watching PersistentVolumes                                       | `true`                                     |
-| `watcher.resources.persistentVolumeClaim` | Enables watching PersistentVolumeClaims                                  | `true`                                     |
-| `watcher.resources.namespace`             | Enables watching Namespaces                                              | `true`                                     |
-| `watcher.resources.secret`                | Enables watching Secrets                                                 | `false`                                    |
-| `watcher.resources.configMap`             | Enables watching ConfigMaps                                              | `true`                                     |
-| `watcher.resources.ingress`               | Enables watching Ingresses                                               | `true`                                     |
-| `watcher.servers.healthCheck.port`        | Port of the health check server                                          | `8090`                                     |
-| `resources.requests.cpu`                  | CPU resource requests                                                    | `0.25`                                     |
-| `resources.limits.cpu`                    | CPU resource limits                                                      | `1`                                     |
-| `resources.requests.memory`               | Memory resource requests                                                 | `256Mi`                                    |
-| `resources.limits.memory`                 | Memory resource limits                                                   | `4096Mi`                                   |
-| `image.repository`                        | Image registry/name                                                      | `docker.io/komodorio/k8s-watcher`          |
-| `image.tag`                               | Image tag                                                                | `0.1.10`                                   |
-| `image.pullPolicy`                        | Image pull policy                                                        | `Always`                                   |
-| `serviceAccount.create`                   | Creates a service account                                                | `true`                                     |
-| `serviceAccount.name`                     | Optional name for the service account                                    | `{RELEASE_FULLNAME}`                       |
-| `proxy.enabled`                           | Configure proxy for watcher                                              | `true`                                     |
-| `proxy.http`                              | Configure Proxy setting (HTTP_PROXY)                                     | ``                                         |
-| `proxy.https`                             | Configure Proxy setting (HTTPS_PROXY)                                    | ``                                         |
-| `proxy.no_proxy`                          | Configure Proxy setting (NO_PROXY)                                       | ``                                         |
-| `watcher.controller.resync.period`                | Resync period (in minutes, minimum 5) to resync the state of selected controllers (deployment, daemonset, statefulset)   | `"0"`                                      |
-| `watcher.enableAgentTaskExecution`        | Enable to the agent to execute tasks in the cluster such as log streaming | `false`
-| `watcher.allowReadingPodLogs`.            | Enable the agent to read pod logs from the cluster                       | `false` |
-
-
-
-
+| Parameter                                 | Description                                                                                                                                                                      | Default                                    |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| `apiKey`                                  | Komodor kubernetes api key (required if `existingSecret` not specified)                                                                                                          | ``                                         |
+| `existingSecret`                          | Existing kubernetes secret resource containing Komodor kubernetes apiKey (required if `apiKey` not specified)                                                                    | ``                                         |
+| `watcher.redact`                          | List of regular expressions. Config values for keys that matches one of these expressions will show up at Komodor as "REDACTED:\<SHA of config value\>"                          | `[]`                                       |
+| `watcher.clusterName`                     | Override auto-discovery of Cluster Name with one of your choosing                                                                                                                | ``                                         |
+| `watcher.watchNamespace`                  | Watch a specific namespace, or all namespaces ("", "all")                                                                                                                        | `all`                                      |
+| `watcher.namespacesBlacklist`             | Blacklist specific namespaces (list)                                                                                                                                             | `[kube-system]`                            |
+| `watcher.nameBlacklist`                   | Blacklist specific resource names that contains any of these strings (list) - example: `` watcher.nameBlacklist=["dont-watch"] --> `pod/backend-dont-watch` wont be collected `` | `[]`                                       |
+| `watcher.collectHistory`                  | On startup collect existing cluster resources in addition to watching new resources (true / false)                                                                               | `true`                                     |
+| `watcher.sinks.webhook.enabled`           | Enables a Webhook output                                                                                                                                                         | `true`                                     |
+| `watcher.sinks.webhook.url`               | URL to send webhooks to                                                                                                                                                          | `https://app.komodor.io/k8s-events/event/` |
+| `watcher.sinks.webhook.headers`           | Headers to attach to the webhooks                                                                                                                                                | `{}`                                       |
+| `watcher.resources.event`                 | Enables watching Event                                                                                                                                                           | `false`                                    |
+| `watcher.resources.deployment`            | Enables watching Deployments                                                                                                                                                     | `true`                                     |
+| `watcher.resources.replicationController` | Enables watching ReplicationControllers                                                                                                                                          | `true`                                     |
+| `watcher.resources.replicaSet`            | Enables watching ReplicaSets                                                                                                                                                     | `true`                                     |
+| `watcher.resources.daemonSet`             | Enables watching DaemonSets                                                                                                                                                      | `true`                                     |
+| `watcher.resources.statefulSet`           | Enables watching StatefulSets                                                                                                                                                    | `true`                                     |
+| `watcher.resources.service`               | Enables watching Services                                                                                                                                                        | `true`                                     |
+| `watcher.resources.pod`                   | Enables watching Pods                                                                                                                                                            | `true`                                     |
+| `watcher.resources.job`                   | Enables watching Jobs                                                                                                                                                            | `true`                                     |
+| `watcher.resources.node`                  | Enables watching Nodes                                                                                                                                                           | `true`                                     |
+| `watcher.resources.clusterRole`           | Enables watching ClusterRoles                                                                                                                                                    | `true`                                     |
+| `watcher.resources.serviceAccount`        | Enables watching ServiceAccounts                                                                                                                                                 | `true`                                     |
+| `watcher.resources.persistentVolume`      | Enables watching PersistentVolumes                                                                                                                                               | `true`                                     |
+| `watcher.resources.persistentVolumeClaim` | Enables watching PersistentVolumeClaims                                                                                                                                          | `true`                                     |
+| `watcher.resources.namespace`             | Enables watching Namespaces                                                                                                                                                      | `true`                                     |
+| `watcher.resources.secret`                | Enables watching Secrets                                                                                                                                                         | `false`                                    |
+| `watcher.resources.configMap`             | Enables watching ConfigMaps                                                                                                                                                      | `true`                                     |
+| `watcher.resources.ingress`               | Enables watching Ingresses                                                                                                                                                       | `true`                                     |
+| `watcher.servers.healthCheck.port`        | Port of the health check server                                                                                                                                                  | `8090`                                     |
+| `resources.requests.cpu`                  | CPU resource requests                                                                                                                                                            | `0.25`                                     |
+| `resources.limits.cpu`                    | CPU resource limits                                                                                                                                                              | `1`                                        |
+| `resources.requests.memory`               | Memory resource requests                                                                                                                                                         | `256Mi`                                    |
+| `resources.limits.memory`                 | Memory resource limits                                                                                                                                                           | `4096Mi`                                   |
+| `image.repository`                        | Image registry/name                                                                                                                                                              | `docker.io/komodorio/k8s-watcher`          |
+| `image.tag`                               | Image tag                                                                                                                                                                        | `0.1.10`                                   |
+| `image.pullPolicy`                        | Image pull policy                                                                                                                                                                | `Always`                                   |
+| `serviceAccount.create`                   | Creates a service account                                                                                                                                                        | `true`                                     |
+| `serviceAccount.name`                     | Optional name for the service account                                                                                                                                            | `{RELEASE_FULLNAME}`                       |
+| `proxy.enabled`                           | Configure proxy for watcher                                                                                                                                                      | `true`                                     |
+| `proxy.http`                              | Configure Proxy setting (HTTP_PROXY)                                                                                                                                             | ``                                         |
+| `proxy.https`                             | Configure Proxy setting (HTTPS_PROXY)                                                                                                                                            | ``                                         |
+| `proxy.no_proxy`                          | Configure Proxy setting (NO_PROXY)                                                                                                                                               | ``                                         |
+| `watcher.controller.resync.period`        | Resync period (in minutes, minimum 5) to resync the state of selected controllers (deployment, daemonset, statefulset)                                                           | `"0"`                                      |
+| `watcher.enableAgentTaskExecution`        | Enable to the agent to execute tasks in the cluster such as log streaming                                                                                                        | `false`                                    |
+| `watcher.allowReadingPodLogs`.            | Enable the agent to read pod logs from the cluster                                                                                                                               | `false`                                    |
 
 The above parameters map to a yaml configuration file used by the watcher.
 
@@ -128,6 +149,7 @@ helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey="YOUR_API_
 ```
 
 Alternativly, you can pass the configuration as environment variables using the `KOMOKW_` prefix and by replacing all the `.` to `_`, for the root items the camelcase transforms into underscores as well. For example,
+
 ```bash
 # apiKey
 KOMOKW_API_KEY=1a2b3c4d5e6f7g7h
