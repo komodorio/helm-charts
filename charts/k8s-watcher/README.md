@@ -8,7 +8,8 @@ helm repo update
 helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=YOUR_API_KEY_HERE --set watcher.clusterName=CLUSTER_NAME --set watcher.allowReadingPodLogs=true --set watcher.enableAgentTaskExecution=true --wait --timeout=90s
 ```
 
-In case of error try contact us or run:
+In case of error try contact us for assistance via intercom at: https://app.komodor.com
+Or run:
 
 1. Logs of k8s-watcher
 
