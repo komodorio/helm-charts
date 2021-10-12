@@ -5,7 +5,7 @@
 ```bash
 helm repo add komodorio https://helm-charts.komodor.io
 helm repo update
-helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=06ce9a63-a037-4caf-ad57-e5a6073a48c1 --set watcher.clusterName=nirproduction --set watcher.allowReadingPodLogs=true --set watcher.enableAgentTaskExecution=true --wait --timeout=90s 2> stderr.txt || echo "\n\n----------\nInstallation failed! \n\nTry running 'kubectl logs --tail=10 deployment/k8s-watcher  -n komodor' / 'cat stderr.txt'\nOr contact us for assistance via intercom at: https://app.komodor.com.\n----------"
+helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=YOUR_API_KEY_HERE --set watcher.clusterName=CLUSTER_NAME --set watcher.allowReadingPodLogs=true --set watcher.enableAgentTaskExecution=true --wait --timeout=90s || echo "\n\nInstallation failed! \nTry running 'kubectl logs --tail=10 deployment/k8s-watcher -n komodor' \nOr contact us for assistance via intercom at: https://app.komodor.com \n"
 ```
 
 In case of error try contact us or run:
