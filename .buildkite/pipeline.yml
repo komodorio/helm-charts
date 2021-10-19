@@ -1,11 +1,5 @@
 steps:
-  - commands: 
-      - helm template k8s-watcher charts/k8s-watcher -f charts/k8s-watcher/values.yaml --set apiKey="sanity"
-      - echo "API_KEY is \$API_KEY"
-    plugins:
-        - zacharymctague/aws-ssm#v1.0.0:
-            parameters:
-              API_KEY: /komodor/production/kubernetes/api-key 
+  - command: helm template k8s-watcher charts/k8s-watcher -f charts/k8s-watcher/values.yaml --set apiKey="sanity"
     label: "helm template check for sanity"
   - wait
   - block: "release helm chart"
