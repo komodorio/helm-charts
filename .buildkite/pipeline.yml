@@ -8,7 +8,7 @@ steps:
       - export APP_VERSION=0.1.56
       - echo "Updating app version to $$APP_VERSION"
       - "sed -i -e \"s/appVersion.*/appVersion: $$APP_VERSION/g\" charts/k8s-watcher/Chart.yaml"
-      #- export CURRENT_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep "version:" | awk '{print $2}')
+      - export CURRENT_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'version:'' | awk '{print $2}')
       #- echo "Current version is $$CURRENT_VERSION"
       #- NEW_VERSION=$(echo $$CURRENT_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
       #- echo "Updating chart version $$CURRENT_VERSION to version $$NEW_VERSION"
