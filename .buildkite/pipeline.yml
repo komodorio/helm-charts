@@ -6,13 +6,13 @@ steps:
     branches: master
   - commands: 
       - export APP_VERSION=0.1.56
-      - echo "Updating app version to \$APP_VERSION\"
-      - "sed -i -e \"s/appVersion.*/appVersion: $APP_VERSION/g\" charts/k8s-watcher/Chart.yaml"
-      - CURRENT_VERSION=$(awk '{for (I=1;I<NF;I++) if ($I == "version:") print $(I+1)}' charts/k8s-watcher/Chart.yaml)
-      - echo "Current version is $CURRENT_VERSION"
-      - NEW_VERSION=$(echo $CURRENT_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
-      - echo "Updating chart version $CURRENT_VERSION to version $NEW_VERSION"
-      - "sed -i -e \"s/$CURRENT_VERSION/$NEW_VERSION/g\" charts/k8s-watcher/Chart.yaml"
+      - echo "Updating app version to $$APP_VERSION"
+      - "sed -i -e \"s/appVersion.*/appVersion: $$APP_VERSION/g\" charts/k8s-watcher/Chart.yaml"
+      - export CURRENT_VERSION=$(awk '{for (I=1;I<NF;I++) if ($I == "version:") print $(I+1)}' charts/k8s-watcher/Chart.yaml)
+      - echo "Current version is $$CURRENT_VERSION"
+      - NEW_VERSION=$(echo $$CURRENT_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
+      - echo "Updating chart version $$CURRENT_VERSION to version $$NEW_VERSION"
+      - "sed -i -e \"s/$$CURRENT_VERSION/$$NEW_VERSION/g\" charts/k8s-watcher/Chart.yaml"
       - cat charts/k8s-watcher/Chart.yaml
     label: Bump Versions
     branches: "!master"
