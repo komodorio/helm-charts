@@ -5,8 +5,8 @@ steps:
   - block: "release helm chart"
     branches: master
   - commands: 
-      - APP_VERSION="0.1.56"
-      - echo "Updating app version to $APP_VERSION"
+      - export APP_VERSION=0.1.56
+      - echo "Updating app version to \$APP_VERSION\"
       - "sed -i -e \"s/appVersion.*/appVersion: $APP_VERSION/g\" charts/k8s-watcher/Chart.yaml"
       - CURRENT_VERSION=$(awk '{for (I=1;I<NF;I++) if ($I == "version:") print $(I+1)}' charts/k8s-watcher/Chart.yaml)
       - echo "Current version is $CURRENT_VERSION"
