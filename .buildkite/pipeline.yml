@@ -1,0 +1,30 @@
+steps:
+  - command: helm template k8s-watcher charts/k8s-watcher -f charts/k8s-watcher/values.yaml --set apiKey="sanity"
+    label: "helm template check for sanity"
+  - wait
+  - block: "release helm chart"
+    branches: master
+  - label: Publish Helm charts to Github Pages
+    env:
+      - GITHUB_PAGES_REPO: "komodorio/helm-charts"
+      - BRANCH: $BUILDKITE_BRANCH
+    command: "GITHUB_PAGES_REPO=komodorio/helm-charts sh publish.sh"
+    branches: master
+  - wait
+  - commands:
+      - echo "Waiting for repository to be updated before checking"
+      - sleep 15
+      - helm repo add komodorio https://helm-charts.komodor.io
+      - helm repo update
+      - helm repo list
+      - helm show all komodorio/k8s-watcher
+    branches: master
+    label: "release to helm chart version to github pages"
+  - wait
+  - commands:
+      - aws eks --region us-east-1 update-kubeconfig --name main
+      - helm repo add komodorio https://helm-charts.komodor.io
+      - helm repo update
+      - helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey="2b08f337-d5e9-4d60-ba6c-53263a77ba9b" --set watcher.collectHistory=true --set watcher.nameBlacklist="{leader,election}" --set watcher.resources.secret=true --set watcher.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set watcher.enableAgentTaskExecution=true --set watcher.allowReadingPodLogs=true
+    label: "Install new watcher version on komodor main :kubernetes: cluster"
+    branches: master
