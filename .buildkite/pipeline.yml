@@ -23,7 +23,7 @@ steps:
   - commands:
       - helm template k8s-watcher ./charts/k8s-watcher -f ./charts/k8s-watcher/values.yaml --set watcher.collectHistory=true --set watcher.nameBlacklist="{leader,election}" --set watcher.nameBlacklist="{leader,election}" --set watcher.resources.secret=false --set watcher.enableAgentTaskExecution=true --set watcher.allowReadingPodLogs=true --set apiKey="YOUR_APIKEY_AS_BASE_64" > generated.yaml
       - cat generated.yaml | ./charts/k8s-watcher/helm-fan-out.sh charts/k8s-watcher/kube-install
-	    - rm -f generated.yaml
+	    - "rm -f generated.yaml"
 	    - sed -i "s/WU9VUl9BUElLRVlfQVNfQkFTRV82NA==/YOUR_APIKEY_AS_BASE_64/g" charts/k8s-watcher/kube-install/k8s-watcher/templates/secret-credentials.yaml
       - v=$(yq e '.appVersion' charts/k8s-watcher/Chart.yaml)
       - cd manifests/base
