@@ -15,7 +15,7 @@ steps:
     label: Bump Versions
     branches: master
 
-  - command: make --version
+  - command: make docker-generate-kube
     label: Templating
 
   - block: "release helm chart"
