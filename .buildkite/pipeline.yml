@@ -5,17 +5,14 @@ steps:
   - block: "release helm chart"
     branches: master
   - commands: 
-      - APP_VERSION=0.1.56
       - echo "Updating app version to $$APP_VERSION"
       - "sed -i -e \"s/appVersion.*/appVersion: $$APP_VERSION/g\" charts/k8s-watcher/Chart.yaml"
       - CURRENT_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'version:' | awk '{print \$2}')
       - NEW_VERSION=$(echo $$CURRENT_VERSION | awk -F. '{\$NF = \$NF + 1;} 1' | sed 's/ /./g')
       - echo "Updating chart version from $$CURRENT_VERSION to $$NEW_VERSION"
       - "sed -i -e \"s/$$CURRENT_VERSION/$$NEW_VERSION/g\" charts/k8s-watcher/Chart.yaml"
-      - sleep 10
-      - cat charts/k8s-watcher/Chart.yaml
     label: Bump Versions
-    branches: "!master"
+    branches: master
   - label: Publish Helm charts to Github Pages
     env:
       - GITHUB_PAGES_REPO: "komodorio/helm-charts"
@@ -37,7 +34,7 @@ steps:
       - aws eks --region us-east-1 update-kubeconfig --name main
       - helm repo add komodorio https://helm-charts.komodor.io
       - helm repo update
-      - helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=$API_KEY --set watcher.collectHistory=true --set watcher.nameBlacklist="{leader,election}" --set watcher.resources.secret=true --set watcher.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set watcher.enableAgentTaskExecution=true --set watcher.allowReadingPodLogs=true
+      - helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=$$API_KEY --set watcher.collectHistory=true --set watcher.nameBlacklist="{leader,election}" --set watcher.resources.secret=true --set watcher.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set watcher.enableAgentTaskExecution=true --set watcher.allowReadingPodLogs=true
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
