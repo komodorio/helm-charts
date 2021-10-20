@@ -2,16 +2,18 @@ steps:
   - command: helm template k8s-watcher charts/k8s-watcher -f charts/k8s-watcher/values.yaml --set apiKey="sanity"
     label: "helm template check for sanity"
   - wait
-  - commands: 
-    - echo "Updating app version to $$APP_VERSION"
-    - "sed -i -e \"s/appVersion.*/appVersion: $$APP_VERSION/g\" charts/k8s-watcher/Chart.yaml"
-    - CURRENT_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'version:' | awk '{print \$2}')
-    - NEW_VERSION=$(echo $$CURRENT_VERSION | awk -F. '{\$NF = \$NF + 1;} 1' | sed 's/ /./g')
-    - echo "Updating chart version from $$CURRENT_VERSION to $$NEW_VERSION"
-    - "sed -i -e \"s/$$CURRENT_VERSION/$$NEW_VERSION/g\" charts/k8s-watcher/Chart.yaml"
-    - cat charts/k8s-watcher/Chart.yaml
-  label: Bump Versions
-  branches: "!master"
+
+  - commands:
+      - echo "Updating app version to $$APP_VERSION"
+      - "sed -i -e \"s/appVersion.*/appVersion: $$APP_VERSION/g\" charts/k8s-watcher/Chart.yaml"
+      - CURRENT_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'version:' | awk '{print \$2}')
+      - NEW_VERSION=$(echo $$CURRENT_VERSION | awk -F. '{\$NF = \$NF + 1;} 1' | sed 's/ /./g')
+      - echo "Updating chart version from $$CURRENT_VERSION to $$NEW_VERSION"
+      - "sed -i -e \"s/$$CURRENT_VERSION/$$NEW_VERSION/g\" charts/k8s-watcher/Chart.yaml"
+      - cat charts/k8s-watcher/Chart.yaml
+    label: Bump Versions
+    branches: "!master"
+
   - block: "release helm chart"
     branches: master
   - label: Publish Helm charts to Github Pages
@@ -21,6 +23,7 @@ steps:
     command: "GITHUB_PAGES_REPO=komodorio/helm-charts sh publish.sh"
     branches: master
   - wait
+
   - commands:
       - echo "Waiting for repository to be updated before checking"
       - sleep 15
@@ -31,6 +34,7 @@ steps:
     branches: master
     label: "release to helm chart version to github pages"
   - wait
+
   - commands:
       - aws eks --region us-east-1 update-kubeconfig --name main
       - helm repo add komodorio https://helm-charts.komodor.io
