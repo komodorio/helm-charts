@@ -15,7 +15,12 @@ steps:
     label: Bump Versions
     branches: master
 
-  - command: ls -la
+  - commands:
+      - make generate-kube
+      - v=$(yq e '.appVersion' charts/k8s-watcher/Chart.yaml)
+      - cd manifests/base
+      - kustomize edit set image komodorio/k8s-watcher=komodorio/k8s-watcher:$$v
+      - kustomize edit set label app.kubernetes.io/watcher-version:$$v
     label: Templating
 
   - block: "release helm chart"
