@@ -13,14 +13,16 @@ steps:
       - "sed -i -e \"s/$$CURRENT_VERSION/$$NEW_VERSION/g\" charts/k8s-watcher/Chart.yaml"
       - cat charts/k8s-watcher/Chart.yaml
     label: Bump Versions
-    branches: master
+    branches: "!master"
 
   - commands:
+      - cat charts/k8s-watcher/Chart.yaml
       - make generate-kube
       - v=$(yq e '.appVersion' charts/k8s-watcher/Chart.yaml)
       - cd manifests/base
       - kustomize edit set image komodorio/k8s-watcher=komodorio/k8s-watcher:$$v
       - kustomize edit set label app.kubernetes.io/watcher-version:$$v
+      - git status
     label: Templating
 
   - block: "release helm chart"
