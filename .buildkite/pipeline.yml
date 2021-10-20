@@ -4,6 +4,10 @@ steps:
   - wait
 
   - commands:
+      - "git config user.email buildkite@users.noreply.github.com"
+      - "git config user.name buildkite"
+      - git fetch --tags
+      #- git checkout master
       #- APP_VERSION=$(buildkite-agent meta-data get "version" --job ${PARENT_JOB_ID})
       - APP_VERSION=0.1.57
       - echo "Updating app version to $$APP_VERSION"
@@ -12,13 +16,22 @@ steps:
       - NEW_VERSION=$(echo $$CURRENT_VERSION | awk -F. '{\$NF = \$NF + 1;} 1' | sed 's/ /./g')
       - echo "Updating chart version from $$CURRENT_VERSION to $$NEW_VERSION"
       - "sed -i -e \"s/$$CURRENT_VERSION/$$NEW_VERSION/g\" charts/k8s-watcher/Chart.yaml"
-      - cat charts/k8s-watcher/Chart.yaml
+      - git status
     label: Bump Versions
-    branches: "!master"
+    #branches: master
 
   - commands:
-      - cat charts/k8s-watcher/Chart.yaml
-      - make generate-kube
+      - helm template k8s-watcher ./charts/k8s-watcher -f ./charts/k8s-watcher/values.yaml \
+        --set watcher.collectHistory=true \
+        --set watcher.nameBlacklist="{leader,election}" \
+        --set watcher.nameBlacklist="{leader,election}" \
+        --set watcher.resources.secret=false \
+        --set watcher.enableAgentTaskExecution=true \
+        --set watcher.allowReadingPodLogs=true \
+        --set apiKey="YOUR_APIKEY_AS_BASE_64" > generated.yaml
+      - cat generated.yaml | ./charts/k8s-watcher/helm-fan-out.sh charts/k8s-watcher/kube-install
+	    - rm generated.yaml
+	    - sed -i "s/WU9VUl9BUElLRVlfQVNfQkFTRV82NA==/YOUR_APIKEY_AS_BASE_64/g" charts/k8s-watcher/kube-install/k8s-watcher/templates/secret-credentials.yaml
       - v=$(yq e '.appVersion' charts/k8s-watcher/Chart.yaml)
       - cd manifests/base
       - kustomize edit set image komodorio/k8s-watcher=komodorio/k8s-watcher:$$v
