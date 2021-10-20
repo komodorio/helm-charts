@@ -4,7 +4,8 @@ steps:
   - wait
 
   - commands:
-      - APP_VERSION=$(buildkite-agent meta-data get "version" --job ${PARENT_JOB_ID})
+      #- APP_VERSION=$(buildkite-agent meta-data get "version" --job ${PARENT_JOB_ID})
+      - APP_VERSION=0.1.57
       - echo "Updating app version to $$APP_VERSION"
       - "sed -i -e \"s/appVersion.*/appVersion: $$APP_VERSION/g\" charts/k8s-watcher/Chart.yaml"
       - CURRENT_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'version:' | awk '{print \$2}')
