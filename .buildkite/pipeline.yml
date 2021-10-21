@@ -24,7 +24,7 @@ steps:
     branches: "!master"
 
   #- block: "release helm chart"
-    branches: master
+    #branches: master
   - label: Publish Helm charts to Github Pages
     env:
       #- GITHUB_PAGES_REPO: "komodorio/helm-charts"
