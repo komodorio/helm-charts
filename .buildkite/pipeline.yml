@@ -36,12 +36,11 @@ steps:
       - "sed -i -e \"s/appVersion.*/appVersion: $$APP_VERSION/g\" charts/k8s-watcher/Chart.yaml"
       - NEW_VERSION=$(buildkite-agent meta-data get "version")
       - "sed -i -e \"s/version.*/version: $$NEW_VERSION/g\" charts/k8s-watcher/Chart.yaml"
+      - cat charts/k8s-watcher/Chart.yaml
       - make generate-kube
       - cd manifests/base
-      - ls -la
       - kustomize edit set image komodorio/k8s-watcher=komodorio/k8s-watcher:$$APP_VERSION
       - kustomize edit set label app.kubernetes.io/watcher-version:$$APP_VERSION
-      - cat charts/k8s-watcher/Chart.yaml
       - git status
     branches: "!master"
   - wait
