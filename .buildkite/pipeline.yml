@@ -3,14 +3,16 @@ steps:
     label: "helm template check for sanity"
   - wait
 
-  - block: "Bump Versions"
-    branches: master
+  # - block: "Bump Versions"
+  #   branches: master
   - commands:
       - "git config user.email buildkite@users.noreply.github.com"
       - "git config user.name buildkite"
       - git fetch --tags
       - git checkout master
       - APP_VERSION=$(buildkite-agent meta-data get "version" --job ${PARENT_JOB_ID})
+      - echo "APP_VERSION is $$APP_VERSION"
+      - "[ -z \"$$APP_VERSION\" ] && APP_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'appVersion:' | awk '{print \$2}')"
       - echo "Updating app version to $$APP_VERSION"
       - "sed -i -e \"s/appVersion.*/appVersion: $$APP_VERSION/g\" charts/k8s-watcher/Chart.yaml"
       - CURRENT_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'version:' | awk '{print \$2}')
@@ -18,12 +20,12 @@ steps:
       - echo "Updating chart version from $$CURRENT_VERSION to $$NEW_VERSION"
       - "sed -i -e \"s/$$CURRENT_VERSION/$$NEW_VERSION/g\" charts/k8s-watcher/Chart.yaml"
       - "buildkite-agent meta-data set \"version\" \"$$NEW_VERSION\""
-      - "git add charts/k8s-watcher/Chart.yaml"
-      - "git commit -m \"[skip ci] increment chart versions\" || echo \"Already up-to-date\""
-      - "git push -f || echo \"Nothing to push!\""
+      #- "git add charts/k8s-watcher/Chart.yaml"
+      #- "git commit -m \"[skip ci] increment chart versions\" || echo \"Already up-to-date\""
+      #- "git push -f || echo \"Nothing to push!\""
     label: Bump Versions
     key: bump-versions
-    branches: master
+    #branches: master
   - wait
 
   - block: "release helm chart"
