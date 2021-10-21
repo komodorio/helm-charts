@@ -11,7 +11,6 @@ steps:
       - git fetch --tags
       - git checkout master
       - APP_VERSION=$(buildkite-agent meta-data get "version" --job ${PARENT_JOB_ID} || true)
-      - echo "APP_VERSION is $$APP_VERSION"
       - if [ -z "$$APP_VERSION" ]; then APP_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'appVersion:' | awk '{print \$2}'); fi
       - echo "Updating app version to $$APP_VERSION"
       - "sed -i -e \"s/appVersion.*/appVersion: $$APP_VERSION/g\" charts/k8s-watcher/Chart.yaml"
@@ -28,14 +27,15 @@ steps:
     #branches: master
   - wait
 
-  - block: "release helm chart"
-    branches: master
+  #- block: "release helm chart"
+    #branches: master
   - label: Publish Helm charts to Github Pages
     env:
-      - GITHUB_PAGES_REPO: "komodorio/helm-charts"
+      #- GITHUB_PAGES_REPO: "komodorio/helm-charts"
       - BRANCH: $BUILDKITE_BRANCH
     commands:
-      - APP_VERSION=$(buildkite-agent meta-data get "version" --job ${PARENT_JOB_ID})
+      - APP_VERSION=$(buildkite-agent meta-data get "version" --job ${PARENT_JOB_ID} || true)
+      - if [ -z "$$APP_VERSION" ]; then APP_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'appVersion:' | awk '{print \$2}'); fi
       - "sed -i -e \"s/appVersion.*/appVersion: $$APP_VERSION/g\" charts/k8s-watcher/Chart.yaml"
       - NEW_VERSION=$(buildkite-agent meta-data get "version")
       - "sed -i -e \"s/version.*/version: $$NEW_VERSION/g\" charts/k8s-watcher/Chart.yaml"
@@ -43,8 +43,9 @@ steps:
       - cd manifests/base
       - kustomize edit set image komodorio/k8s-watcher=komodorio/k8s-watcher:$$APP_VERSION
       - kustomize edit set label app.kubernetes.io/watcher-version:$$APP_VERSION
-      - "GITHUB_PAGES_REPO=komodorio/helm-charts sh publish.sh"
-    branches: master
+      - git status
+      #- "GITHUB_PAGES_REPO=komodorio/helm-charts sh publish.sh"
+    #branches: master
     depends_on: "bump-versions"
   - wait
 
