@@ -22,6 +22,7 @@ steps:
       #- "git push -f || echo \"Nothing to push!\""
     label: Bump Versions
     branches: "!master"
+  - wait
 
   #- block: "release helm chart"
     #branches: master
