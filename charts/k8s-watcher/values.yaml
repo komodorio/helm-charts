@@ -5,6 +5,7 @@ image:
   pullPolicy: IfNotPresent
 
 namespace: komodor
+createNamespace: true
 
 # enableMemLimitChecks will use downward API to tell the pod what is the allocated memory
 # when the allocated memory is almost full the agent will stop receiving new events

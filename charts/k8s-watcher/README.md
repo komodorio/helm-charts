@@ -140,6 +140,7 @@ The following table lists the configurable parameters of the chart and their def
 | `watcher.controller.resync.period`        | Resync period (in minutes, minimum 5) to resync the state of selected controllers (deployment, daemonset, statefulset)                                                           | `"0"`                                      |
 | `watcher.enableAgentTaskExecution`        | Enable to the agent to execute tasks in the cluster such as log streaming                                                                                                        | `false`                                    |
 | `watcher.allowReadingPodLogs`.            | Enable the agent to read pod logs from the cluster                                                                                                                               | `false`                                    |
+| `createNamespace`            | Creates the namespace                                                                                                                              | `true`                                    |
 
 The above parameters map to a yaml configuration file used by the watcher.
 
