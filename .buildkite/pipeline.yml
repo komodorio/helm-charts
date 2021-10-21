@@ -10,7 +10,7 @@ steps:
       - "git config user.name buildkite"
       - git fetch --tags
       - git checkout master
-      - APP_VERSION=$(buildkite-agent meta-data get "version" --job ${PARENT_JOB_ID})
+      - APP_VERSION=$(buildkite-agent meta-data get "version" --job ${PARENT_JOB_ID} || true)
       - echo "APP_VERSION is $$APP_VERSION"
       - if [ -z "$$APP_VERSION" ]; then APP_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'appVersion:' | awk '{print \$2}'); fi
       - echo "Updating app version to $$APP_VERSION"
