@@ -43,7 +43,7 @@ steps:
       - cd manifests/base
       - kustomize edit set image komodorio/k8s-watcher=komodorio/k8s-watcher:$$APP_VERSION
       - kustomize edit set label app.kubernetes.io/watcher-version:$$APP_VERSION
-      - git status
+      - cd ../..
       - "GITHUB_PAGES_REPO=komodorio/helm-charts sh publish.sh"
     branches: master
     depends_on: "bump-versions"
