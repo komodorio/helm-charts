@@ -44,6 +44,11 @@ steps:
       - kustomize edit set image komodorio/k8s-watcher=komodorio/k8s-watcher:$$APP_VERSION
       - kustomize edit set label app.kubernetes.io/watcher-version:$$APP_VERSION
       - cd ../..
+      - "git config user.email buildkite@users.noreply.github.com"
+      - "git config user.name buildkite"
+      - "git add manifests && git add charts/k8s-watcher"
+      - "git commit -m \"[skip ci] update generated manifests\" || echo \"Already up-to-date\""
+      - "git push -f || echo \"Nothing to push!\""
       - "GITHUB_PAGES_REPO=komodorio/helm-charts sh publish.sh"
     branches: master
     depends_on: "bump-versions"
