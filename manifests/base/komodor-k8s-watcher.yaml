@@ -15,7 +15,7 @@ resources:
   configMap: true
   daemonSet: true
   deployment: true
-  event: false
+  event: true
   ingress: true
   job: true
   namespace: true
