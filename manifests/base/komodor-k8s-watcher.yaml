@@ -5,10 +5,10 @@ controller:
     period: "0"
 enableAgentTaskExecution: false
 nameBlacklist:
-- leader
-- election
+  - leader
+  - election
 namespacesBlacklist:
-- kube-system
+  - kube-system
 redact: []
 resources:
   clusterRole: true
@@ -29,6 +29,7 @@ resources:
   service: true
   serviceAccount: true
   statefulSet: true
+  storageClass: true
 servers:
   healthCheck: {}
 watchNamespace: all
