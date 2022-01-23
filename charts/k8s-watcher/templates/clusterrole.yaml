@@ -43,6 +43,9 @@ rules:
 {{- if .Values.watcher.resources.secret }}
     - secrets
 {{- end }}
+{{- if .Values.watcher.resources.endpoints }}
+    - endpoints
+{{- end }}
     verbs:
     - get
     - watch
@@ -98,6 +101,16 @@ rules:
     verbs:
     - "get"
     - "list"
+{{- end }}
+{{- if .Values.watcher.resources.storageClass }}
+  - apiGroups:
+    - storage.k8s.io
+    resources:
+    - storageclasses
+    verbs:
+    - get
+    - watch
+    - list
 {{- end }}
         
 ---
