@@ -22,6 +22,7 @@ data:
       configMap: true
       daemonSet: true
       deployment: true
+      endpoints: true
       event: true
       ingress: true
       job: true
@@ -36,6 +37,7 @@ data:
       service: true
       serviceAccount: true
       statefulSet: true
+      storageClass: true
     servers:
       healthCheck: {}
     watchNamespace: all
