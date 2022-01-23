@@ -30,6 +30,7 @@ resources:
   serviceAccount: true
   statefulSet: true
   storageClass: true
+  endpoints: true
 servers:
   healthCheck: {}
 watchNamespace: all

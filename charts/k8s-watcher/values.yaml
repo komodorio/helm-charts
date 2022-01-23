@@ -68,6 +68,8 @@ watcher:
       secret: false
       configMap: true
       ingress: true
+      endpoints: true
+      storageClass: true
   controller:
     resync:
       period: "0"
