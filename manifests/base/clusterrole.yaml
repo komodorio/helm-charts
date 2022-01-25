@@ -6,6 +6,7 @@ rules:
   - apiGroups:
     - ""
     resources:
+    - events
     - pods
     - replicationcontrollers
     - services
@@ -15,6 +16,7 @@ rules:
     - persistentvolumes
     - persistentvolumeclaims
     - serviceaccounts
+    - endpoints
     verbs:
     - get
     - watch
