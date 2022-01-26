@@ -2,16 +2,6 @@ apiVersion: v1
 entries:
   k8s-watcher:
   - apiVersion: v1
-    appVersion: 0.1.68
-    created: "2022-01-26T10:35:39.332013948Z"
-    description: Watches and send kubernetes resource-related events
-    digest: 2bcd1eb89da5ec6085711ffa4d12efbe17caa4a58fd01637c629eda1cba0ceb9
-    icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
-    name: k8s-watcher
-    urls:
-    - k8s-watcher/k8s-watcher-0.2.4.tgz
-    version: 0.2.4
-  - apiVersion: v1
     appVersion: 0.1.69
     created: "2022-01-26T10:35:39.331364866Z"
     description: Watches and send kubernetes resource-related events
