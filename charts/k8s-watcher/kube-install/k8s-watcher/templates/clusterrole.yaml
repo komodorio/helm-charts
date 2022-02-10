@@ -74,6 +74,23 @@ rules:
     - get
     - watch
     - list
+  # Required to validate if enabled CRDs are enabled on cluster
+  - apiGroups:
+    - apiextensions.k8s.io
+    resources:
+    - customresourcedefinitions
+    verbs:
+    - get
+    - watch
+    - list
+  - apiGroups:
+    - rollouts.argoproj.io
+    resources:
+    - rollouts
+    verbs:
+    - get
+    - watch
+    - list
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
