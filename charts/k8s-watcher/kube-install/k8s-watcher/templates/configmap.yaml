@@ -18,6 +18,7 @@ data:
     - kube-system
     redact: []
     resources:
+      argoRollout: true
       clusterRole: true
       configMap: true
       daemonSet: true
