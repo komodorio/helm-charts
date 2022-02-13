@@ -123,9 +123,13 @@ rules:
     - list
 {{- if .Values.watcher.resources.rollout }}
   - apiGroups:
-    - rollouts.argoproj.io
+    - argoproj.io
     resources:
     - rollouts
+    - rollouts/status
+    - rollouts/finalizers
+    - analysistemplates
+    - clusteranalysistemplates
     verbs:
     - get
     - watch
