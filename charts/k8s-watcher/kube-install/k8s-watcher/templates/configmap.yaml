@@ -18,7 +18,7 @@ data:
     - kube-system
     redact: []
     resources:
-      argoRollout: true
+      rollout: true
       clusterRole: true
       configMap: true
       daemonSet: true
@@ -43,3 +43,4 @@ data:
       healthCheck: {}
     watchNamespace: all
 ---
+

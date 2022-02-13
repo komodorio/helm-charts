@@ -121,7 +121,7 @@ rules:
     - get
     - watch
     - list
-{{- if .Values.watcher.resources.argoRollout }}
+{{- if .Values.watcher.resources.rollout }}
   - apiGroups:
     - rollouts.argoproj.io
     resources:
