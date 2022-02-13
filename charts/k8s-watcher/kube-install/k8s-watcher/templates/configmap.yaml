@@ -18,7 +18,6 @@ data:
     - kube-system
     redact: []
     resources:
-      argoRollout: true
       clusterRole: true
       configMap: true
       daemonSet: true
@@ -34,6 +33,7 @@ data:
       pod: true
       replicaSet: true
       replicationController: true
+      rollout: true
       secret: false
       service: true
       serviceAccount: true

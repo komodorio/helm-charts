@@ -70,7 +70,7 @@ watcher:
     ingress: true
     endpoints: true
     storageClass: true
-    argoRollout: true
+    rollout: true
   controller:
     resync:
       period: "0"
