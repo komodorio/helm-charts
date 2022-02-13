@@ -1,5 +1,7 @@
 steps:
   - command: helm template k8s-watcher charts/k8s-watcher -f charts/k8s-watcher/values.yaml --set apiKey="sanity"
+    agents:
+      builder: "dind"
     label: "helm template check for sanity"
   - wait
 
@@ -13,15 +15,17 @@ steps:
       - APP_VERSION=$(buildkite-agent meta-data get "version" --job ${PARENT_JOB_ID} || true)
       - if [ -z "$$APP_VERSION" ]; then APP_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'appVersion:' | awk '{print \$2}'); fi
       - echo "Updating app version to $$APP_VERSION"
-      - "sed -i -e \"s/appVersion.*/appVersion: $$APP_VERSION/g\" charts/k8s-watcher/Chart.yaml"
+      - 'sed -i -e "s/appVersion.*/appVersion: $$APP_VERSION/g" charts/k8s-watcher/Chart.yaml'
       - CURRENT_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'version:' | awk '{print \$2}')
       - NEW_VERSION=$(echo $$CURRENT_VERSION | awk -F. '{\$NF = \$NF + 1;} 1' | sed 's/ /./g')
       - echo "Updating chart version from $$CURRENT_VERSION to $$NEW_VERSION"
-      - "sed -i -e \"s/$$CURRENT_VERSION/$$NEW_VERSION/g\" charts/k8s-watcher/Chart.yaml"
-      - "buildkite-agent meta-data set \"version\" \"$$NEW_VERSION\""
+      - 'sed -i -e "s/$$CURRENT_VERSION/$$NEW_VERSION/g" charts/k8s-watcher/Chart.yaml'
+      - 'buildkite-agent meta-data set "version" "$$NEW_VERSION"'
       - "git add charts/k8s-watcher/Chart.yaml"
-      - "git commit -m \"[skip ci] increment chart versions\" || echo \"Already up-to-date\""
-      - "git push -f || echo \"Nothing to push!\""
+      - 'git commit -m "[skip ci] increment chart versions" || echo "Already up-to-date"'
+      - 'git push -f || echo "Nothing to push!"'
+    agents:
+      builder: "dind"
     label: Bump Versions
     key: bump-versions
     branches: master
@@ -39,9 +43,9 @@ steps:
       - "git checkout master"
       - APP_VERSION=$(buildkite-agent meta-data get "version" --job ${PARENT_JOB_ID} || true)
       - if [ -z "$$APP_VERSION" ]; then APP_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'appVersion:' | awk '{print \$2}'); fi
-      - "sed -i -e \"s/appVersion.*/appVersion: $$APP_VERSION/g\" charts/k8s-watcher/Chart.yaml"
+      - 'sed -i -e "s/appVersion.*/appVersion: $$APP_VERSION/g" charts/k8s-watcher/Chart.yaml'
       - NEW_VERSION=$(buildkite-agent meta-data get "version")
-      - "sed -i -e \"s/version.*/version: $$NEW_VERSION/g\" charts/k8s-watcher/Chart.yaml"
+      - 'sed -i -e "s/version.*/version: $$NEW_VERSION/g" charts/k8s-watcher/Chart.yaml'
       - make generate-kube
       - cd manifests/base
       - kustomize edit set image komodorio/k8s-watcher=komodorio/k8s-watcher:$$APP_VERSION
@@ -49,9 +53,11 @@ steps:
       - cd ../..
       - "git add manifests && git add charts/k8s-watcher"
       - "git status"
-      - "git commit -m \"[skip ci] update generated manifests\" && git tag $$APP_VERSION || echo \"Already up-to-date\""
-      - "git push -f && git push --tags || echo \"Nothing to push!\""
+      - 'git commit -m "[skip ci] update generated manifests" && git tag $$APP_VERSION || echo "Already up-to-date"'
+      - 'git push -f && git push --tags || echo "Nothing to push!"'
       - "GITHUB_PAGES_REPO=komodorio/helm-charts sh publish.sh"
+    agents:
+      builder: "dind"
     branches: master
     depends_on: "bump-versions"
   - wait
@@ -63,6 +69,8 @@ steps:
       - helm repo update
       - helm repo list
       - helm show all komodorio/k8s-watcher
+    agents:
+      builder: "dind"
     branches: master
     label: "release to helm chart version to github pages"
   - wait
@@ -72,9 +80,11 @@ steps:
       - helm repo add komodorio https://helm-charts.komodor.io
       - helm repo update
       - helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=$$API_KEY --set watcher.collectHistory=true --set watcher.nameBlacklist="{leader,election}" --set watcher.resources.secret=true --set watcher.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set watcher.enableAgentTaskExecution=true --set watcher.allowReadingPodLogs=true
+    agents:
+      builder: "dind"
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
-            API_KEY: /komodor/production/kubernetes/api-key 
+            API_KEY: /komodor/production/kubernetes/api-key
     label: "Install new watcher version on komodor main :kubernetes: cluster"
     branches: master
