@@ -135,6 +135,17 @@ rules:
     - watch
     - list
 {{- end }}
+{{- if .Values.watcher.resources.metrics }}
+  - apiGroups:
+    - metrics.k8s.io
+    resources:
+    - nodes
+    - pods
+    verbs:
+    - get
+    - watch
+    - list
+{{- end }}
         
 ---
 apiVersion: rbac.authorization.k8s.io/v1

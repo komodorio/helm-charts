@@ -71,6 +71,7 @@ watcher:
     endpoints: true
     storageClass: true
     rollout: true
+    metrics: true
   controller:
     resync:
       period: "0"
