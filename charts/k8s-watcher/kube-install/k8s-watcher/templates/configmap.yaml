@@ -26,6 +26,7 @@ data:
       event: true
       ingress: true
       job: true
+      metrics: true
       namespace: true
       node: true
       persistentVolume: true
