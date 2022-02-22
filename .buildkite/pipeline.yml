@@ -53,7 +53,7 @@ steps:
       - cd ../..
       - "git add manifests && git add charts/k8s-watcher"
       - "git status"
-      - 'git commit -m "[skip ci] update generated manifests" && git tag $$APP_VERSION || echo "Already up-to-date"'
+      - 'git commit -m "[skip ci] update generated manifests" && git tag $$NEW_VERSION || echo "Already up-to-date"'
       - 'git push -f && git push --tags || echo "Nothing to push!"'
       - "GITHUB_PAGES_REPO=komodorio/helm-charts sh publish.sh"
     agents:
