@@ -20,6 +20,7 @@ spec:
         app.kubernetes.io/name: k8s-watcher
         app.kubernetes.io/instance: k8s-watcher
     spec:
+      priorityClassName: system-cluster-critical
       serviceAccountName: k8s-watcher
       containers:
         - name: k8s-watcher
