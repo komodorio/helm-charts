@@ -26,6 +26,7 @@ spec:
       labels:
         {{- include "k8s-watcher.selectorLabels" . | nindent 8 }}
     spec:
+      priorityClassName: system-cluster-critical
       serviceAccountName: {{ include "k8s-watcher.serviceAccountName" . }}
       containers:
         - name: {{ .Chart.Name }}
