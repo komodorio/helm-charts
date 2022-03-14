@@ -18,6 +18,7 @@ resources:
   event: true
   ingress: true
   job: true
+  cronjob: true
   namespace: true
   node: true
   persistentVolume: true

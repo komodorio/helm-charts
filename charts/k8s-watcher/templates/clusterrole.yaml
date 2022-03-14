@@ -70,16 +70,19 @@ rules:
     - get
     - watch
     - list
-{{- if .Values.watcher.resources.job }}
   - apiGroups:
     - batch
     resources:
+{{- if .Values.watcher.resources.job }}
     - jobs
+{{- end }}
+{{- if .Values.watcher.resources.cronjob }}
+    - cronjobs
+{{- end }}
     verbs:
     - get
     - watch
     - list
-{{- end }}
 {{- if .Values.watcher.resources.ingress }}
   - apiGroups:
     - extensions
