@@ -3,4 +3,4 @@ name: k8s-watcher
 description: Watches and send kubernetes resource-related events
 icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
 version: 0.7.2
-appVersion: 0.1.80
+appVersion: 0.1.81
