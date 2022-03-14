@@ -46,6 +46,7 @@ rules:
       - batch
     resources:
       - jobs
+      - cronjobs
     verbs:
       - get
       - watch

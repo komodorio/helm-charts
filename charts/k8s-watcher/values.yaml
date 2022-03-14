@@ -59,6 +59,7 @@ watcher:
     service: true
     pod: true
     job: true
+    cronjob: true
     node: true
     clusterRole: true
     serviceAccount: true

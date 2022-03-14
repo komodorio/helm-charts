@@ -80,6 +80,16 @@ rules:
     - watch
     - list
 {{- end }}
+  {{- if .Values.watcher.resources.cronjob }}
+- apiGroups:
+    - batch
+  resources:
+    - cronjobs
+  verbs:
+    - get
+    - watch
+    - list
+  {{- end }}
 {{- if .Values.watcher.resources.ingress }}
   - apiGroups:
     - extensions
