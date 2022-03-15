@@ -46,6 +46,18 @@ rules:
 {{- if .Values.watcher.resources.endpoints }}
     - endpoints
 {{- end }}
+{{- if .Values.watcher.resources.componentStatus }}
+    - componentstatuses
+{{- end }}
+{{- if .Values.watcher.resources.limitRange }}
+    - limitranges
+{{- end }}
+{{- if .Values.watcher.resources.podTemplate }}
+    - podtemplates
+{{- end }}
+{{- if .Values.watcher.resources.resourceQuota }}
+    - resourcequotas
+{{- end }}
     verbs:
     - get
     - watch
@@ -55,6 +67,15 @@ rules:
     - rbac.authorization.k8s.io
     resources:
     - clusterroles
+{{- if .Values.watcher.resources.clusterRoleBinding }}
+    - clusterrolebindings
+{{- end }}
+{{- if .Values.watcher.resources.roleBinding }}
+    - rolebindings
+{{- end }}
+{{- if .Values.watcher.resources.role }}
+    - roles
+{{- end }}
     verbs:
     - get
     - watch
@@ -66,6 +87,9 @@ rules:
     - daemonsets
     - replicasets
     - statefulsets
+{{- if .Values.watcher.resources.controllerRevision }}
+    - controllerrevisions
+{{- end }}
     verbs:
     - get
     - watch
@@ -88,6 +112,12 @@ rules:
     - extensions
     resources:
     - ingresses
+{{- if .Values.watcher.resources.ingressClass }}
+    - ingressclasses
+{{- end }}
+{{- if .Values.watcher.resources.networkPolicy }}
+    - networkpolicies
+{{- end }}
     verbs:
     - get
     - watch
@@ -118,6 +148,18 @@ rules:
     - storage.k8s.io
     resources:
     - storageclasses
+{{- if .Values.watcher.csiDriver }}
+    - csidrivers
+{{- end }}
+{{- if .Values.watcher.csiNode }}
+    - csinodes
+{{- end }}
+{{- if .Values.watcher.csiStorageCapacity }}
+    - csistoragecapacities
+{{- end }}
+{{- if .Values.watcher.volumeAttachment }}
+    - volumeattachments
+{{- end }}
     verbs:
     - get
     - watch
@@ -152,6 +194,122 @@ rules:
     resources:
     - nodes
     - pods
+    verbs:
+    - get
+    - watch
+    - list
+{{- end }}
+{{- if .Values.watcher.resources.admissionRegistrationResources }}
+  - apiGroups:
+    - admissionregistration.k8s.io
+    resources:
+    - mutatingwebhookconfigurations
+    - validatingwebhookconfigurations
+    verbs:
+    - get
+    - watch
+    - list
+{{- end }}
+{{- if .Values.watcher.resources.tokenReview }}
+  - apiGroups:
+    - authentication.k8s.io
+    resources:
+    - tokenreviews
+    verbs:
+    - get
+    - watch
+    - list
+{{- end }}
+{{- if .Values.watcher.resources.authorizationResources }}
+  - apiGroups:
+    - authorization.k8s.io
+    resources:
+    - localsubjectaccessreviews
+    - selfsubjectaccessreviews
+    - selfsubjectrulesreviews
+    - subjectaccessreviews
+    verbs:
+    - get
+    - watch
+    - list
+{{- end }}
+{{- if .Values.watcher.resources.horizontalPodAutoscaler }}
+  - apiGroups:
+    - autoscaling
+    resources:
+    - horizontalpodautoscalers
+    verbs:
+    - get
+    - watch
+    - list
+{{- end }}
+{{- if .Values.watcher.resources.certificateSigningRequest }}
+  - apiGroups:
+    - certificates.k8s.io
+    resources:
+    - certificatesigningrequests
+    verbs:
+    - get
+    - watch
+    - list
+{{- end }}
+{{- if .Values.watcher.resources.lease }}
+  - apiGroups:
+    - coordination.k8s.io
+    resources:
+    - leases
+    verbs:
+    - get
+    - watch
+    - list
+{{- end }}
+{{- if .Values.watcher.resources.endpointSlice }}
+  - apiGroups:
+    - discovery.k8s.io
+    resources:
+    - endpointslices
+    verbs:
+    - get
+    - watch
+    - list
+{{- end }}
+{{- if .Values.watcher.resources.flowControlResources }}
+  - apiGroups:
+    - flowcontrol.apiserver.k8s.io
+    resources:
+    - flowschemas
+    - prioritylevelconfigurations
+    verbs:
+    - get
+    - watch
+    - list
+{{- end }}
+{{- if .Values.watcher.resources.runtimeClass }}
+  - apiGroups:
+    - node.k8s.io
+    resources:
+    - runtimeclasses
+    verbs:
+    - get
+    - watch
+    - list
+{{- end }}
+{{- if .Values.watcher.resources.policyResources }}
+  - apiGroups:
+    - policy
+    resources:
+    - poddisruptionbudgets
+    - podsecuritypolicies
+    verbs:
+    - get
+    - watch
+    - list
+{{- end }}
+{{- if .Values.watcher.resources.priorityClass }}
+  - apiGroups:
+    - scheduling.k8s.io
+    resources:
+    - priorityclasses
     verbs:
     - get
     - watch
