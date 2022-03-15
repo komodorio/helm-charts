@@ -5,105 +5,222 @@ metadata:
   namespace: komodor
 rules:
   - apiGroups:
-    - ""
+      - ""
     resources:
-    - events
-    - pods
-    - replicationcontrollers
-    - services
-    - namespaces
-    - configmaps
-    - nodes
-    - persistentvolumes
-    - persistentvolumeclaims
-    - serviceaccounts
-    - endpoints
+      - events
+      - pods
+      - replicationcontrollers
+      - services
+      - namespaces
+      - configmaps
+      - nodes
+      - persistentvolumes
+      - persistentvolumeclaims
+      - serviceaccounts
+      - endpoints
+      - componentstatuses
+      - limitranges
+      - podtemplates
+      - resourcequotas
     verbs:
-    - get
-    - watch
-    - list
+      - get
+      - watch
+      - list
   - apiGroups:
-    - rbac
-    - rbac.authorization.k8s.io
+      - rbac
+      - rbac.authorization.k8s.io
     resources:
-    - clusterroles
+      - clusterroles
+      - clusterrolebindings
+      - rolebindings
+      - roles
     verbs:
-    - get
-    - watch
-    - list
+      - get
+      - watch
+      - list
   - apiGroups: # Required as minimum installation
-    - apps
+      - apps
     resources:
-    - deployments
-    - daemonsets
-    - replicasets
-    - statefulsets
+      - deployments
+      - daemonsets
+      - replicasets
+      - statefulsets
+      - controllerrevisions
     verbs:
-    - get
-    - watch
-    - list
+      - get
+      - watch
+      - list
   - apiGroups:
-    - batch
+      - batch
     resources:
-    - jobs
+      - jobs
+      - cronjobs
     verbs:
-    - get
-    - watch
-    - list
+      - get
+      - watch
+      - list
   - apiGroups:
-    - extensions
+      - extensions
     resources:
-    - ingresses
+      - ingresses
     verbs:
-    - get
-    - watch
-    - list
+      - get
+      - watch
+      - list
   - apiGroups:
-    - ""
+      - ""
     resources:
-    - pods
-    - pods/log
+      - pods
+      - pods/log
     verbs:
-    - "get"
-    - "list"
+      - "get"
+      - "list"
   - apiGroups:
-    - storage.k8s.io
+      - storage.k8s.io
     resources:
-    - storageclasses
+      - storageclasses
+      - csidrivers
+      - csinodes
+      - csistoragecapacities
+      - volumeattachments
     verbs:
-    - get
-    - watch
-    - list
+      - get
+      - watch
+      - list
   # Required to validate if enabled CRDs are enabled on cluster
   - apiGroups:
-    - apiextensions.k8s.io
+      - apiextensions.k8s.io
     resources:
-    - customresourcedefinitions
+      - customresourcedefinitions
     verbs:
-    - get
-    - watch
-    - list
+      - get
+      - watch
+      - list
   - apiGroups:
-    - argoproj.io
+      - argoproj.io
     resources:
-    - rollouts
-    - rollouts/status
-    - rollouts/finalizers
-    - analysistemplates
-    - clusteranalysistemplates
+      - rollouts
+      - rollouts/status
+      - rollouts/finalizers
+      - analysistemplates
+      - clusteranalysistemplates
     verbs:
-    - get
-    - watch
-    - list
+      - get
+      - watch
+      - list
   - apiGroups:
-    - metrics.k8s.io
+      - metrics.k8s.io
     resources:
-    - nodes
-    - pods
+      - nodes
+      - pods
     verbs:
-    - get
-    - watch
-    - list
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - admissionregistration.k8s.io
+    resources:
+      - mutatingwebhookconfigurations
+      - validatingwebhookconfigurations
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - authentication.k8s.io
+    resources:
+      - tokenreviews
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - authorization.k8s.io
+    resources:
+      - localsubjectaccessreviews
+      - selfsubjectaccessreviews
+      - selfsubjectrulesreviews
+      - subjectaccessreviews
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - autoscaling
+    resources:
+      - horizontalpodautoscalers
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - certificates.k8s.io
+    resources:
+      - certificatesigningrequests
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - discovery.k8s.io
+    resources:
+      - endpointslices
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - flowcontrol.apiserver.k8s.io
+    resources:
+      - flowschemas
+      - prioritylevelconfigurations
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - ingressclasses
+      - ingresses
+      - networkpolicies
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - node.k8s.io
+    resources:
+      - runtimeclasses
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - policy
+    resources:
+      - poddisruptionbudgets
+      - podsecuritypolicies
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - scheduling.k8s.io
+    resources:
+      - priorityclasses
+    verbs:
+      - get
+      - watch
+      - list
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -118,3 +235,4 @@ subjects:
     name: k8s-watcher
     namespace: komodor
 ---
+
