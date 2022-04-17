@@ -4,7 +4,7 @@ namespace: komodor
 commonLabels:
   app.kubernetes.io/instance: k8s-watcher
   app.kubernetes.io/name: k8s-watcher
-  app.kubernetes.io/watcher-version: 0.1.88
+  app.kubernetes.io/watcher-version: 0.1.89
 resources:
 - clusterrole.yaml
 - deployment.yaml
@@ -12,7 +12,7 @@ resources:
 images:
 - name: komodorio/k8s-watcher
   newName: komodorio/k8s-watcher
-  newTag: 0.1.88
+  newTag: 0.1.89
 configMapGenerator:
 - behavior: create
   files:
