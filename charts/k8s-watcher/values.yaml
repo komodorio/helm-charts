@@ -73,6 +73,29 @@ watcher:
     storageClass: true
     rollout: true
     metrics: true
+    limitRange: true
+    podTemplate: true
+    resourceQuota: true
+    admissionRegistrationResources: true
+    controllerRevision: true
+    authorizationResources: true
+    horizontalPodAutoscaler: true
+    certificateSigningRequest: true
+    lease: true
+    endpointSlice: true
+    flowControlResources: true
+    ingressClass: true
+    networkPolicy: true
+    runtimeClass: true
+    policyResources: true
+    clusterRoleBinding: true
+    roleBinding: true
+    role: true
+    priorityClass: true
+    csiDriver: true
+    csiNode: true
+    csiStorageCapacity: true
+    volumeAttachment: true
   controller:
     resync:
       period: "0"

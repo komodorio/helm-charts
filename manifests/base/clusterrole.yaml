@@ -18,6 +18,9 @@ rules:
       - persistentvolumeclaims
       - serviceaccounts
       - endpoints
+      - limitranges
+      - podtemplates
+      - resourcequotas
     verbs:
       - get
       - watch
@@ -27,6 +30,9 @@ rules:
       - rbac.authorization.k8s.io
     resources:
       - clusterroles
+      - clusterrolebindings
+      - rolebindings
+      - roles
     verbs:
       - get
       - watch
@@ -38,6 +44,7 @@ rules:
       - daemonsets
       - replicasets
       - statefulsets
+      - controllerrevisions
     verbs:
       - get
       - watch
@@ -54,15 +61,29 @@ rules:
   - apiGroups:
       - extensions
     resources:
+      - ingressclasses
       - ingresses
+      - networkpolicies
     verbs:
       - get
       - watch
       - list
   - apiGroups:
+      - ""
+    resources:
+      - pods
+      - pods/log
+    verbs:
+      - "get"
+      - "list"
+  - apiGroups:
       - storage.k8s.io
     resources:
       - storageclasses
+      - csidrivers
+      - csinodes
+      - csistoragecapacities
+      - volumeattachments
     verbs:
       - get
       - watch
@@ -93,6 +114,102 @@ rules:
     resources:
       - nodes
       - pods
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - admissionregistration.k8s.io
+    resources:
+      - mutatingwebhookconfigurations
+      - validatingwebhookconfigurations
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - authorization.k8s.io
+    resources:
+      - localsubjectaccessreviews
+      - selfsubjectaccessreviews
+      - selfsubjectrulesreviews
+      - subjectaccessreviews
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - autoscaling
+    resources:
+      - horizontalpodautoscalers
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - certificates.k8s.io
+    resources:
+      - certificatesigningrequests
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - discovery.k8s.io
+    resources:
+      - endpointslices
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - flowcontrol.apiserver.k8s.io
+    resources:
+      - flowschemas
+      - prioritylevelconfigurations
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - ingressclasses
+      - ingresses
+      - networkpolicies
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - node.k8s.io
+    resources:
+      - runtimeclasses
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - policy
+    resources:
+      - poddisruptionbudgets
+      - podsecuritypolicies
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - scheduling.k8s.io
+    resources:
+      - priorityclasses
     verbs:
       - get
       - watch
