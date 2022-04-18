@@ -4,13 +4,15 @@ metadata:
   labels:
     app: komodor
   name: komodor-critical-pods
-  namespace: komodor
+  {{- if hasKey .Values "namespace" }}
+  namespace: {{ .Values.namespace }}
+  {{- end}}
 spec:
   hard:
     pods: 2
   scopeSelector:
     matchExpressions:
-    - operator: In
-      scopeName: PriorityClass
-      values:
-      - system-cluster-critical
+      - operator: In
+        scopeName: PriorityClass
+        values:
+          - system-cluster-critical
