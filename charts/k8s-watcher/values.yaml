@@ -73,7 +73,6 @@ watcher:
     storageClass: true
     rollout: true
     metrics: true
-    componentStatus: true
     limitRange: true
     podTemplate: true
     resourceQuota: true

@@ -46,9 +46,6 @@ rules:
 {{- if .Values.watcher.resources.endpoints }}
     - endpoints
 {{- end }}
-{{- if .Values.watcher.resources.componentStatus }}
-    - componentstatuses
-{{- end }}
 {{- if .Values.watcher.resources.limitRange }}
     - limitranges
 {{- end }}
@@ -107,11 +104,28 @@ rules:
     - get
     - watch
     - list
-{{- if .Values.watcher.resources.ingress }}
   - apiGroups:
     - extensions
     resources:
+{{- if .Values.watcher.resources.ingress }}
     - ingresses
+{{- end }}
+{{- if .Values.watcher.resources.networkPolicy }}
+    - networkpolicies
+{{- end }}
+{{- if .Values.watcher.resources.ingressClass }}
+    - ingressclasses
+{{- end }}
+    verbs:
+    - get
+    - watch
+    - list
+  - apiGroups:
+    - networking.k8s.io
+    resources:
+{{- if .Values.watcher.resources.ingress }}
+    - ingresses
+{{- end }}  
 {{- if .Values.watcher.resources.ingressClass }}
     - ingressclasses
 {{- end }}
@@ -121,16 +135,7 @@ rules:
     verbs:
     - get
     - watch
-    - list
-  - apiGroups:
-    - networking.k8s.io
-    resources:
-    - ingresses
-    verbs:
-    - get
-    - watch
     - list    
-{{- end }}
 {{- if .Values.watcher.enableAgentTaskExecution }}
   - apiGroups:
     - ""
