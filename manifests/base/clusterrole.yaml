@@ -128,14 +128,6 @@ rules:
       - watch
       - list
   - apiGroups:
-      - authentication.k8s.io
-    resources:
-      - tokenreviews
-    verbs:
-      - get
-      - watch
-      - list
-  - apiGroups:
       - authorization.k8s.io
     resources:
       - localsubjectaccessreviews

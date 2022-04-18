@@ -215,16 +215,6 @@ rules:
     - watch
     - list
 {{- end }}
-{{- if .Values.watcher.resources.tokenReview }}
-  - apiGroups:
-    - authentication.k8s.io
-    resources:
-    - tokenreviews
-    verbs:
-    - get
-    - watch
-    - list
-{{- end }}
 {{- if .Values.watcher.resources.authorizationResources }}
   - apiGroups:
     - authorization.k8s.io

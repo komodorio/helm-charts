@@ -78,7 +78,6 @@ watcher:
     resourceQuota: true
     admissionRegistrationResources: true
     controllerRevision: true
-    tokenReview: true
     authorizationResources: true
     horizontalPodAutoscaler: true
     certificateSigningRequest: true
