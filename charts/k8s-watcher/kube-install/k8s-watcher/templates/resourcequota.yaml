@@ -14,3 +14,4 @@ spec:
         scopeName: PriorityClass
         values:
           - system-cluster-critical
+---
