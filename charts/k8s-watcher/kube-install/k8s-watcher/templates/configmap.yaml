@@ -18,29 +18,52 @@ data:
     - kube-system
     redact: []
     resources:
+      admissionRegistrationResources: true
+      authorizationResources: true
+      certificateSigningRequest: true
       clusterRole: true
+      clusterRoleBinding: true
       configMap: true
+      controllerRevision: true
       cronjob: true
+      csiDriver: true
+      csiNode: true
+      csiStorageCapacity: true
       daemonSet: true
       deployment: true
+      endpointSlice: true
       endpoints: true
       event: true
+      flowControlResources: true
+      horizontalPodAutoscaler: true
       ingress: true
+      ingressClass: true
       job: true
+      lease: true
+      limitRange: true
       metrics: true
       namespace: true
+      networkPolicy: true
       node: true
       persistentVolume: true
       persistentVolumeClaim: true
       pod: true
+      podTemplate: true
+      policyResources: true
+      priorityClass: true
       replicaSet: true
       replicationController: true
+      resourceQuota: true
+      role: true
+      roleBinding: true
       rollout: true
+      runtimeClass: true
       secret: false
       service: true
       serviceAccount: true
       statefulSet: true
       storageClass: true
+      volumeAttachment: true
     servers:
       healthCheck: {}
     watchNamespace: all
