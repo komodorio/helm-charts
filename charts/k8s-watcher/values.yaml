@@ -38,8 +38,8 @@ existingSecret: ""
 apiKey: ""
 
 watcher:
-  enableAgentTaskExecution: false
-  allowReadingPodLogs: false
+  enableAgentTaskExecution: true
+  allowReadingPodLogs: true
   # clusterName: ""
   servers:
     healthCheck: {}
