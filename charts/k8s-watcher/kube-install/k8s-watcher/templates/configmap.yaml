@@ -14,7 +14,8 @@ data:
     nameBlacklist:
     - leader
     - election
-    namespacesBlacklist:
+    namelist: []
+    namespacesDenylist:
     - kube-system
     redact: []
     resources:

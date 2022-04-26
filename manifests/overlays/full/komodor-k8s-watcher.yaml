@@ -5,11 +5,11 @@ controller:
   resync:
     period: "5"
 enableAgentTaskExecution: true
-nameBlacklist:
-- leader
-- election
-namespacesBlacklist:
-- kube-system
+nameDenylist:
+  - leader
+  - election
+namespacesDenylist:
+  - kube-system
 redact: []
 resources:
   clusterRole: true

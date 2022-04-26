@@ -45,9 +45,9 @@ watcher:
     healthCheck: {}
   collectHistory: true
   watchNamespace: all
-  namespacesBlacklist:
+  namespacesDenylist:
     - kube-system
-  nameBlacklist: []
+  namelist: []
   redact: []
   resources:
     event: true
