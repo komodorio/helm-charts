@@ -4,11 +4,10 @@ controller:
   resync:
     period: "0"
 enableAgentTaskExecution: false
-nameBlacklist:
+nameDenylist:
   - leader
   - election
-namespacesBlacklist:
-  - kube-system
+namespacesDenylist: []
 redact: []
 resources:
   clusterRole: true
