@@ -168,6 +168,8 @@ The following table lists the configurable parameters of the chart and their def
 | `watcher.enableAgentTaskExecution`                 | Enable to the agent to execute tasks in the cluster such as log streaming                                                                                                        | `true`                                    |
 | `watcher.allowReadingPodLogs`.                     | Enable the agent to read pod logs from the cluster                                                                                                                               | `true`                                    |
 | `createNamespace`                                  | Creates the namespace                                                                                                                                                            | `true`                                     |
+| `podAnnotations`                                  | Adds custom annotations on the agent pod - Example: `--set podAnnotations."app\.komodor\.com/app"="komodor-agent"`                                                                                                                                                        | `{}`                                     |
+| `deploymentAnnotations`                                  | Adds custom annotations on the agent deployment - Example: `--set deploymentAnnotations."app\.komodor\.com/app"="komodor-agent"`                                                                                                                                                            | `{}`                                     |
 
 The above parameters map to a yaml configuration file used by the watcher.
 
