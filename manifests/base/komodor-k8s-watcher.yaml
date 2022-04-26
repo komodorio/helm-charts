@@ -7,8 +7,7 @@ enableAgentTaskExecution: false
 nameDenylist:
   - leader
   - election
-namespacesDenylist:
-  - kube-system
+namespacesDenylist: []
 redact: []
 resources:
   clusterRole: true
