@@ -3,7 +3,7 @@ deploy:
 	 helm upgrade --install k8s-watcher komodorio/k8s-watcher --debug \
 	 --set apiKey=${KOMOKW_API_KEY} \
 	 --set watcher.collectHistory=true \
-	 --set watcher.nameBlacklist="{leader,election}" \
+	 --set watcher.nameDenylist="{leader,election}" \
 	 --set watcher.resources.secret=false \
 	 --set watcher.enableAgentTaskExecution=true \
 	 --set watcher.allowReadingPodLogs=true
@@ -11,8 +11,8 @@ deploy:
 generate-kube:
 	helm template k8s-watcher ./charts/k8s-watcher -f ./charts/k8s-watcher/values.yaml \
 	--set watcher.collectHistory=true \
-	--set watcher.nameBlacklist="{leader,election}" \
-	--set watcher.nameBlacklist="{leader,election}" \
+	--set watcher.nameDenylist="{leader,election}" \
+	--set watcher.nameDenylist="{leader,election}" \
 	--set watcher.resources.secret=false \
 	--set watcher.enableAgentTaskExecution=true \
 	--set watcher.allowReadingPodLogs=true \

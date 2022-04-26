@@ -11,7 +11,7 @@ data:
       resync:
         period: "0"
     enableAgentTaskExecution: true
-    nameBlacklist:
+    nameDenylist:
     - leader
     - election
     namelist: []

@@ -79,7 +79,7 @@ steps:
       - aws eks --region us-east-1 update-kubeconfig --name main
       - helm repo add komodorio https://helm-charts.komodor.io
       - helm repo update
-      - helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=$$API_KEY --set watcher.collectHistory=true --set watcher.nameBlacklist="{leader,election}" --set watcher.resources.secret=true --set watcher.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set watcher.enableAgentTaskExecution=true --set watcher.allowReadingPodLogs=true
+      - helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=$$API_KEY --set watcher.collectHistory=true --set watcher.nameDenylist="{leader,election}" --set watcher.resources.secret=true --set watcher.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set watcher.enableAgentTaskExecution=true --set watcher.allowReadingPodLogs=true
     agents:
       builder: "dind"
     plugins:
