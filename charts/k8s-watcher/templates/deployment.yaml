@@ -7,6 +7,10 @@ metadata:
   {{- end }}
   labels:
     {{- include "k8s-watcher.labels" . | nindent 4 }}
+  {{- with .Values.deploymentAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
