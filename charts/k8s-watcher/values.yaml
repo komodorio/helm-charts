@@ -49,7 +49,7 @@ watcher:
   collectHistory: true
   watchNamespace: all
   namespacesDenylist: []
-  namelist: []
+  nameDenylist: []
   redact: []
   resources:
     event: true

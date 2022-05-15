@@ -11,25 +11,52 @@ nameDenylist:
 namespacesDenylist: []
 redact: []
 resources:
-  clusterRole: true
-  configMap: true
-  daemonSet: true
+  event: true
   deployment: true
-  event: false
-  ingress: true
+  replicationController: true
+  replicaSet: true
+  daemonSet: true
+  statefulSet: true
+  service: true
+  pod: true
   job: true
   cronjob: true
-  namespace: true
   node: true
+  clusterRole: true
+  serviceAccount: true
   persistentVolume: true
   persistentVolumeClaim: true
-  pod: true
-  replicaSet: true
-  replicationController: true
+  namespace: true
   secret: false
-  service: true
-  serviceAccount: true
-  statefulSet: true
+  configMap: true
+  ingress: true
+  endpoints: true
+  storageClass: true
+  rollout: true
+  metrics: true
+  limitRange: true
+  podTemplate: true
+  resourceQuota: true
+  admissionRegistrationResources: true
+  controllerRevision: true
+  authorizationResources: true
+  horizontalPodAutoscaler: true
+  certificateSigningRequest: true
+  lease: true
+  endpointSlice: true
+  flowControlResources: true
+  ingressClass: true
+  networkPolicy: true
+  runtimeClass: true
+  policyResources: true
+  clusterRoleBinding: true
+  roleBinding: true
+  role: true
+  priorityClass: true
+  csiDriver: true
+  csiNode: true
+  csiStorageCapacity: true
+  volumeAttachment: true
 servers:
   healthCheck: {}
 watchNamespace: all
