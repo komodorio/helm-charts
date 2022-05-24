@@ -31,6 +31,17 @@ steps:
     branches: master
   - wait
 
+  - commands:
+      - buildkite-agent meta-data set "short-sha" "$$(git rev-parse --short HEAD)"
+      - echo "Starting E2E test on staging environment"
+      - komo test trigger testcafe --env staging --current-build-tag $(buildkite-agent meta-data get "short-sha")-amd --test-file "./src/runner.ts --concurrency 4"
+    agents:
+      builder: "dind"
+    branches: master
+    key: 'staging-e2e'
+    label: ":rooster: E2E Test - Staging"
+  - wait
+
   - block: "release helm chart"
     branches: master
   - label: Publish Helm charts to Github Pages
@@ -86,5 +97,5 @@ steps:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
             API_KEY: /komodor/production/kubernetes/api-key
-    label: "Install new watcher version on komodor main :kubernetes: cluster"
+    label: "Install new agent version on komodor main :kubernetes: cluster"
     branches: master
