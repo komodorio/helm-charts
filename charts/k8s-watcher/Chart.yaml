@@ -3,4 +3,4 @@ name: k8s-watcher
 description: Watches and send kubernetes resource-related events
 icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/placeholder-logo.png
 version: 0.10.8
-appVersion: Missing meta-data key. See: `buildkite-agent meta-data get --help`
+appVersion: 0.1.96
