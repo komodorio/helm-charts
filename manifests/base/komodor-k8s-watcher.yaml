@@ -9,6 +9,7 @@ nameDenylist:
   - election
 namespacesDenylist: []
 redact: []
+actions: false
 resources:
   clusterRole: true
   configMap: true
