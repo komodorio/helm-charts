@@ -15,6 +15,7 @@ steps:
       - APP_VERSION=$(buildkite-agent meta-data get "version" --job ${PARENT_JOB_ID}) || APP_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'appVersion:' | awk '{print \$2}')
       - echo "Updating app version to $$APP_VERSION"
       - 'sed -i -e "s/appVersion.*/appVersion: $$APP_VERSION/g" charts/k8s-watcher/Chart.yaml'
+      - 'buildkite-agent meta-data set "agent-version" "$$APP_VERSION"'
       - CURRENT_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'version:' | awk '{print \$2}')
       - NEW_VERSION=$(echo $$CURRENT_VERSION | awk -F. '{\$NF = \$NF + 1;} 1' | sed 's/ /./g')
       - echo "Updating chart version from $$CURRENT_VERSION to $$NEW_VERSION"
@@ -41,11 +42,12 @@ steps:
       - "git config user.name buildkite"
       - "git checkout master"
       - NEW_VERSION=$(buildkite-agent meta-data get "version")
+      - APP_VERSION=$(buildkite-agent meta-data get "agent-version")
       - 'sed -i -e "s/version.*/version: $$NEW_VERSION/g" charts/k8s-watcher/Chart.yaml'
       - make generate-kube
       - cd manifests/base
-      - kustomize edit set image komodorio/k8s-watcher=komodorio/k8s-watcher:$$NEW_VERSION
-      - kustomize edit set label app.kubernetes.io/watcher-version:$$NEW_VERSION
+      - kustomize edit set image komodorio/k8s-watcher=komodorio/k8s-watcher:$$APP_VERSION
+      - kustomize edit set label app.kubernetes.io/watcher-version:$$APP_VERSION
       - cd ../..
       - "git add manifests && git add charts/k8s-watcher"
       - "git status"
