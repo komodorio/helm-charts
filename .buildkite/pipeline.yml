@@ -12,8 +12,8 @@ steps:
       - "git config user.name buildkite"
       - git fetch --tags
       - git checkout master
-      - APP_VERSION=$(buildkite-agent meta-data get "version" --job ${PARENT_JOB_ID} || true)
-      - if [ -z "$$APP_VERSION" ]; then APP_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'appVersion:' | awk '{print \$2}'); fi
+      - APP_VERSION=$(buildkite-agent meta-data get "version" --job ${PARENT_JOB_ID}); EXIT_CODE=$?; echo "done"
+      - if [ "${EXIT_CODE}" != "0" ]; then APP_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'appVersion:' | awk '{print \$2}'); fi
       - echo "Updating app version to $$APP_VERSION"
       - 'sed -i -e "s/appVersion.*/appVersion: $$APP_VERSION/g" charts/k8s-watcher/Chart.yaml'
       - CURRENT_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'version:' | awk '{print \$2}')
