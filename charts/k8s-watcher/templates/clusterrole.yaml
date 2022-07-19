@@ -310,7 +310,21 @@ rules:
     - watch
     - list
 {{- end }}
-        
+{{- if .Values.watcher.actions }}
+  - apiGroups:
+    - apps
+    resources:
+    - deployments/scale
+    - statefulsets/scale
+    verbs:
+    - patch
+  - apiGroups:
+    - ""
+    resources:
+    - pods
+    verbs:
+    - delete
+{{- end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

@@ -51,6 +51,7 @@ watcher:
   namespacesDenylist: []
   nameDenylist: []
   redact: []
+  actions: false
   resources:
     event: true
     deployment: true
