@@ -40,15 +40,12 @@ steps:
       - "git config user.email buildkite@users.noreply.github.com"
       - "git config user.name buildkite"
       - "git checkout master"
-      - APP_VERSION=$(buildkite-agent meta-data get "version" --job ${PARENT_JOB_ID} || true)
-      - if [ -z "$$APP_VERSION" ]; then APP_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'appVersion:' | awk '{print \$2}'); fi
-      - 'sed -i -e "s/appVersion.*/appVersion: $$APP_VERSION/g" charts/k8s-watcher/Chart.yaml'
       - NEW_VERSION=$(buildkite-agent meta-data get "version")
       - 'sed -i -e "s/version.*/version: $$NEW_VERSION/g" charts/k8s-watcher/Chart.yaml'
       - make generate-kube
       - cd manifests/base
-      - kustomize edit set image komodorio/k8s-watcher=komodorio/k8s-watcher:$$APP_VERSION
-      - kustomize edit set label app.kubernetes.io/watcher-version:$$APP_VERSION
+      - kustomize edit set image komodorio/k8s-watcher=komodorio/k8s-watcher:$$NEW_VERSION
+      - kustomize edit set label app.kubernetes.io/watcher-version:$$NEW_VERSION
       - cd ../..
       - "git add manifests && git add charts/k8s-watcher"
       - "git status"
