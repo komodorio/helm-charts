@@ -52,6 +52,7 @@ watcher:
   nameDenylist: []
   redact: []
   actions: false
+  monitoringFQDN: ""
   resources:
     event: true
     deployment: true
