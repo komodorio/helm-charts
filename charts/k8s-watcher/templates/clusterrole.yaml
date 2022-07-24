@@ -326,11 +326,11 @@ rules:
     - delete
   - apiGroups:
     - apps
-  resources:
+    resources:
     - deployments
     - replicasets
     - statefulsets
-  verbs:
+    verbs:
     - patch
 {{- end }}
 ---
