@@ -12,6 +12,7 @@ data:
       resync:
         period: "0"
     enableAgentTaskExecution: true
+    monitoringFQDN: ""
     nameDenylist:
     - leader
     - election
