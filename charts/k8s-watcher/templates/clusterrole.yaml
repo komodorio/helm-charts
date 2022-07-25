@@ -332,6 +332,28 @@ rules:
     - statefulsets
     verbs:
     - patch
+  - apiGroups:
+    - ""
+    resources:
+    - nodes
+    - pods
+    - persistentvolumeclaims
+    - configmaps
+    - secrets
+    - services
+    - ingresses
+    - networkpolicies
+    - persistentvolumes
+    - storageclasses
+    - replicasets
+    - deployments
+    - jobs
+    - CronJobs
+    - StatefulSet
+    - DaemonSet
+    verbs:
+    - delete
+    - get
 {{- end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -348,3 +370,18 @@ subjects:
     {{- if hasKey .Values "namespace" }}
     namespace: {{ .Values.namespace }}
     {{- end }}
+
+  - configmaps
+  - secrets
+  - services
+  - ingresses
+  - networkpolicies
+  - persistentvolumes
+  - storageclasses
+  - replicasets
+  - deployments
+  - jobs
+  - CronJobs
+  - StatefulSet
+  - DaemonSet
+ 
