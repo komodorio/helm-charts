@@ -370,18 +370,3 @@ subjects:
     {{- if hasKey .Values "namespace" }}
     namespace: {{ .Values.namespace }}
     {{- end }}
-
-  - configmaps
-  - secrets
-  - services
-  - ingresses
-  - networkpolicies
-  - persistentvolumes
-  - storageclasses
-  - replicasets
-  - deployments
-  - jobs
-  - CronJobs
-  - StatefulSet
-  - DaemonSet
- 
