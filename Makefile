@@ -5,7 +5,8 @@ deploy:
 	 --set watcher.collectHistory=true \
 	 --set watcher.nameDenylist="{leader,election}" \
 	 --set watcher.resources.secret=false \
-	 --set watcher.actions=false
+	 --set watcher.actions.basic=false \
+	 --set watcher.actions.advanced=false
 
 generate-kube:
 	helm template k8s-watcher ./charts/k8s-watcher -f ./charts/k8s-watcher/values.yaml \
@@ -13,7 +14,8 @@ generate-kube:
 	--set watcher.nameDenylist="{leader,election}" \
 	--set watcher.nameDenylist="{leader,election}" \
 	--set watcher.resources.secret=false \
-	--set watcher.actions=false \
+	--set watcher.actions.basic=false \
+	--set watcher.actions.advanced=false \
 	--set apiKey="YOUR_APIKEY_AS_BASE_64" \
 	> generated.yaml
 	cat generated.yaml | ./charts/k8s-watcher/helm-fan-out.sh charts/k8s-watcher/kube-install

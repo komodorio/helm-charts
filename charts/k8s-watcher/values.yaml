@@ -51,7 +51,9 @@ watcher:
   namespacesDenylist: []
   nameDenylist: []
   redact: []
-  actions: false
+  actions:
+    basic: false
+    advanced: false
   monitoringFQDN: ""
   resources:
     event: true

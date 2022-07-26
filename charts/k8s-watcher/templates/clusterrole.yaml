@@ -310,12 +310,15 @@ rules:
     - watch
     - list
 {{- end }}
-{{- if .Values.watcher.actions }}
+{{- if .Values.watcher.actions.basic }}
   - apiGroups:
     - apps
     resources:
     - deployments/scale
     - statefulsets/scale
+    - deployments
+    - replicasets
+    - statefulsets
     verbs:
     - patch
   - apiGroups:
@@ -325,19 +328,36 @@ rules:
     verbs:
     - delete
   - apiGroups:
-    - apps
-    resources:
-    - deployments
-    - replicasets
-    - statefulsets
-    verbs:
-    - patch
-  - apiGroups:
     - batch
     resources:
     - jobs
     verbs:
     - delete
+    - create
+{{- end }}
+{{- if .Values.watcher.actions.advanced }}
+  - apiGroups:
+    - ""
+    resources:
+    - nodes
+    - pods
+    - persistentvolumeclaims
+    - configmaps
+    - secrets
+    - services
+    - ingresses
+    - networkpolicies
+    - persistentvolumes
+    - storageclasses
+    - replicasets
+    - deployments
+    - statefulsets
+    - daemonsets
+    - cronjobs
+    verbs:
+    - delete
+    - patch
+    - update
     - create
 {{- end }}
 ---
