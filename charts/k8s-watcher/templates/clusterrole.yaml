@@ -339,7 +339,6 @@ rules:
   - apiGroups:
     - ""
     resources:
-    - nodes
     - pods
     - persistentvolumeclaims
     - configmaps
@@ -360,6 +359,14 @@ rules:
     - update
     - create
 {{- end }}
+{{- if .Values.watcher.actions.advanced }}
+  - apiGroups:
+    - ""
+    resources:
+    - nodes
+    verbs:
+    - patch
+{{- end}}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
