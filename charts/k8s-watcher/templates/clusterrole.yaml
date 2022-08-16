@@ -319,6 +319,7 @@ rules:
     - deployments
     - replicasets
     - statefulsets
+    - daemonsets
     verbs:
     - patch
   - apiGroups:
@@ -342,17 +343,41 @@ rules:
     - pods
     - persistentvolumeclaims
     - configmaps
-    - secrets
     - services
-    - ingresses
-    - networkpolicies
     - persistentvolumes
     - storageclasses
+    verbs:
+    - delete
+    - patch
+    - update
+    - create
+  - apiGroups:
+    - apps
+    resources:
     - replicasets
     - deployments
     - statefulsets
     - daemonsets
+    verbs:
+    - delete
+    - patch
+    - update
+    - create
+  - apiGroups:
+    - batch
+    resources:
     - cronjobs
+    - jobs
+    verbs:
+    - delete
+    - patch
+    - update
+    - create
+  - apiGroups:
+    - networking.k8s.io
+    resources:
+    - ingresses
+    - networkpolicies
     verbs:
     - delete
     - patch
