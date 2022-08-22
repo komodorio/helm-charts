@@ -11,6 +11,8 @@ nameDenylist:
 namespacesDenylist: []
 redact: []
 actions: false
+telemetry:
+  enable: false
 resources:
   event: true
   deployment: true

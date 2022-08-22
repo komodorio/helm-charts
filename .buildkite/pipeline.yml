@@ -74,10 +74,24 @@ steps:
   - wait
 
   - commands:
+      - aws eks --region us-east-1 update-kubeconfig --name komodor-staging-eks
+      - helm repo add komodorio https://helm-charts.komodor.io
+      - helm repo update
+      - helm upgrade --install k8s-watcher komodorio/k8s-watcher --namespace komodor-staging --set apiKey=$$API_KEY --set watcher.telemetry.enable=true --set watcher.collectHistory=true --set watcher.nameDenylist="{leader,election}" --set watcher.resources.secret=true --set watcher.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set watcher.enableAgentTaskExecution=true --set watcher.allowReadingPodLogs=true --set watcher.actions.basic=true --set watcher.actions.advanced=true
+    agents:
+      builder: "dind"
+    plugins:
+      - zacharymctague/aws-ssm#v1.0.0:
+          parameters:
+            API_KEY: /komodor/staging/kubernetes/agent-api-key
+    label: "Install new watcher version on komodor staging :kubernetes: cluster"
+    branches: master
+
+  - commands:
       - aws eks --region us-east-1 update-kubeconfig --name main
       - helm repo add komodorio https://helm-charts.komodor.io
       - helm repo update
-      - helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=$$API_KEY --set watcher.collectHistory=true --set watcher.nameDenylist="{leader,election}" --set watcher.resources.secret=true --set watcher.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set watcher.enableAgentTaskExecution=true --set watcher.allowReadingPodLogs=true --set watcher.actions.basic=true --set watcher.actions.advanced=true
+      - helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=$$API_KEY --set watcher.telemetry.enable=true --set watcher.collectHistory=true --set watcher.nameDenylist="{leader,election}" --set watcher.resources.secret=true --set watcher.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set watcher.enableAgentTaskExecution=true --set watcher.allowReadingPodLogs=true --set watcher.actions.basic=true --set watcher.actions.advanced=true
     agents:
       builder: "dind"
     plugins:

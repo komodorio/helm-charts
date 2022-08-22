@@ -69,5 +69,7 @@ data:
       volumeAttachment: true
     servers:
       healthCheck: {}
+    telemetry:
+      enable: false
     watchNamespace: all
 ---
