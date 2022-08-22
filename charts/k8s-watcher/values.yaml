@@ -54,6 +54,8 @@ watcher:
   actions:
     basic: false
     advanced: false
+  telemetry:
+    enabled: false
   monitoringFQDN: ""
   resources:
     event: true
