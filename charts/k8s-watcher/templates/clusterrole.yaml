@@ -392,6 +392,14 @@ rules:
     verbs:
     - patch
 {{- end}}
+{{- if .Values.watcher.actions.advanced }}
+  - apiGroups:
+    - ""
+    resources:
+    - pods/eviction
+    verbs:
+    - create
+{{- end}}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
