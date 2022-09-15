@@ -10,6 +10,7 @@ nameDenylist:
   - election
 namespacesDenylist: []
 redact: []
+redactLogs: []
 actions: false
 telemetry:
   enable: false
