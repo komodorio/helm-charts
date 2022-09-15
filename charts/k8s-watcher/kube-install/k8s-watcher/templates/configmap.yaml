@@ -20,6 +20,7 @@ data:
     - election
     namespacesDenylist: []
     redact: []
+    redactLogs: []
     resources:
       admissionRegistrationResources: true
       authorizationResources: true

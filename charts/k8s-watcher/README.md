@@ -99,6 +99,7 @@ The following table lists the configurable parameters of the chart and their def
 | `watcher.actions.basic`                            | Enables basic actions (Delete pods. Scale and restart deployments, statefulsets, replicasets. Restart and trigger jobs)                                                       | `false`                                    
 | `watcher.actions.advanced`                         | Enables advanced actions (Update, Create and Delete resources)                                                                                                                | `false`
 | `watcher.redact`                                   | List of regular expressions. Config values for keys that matches one of these expressions will show up at Komodor as "REDACTED:\<SHA of config value\>"                       | `[]`                                       |
+| `watcher.redactLogs`                                   | List of regular expressions. Patterns in Logs that matches one of these expressions will show up at Komodor as `<REDACTED>`                       | `[]`                                       |
 | `watcher.clusterName`                              | Override auto-discovery of Cluster Name with one of your choosing                                                                                                             | ``                                         |
 | `watcher.watchNamespace`                           | Watch a specific namespace, or all namespaces ("", "all")                                                                                                                     | `all`                                      |
 | `watcher.namespacesDenylist`                       | Exclude specific namespaces (list)                                                                                                                                            | `[]`                                       |
@@ -194,6 +195,10 @@ KOMOKW_RESOURCES_REPLICASET=false
 KOMOKW_WATCH_NAMESPACE=my-namespace
 # watcher.collectHistory
 KOMOKW_COLLECT_HISTORY=true
+
+# watcher.redact
+KOMOKW_REDACT="password PG.*"
+KOMOKW_REDACT_LOGS="password=(.+?)\b (?U)\"sessionId\": (\".+\"{1})"
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

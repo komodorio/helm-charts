@@ -51,6 +51,7 @@ watcher:
   namespacesDenylist: []
   nameDenylist: []
   redact: []
+  redactLogs: []
   actions:
     basic: false
     advanced: false
