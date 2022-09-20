@@ -174,6 +174,7 @@ The following table lists the configurable parameters of the chart and their def
 | `createNamespace`                                  | Creates the namespace                                                                                                                                                         | `true`                                     |
 | `podAnnotations`                                   | Adds custom annotations on the agent pod - Example: `--set podAnnotations."app\.komodor\.com/app"="komodor-agent"`                                                            | `{}`                                       |
 | `deploymentAnnotations`                            | Adds custom annotations on the agent deployment - Example: `--set deploymentAnnotations."app\.komodor\.com/app"="komodor-agent"`                                              | `{}`                                       |
+| `nodeSelector`                            | Adds a custom node selector label on the agent deployment - Example: `--set nodeSelector=nodegroup:shared`                                              | `{}`                                       |
 
 The above parameters map to a yaml configuration file used by the watcher.
 

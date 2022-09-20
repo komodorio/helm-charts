@@ -39,6 +39,7 @@ podAnnotations: {}
 existingSecret: ""
 
 apiKey: ""
+nodeSelector: {}
 
 watcher:
   enableAgentTaskExecution: true
