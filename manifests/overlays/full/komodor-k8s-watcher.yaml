@@ -11,7 +11,9 @@ nameDenylist:
 namespacesDenylist: []
 redact: []
 redactLogs: []
-actions: false
+actions:
+  basic: false
+  advanced: false
 telemetry:
   enable: false
 resources:
