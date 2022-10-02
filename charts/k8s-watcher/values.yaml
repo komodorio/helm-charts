@@ -43,6 +43,7 @@ nodeSelector: {}
 
 watcher:
   enableAgentTaskExecution: true
+  enableAgentTaskExecutionV2: true
   allowReadingPodLogs: true
   # clusterName: ""
   servers:

@@ -5,7 +5,7 @@
 ```bash
 helm repo add komodorio https://helm-charts.komodor.io
 helm repo update
-helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=YOUR_API_KEY_HERE --set watcher.clusterName=CLUSTER_NAME --set watcher.allowReadingPodLogs=true --set watcher.enableAgentTaskExecution=true --wait --timeout=90s
+helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=YOUR_API_KEY_HERE --set watcher.clusterName=CLUSTER_NAME --set watcher.allowReadingPodLogs=true --set watcher.enableAgentTaskExecution=true --set watcher.enableAgentTaskExecutionV2=true --wait --timeout=90s
 ```
 
 In case of error try contact us for assistance via intercom at: https://app.komodor.com
@@ -167,6 +167,7 @@ The following table lists the configurable parameters of the chart and their def
 | `proxy.no_proxy`                                   | Configure Proxy setting (NO_PROXY)                                                                                                                                            | ``                                         |
 | `watcher.controller.resync.period`                 | Resync period (in minutes, minimum 5) to resync the state of selected controllers (deployment, daemonset, statefulset)                                                        | `"0"`                                      |
 | `watcher.enableAgentTaskExecution`                 | Enable to the agent to execute tasks in the cluster such as log streaming                                                                                                     | `true`                                     |
+| `watcher.enableAgentTaskExecutionV2`                 | Enable to the agent to execute tasks in the cluster such as log streaming (dependent on `watcher.enableAgentTaskExecution`)                                                                | `true`                                     |
 | `watcher.allowReadingPodLogs`                     | Enable the agent to read pod logs from the cluster                                                                                                                            | `true`                                     |
 | `watcher.telemetry.enable`                     | Enable the agent's telemetry                                    | `false`                                     |
 | `watcher.telemetry.bufferLength`                     | Sets the buffer length of the telemetry client (capacity before flush)                                    | `2000`                                     |

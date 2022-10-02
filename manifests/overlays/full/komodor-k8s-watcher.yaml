@@ -5,6 +5,7 @@ controller:
   resync:
     period: "5"
 enableAgentTaskExecution: true
+enableAgentTaskExecutionV2: true
 nameDenylist:
   - leader
   - election
