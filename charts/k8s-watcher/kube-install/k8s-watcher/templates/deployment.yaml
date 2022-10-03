@@ -22,7 +22,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 60d897024af18052cb73128cd1b41bd1cd1705d647e4c4a12b889513522876e5
+        checksum/config: 11f55a9a05fa151ff5d9460c9826573269dcab786f3a3cdd8e8b0086431881d9
       labels:
         app.kubernetes.io/name: k8s-watcher
         app.kubernetes.io/instance: k8s-watcher

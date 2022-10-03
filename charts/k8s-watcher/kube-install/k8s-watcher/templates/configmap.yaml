@@ -14,6 +14,7 @@ data:
       resync:
         period: "0"
     enableAgentTaskExecution: true
+    enableAgentTaskExecutionV2: true
     monitoringFQDN: ""
     nameDenylist:
     - leader
