@@ -21,6 +21,7 @@ serviceAccount:
 
 proxy:
   enabled: false
+  komodorOnly: false
   http: ""
   https: ""
   no_proxy: ""

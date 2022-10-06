@@ -161,7 +161,8 @@ The following table lists the configurable parameters of the chart and their def
 | `image.pullPolicy`                                 | Image pull policy                                                                                                                                                             | `IfNotPresent`                             |
 | `serviceAccount.create`                            | Creates a service account                                                                                                                                                     | `true`                                     |
 | `serviceAccount.name`                              | Optional name for the service account                                                                                                                                         | `{RELEASE_FULLNAME}`                       |
-| `proxy.enabled`                                    | Configure proxy for watcher                                                                                                                                                   | `true`                                     |
+| `proxy.enabled`                                    | Configure proxy for watcher                                                                                                                                                   | `false`                                     |
+| `proxy.komodorOnly`                                    | Configure proxy to be applied only on communication to Komodor servers (comms. to K8S API remains without proxy)                                                                                                                                                   | `false`                                     |
 | `proxy.http`                                       | Configure Proxy setting (HTTP_PROXY)                                                                                                                                          | ``                                         |
 | `proxy.https`                                      | Configure Proxy setting (HTTPS_PROXY)                                                                                                                                         | ``                                         |
 | `proxy.no_proxy`                                   | Configure Proxy setting (NO_PROXY)                                                                                                                                            | ``                                         |
@@ -204,3 +205,12 @@ KOMOKW_REDACT_LOGS="password=(.+?)\b (?U)\"sessionId\": (\".+\"{1})"
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+
+### Using a Proxy
+
+Komodor's support the standard proxy environment variables (`HTTP_PROXY, HTTPS_PROXY, NO_PROXY`) as well as these variables prefixed by `KOMOKW_` which will assign the proxy only to the HTTP clients communicating with Komodor. This is useful in case you want to leave the communication to the Kubernetes API in-cluster.  
+
+#### Use-cases:  
+* In-cluster proxy (which can communicate with local K8s IPs) - You can use either one of the solutions.
+* External proxy (which *cannot* communicate with the local K8s IPs) - You need to use the `KOMOKW_` prefix to the proxy environment variables to have only the traffic to Komodor pass through the proxy. If you're using the Helm chart - this can be enabled by setting `--set proxy.komodorOnly=true`.
