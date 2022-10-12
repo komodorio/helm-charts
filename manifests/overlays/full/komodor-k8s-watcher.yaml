@@ -16,7 +16,7 @@ actions:
   basic: false
   advanced: false
 telemetry:
-  enable: false
+  enable: true
 resources:
   event: true
   deployment: true

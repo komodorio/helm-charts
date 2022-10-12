@@ -59,7 +59,7 @@ watcher:
     basic: false
     advanced: false
   telemetry:
-    enable: false
+    enable: true
   monitoringFQDN: ""
   resources:
     event: true
