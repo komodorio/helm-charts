@@ -72,6 +72,6 @@ data:
     servers:
       healthCheck: {}
     telemetry:
-      enable: false
+      enable: true
     watchNamespace: all
 ---
