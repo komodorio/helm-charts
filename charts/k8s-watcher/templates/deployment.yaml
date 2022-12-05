@@ -61,6 +61,11 @@ spec:
                   key: apiKey
 {{- end }}
 {{- include "k8s-watcher.proxy-conf" . }}
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: false
           ports:
             - name: http-healthz
               containerPort: {{ .Values.watcher.servers.healthCheck.port | default 8090 }}
