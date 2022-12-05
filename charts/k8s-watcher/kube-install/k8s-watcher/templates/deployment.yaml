@@ -51,6 +51,11 @@ spec:
                 secretKeyRef:
                   name: k8s-watcher-secret
                   key: apiKey
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: false
           ports:
             - name: http-healthz
               containerPort: 8090
