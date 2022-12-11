@@ -3,7 +3,7 @@ steps:
     agents:
       builder: "dind"
     label: "helm template check for sanity"
-    if: build.message !~ /feat\(helm dashboard\):/i
+    if: build.message !~ /feat\(helm-dashboard\):/i
   - wait
 
   - block: "Bump Versions"
@@ -29,7 +29,7 @@ steps:
       builder: "dind"
     label: Bump Versions
     key: bump-versions
-    if: build.message !~ /feat\(helm dashboard\):/i && build.branch == "master"
+    if: build.message !~ /feat\(helm-dashboard\):/i && build.branch == "master"
   - wait
 
   - block: "release helm chart"
@@ -57,7 +57,7 @@ steps:
       - "GITHUB_PAGES_REPO=komodorio/helm-charts sh publish.sh"
     agents:
       builder: "dind"
-    if: build.message !~ /feat\(helm dashboard\):/i && build.branch == "master"
+    if: build.message !~ /feat\(helm-dashboard\):/i && build.branch == "master"
     depends_on: "bump-versions"
   - wait
 
@@ -70,7 +70,7 @@ steps:
       - helm show all komodorio/k8s-watcher
     agents:
       builder: "dind"
-    if: build.message !~ /feat\(helm dashboard\):/i && build.branch == "master"
+    if: build.message !~ /feat\(helm-dashboard\):/i && build.branch == "master"
     label: "release to helm chart version to github pages"
   - wait
 
@@ -87,7 +87,7 @@ steps:
           parameters:
             API_KEY: /komodor/staging/kubernetes/agent-api-key
     label: "Install new watcher version on komodor staging :kubernetes: cluster"
-    if: build.message !~ /feat\(helm dashboard\):/i && build.branch == "master"
+    if: build.message !~ /feat\(helm-dashboard\):/i && build.branch == "master"
 
   - commands:
       - aws eks --region us-east-1 update-kubeconfig --name main
@@ -102,4 +102,4 @@ steps:
           parameters:
             API_KEY: /komodor/production/kubernetes/api-key
     label: "Install new watcher version on komodor main :kubernetes: cluster"
-    if: build.message !~ /feat\(helm dashboard\):/i && build.branch == "master"
+    if: build.message !~ /feat\(helm-dashboard\):/i && build.branch == "master"
