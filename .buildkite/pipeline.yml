@@ -90,7 +90,7 @@ steps:
     if: build.message !~ /feat\(helm-dashboard\):/i && build.branch == "master"
 
   - commands:
-      - aws eks --region us-east-1 update-kubeconfig --name main
+      - aws eks --region us-east-1 update-kubeconfig --name production
       - helm repo add komodorio https://helm-charts.komodor.io
       - helm repo update
       - helm upgrade --install k8s-watcher komodorio/k8s-watcher --reuse-values --dry-run
@@ -101,5 +101,5 @@ steps:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
             API_KEY: /komodor/production/kubernetes/api-key
-    label: "Install new watcher version on komodor main :kubernetes: cluster"
+    label: "Install new watcher version on komodor production :kubernetes: cluster"
     if: build.message !~ /feat\(helm-dashboard\):/i && build.branch == "master"
