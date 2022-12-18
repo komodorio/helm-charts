@@ -13,3 +13,4 @@ Helm Dashboard can be accessed:
 
 Visit our repo at:
 https://github.com/komodorio/helm-dashboard
+
