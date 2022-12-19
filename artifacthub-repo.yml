@@ -1,5 +1,5 @@
 # Artifact Hub repository metadata file
-#repositoryID: The ID of the Artifact Hub repository where the packages will be published to (optional, but it enables verified publisher)
+repositoryID: e9f05fc9-497e-4dc8-88fd-2d7b9e75d189
 owners:
   - name: komodor-bot
     email: komi@komodor.io
