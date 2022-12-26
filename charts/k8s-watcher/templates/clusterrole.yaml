@@ -401,11 +401,11 @@ rules:
     - create
 {{- end}}
 
-{{- if .Values.watcher.enableHelmActions }}
+{{- if .Values.helm.enableActions }}
   - apiGroups:
       - ""
     resources:
-      - secret
+      - secrets
     verbs:
       - create
       - update
@@ -414,7 +414,6 @@ rules:
       - get
       - watch
 {{- end}}
-
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

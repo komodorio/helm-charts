@@ -49,10 +49,12 @@ spec:
             - name: podinfo
               mountPath: /etc/podinfo
 {{- end }}
+{{- if .Values.helm.enableActions }}
             - name: helm-cache-volume
               mountPath: /.cache
             - name: helm-config-volume
               mountPath: /.config
+{{- end }}
           env:
             - name: KOMOKW_API_KEY
               valueFrom:
@@ -105,10 +107,7 @@ spec:
                   containerName: {{ .Chart.Name }}
                   resource: limits.memory
                   divisor: 1Mi
-        - emptyDir:
-            sizeLimit: 500Mi
-          name: helm-cache-volume
-        - emptyDir:
-            sizeLimit: 100Mi
-          name: helm-config-volume
+{{- end }}
+{{- if .Values.helm.enableActions }}
+  {{- toYaml .Values.helm.storage | nindent 8 }}
 {{- end }}

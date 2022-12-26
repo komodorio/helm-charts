@@ -42,12 +42,21 @@ existingSecret: ""
 apiKey: ""
 nodeSelector: {}
 
+helm:
+  enableActions: true
+  storage:
+  - name: helm-cache-volume
+    emptyDir:
+      sizeLimit: 500Mi
+  - name: helm-config-volume
+    emptyDir:
+      sizeLimit: 100Mi
+
 watcher:
   enableAgentTaskExecution: true
   enableAgentTaskExecutionV2: true
   allowReadingPodLogs: true
   enableHelmSecretsReporting: true
-  enableHelmActions: true
   # clusterName: ""
   servers:
     healthCheck: {}
