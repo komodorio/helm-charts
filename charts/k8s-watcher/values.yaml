@@ -47,6 +47,7 @@ watcher:
   enableAgentTaskExecutionV2: true
   allowReadingPodLogs: true
   enableHelmSecretsReporting: true
+  enableHelmActions: true
   # clusterName: ""
   servers:
     healthCheck: {}
