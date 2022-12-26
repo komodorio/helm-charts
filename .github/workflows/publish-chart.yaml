@@ -1,0 +1,42 @@
+name: publish helm dashboard chart
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - "charts/helm-dashboard/**"
+
+env:
+  HELM_REP: helm-charts
+  GH_OWNER: komodorio
+  CHART_DIR: charts/helm-dashboard
+
+jobs:
+  publish-chart:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Install chart-releaser
+        run: |
+          wget https://github.com/helm/chart-releaser/releases/download/v1.4.1/chart-releaser_1.4.1_linux_amd64.tar.gz
+          echo "96607338be59ba35101e3d8ff8d8cd36db5289ccb992a00b9a161001e26774ae  chart-releaser_1.4.1_linux_amd64.tar.gz" | sha256sum -c -
+          tar xzvf chart-releaser_1.4.1_linux_amd64.tar.gz cr
+      - name: Package helm chart
+        run: |
+          ./cr package ${{ env.CHART_DIR }}
+      - name: Upload helm chart
+        run: |
+          ./cr upload -o ${{ env.GH_OWNER }} -r ${{ env.HELM_REP }} --token ${{ secrets.ADMIN_KOMI_GITHUB_TOKEN }} -p .cr-release-packages --skip-existing
+      - name: Configure Git
+        run: |
+          git config user.name buildkite
+          git config user.email buildkite@users.noreply.github.com
+      - name: Index helm chart
+        run: |
+          ./cr index -o ${{ env.GH_OWNER }} -r ${{ env.HELM_REP }} -c https://${{ env.GH_OWNER }}.github.io/${{ env.HELM_REP }}/ -i index.yaml --push
