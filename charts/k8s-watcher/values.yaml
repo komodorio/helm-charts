@@ -45,7 +45,7 @@ nodeSelector: {}
 helm:
   enableActions: true
   persistence:
-    enabled: true
+    enabled: false
 
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
