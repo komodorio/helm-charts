@@ -15,8 +15,7 @@ data:
         period: "0"
     enableAgentTaskExecution: true
     enableAgentTaskExecutionV2: true
-    enableHelmActions: true
-    enableHelmSecretsReporting: true
+    enableHelm: true
     monitoringFQDN: ""
     nameDenylist:
     - leader

@@ -22,7 +22,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: a1ceca4d6ec4d947afd10a8e318b1954ceea90581a99da89fc3ea81e7e417a6d
+        checksum/config: e61813f66247253e4de987c06b0e8d50ddbe380228ad981ae9c2b2ef9870c0ec
       labels:
         app.kubernetes.io/name: k8s-watcher
         app.kubernetes.io/instance: k8s-watcher
@@ -45,12 +45,20 @@ spec:
               mountPath: /etc/komodor
             - name: podinfo
               mountPath: /etc/podinfo
+            - name: helm-data
+              mountPath: /opt/watcher/helm
           env:
             - name: KOMOKW_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: k8s-watcher-secret
                   key: apiKey
+            - name: HELM_CACHE_HOME
+              value: /opt/watcher/helm/cache
+            - name: HELM_CONFIG_HOME
+              value: /opt/watcher/helm/config
+            - name: HELM_DATA_HOME
+              value: /opt/watcher/helm/data
           securityContext:
             readOnlyRootFilesystem: true
             runAsUser: 1000
@@ -90,3 +98,5 @@ spec:
                   containerName: k8s-watcher
                   resource: limits.memory
                   divisor: 1Mi
+        - name: helm-data
+          emptyDir: {}

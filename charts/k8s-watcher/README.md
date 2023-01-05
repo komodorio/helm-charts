@@ -5,7 +5,7 @@
 ```bash
 helm repo add komodorio https://helm-charts.komodor.io
 helm repo update
-helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=YOUR_API_KEY_HERE --set watcher.clusterName=CLUSTER_NAME --set watcher.allowReadingPodLogs=true --set watcher.enableAgentTaskExecution=true --set watcher.enableAgentTaskExecutionV2=true --set watcher.enableHelmSecretsReporting=true  --wait --timeout=90s
+helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=YOUR_API_KEY_HERE --set watcher.clusterName=CLUSTER_NAME --set watcher.allowReadingPodLogs=true --set watcher.enableAgentTaskExecution=true --set watcher.enableAgentTaskExecutionV2=true --set watcher.enableHelm=true  --set helm.enableActions=true --wait --timeout=90s
 ```
 
 In case of error try contact us for assistance via intercom at: https://app.komodor.com

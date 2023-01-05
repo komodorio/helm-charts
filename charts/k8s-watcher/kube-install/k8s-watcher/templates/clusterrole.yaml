@@ -217,7 +217,7 @@ rules:
   - apiGroups:
       - ""
     resources:
-      - secret
+      - secrets
     verbs:
       - create
       - update

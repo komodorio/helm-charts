@@ -6,8 +6,7 @@ controller:
     period: "5"
 enableAgentTaskExecution: true
 enableAgentTaskExecutionV2: true
-enableHelmSecretsReporting: true
-enableHelmActions: true
+enableHelm: true
 nameDenylist:
   - leader
   - election
