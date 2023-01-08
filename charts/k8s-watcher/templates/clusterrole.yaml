@@ -401,7 +401,7 @@ rules:
     - create
 {{- end}}
 
-{{- if .Values.helm.enableActions }}
+{{- if ((.Values.helm).enableActions) }}
   - apiGroups:
       - ""
     resources:
