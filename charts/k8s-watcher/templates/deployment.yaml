@@ -49,6 +49,10 @@ spec:
             - name: podinfo
               mountPath: /etc/podinfo
 {{- end }}
+{{- if .Values.helm.enableActions }}
+            - name: helm-data
+              mountPath: /opt/watcher/helm
+{{- end }}
           env:
             - name: KOMOKW_API_KEY
               valueFrom:
@@ -60,6 +64,12 @@ spec:
                   name: {{ include "k8s-watcher.name" . }}-secret
                   key: apiKey
 {{- end }}
+            - name: HELM_CACHE_HOME
+              value: /opt/watcher/helm/cache
+            - name: HELM_CONFIG_HOME
+              value: /opt/watcher/helm/config
+            - name: HELM_DATA_HOME
+              value: /opt/watcher/helm/data
 {{- include "k8s-watcher.proxy-conf" . }}
           securityContext:
             readOnlyRootFilesystem: true
@@ -101,4 +111,13 @@ spec:
                   containerName: {{ .Chart.Name }}
                   resource: limits.memory
                   divisor: 1Mi
+{{- end }}
+{{- if .Values.helm.enableActions }}
+        - name: helm-data
+        {{- if .Values.helm.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "k8s-watcher.name" . }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
 {{- end }}

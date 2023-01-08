@@ -400,6 +400,20 @@ rules:
     verbs:
     - create
 {{- end}}
+
+{{- if .Values.helm.enableActions }}
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - create
+      - update
+      - delete
+      - list
+      - get
+      - watch
+{{- end}}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

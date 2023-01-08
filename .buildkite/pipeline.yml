@@ -79,7 +79,7 @@ steps:
       - helm repo add komodorio https://helm-charts.komodor.io
       - helm repo update
       - helm upgrade --install k8s-watcher-staging komodorio/k8s-watcher --reuse-values --dry-run
-      - helm upgrade --install k8s-watcher-staging komodorio/k8s-watcher --set namespace=komodor-staging --set watcher.serverHost=https://staging.app.komodor.com --set watcher.tasksServerHost=https://staging.app.komodor.com --set watcher.telemetry.enable=false --set apiKey=$$API_KEY --set watcher.telemetry.enable=true --set watcher.collectHistory=true --set watcher.nameDenylist="{leader,election}" --set watcher.resources.secret=true --set watcher.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set watcher.enableAgentTaskExecution=true --set watcher.enableAgentTaskExecutionV2=true --set watcher.allowReadingPodLogs=true --set watcher.actions.basic=true --set watcher.actions.advanced=true
+      - helm upgrade --install k8s-watcher-staging komodorio/k8s-watcher --set namespace=komodor-staging --set watcher.serverHost=https://staging.app.komodor.com --set watcher.tasksServerHost=https://staging.app.komodor.com --set watcher.telemetry.enable=false --set apiKey=$$API_KEY --set watcher.telemetry.enable=true --set watcher.collectHistory=true --set watcher.nameDenylist="{leader,election}" --set watcher.resources.secret=true --set watcher.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set watcher.enableAgentTaskExecution=true --set watcher.enableAgentTaskExecutionV2=true --set watcher.allowReadingPodLogs=true --set watcher.actions.basic=true --set watcher.actions.advanced=true --set watcher.enableHelm=true --set helm.enableActions=true
     agents:
       builder: "dind"
     plugins:
@@ -94,7 +94,7 @@ steps:
       - helm repo add komodorio https://helm-charts.komodor.io
       - helm repo update
       - helm upgrade --install k8s-watcher komodorio/k8s-watcher --reuse-values --dry-run
-      - helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=$$API_KEY --set watcher.telemetry.enable=true --set watcher.collectHistory=true --set watcher.nameDenylist="{leader,election}" --set watcher.resources.secret=true --set watcher.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set watcher.enableAgentTaskExecution=true --set watcher.enableAgentTaskExecutionV2=true --set watcher.allowReadingPodLogs=true --set watcher.actions.basic=true --set watcher.actions.advanced=true
+      - helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=$$API_KEY --set watcher.telemetry.enable=true --set watcher.collectHistory=true --set watcher.nameDenylist="{leader,election}" --set watcher.resources.secret=true --set watcher.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set watcher.enableAgentTaskExecution=true --set watcher.enableAgentTaskExecutionV2=true --set watcher.allowReadingPodLogs=true --set watcher.actions.basic=true --set watcher.actions.advanced=true --set watcher.enableHelm=true --set helm.enableActions=true
     agents:
       builder: "dind"
     plugins:
