@@ -114,10 +114,5 @@ spec:
 {{- end }}
 {{- if .Values.helm.enableActions }}
         - name: helm-data
-        {{- if .Values.helm.persistence.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ include "k8s-watcher.name" . }}
-        {{- else }}
           emptyDir: {}
-        {{- end }}
 {{- end }}
