@@ -45,6 +45,8 @@ spec:
           volumeMounts:
             - name: configuration
               mountPath: /etc/komodor
+            - name: tmp
+              mountPath: /tmp
 {{- if .Values.enableMemLimitChecks }}
             - name: podinfo
               mountPath: /etc/podinfo
@@ -102,6 +104,9 @@ spec:
             items:
               - key: komodor-k8s-watcher.yaml
                 path: komodor-k8s-watcher.yaml
+        - name: tmp
+          emptyDir:
+            sizeLimit: 100Mi
 {{- if .Values.enableMemLimitChecks }}
         - name: podinfo
           downwardAPI:
