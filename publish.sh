@@ -62,3 +62,27 @@ git add .
 git status
 git commit -m "Published by Buildkite $BUILDKITE_BUILD_URL"
 git push origin "$GITHUB_PAGES_BRANCH"
+
+
+echo ">> verifying chart version update"
+helm repo add komodorio https://helm-charts.komodor.io
+helm repo update
+helm repo list
+
+for x in {1..10}; do
+    CURRENT_VERSION=$(helm show all komodorio/k8s-watcher | grep "version:" | cut -d ' ' -f 2)
+    if [[ $CURRENT_VERSION == $NEW_VERSION ]]; then
+        echo "Repository updated, current version is $CURRENT_VERSION, expected version is $NEW_VERSION"
+        VERSION_UPDATED=true
+        break
+    fi
+    echo "Waiting for repository to be updated before checking, current version is $CURRENT_VERSION, expected version is $NEW_VERSION"
+    sleep 10
+done
+
+if [ "$VERSION_UPDATED" = true ]; then
+  echo "Version updated successfully"
+else
+  echo "Version not updated"
+  exit 1
+fi
