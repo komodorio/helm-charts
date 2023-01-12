@@ -54,24 +54,11 @@ steps:
       - "git status"
       - 'git commit -m "[skip ci] update generated manifests" && git tag $$NEW_VERSION || echo "Already up-to-date"'
       - 'git push -f && git push --tags || echo "Nothing to push!"'
-      - "GITHUB_PAGES_REPO=komodorio/helm-charts sh publish.sh"
+      - "GITHUB_PAGES_REPO=komodorio/helm-charts NEW_VERSION=$$NEW_VERSION sh publish.sh"
     agents:
       builder: "dind"
     if: build.message !~ /feat\(helm-dashboard\):/i && build.branch == "master"
     depends_on: "bump-versions"
-  - wait
-
-  - commands:
-      - echo "Waiting for repository to be updated before checking"
-      - sleep 30
-      - helm repo add komodorio https://helm-charts.komodor.io
-      - helm repo update
-      - helm repo list
-      - helm show all komodorio/k8s-watcher
-    agents:
-      builder: "dind"
-    if: build.message !~ /feat\(helm-dashboard\):/i && build.branch == "master"
-    label: "release to helm chart version to github pages"
   - wait
 
   - commands:
