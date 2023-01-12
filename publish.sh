@@ -72,7 +72,7 @@ helm repo list
 for x in {1..10}; do
     helm repo update
     CURRENT_VERSION=$(helm show all komodorio/k8s-watcher | grep "version:" | cut -d ' ' -f 2)
-    if [[ $CURRENT_VERSION == $NEW_VERSION ]]; then
+    if [ $CURRENT_VERSION = $NEW_VERSION ]; then
         echo "Repository updated, current version is $CURRENT_VERSION, expected version is $NEW_VERSION"
         VERSION_UPDATED=true
         break
