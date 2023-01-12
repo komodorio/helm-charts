@@ -62,6 +62,7 @@ watcher:
   actions:
     basic: false
     advanced: false
+    podExec: false
   telemetry:
     enable: true
   monitoringFQDN: ""
