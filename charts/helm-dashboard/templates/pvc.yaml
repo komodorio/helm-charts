@@ -11,8 +11,8 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if .Values.dashboard.persistence.hostPath }}
-  storageClassName: ""
+  {{- if (hasKey .Values.dashboard.persistence "storageClass") }}
+  storageClassName: "{{ .Values.dashboard.persistence.storageClass }}"
   {{- end }}
   accessModes:
   {{- if not (empty .Values.dashboard.persistence.accessModes) }}
@@ -24,7 +24,6 @@ spec:
     requests:
       storage: {{ .Values.dashboard.persistence.size | quote }}
 {{- end }}
-
 ---
 {{- if and .Values.dashboard.persistence.enabled .Values.dashboard.persistence.hostPath -}}
 apiVersion: v1
