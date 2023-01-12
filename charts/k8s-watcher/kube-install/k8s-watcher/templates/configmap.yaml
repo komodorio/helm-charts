@@ -8,6 +8,7 @@ data:
     actions:
       advanced: false
       basic: false
+      podExec: false
     allowReadingPodLogs: true
     collectHistory: true
     controller:
