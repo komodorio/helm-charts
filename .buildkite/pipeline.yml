@@ -1,5 +1,5 @@
 steps:
-  - command: helm template k8s-watcher charts/k8s-watcher -f charts/k8s-watcher/values.yaml --set apiKey="sanity"
+  - command: helm template k8s-watcher charts/k8s-watcher -f charts/k8s-watcher/values.yaml --set apiKey="sanity && buildkite-agent metadata set "version" "1.2.3.4"
     agents:
       builder: "dind"
     label: "helm template check for sanity"
