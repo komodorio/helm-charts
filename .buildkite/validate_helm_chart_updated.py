@@ -10,7 +10,7 @@ cmd("helm repo list")
 
 for x in range(1, 10):
     cmd("helm repo update", True)
-    current_version = cmd("helm show all komodorio/k8s-watcher | grep 'version:' | cut -d ' ' -f 2")
+    current_version = cmd("helm show all komodorio/k8s-watcher | grep 'version:' | cut -d ' ' -f 2", True)
     if current_version == new_version:
         print(f"Chart updated, current version is {current_version}, expected version is {new_version}")
         version_updated = True
