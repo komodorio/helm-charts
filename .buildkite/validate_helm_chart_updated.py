@@ -3,7 +3,7 @@ from time import sleep
 import os
 
 version_updated = False
-new_version = os.environ.get("NEW_VERSION")
+new_version = cmd('buildkite-agent meta-data get "version"', True)
 
 cmd("helm repo add komodorio https://helm-charts.komodor.io")
 cmd("helm repo list")
