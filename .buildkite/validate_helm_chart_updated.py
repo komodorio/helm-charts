@@ -19,5 +19,5 @@ for x in range(1, 10):
     sleep(10)
 
 if not version_updated:
-    print(f"Repository did not update ")
+    print(f"Repository not updated, current version is {current_version}, expected version is {new_version}")
     exit(1)
