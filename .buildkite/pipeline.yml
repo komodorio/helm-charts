@@ -62,12 +62,7 @@ steps:
   - wait
 
   - commands:
-      - echo "Waiting for repository to be updated before checking"
-      - sleep 40
-      - helm repo add komodorio https://helm-charts.komodor.io
-      - helm repo update
-      - helm repo list
-      - helm show all komodorio/k8s-watcher
+    - python3 ./.buildkite/validate_helm_chart_updated.py
     agents:
       builder: "dind"
     if: build.message !~ /feat\(helm-dashboard\):/i && build.branch == "master"
