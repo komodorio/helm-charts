@@ -62,11 +62,10 @@ steps:
   - wait
 
   - commands:
-    - 'buildkite-agent meta-data set "version" "aaa"'
     - python3 ./.buildkite/validate_helm_chart_updated.py
     agents:
       builder: "dind"
-    # if: build.message !~ /feat\(helm-dashboard\):/i && build.branch == "master"
+    if: build.message !~ /feat\(helm-dashboard\):/i && build.branch == "master"
     label: "release to helm chart version to github pages"
   - wait
   - commands:
