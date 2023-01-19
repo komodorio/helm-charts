@@ -83,7 +83,7 @@ watcher:
     persistentVolume: true
     persistentVolumeClaim: true
     namespace: true
-    secret: true
+    secret: false
     configMap: true
     ingress: true
     endpoints: true
