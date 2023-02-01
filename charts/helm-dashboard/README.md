@@ -12,6 +12,8 @@ helm upgrade --install my-release komodorio/helm-dashboard
 
 This chart bootstraps a Helm Dashboard deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
+While installed inside cluster, Helm Dashboard will run some additional backgroud actions, for example, will automatically update Helm repositories. To enable that behavior locally, set `HD_CLUSTER_MODE` env variable.
+
 ## Prerequisites
 
 - Kubernetes 1.16+
@@ -39,6 +41,12 @@ helm uninstall my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## Adding Authentication
+
+The task of authentication and user control is out of scope for Helm Dashboard. Luckily, there are third-party solutions which are dedicated to provide that functionality.
+
+For instance, you can place authentication proxy in front of Helm Dashboard, like this one: https://github.com/oauth2-proxy/oauth2-proxy
+
 ## Parameters
 
 The following table lists the configurable parameters of the chart and their default values.
@@ -65,7 +73,9 @@ The following table lists the configurable parameters of the chart and their def
 | `dashboard.persistence.accessModes`  | Persistent Volume access modes                                                                 | `["ReadWriteOnce"]`                  |
 | `dashboard.persistence.storageClass` | Persistent Volume storage class                                                                | `""`                                 |
 | `dashboard.persistence.size`         | Persistent Volume size                                                                         | `100M`                               |
-| `dashboard.persistence.hostPath`     | Set path in case you want to use local host path volumes (not recommended in production)       | `""`                                 |
+| `dashboard.persistence.hostPath`     | Set path in case you want to use local host path volumes (not recommended in production)       | `""`
+| `updateStrategy.type`                | Set up update strategy for helm-dashboard installation.                                        | `RollingUpdate`                    |             
+| `extraArgs`     | Set the arguments to be supplied to the helm-dashboard binary       | `[--no-browser, --bind=0.0.0.0]`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
