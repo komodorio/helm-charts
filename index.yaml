@@ -2,6 +2,17 @@ apiVersion: v1
 entries:
   helm-dashboard:
   - apiVersion: v2
+    appVersion: 1.1.0
+    created: "2023-02-21T15:58:25.630752511Z"
+    description: A GUI Dashboard for Helm by Komodor
+    digest: 9947bb0d226adb17e46edb7d7c77b45ca588c3f3d5232345317f222b0bc23690
+    icon: https://raw.githubusercontent.com/komodorio/helm-dashboard/main/pkg/dashboard/static/logo.svg
+    name: helm-dashboard
+    type: application
+    urls:
+    - https://github.com/komodorio/helm-charts/releases/download/helm-dashboard-0.1.4/helm-dashboard-0.1.4.tgz
+    version: 0.1.4
+  - apiVersion: v2
     appVersion: 1.0.0
     created: "2023-02-05T08:57:45.646843641Z"
     description: A GUI Dashboard for Helm by Komodor
@@ -2352,4 +2363,4 @@ entries:
     urls:
     - k8s-watcher/k8s-watcher-0.1.0.tgz
     version: 0.1.0
-generated: "2023-02-05T08:57:45.645093812Z"
+generated: "2023-02-21T15:58:25.631364414Z"
