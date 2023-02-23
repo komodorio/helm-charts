@@ -423,6 +423,23 @@ rules:
       - get
       - watch
 {{- end}}
+
+{{- if .Values.watcher.resources.allowReadAll }}
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs:     ["get", "watch", "list"]
+{{- end}}
+
+{{- $numOfCustomApiGroups := len .Values.watcher.resources.customAPIGroups }}
+{{- $shouldLimitApiGroups := gt $numOfCustomApiGroups 0 }}
+{{- if and $shouldLimitApiGroups (not .Values.watcher.resources.allowReadAll) }}
+  {{- range $cag := .Values.watcher.resources.customAPIGroups }}
+  - apiGroups: {{ $cag.apiGroups }}
+  - resources: {{ $cag.resources }}
+  - verbs: {{ $cag.verbs }}
+  {{- end }}
+{{- end }}
+
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
