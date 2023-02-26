@@ -114,7 +114,7 @@ watcher:
     csiStorageCapacity: true
     volumeAttachment: true
     allowReadAll: true
-    customAPIGroups: []
+    customReadAPIGroups: []
   controller:
     resync:
       period: "0"

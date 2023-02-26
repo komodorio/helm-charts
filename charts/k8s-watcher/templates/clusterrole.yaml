@@ -430,10 +430,10 @@ rules:
     verbs:     ["get", "watch", "list"]
 {{- end}}
 
-{{- range $cag := .Values.watcher.resources.customAPIGroups }}
-- apiGroups: {{ $cag.apiGroups }}
-  resources: {{ $cag.resources }}
-  verbs: {{ $cag.verbs }}
+{{- range $cag := .Values.watcher.resources.customReadAPIGroups }}
+  - apiGroups: {{ $cag.apiGroups }}
+    resources: ["*"]
+    verbs:     ["get", "watch", "list"]
 {{- end }}
 
 
