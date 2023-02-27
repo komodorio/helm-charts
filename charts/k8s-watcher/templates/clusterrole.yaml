@@ -430,13 +430,11 @@ rules:
     verbs:     ["get", "watch", "list"]
 {{- end}}
 
-{{- range $cag := .Values.watcher.resources.customReadAPIGroups }}
-  - apiGroups: {{ $cag.apiGroups }}
+{{- if gt (len .Values.watcher.resources.customReadAPIGroups) 0 }}
+  - apiGroups: {{ .Values.watcher.resources.customReadAPIGroups }}
     resources: ["*"]
     verbs:     ["get", "watch", "list"]
 {{- end }}
-
-
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
