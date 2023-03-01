@@ -26,6 +26,7 @@ data:
     redactLogs: []
     resources:
       admissionRegistrationResources: true
+      allowReadAll: true
       authorizationResources: true
       certificateSigningRequest: true
       clusterRole: true
@@ -36,6 +37,7 @@ data:
       csiDriver: true
       csiNode: true
       csiStorageCapacity: true
+      customReadAPIGroups: []
       daemonSet: true
       deployment: true
       endpointSlice: true
