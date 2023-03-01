@@ -1,4 +1,5 @@
 deploy:
+	 helm dependency build charts/k8s-watcher
 	 helm repo update
 	 helm upgrade --install k8s-watcher komodorio/k8s-watcher --debug \
 	 --set apiKey=${KOMOKW_API_KEY} \
@@ -9,6 +10,7 @@ deploy:
 	 --set watcher.actions.advanced=false
 
 generate-kube:
+	helm dependency build charts/k8s-watcher
 	helm template k8s-watcher ./charts/k8s-watcher -f ./charts/k8s-watcher/values.yaml \
 	--set watcher.collectHistory=true \
 	--set watcher.nameDenylist="{leader,election}" \
