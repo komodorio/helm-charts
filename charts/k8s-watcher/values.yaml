@@ -119,4 +119,4 @@ watcher:
 network-mapper:
   enabled: false
   mapper:
-    tag: v0.1.12 # important, since otterize sets it to `latest`
+    tag: v0.1.13 # important to pin, since otterize sets it to `latest`
