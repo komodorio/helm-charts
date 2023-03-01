@@ -1,0 +1,5 @@
+dependencies:
+  - name: network-mapper
+    version: "0.1.1"
+    repository: "https://helm.otterize.com"
+    condition: network-mapper.enabled

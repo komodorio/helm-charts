@@ -116,3 +116,7 @@ watcher:
   controller:
     resync:
       period: "0"
+network-mapper:
+  enabled: false
+  mapper:
+    tag: v0.1.12 # important, since otterize sets it to `latest`

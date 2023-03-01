@@ -72,6 +72,15 @@ spec:
               value: /opt/watcher/helm/config
             - name: HELM_DATA_HOME
               value: /opt/watcher/helm/data
+{{- if (.Values.watcher.netMapperURL) }}
+            - name: KOMOKW_NETMAPPER_URL
+              value: {{ .Values.watcher.netMapperURL }}
+{{- else}}
+  {{- if index .Values "network-mapper" "enabled" }}
+            - name: KOMOKW_NETMAPPER_URL
+              value: http://otterize-network-mapper.{{.Release.Namespace}}.svc.cluster.local:9090
+  {{- end }}
+{{- end }}
 {{- include "k8s-watcher.proxy-conf" . }}
           securityContext:
             readOnlyRootFilesystem: true
