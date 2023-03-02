@@ -430,7 +430,7 @@ rules:
     verbs:     ["get", "watch", "list"]
 {{- end}}
 
-{{- if and .Values.watcher.resources.customReadAPIGroups gt (len .Values.watcher.resources.customReadAPIGroups) 0 }}
+{{- if and .Values.watcher.resources.customReadAPIGroups (gt (len .Values.watcher.resources.customReadAPIGroups) 0) }}
   - apiGroups: {{ .Values.watcher.resources.customReadAPIGroups }}
     resources: ["*"]
     verbs:     ["get", "watch", "list"]
