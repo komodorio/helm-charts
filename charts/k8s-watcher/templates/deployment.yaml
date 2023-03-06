@@ -119,5 +119,6 @@ spec:
 {{- end }}
 {{- if ((.Values.helm).enableActions) }}
         - name: helm-data
-          emptyDir: {}
+          emptyDir:
+            sizeLimit: {{ .Values.helm.volumeSizeLimit | default "256Mi" }}
 {{- end }}
