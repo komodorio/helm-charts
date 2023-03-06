@@ -4,7 +4,7 @@ metadata:
   name: k8s-watcher
   namespace: komodor
   labels:
-    helm.sh/chart: k8s-watcher-1.6.2
+    helm.sh/chart: k8s-watcher-1.6.3
     app.kubernetes.io/name: k8s-watcher
     app.kubernetes.io/instance: k8s-watcher
     app.kubernetes.io/version: "0.1.179"
@@ -104,4 +104,5 @@ spec:
                   resource: limits.memory
                   divisor: 1Mi
         - name: helm-data
-          emptyDir: {}
+          emptyDir:
+            sizeLimit: 256Mi
