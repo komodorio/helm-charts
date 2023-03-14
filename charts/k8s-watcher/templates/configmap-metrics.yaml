@@ -1,0 +1,57 @@
+{{- if .Values.metrics.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "k8s-watcher.name" . }}-metrics-config
+  {{- if hasKey .Values "namespace" }}
+  namespace: {{ .Values.namespace }}
+  {{- end }}
+data:
+  telegraf.conf: |
+    [global_tags]
+      AccountId = "${AccountId}"
+
+    [agent]
+      interval = "15s"
+      flush_interval = "1m"
+
+    [[outputs.timestream]]
+      region = "us-east-1"
+      access_key = "${TimestreamAccessKey}"
+      secret_key = "${TimestreamSecretKey}"
+
+      database_name = "prod-metrics-db"
+
+      describe_database_on_start = true
+      mapping_mode = "multi-table"
+
+      create_table_if_not_exists = true
+
+      create_table_magnetic_store_retention_period_in_days = 37
+
+      create_table_memory_store_retention_period_in_hours = 24
+
+      use_multi_measure_records = true
+
+      measure_name_for_multi_measure_records = "telegraf_measure"
+
+      max_write_go_routines = 25
+
+    [[inputs.kubernetes]]
+      ## The Kubernetes API server URL
+      url = "https://kubernetes.default.svc.cluster.local/api/v1/nodes/$NODE_NAME/proxy"
+      bearer_token = "/run/secrets/kubernetes.io/serviceaccount/token"
+      insecure_skip_verify = true
+      fieldpass = ["memory_usage_bytes"," "]
+      namedrop = ["kubernetes_system_container"]
+
+    [[inputs.kube_inventory]]
+      ## URL for the Kubernetes API
+      url = "https://kubernetes.default.svc.cluster.local"
+      bearer_token = "/run/secrets/kubernetes.io/serviceaccount/token"
+      insecure_skip_verify = true
+      resource_include = [ "pods", "nodes" ]
+      fieldpass = ["resource_requests_cpu_units","resource_limits_cpu_units","resource_requests_memory_bytes","resource_limits_memory_bytes"]
+      [inputs.kube_inventor.tagpass]
+        node_name=["$NODE_NAME"]
+{{- end }}
