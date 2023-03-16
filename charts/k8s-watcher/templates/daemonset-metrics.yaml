@@ -32,9 +32,14 @@ spec:
           volumeMounts:
             - name: configuration
               mountPath: /etc/komodor
+          env:
+            {{- if hasKey .Values "namespace" }}
+            - name: NAMESPACE
+              value: {{ .Values.namespace }}
+            {{- end }}
       containers:
         - name: metrics
-          image: {{ .Values.metrics.repository }} 
+          image: {{ .Values.metrics.image.repository }} 
           volumeMounts:
             - name: {{ include "k8s-watcher.name" . }}-metrics-config
               mountPath: /etc/telegraf/telegraf.conf
@@ -52,7 +57,7 @@ spec:
       volumes:
         - name: {{ include "k8s-watcher.name" . }}-metrics-config
           configMap:
-            name: telegraf-metrics-config
+            name: {{ include "k8s-watcher.name" . }}-metrics-config
         - name: configuration
           configMap:
             name: {{ include "k8s-watcher.name" . }}-config

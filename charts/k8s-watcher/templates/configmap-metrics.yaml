@@ -9,33 +9,34 @@ metadata:
 data:
   telegraf.conf: |
     [global_tags]
-      AccountId = "${AccountId}"
+      account_id = "${ACCOUNT_ID}"
+      cluster_name = "${CLUSTER_NAME}"
 
     [agent]
-      interval = "15s"
-      flush_interval = "1m"
+      interval = "${INTERVAL}"
+      flush_interval = "${FLUSH_INTERVAL}"
 
     [[outputs.timestream]]
-      region = "us-east-1"
-      access_key = "${TimestreamAccessKey}"
-      secret_key = "${TimestreamSecretKey}"
+      region = "${TIMESTREAM_REGION}"
+      access_key = "${TIMESTREAM_ACCESS_KEY}"
+      secret_key = "${TIMESTREAM_SECRET_KEY}"
 
-      database_name = "prod-metrics-db"
+      database_name = "${TIMESTREAM_DATABASE_NAME}"
 
       describe_database_on_start = true
-      mapping_mode = "multi-table"
+      mapping_mode = "${TIMESTREAM_MAPPING_MODE}"
 
       create_table_if_not_exists = true
 
-      create_table_magnetic_store_retention_period_in_days = 37
+      create_table_magnetic_store_retention_period_in_days = ${TIMESTREAM_MAGNETIC_STORE_RETENTION_PERIOD_IN_DAYS}
 
-      create_table_memory_store_retention_period_in_hours = 24
+      create_table_memory_store_retention_period_in_hours = ${TIMESTREAM_MEMORY_STORE_RETENTION_PERIOD_IN_HOURS}
 
-      use_multi_measure_records = true
+      use_multi_measure_records = ${TIMESTREAM_USE_MULTI_MEASURE_RECORDS}
 
-      measure_name_for_multi_measure_records = "telegraf_measure"
+      measure_name_for_multi_measure_records = "${TIMESTREAM_MEASURE_NAME_FOR_MULTI_MEASURE_RECORDS}"
 
-      max_write_go_routines = 25
+      max_write_go_routines = ${TIMESTREAM_MAX_WRITE_GO_ROUTINES}
 
     [[inputs.kubernetes]]
       ## The Kubernetes API server URL
