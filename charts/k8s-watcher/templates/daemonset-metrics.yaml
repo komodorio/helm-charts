@@ -37,6 +37,16 @@ spec:
             - name: NAMESPACE
               value: {{ .Values.namespace }}
             {{- end }}
+            - name: KOMOKW_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  {{- if .Values.existingSecret }}
+                  name: {{ .Values.existingSecret | required "Existing secret name required!" }}
+                  key: apiKey
+                  {{- else }}
+                  name: {{ include "k8s-watcher.name" . }}-secret
+                  key: apiKey
+                  {{- end }}
       containers:
         - name: metrics
           image: {{ .Values.metrics.image.repository }} 
