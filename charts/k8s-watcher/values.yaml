@@ -46,11 +46,29 @@ helm:
   enableActions: true
   volumeSizeLimit: "256Mi"
 
+metrics:
+  enabled: false
+  resources:
+    limits:
+      cpu: 0.1
+      memory: 128Mi
+    requests:
+      cpu: 0.1
+      memory: 128Mi
+  image:
+    repository: komodorio/telegraf:1.25
+    pullPolicy: IfNotPresent
+  init:
+    image:
+      repository: komodorio/init-metrics-agent
+      pullPolicy: IfNotPresent
 watcher:
   enableAgentTaskExecution: true
   enableAgentTaskExecutionV2: true
   allowReadingPodLogs: true
   enableHelm: true
+  metrics:
+    varsConfigMapName: k8s-watcher-metrics-env-vars
   # clusterName: ""
   servers:
     healthCheck: {}

@@ -1,0 +1,58 @@
+{{- if .Values.metrics.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "k8s-watcher.name" . }}-metrics-config
+  {{- if hasKey .Values "namespace" }}
+  namespace: {{ .Values.namespace }}
+  {{- end }}
+data:
+  telegraf.conf: |
+    [global_tags]
+      account_id = "${ACCOUNT_ID}"
+      cluster_name = "${CLUSTER_NAME}"
+
+    [agent]
+      interval = "${INTERVAL}"
+      flush_interval = "${FLUSH_INTERVAL}"
+
+    [[outputs.timestream]]
+      region = "${TIMESTREAM_REGION}"
+      access_key = "${TIMESTREAM_ACCESS_KEY}"
+      secret_key = "${TIMESTREAM_SECRET_KEY}"
+
+      database_name = "${TIMESTREAM_DATABASE_NAME}"
+
+      describe_database_on_start = true
+      mapping_mode = "${TIMESTREAM_MAPPING_MODE}"
+
+      create_table_if_not_exists = true
+
+      create_table_magnetic_store_retention_period_in_days = ${TIMESTREAM_MAGNETIC_STORE_RETENTION_PERIOD_IN_DAYS}
+
+      create_table_memory_store_retention_period_in_hours = ${TIMESTREAM_MEMORY_STORE_RETENTION_PERIOD_IN_HOURS}
+
+      use_multi_measure_records = ${TIMESTREAM_USE_MULTI_MEASURE_RECORDS}
+
+      measure_name_for_multi_measure_records = "${TIMESTREAM_MEASURE_NAME_FOR_MULTI_MEASURE_RECORDS}"
+
+      max_write_go_routines = ${TIMESTREAM_MAX_WRITE_GO_ROUTINES}
+
+    [[inputs.kubernetes]]
+      ## The Kubernetes API server URL
+      url = "https://kubernetes.default.svc.cluster.local/api/v1/nodes/$NODE_NAME/proxy"
+      bearer_token = "/run/secrets/kubernetes.io/serviceaccount/token"
+      insecure_skip_verify = true
+      fieldpass = ["memory_usage_bytes"," "]
+      namedrop = ["kubernetes_system_container"]
+
+    [[inputs.kube_inventory]]
+      ## URL for the Kubernetes API
+      url = "https://kubernetes.default.svc.cluster.local"
+      bearer_token = "/run/secrets/kubernetes.io/serviceaccount/token"
+      insecure_skip_verify = true
+      resource_include = [ "pods", "nodes" ]
+      fieldpass = ["resource_requests_cpu_units","resource_limits_cpu_units","resource_requests_memory_bytes","resource_limits_memory_bytes"]
+      [inputs.kube_inventor.tagpass]
+        node_name=["$NODE_NAME"]
+{{- end }}
