@@ -43,7 +43,7 @@ data:
       url = "https://kubernetes.default.svc.cluster.local/api/v1/nodes/$NODE_NAME/proxy"
       bearer_token = "/run/secrets/kubernetes.io/serviceaccount/token"
       insecure_skip_verify = true
-      fieldpass = ["memory_usage_bytes"," "]
+      fieldpass = ["memory_usage_bytes","cpu_usage_nanocores"]
       namedrop = ["kubernetes_system_container"]
 
     [[inputs.kube_inventory]]
@@ -53,6 +53,6 @@ data:
       insecure_skip_verify = true
       resource_include = [ "pods", "nodes" ]
       fieldpass = ["resource_requests_cpu_units","resource_limits_cpu_units","resource_requests_memory_bytes","resource_limits_memory_bytes"]
-      [inputs.kube_inventor.tagpass]
-        node_name=["$NODE_NAME"]
+      [inputs.kube_inventory.tagpass]
+        node_name=["${NODE_NAME}"]
 {{- end }}

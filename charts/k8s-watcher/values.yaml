@@ -56,7 +56,7 @@ metrics:
       cpu: 0.1
       memory: 128Mi
   image:
-    repository: komodorio/telegraf:1.25
+    repository: telegraf:1.25
     pullPolicy: IfNotPresent
   init:
     image:
