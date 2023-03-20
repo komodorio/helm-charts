@@ -1,4 +1,4 @@
-{{- if .Values.metrics.enabled }}
+{{- if ((.Values.metrics).enabled) }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
