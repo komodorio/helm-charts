@@ -29,6 +29,7 @@ spec:
       initContainers:
         - name: init-metrics
           image: "{{ .Values.metrics.init.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.metrics.init.image.pullPolicy }}
           volumeMounts:
             - name: configuration
               mountPath: /etc/komodor
@@ -50,6 +51,7 @@ spec:
       containers:
         - name: metrics
           image: {{ .Values.metrics.image.repository }} 
+          imagePullPolicy: {{ .Values.metrics.image.pullPolicy }}
           volumeMounts:
             - name: {{ include "k8s-watcher.name" . }}-metrics-config
               mountPath: /etc/telegraf/telegraf.conf
