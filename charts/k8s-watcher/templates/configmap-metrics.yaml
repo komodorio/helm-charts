@@ -52,7 +52,7 @@ data:
       bearer_token = "/run/secrets/kubernetes.io/serviceaccount/token"
       insecure_skip_verify = true
       resource_include = [ "pods", "nodes" ]
-      fieldpass = ["resource_requests_cpu_units","resource_limits_cpu_units","resource_requests_memory_bytes","resource_limits_memory_bytes"]
+      fieldpass = ["resource_requests_millicpu_units","resource_limits_millicpu_units","resource_requests_memory_bytes","resource_limits_memory_bytes"]
       [inputs.kube_inventory.tagpass]
         node_name=["${NODE_NAME}"]
 {{- end }}
