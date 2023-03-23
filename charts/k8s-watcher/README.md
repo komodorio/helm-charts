@@ -184,6 +184,7 @@ The following table lists the configurable parameters of the chart and their def
 | `watcher.kubeconfigPath`                           | Specifies a custom absolute path to load the kubeconfig file for authenticating to the requested cluster (by default, the agent will try to use the Pod's Service Account if it exists, or fallback to `$HOME/.kube/config`) | `""`                                |
 | `watcher.kubeMasterUrl`                            | Specifies a custom absolute URL to the kubernetes master API for authenticating to the requested cluster (takes precedence over `kubeconfigPath` if set)                                                                     | `""`                                |
 | `helm.volumeSizeLimit`                             | The size limit for the mounted volume holding helm metadata                                                                                                                                                                  | `256Mi`                             |
+| `metrics.enabled`                                  | Enables metrics collection (CPU & Memory)                                                                                                                                                                                    | `false`                             |
 
 The above parameters map to a yaml configuration file used by the watcher.
 
