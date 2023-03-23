@@ -193,7 +193,7 @@ rules:
     - watch
     - list
 {{- end }}
-{{- if .Values.watcher.resources.metrics }}
+{{- if or (.Values.watcher.resources.metrics) (.Values.metrics.enabled) }}
   - apiGroups:
     - metrics.k8s.io
     resources:
@@ -383,6 +383,34 @@ rules:
     - patch
     - update
     - create
+{{- end }}
+{{- if .Values.metrics.enabled }}
+  - apiGroups:
+    - ""
+    resources:
+    - configmaps
+    - namespaces
+    - pods
+    - nodes
+    verbs:
+    - get
+    - list
+  - apiGroups:
+    - ""
+    resources:
+    - configmaps
+    verbs:
+    - update
+    - create
+  - apiGroups:
+    - extensions
+    - "networking.k8s.io"
+    resources:
+    - ingresses
+    verbs:
+    - get
+    - watch
+    - list
 {{- end }}
 {{- if .Values.watcher.actions.advanced }}
   - apiGroups:
