@@ -28,3 +28,4 @@
 [helm-dashboard](https://github.com/komodorio/helm-charts/tree/master/charts/helm-dashboard) - Visualize installed Helm charts, see their revision history and corresponding k8s resources
 
 ---
+ 
