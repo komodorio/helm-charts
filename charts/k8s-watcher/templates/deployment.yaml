@@ -55,6 +55,11 @@ spec:
             - name: helm-data
               mountPath: /opt/watcher/helm
 {{- end }}
+{{- if ((.Values.enableRWCache) }}
+            - name: kube-cache
+              mountPath: /.kube
+              readOnlyRootFilesystem: false
+{{- end }}
           env:
             - name: KOMOKW_API_KEY
               valueFrom:
@@ -121,4 +126,9 @@ spec:
         - name: helm-data
           emptyDir:
             sizeLimit: {{ .Values.helm.volumeSizeLimit | default "256Mi" }}
+{{- end }}
+{{- if ((.Values.enableRWCache) }}
+        - name: kube-cache
+          emptyDir:
+            sizeLimit: 256Mi
 {{- end }}
