@@ -58,7 +58,6 @@ spec:
 {{- if ((.Values.enableRWCache) }}
             - name: kube-cache
               mountPath: /.kube
-              readOnlyRootFilesystem: false
 {{- end }}
           env:
             - name: KOMOKW_API_KEY
