@@ -129,5 +129,5 @@ spec:
 {{- if .Values.enableRWCache }}
         - name: kube-cache
           emptyDir:
-            sizeLimit: 256Mi
+            sizeLimit: 1Gi
 {{- end }}
