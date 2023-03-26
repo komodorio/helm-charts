@@ -19,6 +19,8 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   # name: ""
 
+enableRWCache: true
+
 proxy:
   enabled: false
   komodorOnly: true
