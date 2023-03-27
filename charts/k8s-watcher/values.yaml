@@ -19,6 +19,8 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   # name: ""
 
+enableRWCache: true
+
 proxy:
   enabled: false
   komodorOnly: true
@@ -44,12 +46,31 @@ nodeSelector: {}
 
 helm:
   enableActions: true
+  volumeSizeLimit: "256Mi"
 
+metrics:
+  enabled: false
+  resources:
+    limits:
+      cpu: 0.1
+      memory: 128Mi
+    requests:
+      cpu: 0.1
+      memory: 128Mi
+  image:
+    repository: telegraf:1.25
+    pullPolicy: IfNotPresent
+  init:
+    image:
+      repository: komodorio/init-metrics-agent
+      pullPolicy: IfNotPresent
 watcher:
   enableAgentTaskExecution: true
   enableAgentTaskExecutionV2: true
   allowReadingPodLogs: true
   enableHelm: true
+  metrics:
+    varsConfigMapName: k8s-watcher-metrics-env-vars
   # clusterName: ""
   servers:
     healthCheck: {}
@@ -113,6 +134,8 @@ watcher:
     csiNode: true
     csiStorageCapacity: true
     volumeAttachment: true
+    allowReadAll: true
+    customReadAPIGroups: []
   controller:
     resync:
       period: "0"

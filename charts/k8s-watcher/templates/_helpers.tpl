@@ -52,6 +52,26 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
+Common metrics labels
+*/}}
+{{- define "metrics.labels" -}}
+helm.sh/chart: {{ include "k8s-watcher.chart" . }}
+{{ include "metrics.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+Selector metrics labels
+*/}}
+{{- define "metrics.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "k8s-watcher.name" . }}-metrics
+app.kubernetes.io/instance: {{ .Release.Name }}-metrics
+{{- end }}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "k8s-watcher.serviceAccountName" -}}

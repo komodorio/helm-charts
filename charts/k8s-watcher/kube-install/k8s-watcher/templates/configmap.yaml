@@ -17,6 +17,8 @@ data:
     enableAgentTaskExecution: true
     enableAgentTaskExecutionV2: true
     enableHelm: true
+    metrics:
+      varsConfigMapName: k8s-watcher-metrics-env-vars
     monitoringFQDN: ""
     nameDenylist:
     - leader
@@ -26,6 +28,7 @@ data:
     redactLogs: []
     resources:
       admissionRegistrationResources: true
+      allowReadAll: true
       authorizationResources: true
       certificateSigningRequest: true
       clusterRole: true
@@ -36,6 +39,7 @@ data:
       csiDriver: true
       csiNode: true
       csiStorageCapacity: true
+      customReadAPIGroups: []
       daemonSet: true
       deployment: true
       endpointSlice: true

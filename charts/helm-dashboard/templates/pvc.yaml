@@ -13,6 +13,8 @@ metadata:
 spec:
   {{- if .Values.dashboard.persistence.hostPath }}
   storageClassName: ""
+  {{- else }}
+  storageClassName: "{{ .Values.dashboard.persistence.storageClass }}"
   {{- end }}
   accessModes:
   {{- if not (empty .Values.dashboard.persistence.accessModes) }}
@@ -40,7 +42,11 @@ metadata:
   {{- end }}
 spec:
   accessModes:
-    - {{ .Values.dashboard.persistence.accessMode | quote }}
+  {{- if not (empty .Values.dashboard.persistence.accessModes) }}
+  {{- range .Values.dashboard.persistence.accessModes }}
+    - {{ . | quote }}
+  {{- end }}
+  {{- end }}
   capacity:
     storage: {{ .Values.dashboard.persistence.size | quote }}
   hostPath:

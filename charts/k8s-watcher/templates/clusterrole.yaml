@@ -193,7 +193,7 @@ rules:
     - watch
     - list
 {{- end }}
-{{- if .Values.watcher.resources.metrics }}
+{{- if or (.Values.watcher.resources.metrics) (.Values.metrics.enabled) }}
   - apiGroups:
     - metrics.k8s.io
     resources:
@@ -384,6 +384,34 @@ rules:
     - update
     - create
 {{- end }}
+{{- if .Values.metrics.enabled }}
+  - apiGroups:
+    - ""
+    resources:
+    - configmaps
+    - namespaces
+    - pods
+    - nodes
+    verbs:
+    - get
+    - list
+  - apiGroups:
+    - ""
+    resources:
+    - configmaps
+    verbs:
+    - update
+    - create
+  - apiGroups:
+    - extensions
+    - "networking.k8s.io"
+    resources:
+    - ingresses
+    verbs:
+    - get
+    - watch
+    - list
+{{- end }}
 {{- if .Values.watcher.actions.advanced }}
   - apiGroups:
     - ""
@@ -423,6 +451,18 @@ rules:
       - get
       - watch
 {{- end}}
+
+{{- if .Values.watcher.resources.allowReadAll }}
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs:     ["get", "watch", "list"]
+{{- end}}
+
+{{- if and .Values.watcher.resources.customReadAPIGroups (gt (len .Values.watcher.resources.customReadAPIGroups) 0) }}
+  - apiGroups: {{ .Values.watcher.resources.customReadAPIGroups }}
+    resources: ["*"]
+    verbs:     ["get", "watch", "list"]
+{{- end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
