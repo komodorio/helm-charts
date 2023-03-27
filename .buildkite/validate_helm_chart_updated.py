@@ -1,6 +1,5 @@
 from command import cmd
 from time import sleep
-import os
 
 version_updated = False
 new_version = cmd('buildkite-agent meta-data get "version"', True)
