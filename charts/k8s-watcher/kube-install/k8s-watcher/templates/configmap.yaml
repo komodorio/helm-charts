@@ -18,7 +18,7 @@ data:
     enableAgentTaskExecutionV2: true
     enableHelm: true
     metrics:
-      varsConfigMapName: k8s-watcher-metrics-env-vars
+      varsConfigMapName: k8s-watcher-daemon-env-vars
     monitoringFQDN: ""
     nameDenylist:
     - leader
@@ -81,3 +81,4 @@ data:
       enable: true
     watchNamespace: all
 ---
+

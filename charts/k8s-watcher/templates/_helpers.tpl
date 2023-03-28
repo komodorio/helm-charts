@@ -52,11 +52,11 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
-Common metrics labels
+Common daemon labels
 */}}
-{{- define "metrics.labels" -}}
+{{- define "daemon.labels" -}}
 helm.sh/chart: {{ include "k8s-watcher.chart" . }}
-{{ include "metrics.selectorLabels" . }}
+{{ include "daemon.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -64,11 +64,11 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
-Selector metrics labels
+Selector daemon labels
 */}}
-{{- define "metrics.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "k8s-watcher.name" . }}-metrics
-app.kubernetes.io/instance: {{ .Release.Name }}-metrics
+{{- define "daemon.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "k8s-watcher.name" . }}-daemon
+app.kubernetes.io/instance: {{ .Release.Name }}-daemon
 {{- end }}
 
 {{/*
