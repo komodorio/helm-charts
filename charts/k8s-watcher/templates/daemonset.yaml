@@ -1,4 +1,4 @@
-{{- if ((.Values.metrics).enabled) }}
+{{- if (and (.Values.metrics).enabled .Values.daemon) }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -60,7 +60,7 @@ spec:
             {{- toYaml .Values.daemon.resources | nindent 12 }}
           envFrom:
           - configMapRef:
-              name:  {{ .Values.watcher.daemon.varsConfigMapName }}
+              name:  {{ (or .Values.watcher.daemon .Values.watcher.metrics).varsConfigMapName }}
           env:
             - name: NODE_NAME
               valueFrom:
