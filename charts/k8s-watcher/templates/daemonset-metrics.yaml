@@ -2,12 +2,12 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: {{ include "k8s-watcher.fullname" . }}-metrics
+  name: {{ include "k8s-watcher.fullname" . }}-daemon
   {{- if hasKey .Values "namespace" }}
   namespace: {{ .Values.namespace }}
   {{- end }}
   labels:
-    {{- include "metrics.labels" . | nindent 4 }}
+    {{- include "daemon.labels" . | nindent 4 }}
   {{- with .Values.deploymentAnnotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -15,7 +15,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      {{- include "metrics.selectorLabels" . | nindent 6 }}
+      {{- include "daemon.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -23,13 +23,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "metrics.selectorLabels" . | nindent 8 }}
+        {{- include "daemon.selectorLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "k8s-watcher.serviceAccountName" . }}
       initContainers:
-        - name: init-metrics
-          image: "{{ .Values.metrics.init.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.metrics.init.image.pullPolicy }}
+        - name: init-daemon
+          image: "{{ .Values.daemon.init.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.daemon.init.image.pullPolicy }}
           volumeMounts:
             - name: configuration
               mountPath: /etc/komodor
@@ -49,27 +49,27 @@ spec:
                   key: apiKey
                   {{- end }}
       containers:
-        - name: metrics
-          image: {{ .Values.metrics.image.repository }} 
-          imagePullPolicy: {{ .Values.metrics.image.pullPolicy }}
+        - name: daemon
+          image: {{ .Values.daemon.image.repository }} 
+          imagePullPolicy: {{ .Values.daemon.image.pullPolicy }}
           volumeMounts:
-            - name: {{ include "k8s-watcher.name" . }}-metrics-config
+            - name: {{ include "k8s-watcher.name" . }}-daemon-config
               mountPath: /etc/telegraf/telegraf.conf
               subPath: telegraf.conf
           resources:
-            {{- toYaml .Values.metrics.resources | nindent 12 }}
+            {{- toYaml .Values.daemon.resources | nindent 12 }}
           envFrom:
           - configMapRef:
-              name:  {{ .Values.watcher.metrics.varsConfigMapName }}
+              name:  {{ .Values.watcher.daemon.varsConfigMapName }}
           env:
             - name: NODE_NAME
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
       volumes:
-        - name: {{ include "k8s-watcher.name" . }}-metrics-config
+        - name: {{ include "k8s-watcher.name" . }}-daemon-config
           configMap:
-            name: {{ include "k8s-watcher.name" . }}-metrics-config
+            name: {{ include "k8s-watcher.name" . }}-daemon-config
         - name: configuration
           configMap:
             name: {{ include "k8s-watcher.name" . }}-config
