@@ -434,6 +434,14 @@ rules:
       - ""
     resources:
       - pods/exec
+    verbs:
+      - create
+{{- end}}
+
+{{- if .Values.watcher.actions.podExec }}
+  - apiGroups:
+      - ""
+    resources:
       - pods/portforward
     verbs:
       - create

@@ -85,6 +85,7 @@ watcher:
     basic: false
     advanced: false
     podExec: false
+    portforward: false
   telemetry:
     enable: true
   monitoringFQDN: ""

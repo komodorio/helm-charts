@@ -9,6 +9,7 @@ data:
       advanced: false
       basic: false
       podExec: false
+      portforward: false
     allowReadingPodLogs: true
     collectHistory: true
     controller:
