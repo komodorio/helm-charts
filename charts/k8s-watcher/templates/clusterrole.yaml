@@ -438,6 +438,15 @@ rules:
       - create
 {{- end}}
 
+{{- if .Values.watcher.actions.podExec }}
+  - apiGroups:
+      - ""
+    resources:
+      - pods/portforward
+    verbs:
+      - create
+{{- end}}
+
 {{- if ((.Values.helm).enableActions) }}
   - apiGroups:
       - ""
