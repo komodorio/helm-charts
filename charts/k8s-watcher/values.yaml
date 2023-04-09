@@ -59,7 +59,7 @@ daemon:
       cpu: 0.1
       memory: 128Mi
   image:
-    repository: telegraf:1.25
+    repository: komodorio/telegraf:1.26
     pullPolicy: IfNotPresent
   init:
     image:
