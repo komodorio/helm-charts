@@ -438,7 +438,7 @@ rules:
       - create
 {{- end}}
 
-{{- if .Values.watcher.actions.podExec }}
+{{- if .Values.watcher.actions.portforward }}
   - apiGroups:
       - ""
     resources:
