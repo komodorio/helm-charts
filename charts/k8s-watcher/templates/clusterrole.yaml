@@ -384,7 +384,7 @@ rules:
     - update
     - create
 {{- end }}
-{{- if .Values.metrics.enabled }}
+{{- if (.Values.metrics).enabled }}
   - apiGroups:
     - ""
     resources:
