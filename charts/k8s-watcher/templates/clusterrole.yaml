@@ -193,7 +193,7 @@ rules:
     - watch
     - list
 {{- end }}
-{{- if or (.Values.watcher.resources.metrics) (.Values.metrics.enabled) }}
+{{- if or (.Values.watcher.resources.metrics) ((.Values.metrics).enabled) }}
   - apiGroups:
     - metrics.k8s.io
     resources:
