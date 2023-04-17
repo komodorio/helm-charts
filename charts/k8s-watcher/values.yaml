@@ -49,7 +49,7 @@ helm:
   volumeSizeLimit: "256Mi"
 
 metrics:
-  enabled: false
+  enabled: &metricsEnabled false
 daemon:
   resources:
     limits:
@@ -71,6 +71,7 @@ watcher:
   allowReadingPodLogs: true
   enableHelm: true
   daemon:
+    enabled: *metricsEnabled
     varsConfigMapName: k8s-watcher-daemon-env-vars
   # clusterName: ""
   servers:
