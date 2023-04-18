@@ -81,3 +81,8 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{- define "watcher.values" -}}
+{{- $daemonEnabledValues := dict "daemon" (dict "enabled" .Values.metrics.enabled) }}
+{{- mergeOverwrite .Values.watcher $daemonEnabledValues  | toYaml  }}
+{{- end }}
