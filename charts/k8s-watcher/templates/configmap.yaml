@@ -7,4 +7,5 @@ metadata:
   {{- end }}
 data:
   komodor-k8s-watcher.yaml: |
-{{ toYaml .Values.watcher | indent 4 }}
+{{- $daemonEnabledValues := dict "daemon" (dict "enabled" .Values.metrics.enabled) }}
+{{- mergeOverwrite .Values.watcher $daemonEnabledValues  | toYaml | nindent 4 }}
