@@ -7,4 +7,4 @@ metadata:
   {{- end }}
 data:
   komodor-k8s-watcher.yaml: |
-{{ toYaml .Values.watcher | indent 4 }}
+{{- include "watcher.values" . | nindent 4 }}
