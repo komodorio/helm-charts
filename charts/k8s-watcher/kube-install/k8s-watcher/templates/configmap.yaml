@@ -16,6 +16,7 @@ data:
       resync:
         period: "0"
     daemon:
+      enabled: false
       varsConfigMapName: k8s-watcher-daemon-env-vars
     enableAgentTaskExecution: true
     enableAgentTaskExecutionV2: true
