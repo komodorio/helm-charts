@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "otterize.mapper.fullName" . }}
+  {{- if hasKey .Values "namespace" }}
+  namespace: {{ .Values.namespace }}
+  {{- end }}
+spec:
+  selector:
+    app: {{ template "otterize.mapper.fullName" . }}
+  ports:
+    - protocol: TCP
+      port: 9090
+      name: http
+      targetPort: 9090

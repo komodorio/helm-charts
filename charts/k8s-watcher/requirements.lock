@@ -1,0 +1,6 @@
+dependencies:
+- name: network-mapper
+  repository: file://charts/network-mapper
+  version: 0.1.1
+digest: sha256:8768ea3f029a2824510fd752c34f56f0d0e49e8846ab72d8779aa5f642ee4e69
+generated: "2023-04-27T15:51:52.283556+03:00"
