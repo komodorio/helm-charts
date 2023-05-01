@@ -6,6 +6,13 @@ steps:
     if: build.message !~ /feat\(helm-dashboard\):/i
   - wait
 
+  - commands: 
+    - komo ctx staging
+    - helm upgrade --install k8s-watcher-production  --reuse-values --dry-run charts/k8s-watcher --set apiKey="test"
+    label: "dry-run installation on staging before version bump"
+    if: build.message !~ /feat\(helm-dashboard\):/i
+  - wait
+
   - block: "Bump Versions"
     if: build.message !~ /feat\(helm-dashboard\):/i && build.branch == "master"
   - commands:
