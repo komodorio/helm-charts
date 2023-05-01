@@ -17,7 +17,7 @@ data:
       flush_interval = "${FLUSH_INTERVAL}"
 
     [[outputs.http]]
-      url = "https://app.komodor.com/metrics/collect
+      url = "https://app.komodor.com/metrics-collector/api/v1/collect"
       [outputs.http.headers]
         X-ACCOUNT-ID = "${ACCOUNT_ID}"
 
