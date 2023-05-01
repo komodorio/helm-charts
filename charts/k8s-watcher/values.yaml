@@ -93,7 +93,7 @@ watcher:
   telemetry:
     enable: true
   networkMapper:
-    enable: true
+    enable: false
   monitoringFQDN: ""
   resources:
     event: true
