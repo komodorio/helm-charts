@@ -4,7 +4,7 @@ image:
   repository: komodorio/k8s-watcher
   pullPolicy: IfNotPresent
 
-namespace: komodor
+namespace: &namespace komodor
 createNamespace: true
 
 # enableMemLimitChecks will use downward API to tell the pod what is the allocated memory
@@ -48,6 +48,10 @@ helm:
   enableActions: true
   volumeSizeLimit: "256Mi"
 
+network-mapper:
+  enabled: false
+  namespace: *namespace
+
 metrics:
   enabled: false
 daemon:
@@ -88,6 +92,8 @@ watcher:
     portforward: false
   telemetry:
     enable: true
+  networkMapper:
+    enable: false
   monitoringFQDN: ""
   resources:
     event: true

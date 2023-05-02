@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ template "otterize.sniffer.fullName" . }}
+  {{- if hasKey .Values "namespace" }}
+  namespace: {{ .Values.namespace }}
+  {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "otterize.sniffer.fullName" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "otterize.sniffer.fullName" . }}
+        helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    spec:
+      containers:
+      - name: {{ template "otterize.sniffer.fullName" . }}
+        image: "{{ .Values.sniffer.repository }}/{{ .Values.sniffer.image }}:{{ .Values.sniffer.tag }}"
+        {{ if .Values.sniffer.pullPolicy }}
+        imagePullPolicy: {{ .Values.sniffer.pullPolicy }}
+        {{ end }}
+        resources:
+          {{- toYaml .Values.sniffer.resources | nindent 10 }}
+        env:
+          - name: OTTERIZE_MAPPER_API_URL
+            value: http://{{ template "otterize.mapper.fullName" . }}:9090/query
+          - name: OTTERIZE_DEBUG
+            value: {{ .Values.debug | quote }}
+        volumeMounts:
+          - mountPath: /hostproc
+            name: proc
+            readOnly: true
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      volumes:
+        - hostPath:
+            path: /proc
+            type: ""
+          name: proc
