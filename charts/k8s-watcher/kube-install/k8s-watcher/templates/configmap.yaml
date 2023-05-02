@@ -26,6 +26,8 @@ data:
     - leader
     - election
     namespacesDenylist: []
+    networkMapper:
+      enable: false
     redact: []
     redactLogs: []
     resources:
