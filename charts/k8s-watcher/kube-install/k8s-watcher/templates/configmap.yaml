@@ -83,5 +83,7 @@ data:
       healthCheck: {}
     telemetry:
       enable: true
+    memoryThresholdSafetyCheck:
+      enable: true      
     watchNamespace: all
 ---

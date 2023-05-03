@@ -92,6 +92,8 @@ watcher:
     portforward: false
   telemetry:
     enable: true
+  memoryThresholdSafetyCheck:
+    enable: true
   networkMapper:
     enable: false
   monitoringFQDN: ""

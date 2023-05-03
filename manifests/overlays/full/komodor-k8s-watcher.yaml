@@ -18,6 +18,8 @@ actions:
   advanced: false
 telemetry:
   enable: true
+memoryThresholdSafetyCheck:
+  enable: true  
 resources:
   event: true
   deployment: true
