@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: {{ template "otterize.sniffer.fullName" . }}
+  name: {{ template "otterize.sniffer.fullName" . }}-{{ .Release.Name }}
   {{- if hasKey .Values "namespace" }}
   namespace: {{ .Values.namespace }}
   {{- end }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "otterize.sniffer.fullName" . }}
+      app: {{ template "otterize.sniffer.fullName" . }}-{{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "otterize.sniffer.fullName" . }}
+        app: {{ template "otterize.sniffer.fullName" . }}-{{ .Release.Name }}
         helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     spec:
       containers:
-      - name: {{ template "otterize.sniffer.fullName" . }}
+      - name: {{ template "otterize.sniffer.fullName" . }}-{{ .Release.Name }}
         image: "{{ .Values.sniffer.repository }}/{{ .Values.sniffer.image }}:{{ .Values.sniffer.tag }}"
         {{ if .Values.sniffer.pullPolicy }}
         imagePullPolicy: {{ .Values.sniffer.pullPolicy }}
@@ -25,7 +25,7 @@ spec:
           {{- toYaml .Values.sniffer.resources | nindent 10 }}
         env:
           - name: OTTERIZE_MAPPER_API_URL
-            value: http://{{ template "otterize.mapper.fullName" . }}:9090/query
+            value: http://{{ template "otterize.mapper.fullName" . }}-{{ .Release.Name }}:9090/query
           - name: OTTERIZE_DEBUG
             value: {{ .Values.debug | quote }}
         volumeMounts:

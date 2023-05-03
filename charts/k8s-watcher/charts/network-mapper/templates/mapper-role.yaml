@@ -1,7 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ template "otterize.mapper.fullName" . }}
+  name: {{ template "otterize.mapper.fullName" . }}-{{ .Release.Name }}
   {{- if hasKey .Values "namespace" }}
   namespace: {{ .Values.namespace }}
   {{- end }}

@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "otterize.mapper.fullName" . }}
+  name: {{ template "otterize.mapper.fullName" . }}-{{ .Release.Name }}
   {{- if hasKey .Values "namespace" }}
   namespace: {{ .Values.namespace }}
   {{- end }}
@@ -9,17 +9,17 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ template "otterize.mapper.fullName" . }}
+      app: {{ template "otterize.mapper.fullName" . }}-{{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "otterize.mapper.fullName" . }}
+        app: {{ template "otterize.mapper.fullName" . }}-{{ .Release.Name }}
         helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     spec:
       securityContext:
         runAsNonRoot: true
       containers:
-        - name: {{ template "otterize.mapper.fullName" . }}
+        - name: {{ template "otterize.mapper.fullName" . }}-{{ .Release.Name }}
           image: "{{ .Values.mapper.repository }}/{{ .Values.mapper.image }}:{{ .Values.mapper.tag }}"
           {{ if .Values.mapper.pullPolicy }}
           imagePullPolicy: {{ .Values.mapper.pullPolicy }}
@@ -48,4 +48,4 @@ spec:
             capabilities:
               drop:
                 - "ALL"
-      serviceAccountName: {{ template "otterize.mapper.fullName" . }}
+      serviceAccountName: {{ template "otterize.mapper.fullName" . }}-{{ .Release.Name }}
