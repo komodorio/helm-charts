@@ -21,6 +21,8 @@ data:
     enableAgentTaskExecution: true
     enableAgentTaskExecutionV2: true
     enableHelm: true
+    memoryThresholdSafetyCheck:
+      enable: true
     monitoringFQDN: ""
     nameDenylist:
     - leader
@@ -83,7 +85,5 @@ data:
       healthCheck: {}
     telemetry:
       enable: true
-    memoryThresholdSafetyCheck:
-      enable: true      
     watchNamespace: all
 ---
