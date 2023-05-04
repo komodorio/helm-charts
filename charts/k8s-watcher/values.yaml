@@ -57,11 +57,11 @@ metrics:
 daemon:
   resources:
     limits:
-      cpu: 0.1
-      memory: 128Mi
+      cpu: 0.2
+      memory: 256Mi
     requests:
       cpu: 0.1
-      memory: 128Mi
+      memory: 256Mi
   image:
     repository: public.ecr.aws/g8r5w0b5/telegraf:1.26
     pullPolicy: IfNotPresent
