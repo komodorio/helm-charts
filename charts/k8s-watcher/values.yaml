@@ -1,7 +1,7 @@
 # ReplicaCount should always be 1 - We do not properly support syncing state (yet) so it will cause the same events to be sent and overload the server.
 replicaCount: 1
 image:
-  repository: komodorio/k8s-watcher
+  repository: public.ecr.aws/g8r5w0b5/k8s-watcher
   pullPolicy: IfNotPresent
 
 namespace: &namespace komodor
