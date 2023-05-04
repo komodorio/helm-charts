@@ -63,11 +63,11 @@ daemon:
       cpu: 0.1
       memory: 128Mi
   image:
-    repository: komodorio/telegraf:1.26
+    repository: public.ecr.aws/g8r5w0b5/telegraf:1.26
     pullPolicy: IfNotPresent
   init:
     image:
-      repository: komodorio/init-daemon-agent
+      repository: public.ecr.aws/g8r5w0b5/init-daemon-agent
       pullPolicy: IfNotPresent
 watcher:
   enableAgentTaskExecution: true
