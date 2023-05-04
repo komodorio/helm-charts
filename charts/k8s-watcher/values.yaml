@@ -58,10 +58,10 @@ daemon:
   resources:
     limits:
       cpu: 0.1
-      memory: 128Mi
+      memory: 256Mi
     requests:
       cpu: 0.1
-      memory: 128Mi
+      memory: 256Mi
   image:
     repository: komodorio/telegraf:1.26
     pullPolicy: IfNotPresent
