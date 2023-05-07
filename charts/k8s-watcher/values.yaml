@@ -55,6 +55,7 @@ network-mapper:
 metrics:
   enabled: false
 daemon:
+  tolerations: []
   resources:
     limits:
       cpu: 0.2
