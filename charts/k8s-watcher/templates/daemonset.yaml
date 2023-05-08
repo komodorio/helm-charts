@@ -66,6 +66,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
+      {{- with .Values.daemon.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       volumes:
         - name: {{ include "k8s-watcher.name" . }}-daemon-config
           configMap:

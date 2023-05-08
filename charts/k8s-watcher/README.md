@@ -190,6 +190,8 @@ The following table lists the configurable parameters of the chart and their def
 | `helm.volumeSizeLimit`                             | The size limit for the mounted volume holding helm metadata                                                                                                                                                                  | `256Mi`                             |
 | `metrics.enabled`                                  | Enables metrics collection (CPU & Memory)                                                                                                                                                                                    | `false`                             |
 | `network-mapper.enabled`                           | Enables service dependencies collection via network-mapper                                                                                                                                                                   | `false`                             |
+| `daemon.tolerations`                               | Tolerations for daemonset pod assignment - Example:   --set 'daemon.tolerations[0].key=my-key' --set 'daemon.tolerations[0].operator=Equal' --set 'daemon.tolerations[0].value=my-value' --set 'daemon.tolerations[0].effect=NoSchedule'                                                                                                                                                                         | `[]`                                |
+
 
 The above parameters map to a yaml configuration file used by the watcher.
 
