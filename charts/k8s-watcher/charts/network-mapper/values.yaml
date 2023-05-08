@@ -1,8 +1,8 @@
 # Local configuration for network mapper chart
 mapper:
-  repository: otterize
+  repository: public.ecr.aws/g8r5w0b5
   image: network-mapper
-  tag: latest
+  tag: v0.1.17
   pullPolicy:
 
   resources: { }
@@ -19,9 +19,9 @@ mapper:
 
 
 sniffer:
-  repository: otterize
+  repository: public.ecr.aws/g8r5w0b5
   image: network-mapper-sniffer
-  tag: latest
+  tag: v0.1.17
   pullPolicy:
   resources: { }
   # We usually recommend not to specify default resources and to leave this as a conscious
