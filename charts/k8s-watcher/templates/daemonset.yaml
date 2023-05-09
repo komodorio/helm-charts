@@ -68,11 +68,15 @@ spec:
                 fieldRef:
                   fieldPath: spec.nodeName
             - name: USE_PROXY
-              value: {{ .Values.proxy.enabled}}
+              value: {{ .Values.proxy.enabled | quote }}
+            {{- if .Values.proxy.http }}
             - name: HTTP_PROXY
               value: {{ .Values.proxy.http }}
+            {{- end }}
+            {{- if .Values.proxy.https }}
             - name: HTTPS_PROXY
-              value: {{ .Values.proxy.https}}
+              value: {{ .Values.proxy.https }}
+            {{- end }}
       {{- with .Values.daemon.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
