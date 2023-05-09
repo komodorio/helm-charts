@@ -4,7 +4,7 @@ image:
   repository: public.ecr.aws/g8r5w0b5/k8s-watcher
   pullPolicy: IfNotPresent
 
-namespace: &namespace komodor
+namespace: komodor
 createNamespace: true
 
 # enableMemLimitChecks will use downward API to tell the pod what is the allocated memory
@@ -47,10 +47,6 @@ nodeSelector: {}
 helm:
   enableActions: true
   volumeSizeLimit: "256Mi"
-
-network-mapper:
-  enabled: false
-  namespace: *namespace
 
 metrics:
   enabled: false
