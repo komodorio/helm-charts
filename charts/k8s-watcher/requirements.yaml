@@ -1,5 +1,0 @@
-dependencies:
-  - name: network-mapper
-    version: 0.1.1
-    repository: "file://charts/network-mapper"
-    condition: network-mapper.enabled
