@@ -19,6 +19,7 @@ data:
     [[outputs.http]]
       url = "https://app.komodor.com/metrics-collector/api/v1/collect"
       content_encoding = "gzip"
+      use_system_proxy = ${USE_PROXY}
       [outputs.http.headers]
         X-ACCOUNT-ID = "${ACCOUNT_ID}"
 

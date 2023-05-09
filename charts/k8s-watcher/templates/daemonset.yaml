@@ -48,6 +48,7 @@ spec:
                   name: {{ include "k8s-watcher.name" . }}-secret
                   key: apiKey
                   {{- end }}
+{{- include "k8s-watcher.proxy-conf" . }}
       containers:
         - name: daemon
           image: {{ .Values.daemon.image.repository }} 
@@ -66,6 +67,12 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
+            - name: USE_PROXY
+              value: {{ .Values.proxy.enabled}}
+            - name: HTTP_PROXY
+              value: {{ .Values.proxy.http }}
+            - name: HTTPS_PROXY
+              value: {{ .Values.proxy.https}}
       {{- with .Values.daemon.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
