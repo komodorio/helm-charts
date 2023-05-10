@@ -82,7 +82,7 @@ spec:
             periodSeconds: 5
             failureThreshold: 3
             successThreshold: 1
-      volumes:
+          volumes:
         - name: configuration
           configMap:
             name: {{ include "k8s-watcher.name" . }}-config
