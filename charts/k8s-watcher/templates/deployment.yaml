@@ -83,12 +83,12 @@ spec:
             failureThreshold: 3
             successThreshold: 1
           volumes:
-        - name: configuration
-          configMap:
-            name: {{ include "k8s-watcher.name" . }}-config
-            items:
-              - key: komodor-k8s-watcher.yaml
-                path: komodor-k8s-watcher.yaml
+            - name: configuration
+              configMap:
+                name: {{ include "k8s-watcher.name" . }}-config
+                items:
+                  - key: komodor-k8s-watcher.yaml
+                    path: komodor-k8s-watcher.yaml
 {{- end }}
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
