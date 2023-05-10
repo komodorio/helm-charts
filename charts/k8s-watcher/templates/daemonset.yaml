@@ -48,6 +48,7 @@ spec:
                   name: {{ include "k8s-watcher.name" . }}-secret
                   key: apiKey
                   {{- end }}
+{{- include "k8s-watcher.proxy-conf" . }}
       containers:
         - name: daemon
           image: {{ .Values.daemon.image.repository }} 
@@ -66,6 +67,14 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
+            {{- if .Values.proxy.http }}
+            - name: KOMOKW_HTTP_PROXY_URL
+              value: {{ .Values.proxy.http }}
+            {{- end }}
+            {{- if .Values.proxy.https }}
+            - name: KOMOKW_HTTPS_PROXY_URL
+              value: {{ .Values.proxy.https }}
+            {{- end }}
       {{- with .Values.daemon.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
