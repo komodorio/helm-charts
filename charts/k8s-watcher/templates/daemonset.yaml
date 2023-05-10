@@ -67,14 +67,12 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
-            - name: USE_PROXY
-              value: {{ .Values.proxy.enabled | quote }}
             {{- if .Values.proxy.http }}
-            - name: HTTP_PROXY
+            - name: KOMOKW_HTTP_PROXY_URL
               value: {{ .Values.proxy.http }}
             {{- end }}
             {{- if .Values.proxy.https }}
-            - name: HTTPS_PROXY
+            - name: KOMOKW_HTTPS_PROXY_URL
               value: {{ .Values.proxy.https }}
             {{- end }}
       {{- with .Values.daemon.tolerations }}
