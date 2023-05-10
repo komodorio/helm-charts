@@ -37,6 +37,56 @@ spec:
       {{- toYaml .Values.nodeSelector | nindent 8 }}
       {{- end }}
       containers:
+{{- if ((.Values.supervisor)).enabled }}
+        - name: "supervisor"
+          image: "{{ .Values.supervisor.image.repository }}:{{ .Values.supervisor.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.supervisor.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.supervisor.resources | nindent 12 }}
+          volumeMounts:
+            - name: configuration
+              mountPath: /etc/komodor
+          env:
+            - name: KOMOKW_API_KEY
+              valueFrom:
+                secretKeyRef:
+{{- if .Values.existingSecret }}
+                  name: {{ .Values.existingSecret | required "Existing secret name required!" }}
+                  key: apiKey
+{{- else }}
+                  name: {{ include "k8s-watcher.name" . }}-secret
+                  key: apiKey
+{{- end }}
+{{- if ((((((.Values.supervisor)).servers)).healthCheck)).port }}
+            - name: KOMOKW_SERVERS_HEALTHCHECK_PORT
+              value: "{{ .Values.supervisor.servers.healthCheck.port }}"
+{{- end }}
+{{- include "k8s-watcher.proxy-conf" . }}
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: false
+          ports:
+            - name: http-healthz
+              containerPort: {{ .Values.supervisor.servers.healthCheck.port | default 8089 }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http-healthz
+            periodSeconds: 60
+            initialDelaySeconds: 15
+            failureThreshold: 10
+            successThreshold: 1
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http-healthz
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 3
+            successThreshold: 1
+{{- end }}
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
