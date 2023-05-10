@@ -57,6 +57,10 @@ spec:
                   name: {{ include "k8s-watcher.name" . }}-secret
                   key: apiKey
 {{- end }}
+{{- if ((((((.Values.supervisor)).servers)).healthCheck)).port }}
+            - name: KOMOKW_SERVERS_HEALTHCHECK_PORT
+              value: "{{ .Values.supervisor.servers.healthCheck.port }}"
+{{- end }}
 {{- include "k8s-watcher.proxy-conf" . }}
           securityContext:
             readOnlyRootFilesystem: true
@@ -65,7 +69,7 @@ spec:
             allowPrivilegeEscalation: false
           ports:
             - name: http-healthz
-              containerPort: {{ .Values.watcher.servers.healthCheck.port | default 8090 }}
+              containerPort: {{ .Values.supervisor.servers.healthCheck.port | default 8089 }}
           livenessProbe:
             httpGet:
               path: /healthz
