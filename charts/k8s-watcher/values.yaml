@@ -101,6 +101,7 @@ watcher:
     portforward: false
   telemetry:
     enable: true
+    collectApiServerMetrics: false
   memoryThresholdSafetyCheck:
     enable: true
   networkMapper:

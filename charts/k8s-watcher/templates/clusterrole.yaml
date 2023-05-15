@@ -472,6 +472,14 @@ rules:
     resources: ["*"]
     verbs:     ["get", "watch", "list"]
 {{- end }}
+
+{{- if ((.Values.watcher.telemetry)).collectApiServerMetrics }}
+  - nonResourceURLs:
+    - "/metrics"
+    verbs:
+      - get
+{{- end }}
+
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
