@@ -61,7 +61,7 @@ supervisor:
     healthCheck:
       port: 8089
 metrics:
-  enabled: false
+  enabled: true
 daemon:
   tolerations: []
   resources:
@@ -95,10 +95,10 @@ watcher:
   redact: []
   redactLogs: []
   actions:
-    basic: false
-    advanced: false
-    podExec: false
-    portforward: false
+    basic: true
+    advanced: true
+    podExec: true
+    portforward: true
   telemetry:
     enable: true
     collectApiServerMetrics: false
