@@ -98,7 +98,7 @@ watcher:
     basic: true
     advanced: true
     podExec: true
-    portforward: true
+    portforward: false
   telemetry:
     enable: true
     collectApiServerMetrics: false
