@@ -84,6 +84,7 @@ data:
     servers:
       healthCheck: {}
     telemetry:
+      collectApiServerMetrics: false
       enable: true
     watchNamespace: all
 ---
