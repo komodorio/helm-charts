@@ -72,6 +72,13 @@ app.kubernetes.io/instance: {{ .Release.Name }}-daemon
 {{- end }}
 
 {{/*
+Selector daemon server host
+*/}}
+{{- define "daemon.serverHost" -}}
+{{- default "https://app.komodor.com" .Values.watcher.serverHost }}
+{{- end }}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "k8s-watcher.serviceAccountName" -}}

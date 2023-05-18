@@ -17,7 +17,7 @@ data:
       flush_interval = "${FLUSH_INTERVAL}"
 
     [[outputs.http]]
-      url = "https://app.komodor.com/metrics-collector/api/v1/collect"
+      url = "{{ include "daemon.serverHost" . }}/metrics-collector/api/v1/collect"
       content_encoding = "gzip"
       {{- if .Values.proxy.https }}
       http_proxy_url = "${KOMOKW_HTTPS_PROXY_URL}"
