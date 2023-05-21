@@ -31,7 +31,7 @@ spec:
       serviceAccountName: k8s-watcher
       containers:
         - name: k8s-watcher
-          image: "public.ecr.aws/g8r5w0b5/k8s-watcher:0.2.19"
+          image: "public.ecr.aws/komodor-public/k8s-watcher:0.2.19"
           imagePullPolicy: IfNotPresent
           resources:
             limits:

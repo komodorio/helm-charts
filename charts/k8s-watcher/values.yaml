@@ -1,7 +1,7 @@
 # ReplicaCount should always be 1 - We do not properly support syncing state (yet) so it will cause the same events to be sent and overload the server.
 replicaCount: 1
 image:
-  repository: public.ecr.aws/g8r5w0b5/k8s-watcher
+  repository: public.ecr.aws/komodor-public/k8s-watcher
   pullPolicy: IfNotPresent
 
 namespace: komodor
@@ -51,7 +51,7 @@ helm:
 supervisor:
   enabled: false
   image:
-    repository: public.ecr.aws/g8r5w0b5/supervisor
+    repository: public.ecr.aws/komodor-public/supervisor
     pullPolicy: IfNotPresent
   resources:
     requests:
@@ -72,11 +72,11 @@ daemon:
       cpu: 0.1
       memory: 256Mi
   image:
-    repository: public.ecr.aws/g8r5w0b5/telegraf:1.26
+    repository: public.ecr.aws/komodor-public/telegraf:1.26
     pullPolicy: IfNotPresent
   init:
     image:
-      repository: public.ecr.aws/g8r5w0b5/init-daemon-agent
+      repository: public.ecr.aws/komodor-public/init-daemon-agent
       pullPolicy: IfNotPresent
 watcher:
   enableAgentTaskExecution: true
