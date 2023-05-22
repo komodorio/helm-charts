@@ -43,7 +43,7 @@ data:
       insecure_skip_verify = true
       resource_include = [ "pods", "nodes" ]
       response_timeout = "${INTERVAL}"
-      fieldpass = ["resource_requests_millicpu_units","resource_limits_millicpu_units","resource_requests_memory_bytes","resource_limits_memory_bytes"]
+      fieldpass = ["resource_requests_millicpu_units","resource_limits_millicpu_units","resource_requests_memory_bytes","resource_limits_memory_bytes", "capacity_cpu_cores", "capacity_millicpu_cores", "capacity_memory_bytes"]
       [inputs.kube_inventory.tagpass]
         node_name=["${NODE_NAME}"]
 {{- end }}
