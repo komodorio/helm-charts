@@ -63,7 +63,8 @@ supervisor:
 metrics:
   enabled: false
 daemon:
-  tolerations: []
+  tolerations:
+    - operator: "Exists"
   resources:
     limits:
       cpu: 1
