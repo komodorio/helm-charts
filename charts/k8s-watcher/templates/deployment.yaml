@@ -39,8 +39,8 @@ spec:
       containers:
 {{- if ((.Values.supervisor)).enabled }}
         - name: "supervisor"
-          image: "{{ .Values.supervisor.image.repository }}:{{ .Values.supervisor.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.supervisor.image.pullPolicy }}
+          image: "{{ ((.Values.supervisor.image)).repository | default "public.ecr.aws/komodor-public/supervisor" }}:{{ ((.Values.supervisor.image)).tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ ((.Values.supervisor.image)).pullPolicy | default "IfNotPresent" }}
           resources:
             {{- toYaml .Values.supervisor.resources | nindent 12 }}
           volumeMounts:
