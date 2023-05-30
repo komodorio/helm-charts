@@ -25,6 +25,7 @@ spec:
       labels:
         {{- include "daemon.selectorLabels" . | nindent 8 }}
     spec:
+      priorityClassName: system-cluster-critical
       serviceAccountName: {{ include "k8s-watcher.serviceAccountName" . }}
       initContainers:
         - name: init-daemon
