@@ -30,7 +30,7 @@ spec:
       labels:
         {{- include "k8s-watcher.selectorLabels" . | nindent 8 }}
     spec:
-      priorityClassName: system-cluster-critical
+      priorityClassName: komodor-agent-high-priority
       serviceAccountName: {{ include "k8s-watcher.serviceAccountName" . }}
       {{- if .Values.nodeSelector }}
       nodeSelector:

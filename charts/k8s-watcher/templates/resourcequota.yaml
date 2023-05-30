@@ -15,4 +15,4 @@ spec:
       - operator: In
         scopeName: PriorityClass
         values:
-          - system-cluster-critical
+          - komodor-agent-high-priority
