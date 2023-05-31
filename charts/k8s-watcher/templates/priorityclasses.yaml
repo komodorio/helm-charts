@@ -2,7 +2,7 @@
 apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
 metadata:
-  name: {{ .Release.name }}-daemon-high-priority
+  name: {{ .Release.Name }}-daemon-high-priority
 value: 10000000
 globalDefault: false
 description: "This priority class should be used for Komodor daemonset pods only."
@@ -11,7 +11,7 @@ description: "This priority class should be used for Komodor daemonset pods only
 apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
 metadata:
-  name: {{ .Release.name }}-agent-high-priority
+  name: {{ .Release.Name }}-agent-high-priority
 value: 10000000
 globalDefault: false
 description: "This priority class should be used for Komodor agent pods only."
