@@ -4,7 +4,7 @@ metadata:
   name: k8s-watcher
   namespace: komodor
   labels:
-    helm.sh/chart: k8s-watcher-1.14.17
+    helm.sh/chart: k8s-watcher-1.14.18
     app.kubernetes.io/name: k8s-watcher
     app.kubernetes.io/instance: k8s-watcher
     app.kubernetes.io/version: "0.2.26"
@@ -27,7 +27,7 @@ spec:
         app.kubernetes.io/name: k8s-watcher
         app.kubernetes.io/instance: k8s-watcher
     spec:
-      priorityClassName: -agent-high-priority
+      priorityClassName: k8s-watcher-agent-high-priority
       serviceAccountName: k8s-watcher
       containers:
         - name: k8s-watcher
