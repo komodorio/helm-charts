@@ -15,4 +15,4 @@ spec:
       - operator: In
         scopeName: PriorityClass
         values:
-          - komodor-agent-high-priority
+          - {{ .Release.name }}-agent-high-priority
