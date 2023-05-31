@@ -13,5 +13,5 @@ spec:
       - operator: In
         scopeName: PriorityClass
         values:
-          - komodor-agent-high-priority
+          - -agent-high-priority
 ---
