@@ -92,6 +92,7 @@ watcher:
   collectHistory: true
   watchNamespace: all
   namespacesDenylist: []
+  logsNamespacesDenylist: []
   nameDenylist: []
   redact: []
   redactLogs: []
