@@ -21,6 +21,7 @@ data:
     enableAgentTaskExecution: true
     enableAgentTaskExecutionV2: true
     enableHelm: true
+    logsNamespacesDenylist: []
     memoryThresholdSafetyCheck:
       enable: true
     monitoringFQDN: ""
