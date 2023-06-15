@@ -80,13 +80,13 @@ daemon:
       repository: public.ecr.aws/komodor-public/init-daemon-agent
       pullPolicy: IfNotPresent
 watcher:
+  # clusterName: ""
   enableAgentTaskExecution: true
   enableAgentTaskExecutionV2: true
   allowReadingPodLogs: true
   enableHelm: true
   daemon:
     varsConfigMapName: k8s-watcher-daemon-env-vars
-  # clusterName: ""
   servers:
     healthCheck: {}
   collectHistory: true
