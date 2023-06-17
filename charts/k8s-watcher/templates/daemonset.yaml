@@ -3,9 +3,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ include "k8s-watcher.fullname" . }}-daemon
-  {{- if hasKey .Values "namespace" }}
-  namespace: {{ .Values.namespace }}
-  {{- end }}
+  namespace: {{ default .Release.Namespace .Values.namespace }}
   labels:
     {{- include "daemon.labels" . | nindent 4 }}
   {{- with .Values.deploymentAnnotations }}
@@ -35,10 +33,10 @@ spec:
             - name: configuration
               mountPath: /etc/komodor
           env:
-            {{- if hasKey .Values "namespace" }}
             - name: NAMESPACE
-              value: {{ .Values.namespace }}
-            {{- end }}
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
             - name: KOMOKW_API_KEY
               valueFrom:
                 secretKeyRef:

@@ -4,9 +4,7 @@ metadata:
   labels:
     app: komodor
   name: komodor-critical-pods
-  {{- if hasKey .Values "namespace" }}
-  namespace: {{ .Values.namespace }}
-  {{- end}}
+  namespace: {{ default .Release.Namespace .Values.namespace }}
 spec:
   hard:
     pods: 2
