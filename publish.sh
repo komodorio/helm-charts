@@ -47,6 +47,10 @@ find "$HELM_CHARTS_SOURCE" -mindepth 1 -maxdepth 1 -type d | while read chart; d
   echo ">>> helm package -d $chart_name $chart"
   mkdir -p "$chart_name"
   helm package -d "$chart_name" "$chart"
+  helm repo add komodor-helm-charts-com s3://charts.komodor.com
+  helm repo add komodor-helm-charts-io s3://charts.komodor.io
+  helm s3 push $chart_name/$chart_name-$chart_version.tgz komodor-helm-charts-io --relative
+  helm s3 push $chart_name/$chart_name-$chart_version.tgz komodor-helm-charts-com --relative
 done
 echo '>>> helm repo index'
 helm repo index .
