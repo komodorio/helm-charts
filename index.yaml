@@ -3507,4 +3507,16 @@ entries:
     urls:
     - k8s-watcher/k8s-watcher-0.1.0.tgz
     version: 0.1.0
-generated: "2023-06-20T10:35:15.921095305Z"
+  komoplane:
+  - apiVersion: v2
+    appVersion: 0.0.3
+    created: "2023-06-20T15:39:11.283456624Z"
+    description: Komodor tool to visualize Crossplane
+    digest: b76b1de69c3af93d325f3387192cae07a73ce61dcf9423ce4bb6209c8c949cc5
+    icon: https://raw.githubusercontent.com/komodorio/komoplane/main/pkg/frontend/src/assets/logo.svg
+    name: komoplane
+    type: application
+    urls:
+    - https://github.com/komodorio/helm-charts/releases/download/komoplane-0.0.2/komoplane-0.0.2.tgz
+    version: 0.0.2
+generated: "2023-06-20T15:39:11.284109734Z"
