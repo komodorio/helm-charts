@@ -22,7 +22,8 @@ rules:
       - 'statefulsets'
     verbs:
       - 'get'
-{{ if or (and (eq .Values.network_mapper.global.allowGetAllResources nil) .Values.network_mapper.allowGetAllResources) .Values.network_mapper.global.allowGetAllResources}}
+{{ if or (((.Values.network_mapper).global).allowGetAllResources (.Values.network_mapper).allowGetAllResources) }}
+
   - apiGroups:
       - '*'
     resources:
