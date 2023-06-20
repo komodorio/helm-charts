@@ -192,6 +192,10 @@ The following table lists the configurable parameters of the chart and their def
 | `watcher.kubeMasterUrl`                            | Specifies a custom absolute URL to the kubernetes master API for authenticating to the requested cluster (takes precedence over `kubeconfigPath` if set)                                                                     | `""`                                |
 | `helm.volumeSizeLimit`                             | The size limit for the mounted volume holding helm metadata                                                                                                                                                                  | `256Mi`                             |
 | `metrics.enabled`                                  | Enables metrics collection (CPU & Memory)                                                                                                                                                                                    | `false`                             |
+| `network_mapper.debug`   | Enable debug mode for network mapper | `false` |
+| `network_mapper.enabled` | Enables network mapper | `false` |
+| `network_mapper.mapper.resources`  | Set network mapper resources | `{}` |
+| `network_mapper.sniffer.resources` | Set resources for network mapper sniffer | `{}` |
 | `daemon.tolerations`                               | Tolerations for daemonset pod assignment - Example:   --set 'daemon.tolerations[0].key=my-key' --set 'daemon.tolerations[0].operator=Equal' --set 'daemon.tolerations[0].value=my-value' --set 'daemon.tolerations[0].effect=NoSchedule'                                                                                                                                                                         | `[]`                                |
 | `supervisor.enabled`                                  | Enables supervisor sidecar (monitoring the agent)                                                                                                                                                                                    | `false`                             |
 

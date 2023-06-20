@@ -37,6 +37,8 @@ spec:
       {{- toYaml .Values.nodeSelector | nindent 8 }}
       {{- end }}
       containers:
+        {{- include "network_mapper.deployment.container" . | nindent 8 }}
+        
 {{- if ((.Values.supervisor)).enabled }}
         - name: "supervisor"
           image: "{{ ((.Values.supervisor.image)).repository | default "public.ecr.aws/komodor-public/supervisor" }}:{{ ((.Values.supervisor.image)).tag | default .Chart.AppVersion }}"
