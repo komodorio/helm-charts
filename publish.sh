@@ -35,13 +35,13 @@ find "$HELM_CHARTS_SOURCE" -mindepth 1 -maxdepth 1 -type d | while read chart; d
   chart_name="`basename "$chart"`"
   echo ">>> fetching chart $chart_name version"
   chart_version=$(cat $chart/Chart.yaml | grep -oE "version:\s[0-9]+\.[0-9]+\.[0-9]+" | grep -oE "[0-9]+\.[0-9]+\.[0-9]+")
-  # echo ">>> checking if version is already published"
-  # if [ -f "$chart_name/$chart_name-$chart_version.tgz" ]; then
-  #   echo ">>> VERSION $chart_version ALREADY EXISTS! Skipping..."
-  #   continue
-  # else
-  #   echo ">>> chart version is valid, continuing..."
-  # fi
+  echo ">>> checking if version is already published"
+  if [ -f "$chart_name/$chart_name-$chart_version.tgz" ]; then
+    echo ">>> VERSION $chart_version ALREADY EXISTS! Skipping..."
+    continue
+  else
+    echo ">>> chart version is valid, continuing..."
+  fi
   echo ">>> helm lint $chart"
   helm lint "$chart"
   echo ">>> helm package -d $chart_name $chart"
@@ -57,16 +57,16 @@ echo '>>> Syncing to S3'
 aws s3 cp index.yaml s3://helm-charts.komodor.com/index.yaml
 aws s3 cp index.yaml s3://helm-charts.komodor.io/index.yaml
 
-# if [ "$BUILDKITE_BRANCH" != "master" ]; then
-#   echo "Current branch is not master and do not publish"
-#   exit 0
-# fi
+if [ "$BUILDKITE_BRANCH" != "master" ]; then
+  echo "Current branch is not master and do not publish"
+  exit 0
+fi
 
-# echo ">> Publishing to $GITHUB_PAGES_BRANCH branch of $GITHUB_PAGES_REPO"
-# git config user.email "buildkite@users.noreply.github.com"
-# git config user.name Buildkite
-# git add .
-# git status
-# git commit -m "Published by Buildkite $BUILDKITE_BUILD_URL"
-# git push origin "$GITHUB_PAGES_BRANCH"
+echo ">> Publishing to $GITHUB_PAGES_BRANCH branch of $GITHUB_PAGES_REPO"
+git config user.email "buildkite@users.noreply.github.com"
+git config user.name Buildkite
+git add .
+git status
+git commit -m "Published by Buildkite $BUILDKITE_BUILD_URL"
+git push origin "$GITHUB_PAGES_BRANCH"
 
