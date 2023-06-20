@@ -47,13 +47,14 @@ find "$HELM_CHARTS_SOURCE" -mindepth 1 -maxdepth 1 -type d | while read chart; d
   echo ">>> helm package -d $chart_name $chart"
   mkdir -p "$chart_name"
   helm package -d "$chart_name" "$chart"
+  echo '>>> Syncing chart binaries to S3'
   aws s3 sync "$chart_name" s3://helm-charts.komodor.com/"$chart_name"
   aws s3 sync "$chart_name" s3://helm-charts.komodor.io/"$chart_name"
 done
 echo '>>> helm repo index'
 helm repo index .
 
-echo '>>> Syncing to S3'
+echo '>>> Syncing indexes to S3'
 aws s3 cp index.yaml s3://helm-charts.komodor.com/index.yaml
 aws s3 cp index.yaml s3://helm-charts.komodor.io/index.yaml
 
