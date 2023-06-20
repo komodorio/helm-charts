@@ -1,14 +1,14 @@
 {{- define "metrics.daemonset.container" }}
 {{- if .Values.metrics.enabled }}
 - name: daemon
-  image: {{ .Values.metrics.image.repository }} 
-  imagePullPolicy: {{ .Values.metrics.image.pullPolicy }}
+  image: {{ .Values.daemon.image.repository }} 
+  imagePullPolicy: {{ .Values.daemon.image.pullPolicy }}
   volumeMounts:
   - name: {{ include "k8s-watcher.name" . }}-daemon-config
     mountPath: /etc/telegraf/telegraf.conf
     subPath: telegraf.conf
   resources:
-  {{- toYaml .Values.metrics.resources | nindent 4 }}
+  {{- toYaml .Values.daemon.resources | nindent 4 }}
   envFrom:
   - configMapRef:
       name:  {{ (or .Values.watcher.daemon .Values.watcher.metrics).varsConfigMapName }}

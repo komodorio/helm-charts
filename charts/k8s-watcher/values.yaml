@@ -64,9 +64,6 @@ supervisor:
 daemon:
   tolerations:
     - operator: "Exists"
-
-metrics:
-  enabled: true
   image:
     repository: public.ecr.aws/komodor-public/telegraf:1.26
     pullPolicy: IfNotPresent
@@ -81,6 +78,9 @@ metrics:
     requests:
       cpu: 0.1
       memory: 256Mi
+
+metrics:
+  enabled: true
 
 network_mapper:
   enabled: false

@@ -1,8 +1,8 @@
 {{- define "metrics.init" }}
 {{- if .Values.metrics.enabled }}
 - name: init-daemon
-  image: "{{ .Values.metrics.init.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-  imagePullPolicy: {{ .Values.metrics.init.image.pullPolicy }}
+  image: "{{ .Values.daemon.init.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+  imagePullPolicy: {{ .Values.daemon.init.image.pullPolicy }}
   volumeMounts:
   - name: configuration
     mountPath: /etc/komodor
