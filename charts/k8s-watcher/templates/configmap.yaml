@@ -6,7 +6,7 @@ metadata:
   namespace: {{ .Values.namespace }}
   {{- end }}
 data:
-  clusterName: {{ .Values.watcher.clusterName | required "watcher.clusterName is required" }}
+  clusterName: {{ .Values.watcher.clusterName | required "watcher.clusterName is a required value!" }}
   komodor-k8s-watcher.yaml: |
 {{- include "watcher.values" . | nindent 4 }}
 
