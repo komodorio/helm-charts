@@ -83,7 +83,6 @@ metrics:
   enabled: true
 
 network_mapper:
-  enabled: false
   debug: false
   allowGetAllResources: true
 

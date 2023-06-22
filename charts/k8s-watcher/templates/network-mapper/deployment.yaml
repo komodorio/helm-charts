@@ -1,5 +1,5 @@
 {{- define "network_mapper.deployment.container" }}
-{{- if and .Values.network_mapper ((.Values.network_mapper).enabled | default false) }}
+{{- if and .Values.network_mapper ((.Values.watcher.networkMapper).enable | default false) }}
 - name: {{ template "otterize.mapper.fullName" . }}
   image: "{{ .Values.network_mapper.mapper.repository }}/{{ .Values.network_mapper.mapper.image }}:{{ .Values.network_mapper.mapper.tag }}"
   {{ if .Values.network_mapper.mapper.pullPolicy }}
