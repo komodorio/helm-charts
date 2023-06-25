@@ -1,0 +1,47 @@
+{{- define "metrics.daemonset.container" }}
+{{- if .Values.metrics.enabled }}
+- name: daemon
+  image: {{ .Values.daemon.image.repository }} 
+  imagePullPolicy: {{ .Values.daemon.image.pullPolicy }}
+  volumeMounts:
+  - name: {{ include "k8s-watcher.name" . }}-daemon-config
+    mountPath: /etc/telegraf/telegraf.conf
+    subPath: telegraf.conf
+  resources:
+  {{- toYaml .Values.daemon.resources | nindent 4 }}
+  envFrom:
+  - configMapRef:
+      name:  {{ (or .Values.watcher.daemon .Values.watcher.metrics).varsConfigMapName }}
+  env:
+  - name: NODE_NAME
+    valueFrom:
+      fieldRef:
+        fieldPath: spec.nodeName
+  {{- if .Values.proxy.http }}
+  - name: KOMOKW_HTTP_PROXY_URL
+    value: {{ .Values.proxy.http }}
+  {{- end }}
+  {{- if .Values.proxy.https }}
+  - name: KOMOKW_HTTPS_PROXY_URL
+    value: {{ .Values.proxy.https }}
+  {{- end }}
+  {{- if .Values.watcher.clusterName }}
+  - name: CLUSTER_NAME
+    value: {{ .Values.watcher.clusterName }}
+  {{- end }}
+{{- end }}
+{{- end }}
+
+{{- define "metrics.daemonset.volumes" }}
+{{- if and .Values.metrics (.Values.metrics.enabled | default false) }}
+- name: {{ include "k8s-watcher.name" . }}-daemon-config
+  configMap:
+    name: {{ include "k8s-watcher.name" . }}-daemon-config
+- name: configuration
+  configMap:
+    name: {{ include "k8s-watcher.name" . }}-config
+    items:
+      - key: komodor-k8s-watcher.yaml
+        path: komodor-k8s-watcher.yaml
+{{- end }}
+{{- end }}

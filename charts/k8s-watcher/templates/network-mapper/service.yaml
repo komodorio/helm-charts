@@ -1,0 +1,17 @@
+{{- if and .Values.network_mapper ((.Values.watcher.networkMapper).enable | default false) }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "otterize.mapper.fullName" . }}
+  {{- if hasKey .Values "namespace" }}
+  namespace: {{ .Values.namespace }}
+  {{- end }}
+spec:
+  selector:
+    {{- include "k8s-watcher.selectorLabels" . | nindent 4 }}
+  ports:
+    - protocol: TCP
+      port: 9090
+      name: http
+      targetPort: 9090
+{{- end }}

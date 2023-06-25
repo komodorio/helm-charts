@@ -1,0 +1,36 @@
+{{- if .Values.serviceAccount.create -}}
+{{- if and .Values.network_mapper ((.Values.watcher.networkMapper).enable | default false) }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "otterize.mapper.fullName" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "otterize.mapper.fullName" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "k8s-watcher.serviceAccountName" . }}
+    {{- if hasKey .Values "namespace" }}
+    namespace: {{ .Values.namespace }}
+    {{- end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ template "otterize.mapper.fullName" . }}
+  {{- if hasKey .Values "namespace" }}
+  namespace: {{ .Values.namespace }}
+  {{- end }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "otterize.mapper.fullName" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "k8s-watcher.serviceAccountName" . }}
+    {{- if hasKey .Values "namespace" }}
+    namespace: {{ .Values.namespace }}
+    {{- end }}
+{{- end }}
+{{- end }}

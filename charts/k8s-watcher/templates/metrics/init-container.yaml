@@ -1,0 +1,25 @@
+{{- define "metrics.init" }}
+{{- if .Values.metrics.enabled }}
+- name: init-daemon
+  image: "{{ .Values.daemon.init.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+  imagePullPolicy: {{ .Values.daemon.init.image.pullPolicy }}
+  volumeMounts:
+  - name: configuration
+    mountPath: /etc/komodor
+  env:
+  {{- if hasKey .Values "namespace" }}
+  - name: NAMESPACE
+    value: {{ .Values.namespace }}
+  {{- end }}
+  - name: KOMOKW_API_KEY
+    valueFrom:
+      secretKeyRef:
+        {{- if .Values.existingSecret }}
+        name: {{ .Values.existingSecret | required "Existing secret name required!" }}
+        key: apiKey
+        {{- else }}
+        name: {{ include "k8s-watcher.name" . }}-secret
+        key: apiKey
+        {{- end }}
+{{- end }}
+{{- end }}
