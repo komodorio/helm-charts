@@ -4,7 +4,7 @@ metadata:
   name: k8s-watcher
   namespace: komodor
   labels:
-    helm.sh/chart: k8s-watcher-1.14.30
+    helm.sh/chart: k8s-watcher-1.14.32
     app.kubernetes.io/name: k8s-watcher
     app.kubernetes.io/instance: k8s-watcher
     app.kubernetes.io/version: "0.2.36"
@@ -22,7 +22,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: bc90ff9b50921db86d3df8ec2c2823a3c64f1f8f0ce9a875534f2192eb386091
+        checksum/config: b2ec3fb1c0373c361dd927f5087744b4b8fad7792d344eaed7113a2854c7e9b3
       labels:
         app.kubernetes.io/name: k8s-watcher
         app.kubernetes.io/instance: k8s-watcher
@@ -30,6 +30,7 @@ spec:
       priorityClassName: k8s-watcher-agent-high-priority
       serviceAccountName: k8s-watcher
       containers:
+        
         - name: k8s-watcher
           image: "public.ecr.aws/komodor-public/k8s-watcher:0.2.36"
           imagePullPolicy: IfNotPresent

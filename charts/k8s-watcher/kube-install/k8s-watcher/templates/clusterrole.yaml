@@ -215,6 +215,32 @@ rules:
     - watch
     - list
   - apiGroups:
+    - ""
+    resources:
+    - configmaps
+    - namespaces
+    - pods
+    - nodes
+    verbs:
+    - get
+    - list
+  - apiGroups:
+    - ""
+    resources:
+    - configmaps
+    verbs:
+    - update
+    - create
+  - apiGroups:
+    - extensions
+    - "networking.k8s.io"
+    resources:
+    - ingresses
+    verbs:
+    - get
+    - watch
+    - list
+  - apiGroups:
       - ""
     resources:
       - secrets
