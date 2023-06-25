@@ -16,6 +16,7 @@ generate-kube:
 	--set watcher.resources.secret=false \
 	--set watcher.actions.basic=false \
 	--set watcher.actions.advanced=false \
+	--set watcher.clusterName=YOUR_CLUSTER_NAME \
 	--set apiKey="YOUR_APIKEY_AS_BASE_64" \
 	> generated.yaml
 	cat generated.yaml | ./charts/k8s-watcher/helm-fan-out.sh charts/k8s-watcher/kube-install
