@@ -101,6 +101,7 @@ network_mapper:
     image: network-mapper
     tag: v0.1.17
     pullPolicy: IfNotPresent
+    exposeService: false
     resources: { }
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
@@ -159,6 +160,7 @@ watcher:
     enable: true
   networkMapper:
     enable: false
+    host: http://localhost:9090/query
   monitoringFQDN: ""
   resources:
     event: true

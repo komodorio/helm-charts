@@ -1,4 +1,5 @@
 {{- if and .Values.network_mapper ((.Values.watcher.networkMapper).enable | default false) }}
+{{- if (.Values.network_mapper.mapper).exposeService | default false }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -14,4 +15,5 @@ spec:
       port: 9090
       name: http
       targetPort: 9090
+{{- end }}
 {{- end }}
