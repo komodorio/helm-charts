@@ -1,9 +1,9 @@
-{{- define "otterize.sniffer.fullName" -}}
-otterize-network-sniffer
+{{- define "network.sniffer.fullName" -}}
+network-sniffer
 {{- end -}}
-{{- define "otterize.mapper.fullName" -}}
-otterize-network-mapper
+{{- define "network.mapper.fullName" -}}
+network-mapper
 {{- end -}}
-{{- define "otterize.mapper.configMapName" -}}
-otterize-network-mapper-store
+{{- define "network.mapper.configMapName" -}}
+network-mapper-store
 {{- end -}}

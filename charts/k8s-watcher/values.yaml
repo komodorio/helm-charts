@@ -90,11 +90,6 @@ network_mapper:
   global:
     # If defined overrides `allowGetAllResources`
     allowGetAllResources:
-    otterizeCloud:
-      credentials:
-        # fill clientId and clientSecret in order to connect to Otterize Cloud
-        clientId:
-        clientSecret:
 
   mapper:
     repository: public.ecr.aws/komodor-public
@@ -114,7 +109,7 @@ network_mapper:
     #   memory: 128Mi
 
   sniffer:
-    repository: public.ecr.aws/g8r5w0b5
+    repository: public.ecr.aws/komodor-public
     image: network-mapper-sniffer
     tag: v0.1.17
     pullPolicy: IfNotPresent

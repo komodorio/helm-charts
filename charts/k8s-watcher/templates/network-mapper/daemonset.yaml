@@ -1,6 +1,6 @@
 {{- define "network_mapper.daemonset.container" }}
 {{- if and .Values.network_mapper ((.Values.watcher.networkMapper).enable | default false) }}
-- name: {{ template "otterize.sniffer.fullName" . }}
+- name: {{ template "network.sniffer.fullName" . }}
   image: "{{ .Values.network_mapper.sniffer.repository }}/{{ .Values.network_mapper.sniffer.image }}:{{ .Values.network_mapper.sniffer.tag }}"
   {{ if .Values.network_mapper.sniffer.pullPolicy }}
   imagePullPolicy: {{ .Values.network_mapper.sniffer.pullPolicy }}
@@ -9,9 +9,9 @@
     {{- toYaml .Values.network_mapper.sniffer.resources | nindent 10 }}
   env:
     - name: OTTERIZE_MAPPER_API_URL
-      value: http://{{ template "otterize.mapper.fullName" . }}:9090/query
+      value: http://{{ template "network.mapper.fullName" . }}:9090/query
     - name: OTTERIZE_DEBUG
-      value: {{ .Values.debug | quote }}
+      value: {{ .Values.network_mapper.debug | quote }}
   volumeMounts:
     - mountPath: /hostproc
       name: proc
