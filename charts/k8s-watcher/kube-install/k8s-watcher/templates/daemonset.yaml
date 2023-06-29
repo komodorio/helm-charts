@@ -4,10 +4,10 @@ metadata:
   name: k8s-watcher-daemon
   namespace: komodor
   labels:
-    helm.sh/chart: k8s-watcher-1.14.37
+    helm.sh/chart: k8s-watcher-1.14.38
     app.kubernetes.io/name: k8s-watcher-daemon
     app.kubernetes.io/instance: k8s-watcher-daemon
-    app.kubernetes.io/version: "0.2.40"
+    app.kubernetes.io/version: "0.2.41"
     app.kubernetes.io/managed-by: Helm
 spec:
   selector:
@@ -24,7 +24,7 @@ spec:
       serviceAccountName: k8s-watcher
       initContainers:        
         - name: init-daemon
-          image: "public.ecr.aws/komodor-public/init-daemon-agent:0.2.40"
+          image: "public.ecr.aws/komodor-public/init-daemon-agent:0.2.41"
           imagePullPolicy: IfNotPresent
           volumeMounts:
           - name: configuration
