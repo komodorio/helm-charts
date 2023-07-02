@@ -25,10 +25,8 @@
   - name: KOMOKW_HTTPS_PROXY_URL
     value: {{ .Values.proxy.https }}
   {{- end }}
-  {{- if .Values.watcher.clusterName }}
   - name: CLUSTER_NAME
-    value: {{ .Values.watcher.clusterName }}
-  {{- end }}
+    value: {{ .Values.watcher.clusterName | required "watcher.clusterName is a required value!" }}
 {{- end }}
 {{- end }}
 
