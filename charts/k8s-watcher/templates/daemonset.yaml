@@ -1,4 +1,4 @@
-{{- if (or (and (.Values.metrics).enabled .Values.daemon) (and (.Values.watcher.networkMapper).enable .Values.daemon)) }}
+{{- if (or (and (.Values.metrics).enabled .Values.daemon) (and (.Values.watcher.networkMapper).enable .Values.daemon))}}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
