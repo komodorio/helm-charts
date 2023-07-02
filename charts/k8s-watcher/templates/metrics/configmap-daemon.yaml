@@ -28,14 +28,14 @@ data:
         X-ACCOUNT-ID = "${ACCOUNT_ID}"
 
     [[inputs.kubernetes]]
-      ## The Kubernetes API server URL
-      url = "https://kubernetes.default.svc.cluster.local/api/v1/nodes/$NODE_NAME/proxy"
+      url = "https://$NODE_NAME:10250"
       bearer_token = "/run/secrets/kubernetes.io/serviceaccount/token"
       insecure_skip_verify = true
       fieldpass = ["memory_usage_bytes","cpu_usage_nanocores"]
       namedrop = ["kubernetes_system_container"]
 
     [[inputs.kube_inventory]]
+      interval = "${INTERVAL_INVENTORY}"
       ## URL for the Kubernetes API
       url = "https://kubernetes.default.svc.cluster.local"
       namespace = ""
