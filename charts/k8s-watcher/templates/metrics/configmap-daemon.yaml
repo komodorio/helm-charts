@@ -28,7 +28,7 @@ data:
         X-ACCOUNT-ID = "${ACCOUNT_ID}"
 
     [[inputs.kubernetes]]
-      url = "https://$NODE_NAME:10250/metrics"
+      url = "https://$NODE_NAME:10250"
       bearer_token = "/run/secrets/kubernetes.io/serviceaccount/token"
       insecure_skip_verify = true
       fieldpass = ["memory_usage_bytes","cpu_usage_nanocores"]
