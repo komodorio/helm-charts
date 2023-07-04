@@ -18,6 +18,7 @@ data:
 
     [[outputs.http]]
       url = "{{ include "daemon.serverHost" . }}/metrics-collector/api/v1/collect"
+      timeout = "${INTERVAL}"
       content_encoding = "gzip"
       {{- if .Values.proxy.https }}
       http_proxy_url = "${KOMOKW_HTTPS_PROXY_URL}"
