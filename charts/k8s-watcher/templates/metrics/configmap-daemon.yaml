@@ -18,7 +18,7 @@ data:
 
     [[outputs.http]]
       url = "{{ include "daemon.serverHost" . }}/metrics-collector/api/v1/collect"
-      timeout = "${INTERVAL}"
+      timeout = "${OUTPUT_TIMEOUT}"
       content_encoding = "gzip"
       {{- if .Values.proxy.https }}
       http_proxy_url = "${KOMOKW_HTTPS_PROXY_URL}"
@@ -34,6 +34,8 @@ data:
       insecure_skip_verify = true
       fieldpass = ["memory_usage_bytes","cpu_usage_nanocores"]
       namedrop = ["kubernetes_system_container"]
+      [inputs.kubernetes.tags]
+        measure_type = "usage"
 
     [[inputs.kube_inventory]]
       interval = "${INTERVAL_INVENTORY}"
@@ -47,4 +49,6 @@ data:
       fieldpass = ["resource_requests_millicpu_units","resource_limits_millicpu_units","resource_requests_memory_bytes","resource_limits_memory_bytes", "capacity_cpu_cores", "capacity_millicpu_cores", "capacity_memory_bytes"]
       [inputs.kube_inventory.tagpass]
         node_name=["${NODE_NAME}"]
+      [inputs.kube_inventory.tags]
+        measure_type = "inventory"
 {{- end }}
