@@ -6,6 +6,8 @@
   volumeMounts:
   - name: configuration
     mountPath: /etc/komodor
+  resources:
+  {{- toYaml .Values.daemon.init.resources | nindent 4 }}
   env:
   {{- if hasKey .Values "namespace" }}
   - name: NAMESPACE
