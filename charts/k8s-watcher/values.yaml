@@ -209,6 +209,11 @@ watcher:
     csiNode: true
     csiStorageCapacity: true
     volumeAttachment: true
+    argoWorkflows:
+      workflows: true
+      workflowTemplates: true
+      clusterWorkflowTemplates: true
+      cronWorkflows: true
     allowReadAll: true
     customReadAPIGroups: []
   controller:
