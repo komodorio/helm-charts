@@ -38,6 +38,11 @@ data:
     resources:
       admissionRegistrationResources: true
       allowReadAll: true
+      argoWorkflows:
+        clusterWorkflowTemplates: true
+        cronWorkflows: true
+        workflowTemplates: true
+        workflows: true
       authorizationResources: true
       certificateSigningRequest: true
       clusterRole: true

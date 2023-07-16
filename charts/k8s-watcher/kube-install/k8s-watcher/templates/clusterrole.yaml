@@ -120,6 +120,17 @@ rules:
     - watch
     - list
   - apiGroups:
+    - argoproj.io
+    resources:
+    - workflows
+    - cronworkflows
+    - workflowtemplates
+    - clusterworkflowtemplates
+    verbs:
+    - get
+    - watch
+    - list
+  - apiGroups:
     - metrics.k8s.io
     resources:
     - nodes
