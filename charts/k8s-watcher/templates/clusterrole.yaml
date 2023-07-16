@@ -193,6 +193,27 @@ rules:
     - watch
     - list
 {{- end }}
+{{- if or (((.Values.watcher.resources.argoWorkflows)).workflows) (((.Values.watcher.resources.argoWorkflows)).cronWorkflows) }}
+  - apiGroups:
+    - argoproj.io
+    resources:
+    {{- if ((.Values.watcher.resources.argoWorkflows)).workflows }}
+    - workflows
+    {{- end }}
+    {{- if ((.Values.watcher.resources.argoWorkflows)).cronWorkflows }}
+    - cronworkflows
+    {{- end }}
+    {{- if ((.Values.watcher.resources.argoWorkflows)).workflowTemplates }}
+    - workflowtemplates
+    {{- end }}
+    {{- if ((.Values.watcher.resources.argoWorkflows)).clusterWorkflowTemplates }}
+    - clusterworkflowtemplates
+    {{- end }}
+    verbs:
+    - get
+    - watch
+    - list
+{{- end }}
 {{- if or (.Values.watcher.resources.metrics) ((.Values.metrics).enabled) }}
   - apiGroups:
     - metrics.k8s.io
