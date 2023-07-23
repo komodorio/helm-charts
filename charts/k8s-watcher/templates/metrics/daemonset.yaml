@@ -17,6 +17,10 @@
     valueFrom:
       fieldRef:
         fieldPath: spec.nodeName
+  - name: NODE_IP
+    valueFrom:
+      fieldRef:
+        fieldPath: status.hostIP
   {{- if .Values.proxy.http }}
   - name: KOMOKW_HTTP_PROXY_URL
     value: {{ .Values.proxy.http }}
