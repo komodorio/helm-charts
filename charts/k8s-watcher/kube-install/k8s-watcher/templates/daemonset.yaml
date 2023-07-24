@@ -4,7 +4,7 @@ metadata:
   name: k8s-watcher-daemon
   namespace: komodor
   labels:
-    helm.sh/chart: k8s-watcher-1.15.2
+    helm.sh/chart: k8s-watcher-1.15.3
     app.kubernetes.io/name: k8s-watcher-daemon
     app.kubernetes.io/instance: k8s-watcher-daemon
     app.kubernetes.io/version: "0.2.43"
@@ -62,6 +62,10 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: spec.nodeName
+          - name: NODE_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
           - name: CLUSTER_NAME
             value: YOUR_CLUSTER_NAME        
       tolerations:
