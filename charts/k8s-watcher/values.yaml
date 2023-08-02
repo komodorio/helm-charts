@@ -49,7 +49,7 @@ helm:
   volumeSizeLimit: "256Mi"
 
 supervisor:
-  enabled: false
+  enabled: true
   image:
     repository: public.ecr.aws/komodor-public/supervisor
     pullPolicy: IfNotPresent
@@ -151,7 +151,7 @@ watcher:
     basic: true
     advanced: true
     podExec: true
-    portforward: false
+    portforward: true
   telemetry:
     enable: true
     collectApiServerMetrics: false
