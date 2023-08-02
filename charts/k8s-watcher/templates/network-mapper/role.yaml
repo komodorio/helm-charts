@@ -1,0 +1,19 @@
+{{- if and .Values.network_mapper ((.Values.watcher.networkMapper).enable | default false) }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ template "network.mapper.fullName" . }}
+  {{- if hasKey .Values "namespace" }}
+  namespace: {{ .Values.namespace }}
+  {{- end }}
+rules:
+  - apiGroups:
+      - ''
+    resources:
+      - 'configmaps'
+    resourceNames:
+      - {{ template "network.mapper.configMapName" . }}
+    verbs:
+      - 'get'
+      - 'update'
+{{- end }}

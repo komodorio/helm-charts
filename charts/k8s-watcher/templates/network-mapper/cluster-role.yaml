@@ -1,0 +1,36 @@
+{{- if and .Values.network_mapper ((.Values.watcher.networkMapper).enable | default false) }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ template "network.mapper.fullName" . }}
+rules:
+  - apiGroups:
+      - ''
+    resources:
+      - 'endpoints'
+      - 'pods'
+    verbs:
+      - 'get'
+      - 'list'
+      - 'watch'
+  - apiGroups:
+      - 'apps'
+    resources:
+      - 'deployments'
+      - 'daemonsets'
+      - 'replicasets'
+      - 'statefulsets'
+    verbs:
+      - 'get'
+{{ if or (((.Values.network_mapper).global).allowGetAllResources) ((.Values.network_mapper).allowGetAllResources) }}
+
+  - apiGroups:
+      - '*'
+    resources:
+      - '*'
+    verbs:
+      - get
+      - list
+      - watch
+{{ end }}
+{{- end }}

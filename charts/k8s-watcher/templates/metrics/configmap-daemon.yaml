@@ -18,6 +18,7 @@ data:
 
     [[outputs.http]]
       url = "{{ include "daemon.serverHost" . }}/metrics-collector/api/v1/collect"
+      timeout = "${OUTPUT_TIMEOUT}"
       content_encoding = "gzip"
       {{- if .Values.proxy.https }}
       http_proxy_url = "${KOMOKW_HTTPS_PROXY_URL}"
@@ -28,14 +29,16 @@ data:
         X-ACCOUNT-ID = "${ACCOUNT_ID}"
 
     [[inputs.kubernetes]]
-      ## The Kubernetes API server URL
-      url = "https://kubernetes.default.svc.cluster.local/api/v1/nodes/$NODE_NAME/proxy"
+      url = "https://$NODE_IP:10250"
       bearer_token = "/run/secrets/kubernetes.io/serviceaccount/token"
       insecure_skip_verify = true
       fieldpass = ["memory_usage_bytes","cpu_usage_nanocores"]
       namedrop = ["kubernetes_system_container"]
+      [inputs.kubernetes.tags]
+        measure_type = "usage"
 
     [[inputs.kube_inventory]]
+      interval = "${INTERVAL_INVENTORY}"
       ## URL for the Kubernetes API
       url = "https://kubernetes.default.svc.cluster.local"
       namespace = ""
@@ -43,7 +46,9 @@ data:
       insecure_skip_verify = true
       resource_include = [ "pods", "nodes" ]
       response_timeout = "${INTERVAL}"
-      fieldpass = ["resource_requests_millicpu_units","resource_limits_millicpu_units","resource_requests_memory_bytes","resource_limits_memory_bytes"]
+      fieldpass = ["resource_requests_millicpu_units","resource_limits_millicpu_units","resource_requests_memory_bytes","resource_limits_memory_bytes", "capacity_cpu_cores", "capacity_millicpu_cores", "capacity_memory_bytes"]
       [inputs.kube_inventory.tagpass]
         node_name=["${NODE_NAME}"]
+      [inputs.kube_inventory.tags]
+        measure_type = "inventory"
 {{- end }}

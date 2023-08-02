@@ -1,0 +1,11 @@
+{{- if and .Values.network_mapper ((.Values.watcher.networkMapper).enable | default false) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "network.mapper.configMapName" . }}
+  {{- if hasKey .Values "namespace" }}
+  namespace: {{ .Values.namespace }}
+  {{- end }}
+data: {}
+binaryData: {}
+{{- end }}

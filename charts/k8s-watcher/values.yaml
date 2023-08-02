@@ -1,7 +1,7 @@
 # ReplicaCount should always be 1 - We do not properly support syncing state (yet) so it will cause the same events to be sent and overload the server.
 replicaCount: 1
 image:
-  repository: public.ecr.aws/g8r5w0b5/k8s-watcher
+  repository: public.ecr.aws/komodor-public/k8s-watcher
   pullPolicy: IfNotPresent
 
 namespace: komodor
@@ -51,7 +51,7 @@ helm:
 supervisor:
   enabled: false
   image:
-    repository: public.ecr.aws/g8r5w0b5/supervisor
+    repository: public.ecr.aws/komodor-public/supervisor
     pullPolicy: IfNotPresent
   resources:
     requests:
@@ -63,7 +63,22 @@ supervisor:
 metrics:
   enabled: true
 daemon:
-  tolerations: []
+  tolerations:
+    - operator: "Exists"
+  image:
+    repository: public.ecr.aws/komodor-public/telegraf:1.26
+    pullPolicy: IfNotPresent
+  init:
+    image:
+      repository: public.ecr.aws/komodor-public/init-daemon-agent
+      pullPolicy: IfNotPresent
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
   resources:
     limits:
       cpu: 1
@@ -71,26 +86,67 @@ daemon:
     requests:
       cpu: 0.1
       memory: 256Mi
-  image:
-    repository: public.ecr.aws/g8r5w0b5/telegraf:1.26
+
+metrics:
+  enabled: true
+
+network_mapper:
+  debug: false
+  allowGetAllResources: true
+
+  # Fields from All-in-one chart
+  global:
+    # If defined overrides `allowGetAllResources`
+    allowGetAllResources:
+
+  mapper:
+    repository: public.ecr.aws/komodor-public
+    image: network-mapper
+    tag: v0.1.27
     pullPolicy: IfNotPresent
-  init:
-    image:
-      repository: public.ecr.aws/g8r5w0b5/init-daemon-agent
-      pullPolicy: IfNotPresent
+    resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  sniffer:
+    repository: public.ecr.aws/komodor-public
+    image: network-mapper-sniffer
+    tag: v0.1.27
+    pullPolicy: IfNotPresent
+    resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
 watcher:
+  # clusterName: ""
   enableAgentTaskExecution: true
   enableAgentTaskExecutionV2: true
   allowReadingPodLogs: true
   enableHelm: true
   daemon:
     varsConfigMapName: k8s-watcher-daemon-env-vars
-  # clusterName: ""
   servers:
     healthCheck: {}
   collectHistory: true
   watchNamespace: all
   namespacesDenylist: []
+  logsNamespacesDenylist: []
   nameDenylist: []
   redact: []
   redactLogs: []
@@ -154,6 +210,11 @@ watcher:
     csiNode: true
     csiStorageCapacity: true
     volumeAttachment: true
+    argoWorkflows:
+      workflows: true
+      workflowTemplates: true
+      clusterWorkflowTemplates: true
+      cronWorkflows: true
     allowReadAll: true
     customReadAPIGroups: []
   controller:

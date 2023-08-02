@@ -4,10 +4,10 @@ metadata:
   name: k8s-watcher
   namespace: komodor
   labels:
-    helm.sh/chart: k8s-watcher-1.14.3
+    helm.sh/chart: k8s-watcher-1.15.5
     app.kubernetes.io/name: k8s-watcher
     app.kubernetes.io/instance: k8s-watcher
-    app.kubernetes.io/version: "0.2.18"
+    app.kubernetes.io/version: "0.2.43"
     app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
@@ -22,16 +22,17 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 2b31f1f6647e3927327dac88ce6cb18a149487d4315329aeb05d7e15b69cc6fd
+        checksum/config: c77ec45d7925fb67beef551c8b3c3f6f68d2a94c6b32f68461f86628d642d02d
       labels:
         app.kubernetes.io/name: k8s-watcher
         app.kubernetes.io/instance: k8s-watcher
     spec:
-      priorityClassName: system-cluster-critical
+      priorityClassName: k8s-watcher-agent-high-priority
       serviceAccountName: k8s-watcher
       containers:
+        
         - name: k8s-watcher
-          image: "public.ecr.aws/g8r5w0b5/k8s-watcher:0.2.18"
+          image: "public.ecr.aws/komodor-public/k8s-watcher:0.2.43"
           imagePullPolicy: IfNotPresent
           resources:
             limits:
@@ -111,3 +112,4 @@ spec:
         - name: kube-cache
           emptyDir:
             sizeLimit: 1Gi
+---

@@ -13,5 +13,5 @@ spec:
       - operator: In
         scopeName: PriorityClass
         values:
-          - system-cluster-critical
+          - k8s-watcher-agent-high-priority
 ---

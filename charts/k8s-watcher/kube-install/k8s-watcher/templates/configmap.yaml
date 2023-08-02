@@ -4,6 +4,7 @@ metadata:
   name: k8s-watcher-config
   namespace: komodor
 data:
+  clusterName: YOUR_CLUSTER_NAME
   komodor-k8s-watcher.yaml: |
     actions:
       advanced: false
@@ -11,16 +12,18 @@ data:
       podExec: false
       portforward: false
     allowReadingPodLogs: true
+    clusterName: YOUR_CLUSTER_NAME
     collectHistory: true
     controller:
       resync:
         period: "0"
     daemon:
-      enabled: false
+      enabled: true
       varsConfigMapName: k8s-watcher-daemon-env-vars
     enableAgentTaskExecution: true
     enableAgentTaskExecutionV2: true
     enableHelm: true
+    logsNamespacesDenylist: []
     memoryThresholdSafetyCheck:
       enable: true
     monitoringFQDN: ""
@@ -35,6 +38,11 @@ data:
     resources:
       admissionRegistrationResources: true
       allowReadAll: true
+      argoWorkflows:
+        clusterWorkflowTemplates: true
+        cronWorkflows: true
+        workflowTemplates: true
+        workflows: true
       authorizationResources: true
       certificateSigningRequest: true
       clusterRole: true

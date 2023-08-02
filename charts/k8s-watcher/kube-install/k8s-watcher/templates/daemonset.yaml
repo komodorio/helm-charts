@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: k8s-watcher-daemon
+  namespace: komodor
+  labels:
+    helm.sh/chart: k8s-watcher-1.15.5
+    app.kubernetes.io/name: k8s-watcher-daemon
+    app.kubernetes.io/instance: k8s-watcher-daemon
+    app.kubernetes.io/version: "0.2.43"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: k8s-watcher-daemon
+      app.kubernetes.io/instance: k8s-watcher-daemon
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: k8s-watcher-daemon
+        app.kubernetes.io/instance: k8s-watcher-daemon
+    spec:
+      priorityClassName: "k8s-watcher-daemon-high-priority"
+      serviceAccountName: k8s-watcher
+      initContainers:        
+        - name: init-daemon
+          image: "public.ecr.aws/komodor-public/init-daemon-agent:0.2.43"
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/komodor
+          resources:
+            null
+          env:
+          - name: NAMESPACE
+            value: komodor
+          - name: KOMOKW_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: k8s-watcher-secret
+                key: apiKey
+      containers:        
+        - name: daemon
+          image: public.ecr.aws/komodor-public/telegraf:1.26 
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+          - name: k8s-watcher-daemon-config
+            mountPath: /etc/telegraf/telegraf.conf
+            subPath: telegraf.conf
+          resources:
+            limits:
+              cpu: 1
+              memory: 2Gi
+            requests:
+              cpu: 0.1
+              memory: 256Mi
+          envFrom:
+          - configMapRef:
+              name:  k8s-watcher-daemon-env-vars
+          env:
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: NODE_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          - name: CLUSTER_NAME
+            value: YOUR_CLUSTER_NAME        
+      tolerations:
+        - operator: Exists
+      
+      volumes:
+        
+        - name: k8s-watcher-daemon-config
+          configMap:
+            name: k8s-watcher-daemon-config
+        - name: configuration
+          configMap:
+            name: k8s-watcher-config
+            items:
+              - key: komodor-k8s-watcher.yaml
+                path: komodor-k8s-watcher.yaml
+---

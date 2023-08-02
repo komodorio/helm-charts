@@ -120,6 +120,17 @@ rules:
     - watch
     - list
   - apiGroups:
+    - argoproj.io
+    resources:
+    - workflows
+    - cronworkflows
+    - workflowtemplates
+    - clusterworkflowtemplates
+    verbs:
+    - get
+    - watch
+    - list
+  - apiGroups:
     - metrics.k8s.io
     resources:
     - nodes
@@ -210,6 +221,32 @@ rules:
     - scheduling.k8s.io
     resources:
     - priorityclasses
+    verbs:
+    - get
+    - watch
+    - list
+  - apiGroups:
+    - ""
+    resources:
+    - configmaps
+    - namespaces
+    - pods
+    - nodes
+    verbs:
+    - get
+    - list
+  - apiGroups:
+    - ""
+    resources:
+    - configmaps
+    verbs:
+    - update
+    - create
+  - apiGroups:
+    - extensions
+    - "networking.k8s.io"
+    resources:
+    - ingresses
     verbs:
     - get
     - watch
