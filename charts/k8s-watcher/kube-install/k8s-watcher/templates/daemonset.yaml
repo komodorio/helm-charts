@@ -4,7 +4,7 @@ metadata:
   name: k8s-watcher-daemon
   namespace: komodor
   labels:
-    helm.sh/chart: k8s-watcher-1.15.5
+    helm.sh/chart: k8s-watcher-1.15.6
     app.kubernetes.io/name: k8s-watcher-daemon
     app.kubernetes.io/instance: k8s-watcher-daemon
     app.kubernetes.io/version: "0.2.43"

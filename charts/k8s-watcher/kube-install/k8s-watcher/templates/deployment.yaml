@@ -4,7 +4,7 @@ metadata:
   name: k8s-watcher
   namespace: komodor
   labels:
-    helm.sh/chart: k8s-watcher-1.15.5
+    helm.sh/chart: k8s-watcher-1.15.6
     app.kubernetes.io/name: k8s-watcher
     app.kubernetes.io/instance: k8s-watcher
     app.kubernetes.io/version: "0.2.43"
@@ -22,7 +22,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: c77ec45d7925fb67beef551c8b3c3f6f68d2a94c6b32f68461f86628d642d02d
+        checksum/config: 6f3a3f5dd53f749fae4754254ffc33bb2b97c16b297a942a049eecf35d76a0a5
       labels:
         app.kubernetes.io/name: k8s-watcher
         app.kubernetes.io/instance: k8s-watcher
@@ -31,6 +31,48 @@ spec:
       serviceAccountName: k8s-watcher
       containers:
         
+        - name: "supervisor"
+          image: "public.ecr.aws/komodor-public/supervisor:0.2.43"
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 0.1
+              memory: 256Mi
+          volumeMounts:
+            - name: configuration
+              mountPath: /etc/komodor
+          env:
+            - name: KOMOKW_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: k8s-watcher-secret
+                  key: apiKey
+            - name: KOMOKW_SERVERS_HEALTHCHECK_PORT
+              value: "8089"
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: false
+          ports:
+            - name: http-healthz
+              containerPort: 8089
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http-healthz
+            periodSeconds: 60
+            initialDelaySeconds: 15
+            failureThreshold: 10
+            successThreshold: 1
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http-healthz
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 3
+            successThreshold: 1
         - name: k8s-watcher
           image: "public.ecr.aws/komodor-public/k8s-watcher:0.2.43"
           imagePullPolicy: IfNotPresent

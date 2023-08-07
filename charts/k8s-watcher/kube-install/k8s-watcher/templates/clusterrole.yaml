@@ -254,6 +254,18 @@ rules:
   - apiGroups:
       - ""
     resources:
+      - pods/exec
+    verbs:
+      - create
+  - apiGroups:
+      - ""
+    resources:
+      - pods/portforward
+    verbs:
+      - create
+  - apiGroups:
+      - ""
+    resources:
       - secrets
     verbs:
       - create

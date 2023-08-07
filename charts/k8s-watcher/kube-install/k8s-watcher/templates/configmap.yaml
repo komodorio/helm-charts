@@ -9,8 +9,8 @@ data:
     actions:
       advanced: false
       basic: false
-      podExec: false
-      portforward: false
+      podExec: true
+      portforward: true
     allowReadingPodLogs: true
     clusterName: YOUR_CLUSTER_NAME
     collectHistory: true
