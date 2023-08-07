@@ -49,7 +49,7 @@ helm:
   volumeSizeLimit: "256Mi"
 
 supervisor:
-  enabled: false
+  enabled: true
   image:
     repository: public.ecr.aws/komodor-public/supervisor
     pullPolicy: IfNotPresent
@@ -60,7 +60,8 @@ supervisor:
   servers:
     healthCheck:
       port: 8089
-
+metrics:
+  enabled: true
 daemon:
   tolerations:
     - operator: "Exists"
@@ -85,9 +86,6 @@ daemon:
     requests:
       cpu: 0.1
       memory: 256Mi
-
-metrics:
-  enabled: true
 
 network_mapper:
   debug: false
@@ -150,10 +148,10 @@ watcher:
   redact: []
   redactLogs: []
   actions:
-    basic: false
-    advanced: false
-    podExec: false
-    portforward: false
+    basic: true
+    advanced: true
+    podExec: true
+    portforward: true
   telemetry:
     enable: true
     collectApiServerMetrics: false
