@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "k8s-watcher.name" . }}-daemon-config
+  name: {{ include "k8s-watcher.name" . }}-metrics-config
   {{- if hasKey .Values "namespace" }}
   namespace: {{ .Values.namespace }}
   {{- end }}
@@ -13,13 +13,15 @@ data:
       cluster_name = "${CLUSTER_NAME}"
 
     [agent]
-      interval = "${INTERVAL}"
-      flush_interval = "${FLUSH_INTERVAL}"
+      interval = "${INTERVAL_INVENTORY}"
+      flush_interval = "${FLUSH_INTERVAL_INVENTORY}"
+      metric_buffer_limit = ${BUFFER_LIMIT}
 
     [[outputs.http]]
       url = "{{ include "daemon.serverHost" . }}/metrics-collector/api/v1/collect"
       timeout = "${OUTPUT_TIMEOUT}"
       content_encoding = "gzip"
+      metric_batch_size= ${BATCH_SIZE}
       {{- if .Values.proxy.https }}
       http_proxy_url = "${KOMOKW_HTTPS_PROXY_URL}"
       {{- else if .Values.proxy.http }}
@@ -28,13 +30,15 @@ data:
       [outputs.http.headers]
         X-ACCOUNT-ID = "${ACCOUNT_ID}"
 
-    [[inputs.kubernetes]]
-      url = "https://$NODE_IP:10250"
+    [[inputs.kube_inventory]]
+      ## URL for the Kubernetes API
+      url = "https://kubernetes.default.svc.cluster.local"
+      namespace = ""
       bearer_token = "/run/secrets/kubernetes.io/serviceaccount/token"
       insecure_skip_verify = true
-      fieldpass = ["memory_usage_bytes","cpu_usage_nanocores"]
-      namedrop = ["kubernetes_system_container"]
-      [inputs.kubernetes.tags]
-        measure_type = "usage"
-
+      resource_include = [ "pods", "nodes" ]
+      response_timeout = "${INTERVAL_INVENTORY}"
+      fieldpass = ["resource_requests_millicpu_units","resource_limits_millicpu_units","resource_requests_memory_bytes","resource_limits_memory_bytes", "capacity_cpu_cores", "capacity_millicpu_cores", "capacity_memory_bytes"]
+      [inputs.kube_inventory.tags]
+        measure_type = "inventory"
 {{- end }}

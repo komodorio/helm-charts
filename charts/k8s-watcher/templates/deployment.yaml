@@ -36,7 +36,12 @@ spec:
       nodeSelector:
       {{- toYaml .Values.nodeSelector | nindent 8 }}
       {{- end }}
+      {{- if .Values.metrics.enabled }}
+      initContainers:
+        {{- include "metrics.init" . | indent 8 }}
+      {{- end }}
       containers:
+        {{- include "metrics.container" .        | indent 8 }}
         {{- include "network_mapper.deployment.container" . | nindent 8 }}
         
 {{- if ((.Values.supervisor)).enabled }}
@@ -154,6 +159,7 @@ spec:
             failureThreshold: 3
             successThreshold: 1
       volumes:
+        {{- include "metrics.deploy.volumes" . | nindent 8 }}
         - name: configuration
           configMap:
             name: {{ include "k8s-watcher.name" . }}-config
