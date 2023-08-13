@@ -4,7 +4,7 @@ metadata:
   name: k8s-watcher
   namespace: komodor
   labels:
-    helm.sh/chart: k8s-watcher-1.15.8
+    helm.sh/chart: k8s-watcher-1.15.9
     app.kubernetes.io/name: k8s-watcher
     app.kubernetes.io/instance: k8s-watcher
     app.kubernetes.io/version: "0.2.46"
@@ -29,7 +29,44 @@ spec:
     spec:
       priorityClassName: k8s-watcher-agent-high-priority
       serviceAccountName: k8s-watcher
-      containers:
+      initContainers:        
+        - name: init-daemon
+          image: "public.ecr.aws/komodor-public/init-daemon-agent:0.2.46"
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/komodor
+          resources:
+            null
+          env:
+          - name: NAMESPACE
+            value: komodor
+          - name: KOMOKW_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: k8s-watcher-secret
+                key: apiKey
+      containers:        
+        - name: metrics
+          image: public.ecr.aws/komodor-public/telegraf:1.26 
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+          - name: k8s-watcher-metrics-config
+            mountPath: /etc/telegraf/telegraf.conf
+            subPath: telegraf.conf
+          resources:
+            limits:
+              cpu: 1
+              memory: 2Gi
+            requests:
+              cpu: 0.1
+              memory: 256Mi
+          envFrom:
+          - configMapRef:
+              name:  k8s-watcher-daemon-env-vars
+          env:
+          - name: CLUSTER_NAME
+            value: YOUR_CLUSTER_NAME
         
         - name: "supervisor"
           image: "public.ecr.aws/komodor-public/supervisor:0.2.46"
@@ -131,6 +168,16 @@ spec:
             failureThreshold: 3
             successThreshold: 1
       volumes:
+        
+        - name: k8s-watcher-metrics-config
+          configMap:
+            name: k8s-watcher-metrics-config
+        - name: configuration
+          configMap:
+            name: k8s-watcher-config
+            items:
+              - key: komodor-k8s-watcher.yaml
+                path: komodor-k8s-watcher.yaml
         - name: configuration
           configMap:
             name: k8s-watcher-config
