@@ -28,7 +28,7 @@
 {{- end }}
 {{- end }}
 
-{{- define "metrics.daemonset.volumes" }}
+{{- define "metrics.deploy.volumes" }}
 {{- if and .Values.metrics (.Values.metrics.enabled | default false) }}
 - name: {{ include "k8s-watcher.name" . }}-metrics-config
   configMap:
