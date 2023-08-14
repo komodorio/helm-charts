@@ -22,6 +22,7 @@ steps:
       - NEW_VERSION=$(echo $$CURRENT_VERSION | awk -F. '{\$NF = \$NF + 1;} 1' | sed 's/ /./g')
       - komo ctx staging
       - BRANCH=$(git rev-parse --abbrev-ref HEAD)
+      - 'echo "Current branch is $$BRANCH"'
       - ls
       - git checkout master
       - ls
