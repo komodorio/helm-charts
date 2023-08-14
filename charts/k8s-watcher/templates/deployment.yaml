@@ -47,7 +47,7 @@ spec:
           resources:
             {{- toYaml .Values.supervisor.resources | nindent 12 }}
           volumeMounts:
-            - name: configuration
+            - name: agent_configuration
               mountPath: /etc/komodor
           env:
             - name: KOMOKW_API_KEY
@@ -96,7 +96,7 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-            - name: configuration
+            - name: agent_configuration
               mountPath: /etc/komodor
             - name: tmp
               mountPath: /tmp
@@ -156,7 +156,7 @@ spec:
             successThreshold: 1
       volumes:
         {{- include "metrics.deploy.volumes" . | nindent 8 }}
-        - name: configuration
+        - name: agent_configuration
           configMap:
             name: {{ include "k8s-watcher.name" . }}-config
             items:
