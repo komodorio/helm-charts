@@ -36,10 +36,6 @@ spec:
       nodeSelector:
       {{- toYaml .Values.nodeSelector | nindent 8 }}
       {{- end }}
-      {{- if .Values.metrics.enabled }}
-      initContainers:
-        {{- include "metrics.init" . | indent 8 }}
-      {{- end }}
       containers:
         {{- include "metrics.container" .        | indent 8 }}
         {{- include "network_mapper.deployment.container" . | nindent 8 }}
