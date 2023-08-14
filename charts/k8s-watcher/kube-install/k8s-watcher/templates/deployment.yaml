@@ -4,7 +4,7 @@ metadata:
   name: k8s-watcher
   namespace: komodor
   labels:
-    helm.sh/chart: k8s-watcher-1.15.10
+    helm.sh/chart: k8s-watcher-1.15.11
     app.kubernetes.io/name: k8s-watcher
     app.kubernetes.io/instance: k8s-watcher
     app.kubernetes.io/version: "0.2.46"
@@ -172,6 +172,12 @@ spec:
         - name: k8s-watcher-metrics-config
           configMap:
             name: k8s-watcher-metrics-config
+        - name: configuration
+          configMap:
+            name: k8s-watcher-config
+            items:
+              - key: komodor-k8s-watcher.yaml
+                path: komodor-k8s-watcher.yaml
         - name: configuration
           configMap:
             name: k8s-watcher-config
