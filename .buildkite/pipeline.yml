@@ -21,7 +21,7 @@ steps:
       - CURRENT_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'version:' | awk '{print \$2}') | awk '{ gsub("\\.", "-"); print }'
       - NEW_VERSION=$(echo $$CURRENT_VERSION | awk -F. '{\$NF = \$NF + 1;} 1' | sed 's/ /./g')
       - komo ctx staging
-      - BRANCH=$(git rev-parse --abbrev-ref HEAD)
+      - BRANCH=$(git describe --abbrev=4 HEAD)
       - echo "Current branch is $$BRANCH"
       - ls
       - git checkout master
