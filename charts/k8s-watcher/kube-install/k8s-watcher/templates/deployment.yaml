@@ -4,7 +4,7 @@ metadata:
   name: k8s-watcher
   namespace: komodor
   labels:
-    helm.sh/chart: k8s-watcher-1.15.11
+    helm.sh/chart: k8s-watcher-1.15.12
     app.kubernetes.io/name: k8s-watcher
     app.kubernetes.io/instance: k8s-watcher
     app.kubernetes.io/version: "0.2.46"
@@ -29,23 +29,6 @@ spec:
     spec:
       priorityClassName: k8s-watcher-agent-high-priority
       serviceAccountName: k8s-watcher
-      initContainers:        
-        - name: init-daemon
-          image: "public.ecr.aws/komodor-public/init-daemon-agent:0.2.46"
-          imagePullPolicy: IfNotPresent
-          volumeMounts:
-          - name: configuration
-            mountPath: /etc/komodor
-          resources:
-            null
-          env:
-          - name: NAMESPACE
-            value: komodor
-          - name: KOMOKW_API_KEY
-            valueFrom:
-              secretKeyRef:
-                name: k8s-watcher-secret
-                key: apiKey
       containers:        
         - name: metrics
           image: public.ecr.aws/komodor-public/telegraf:1.26 
@@ -172,12 +155,6 @@ spec:
         - name: k8s-watcher-metrics-config
           configMap:
             name: k8s-watcher-metrics-config
-        - name: configuration
-          configMap:
-            name: k8s-watcher-config
-            items:
-              - key: komodor-k8s-watcher.yaml
-                path: komodor-k8s-watcher.yaml
         - name: configuration
           configMap:
             name: k8s-watcher-config
