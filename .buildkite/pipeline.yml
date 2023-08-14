@@ -5,7 +5,6 @@ steps:
       - komo ctx staging
       - git checkout master
       - ls
-      - helm uninstall ci-test-$$NEW_VERSION
       - helm install ci-test-$$NEW_VERSION ./charts/k8s-watcher --set watcher.clusterName=ci-test-$$NEW_VERSION --set imagePullSecret=docker-cfg-komodorio --set namespace=ci-test-namespace-$$NEW_VERSION --set supervisor.enabled=true --set watcher.serverHost=https://staging.app.komodor.com --set watcher.tasksServerHost=https://staging.app.komodor.com --set watcher.wsHost=wss://staging.app.komodor.com --set watcher.telemetry.enable=false --set watcher.telemetry.serverHost=https://staging.telemetry.komodor.com --set apiKey=$$STAGING_API_KEY --set watcher.collectHistory=true --set watcher.nameDenylist="{leader,election}" --set watcher.resources.secret=true --set watcher.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set watcher.enableAgentTaskExecution=true --set watcher.enableAgentTaskExecutionV2=true --set watcher.allowReadingPodLogs=true --set watcher.actions.basic=true --set watcher.actions.advanced=true --set watcher.enableHelm=true --set helm.enableActions=true --set watcher.actions.podExec=true --set metrics.enabled=true --set watcher.actions.portforward=true --set watcher.networkMapper.enable=true
       - helm uninstall ci-test-$$NEW_VERSION
 
