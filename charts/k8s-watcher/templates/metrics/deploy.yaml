@@ -33,5 +33,11 @@
 - name: {{ include "k8s-watcher.name" . }}-metrics-config
   configMap:
     name: {{ include "k8s-watcher.name" . }}-metrics-config
+- name: configuration
+  configMap:
+    name: {{ include "k8s-watcher.name" . }}-config
+    items:
+      - key: komodor-k8s-watcher.yaml
+        path: komodor-k8s-watcher.yaml
 {{- end }}
 {{- end }}
