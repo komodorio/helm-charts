@@ -10,6 +10,10 @@ steps:
 
     agents:
       builder: "dind"
+    plugins:
+      - zacharymctague/aws-ssm#v1.0.0:
+          parameters:
+            STAGING_API_KEY: /komodor/staging/kubernetes/agent-api-key
     label: "test helm new install"
     if: build.message !~ /feat\(OSS.+\):/i
   - wait
