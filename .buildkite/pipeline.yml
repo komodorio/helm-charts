@@ -1,7 +1,7 @@
 steps:
   - commands:
       - CURRENT_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'version:' | awk '{print \$2}' | awk '{ gsub("\\.", "-"); print }')
-      - NEW_VERSION=$(echo $$CURRENT_VERSION | awk -F. '{\$NF = \$NF + 1;} 1' | sed 's/ /./g')
+      - NEW_VERSION=$(echo $$CURRENT_VERSION | awk -F- '{\$NF = \$NF + 1;} 1' | sed 's/ /./g')
       - echo "curreent $$CURRENT_VERSION new $$NEW_VERSION"
       - komo ctx staging
       - helm status ci-test-$$NEW_VERSION && helm uninstall ci-test-$$NEW_VERSION
