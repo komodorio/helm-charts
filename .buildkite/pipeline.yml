@@ -30,7 +30,7 @@ steps:
           parameters:
             STAGING_API_KEY: /komodor/staging/kubernetes/agent-api-key
     label: "test helm new install"
-    if: build.message !~ /feat\(OSS.+\):/i
+    if: build.message !~ /feat\(OSS.+\):/i && build.branch != "master"
   - wait
 
   - commands:
@@ -54,7 +54,7 @@ steps:
           parameters:
             STAGING_API_KEY: /komodor/staging/kubernetes/agent-api-key
     label: "test helm update install"
-    if: build.message !~ /feat\(OSS.+\):/i
+    if: build.message !~ /feat\(OSS.+\):/i && build.branch != "master"
   - wait
 
   - block: "Bump Versions"
