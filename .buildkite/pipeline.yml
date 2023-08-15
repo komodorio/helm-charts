@@ -1,4 +1,18 @@
 steps:
+  - command: helm template k8s-watcher charts/k8s-watcher -f charts/k8s-watcher/values.yaml --set apiKey="sanity" --set metrics.enabled=true --set watcher.clusterName=test-template
+    agents:
+      builder: "dind"
+    label: "helm template check for sanity"
+    if: build.message !~ /feat\(OSS.+\):/i
+  - wait
+
+  - commands:
+      - komo ctx staging
+      - helm upgrade --install k8s-watcher-production --reuse-values --dry-run charts/k8s-watcher --set apiKey="test" --set watcher.clusterName=staging-test
+    label: "dry-run installation on staging before version bump"
+    if: build.message !~ /feat\(OSS.+\):/i
+  - wait
+
   - commands:
       - CURRENT_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'version:' | awk '{print \$2}' | awk '{ gsub("\\.", "-"); print }')
       - NEW_VERSION=$(echo $$CURRENT_VERSION | awk -F- '{\$NF = \$NF + 1;} 1' | sed 's/ /-/g')
@@ -18,6 +32,7 @@ steps:
     label: "test helm new install"
     if: build.message !~ /feat\(OSS.+\):/i
   - wait
+
   - commands:
       - CURRENT_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'version:' | awk '{print \$2}' | awk '{ gsub("\\.", "-"); print }')
       - NEW_VERSION=$(echo $$CURRENT_VERSION | awk -F- '{\$NF = \$NF + 1;} 1' | sed 's/ /-/g')
@@ -39,19 +54,6 @@ steps:
           parameters:
             STAGING_API_KEY: /komodor/staging/kubernetes/agent-api-key
     label: "test helm update install"
-    if: build.message !~ /feat\(OSS.+\):/i
-  - wait
-  - command: helm template k8s-watcher charts/k8s-watcher -f charts/k8s-watcher/values.yaml --set apiKey="sanity" --set metrics.enabled=true --set watcher.clusterName=test-template
-    agents:
-      builder: "dind"
-    label: "helm template check for sanity"
-    if: build.message !~ /feat\(OSS.+\):/i
-  - wait
-
-  - commands:
-      - komo ctx staging
-      - helm upgrade --install k8s-watcher-production --reuse-values --dry-run charts/k8s-watcher --set apiKey="test" --set watcher.clusterName=staging-test
-    label: "dry-run installation on staging before version bump"
     if: build.message !~ /feat\(OSS.+\):/i
   - wait
 
