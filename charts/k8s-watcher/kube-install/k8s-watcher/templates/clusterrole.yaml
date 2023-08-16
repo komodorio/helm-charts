@@ -251,6 +251,12 @@ rules:
     - get
     - watch
     - list
+  
+  # apiserver metrics
+  - nonResourceURLs:
+    - "/metrics"
+    verbs:
+      - get
   - apiGroups:
       - ""
     resources:
