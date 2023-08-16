@@ -432,6 +432,12 @@ rules:
     - get
     - watch
     - list
+  
+  # apiserver metrics
+  - nonResourceURLs:
+    - "/metrics"
+    verbs:
+      - get
 {{- end }}
 {{- if .Values.watcher.actions.advanced }}
   - apiGroups:
@@ -492,13 +498,6 @@ rules:
   - apiGroups: {{ .Values.watcher.resources.customReadAPIGroups }}
     resources: ["*"]
     verbs:     ["get", "watch", "list"]
-{{- end }}
-
-{{- if ((.Values.watcher.telemetry)).collectApiServerMetrics }}
-  - nonResourceURLs:
-    - "/metrics"
-    verbs:
-      - get
 {{- end }}
 
 ---
