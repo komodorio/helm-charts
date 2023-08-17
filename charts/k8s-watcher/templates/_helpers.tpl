@@ -82,7 +82,7 @@ Selector daemon server host
 Api server url
 */}}
 {{- define "daemon.apiServerUrl" -}}
-{{- default "https://kubernetes.default.svc.cluster.local" .Values.daemon.configuration.apiServerUrl }}
+{{- default "https://kubernetes.default.svc.cluster.local" (.Values.daemon).configuration.apiServerUrl }}
 {{- end }}
 
 {{/*
