@@ -123,6 +123,10 @@ spec:
                   name: {{ include "k8s-watcher.name" . }}-secret
                   key: apiKey
 {{- end }}
+{{- if not (hasKey .Values.watcher "tags") }}
+            - name: KOMOKW_TAGS
+              value: {{ .Values.tags | default "" | quote }}
+{{- end }}
             - name: HELM_CACHE_HOME
               value: /opt/watcher/helm/cache
             - name: HELM_CONFIG_HOME
