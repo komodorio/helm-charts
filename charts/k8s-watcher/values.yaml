@@ -88,6 +88,7 @@ daemon:
       memory: 256Mi
   configuration:
     apiServerUrl: "https://kubernetes.default.svc.cluster.local"
+
 network_mapper:
   debug: false
   allowGetAllResources: true
