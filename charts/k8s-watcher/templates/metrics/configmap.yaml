@@ -32,7 +32,7 @@ data:
 
     [[inputs.kube_inventory]]
       ## URL for the Kubernetes API
-      url = "https://kubernetes.default.svc.cluster.local"
+      url = "{{ include "daemon.apiServerUrl" . }}"
       namespace = ""
       bearer_token = "/run/secrets/kubernetes.io/serviceaccount/token"
       insecure_skip_verify = true

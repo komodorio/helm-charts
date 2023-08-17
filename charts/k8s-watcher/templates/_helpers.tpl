@@ -79,6 +79,13 @@ Selector daemon server host
 {{- end }}
 
 {{/*
+Api server url
+*/}}
+{{- define "daemon.apiServerUrl" -}}
+{{- default "https://kubernetes.default.svc.cluster.local" .Values.daemon.configuration.apiServerUrl }}
+{{- end }}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "k8s-watcher.serviceAccountName" -}}
