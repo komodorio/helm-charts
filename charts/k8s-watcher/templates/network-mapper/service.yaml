@@ -1,4 +1,4 @@
-{{- if and .Values.network_mapper ((.Values.watcher.networkMapper).enable | default false) }}
+{{- if (.Values.watcher.networkMapper).enable | default false }}
 apiVersion: v1
 kind: Service
 metadata:

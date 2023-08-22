@@ -1,13 +1,22 @@
 {{- define "metrics.init" }}
 {{- if .Values.metrics.enabled }}
 - name: init-daemon
-  image: "{{ .Values.daemon.init.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-  imagePullPolicy: {{ .Values.daemon.init.image.pullPolicy }}
+  image: '{{ (((.Values.daemon).init).image).repository | default "public.ecr.aws/komodor-public/init-daemon-agent" }}:{{ .Values.image.tag | default .Chart.AppVersion }}'
+  imagePullPolicy: {{ (((.Values.daemon).init).image).pullPolicy | default "IfNotPresent" }}
   volumeMounts:
   - name: configuration
     mountPath: /etc/komodor
   resources:
+  {{- if empty ((.Values.daemon).init).resources }}
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  {{- else }}
   {{- toYaml .Values.daemon.init.resources | nindent 4 }}
+  {{- end }}
   env:
   {{- if hasKey .Values "namespace" }}
   - name: NAMESPACE
