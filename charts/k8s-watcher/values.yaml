@@ -161,7 +161,7 @@ watcher:
   memoryThresholdSafetyCheck:
     enable: true
   networkMapper:
-    enable: false
+    enable: true
   monitoringFQDN: ""
   resources:
     event: true
