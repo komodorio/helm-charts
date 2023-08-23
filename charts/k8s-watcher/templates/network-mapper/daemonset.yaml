@@ -18,14 +18,14 @@
 {{- end }}
 
 {{- define "network_mapper.daemonset.network" }}
-{{- if(.Values.watcher.networkMapper).enable | default false }}
+{{- if(.Values.watcher.networkMapper).enable | default true }}
 hostNetwork: true
 dnsPolicy: ClusterFirstWithHostNet
 {{- end }}
 {{- end }}
 
 {{- define "network_mapper.daemonset.volumes" }}
-{{- if (.Values.watcher.networkMapper).enable | default false }}
+{{- if (.Values.watcher.networkMapper).enable | default true }}
 - hostPath:
     path: /proc
     type: ""
