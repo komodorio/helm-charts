@@ -3,11 +3,11 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ template "network.mapper.fullName" . }}-{{ .Release.Namespace }}
+  name: {{ template "network.mapper.fullName" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ template "network.mapper.fullName" . }}-{{ .Release.Namespace }}
+  name: {{ template "network.mapper.fullName" . }}
 subjects:
   - kind: ServiceAccount
     name: {{ include "k8s-watcher.serviceAccountName" . }}
@@ -18,14 +18,14 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: {{ template "network.mapper.fullName" . }}-{{ .Release.Namespace }}
+  name: {{ template "network.mapper.fullName" . }}
   {{- if hasKey .Values "namespace" }}
   namespace: {{ .Values.namespace }}
   {{- end }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: {{ template "network.mapper.fullName" . }}-{{ .Release.Namespace }}
+  name: {{ template "network.mapper.fullName" . }}
 subjects:
   - kind: ServiceAccount
     name: {{ include "k8s-watcher.serviceAccountName" . }}
