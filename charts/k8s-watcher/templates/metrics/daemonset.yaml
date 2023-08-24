@@ -1,5 +1,5 @@
 {{- define "metrics.daemonset.container" }}
-{{- if .Values.metrics.enabled }}
+{{- if ne (.Values.metrics).enabled false }}
 - name: daemon
   image: {{ ((.Values.daemon).image).repository | default "public.ecr.aws/komodor-public/telegraf:1.26" }} 
   imagePullPolicy: {{ ((.Values.daemon).image).pullPolicy | default "IfNotPresent" }}
