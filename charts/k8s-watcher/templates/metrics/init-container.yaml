@@ -1,5 +1,5 @@
 {{- define "metrics.init" }}
-{{- if .Values.metrics.enabled }}
+{{- if ne (.Values.metrics).enabled false }}
 - name: init-daemon
   image: '{{ (((.Values.daemon).init).image).repository | default "public.ecr.aws/komodor-public/init-daemon-agent" }}:{{ .Values.image.tag | default .Chart.AppVersion }}'
   imagePullPolicy: {{ (((.Values.daemon).init).image).pullPolicy | default "IfNotPresent" }}

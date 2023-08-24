@@ -405,7 +405,7 @@ rules:
     - update
     - create
 {{- end }}
-{{- if (.Values.metrics).enabled }}
+{{- if ne (.Values.metrics).enabled false }}
   - apiGroups:
     - ""
     resources:
