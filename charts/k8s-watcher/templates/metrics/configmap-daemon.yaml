@@ -1,4 +1,4 @@
-{{- if ( and (.Values.metrics).enabled .Values.daemon ) }}
+{{- if (.Values.metrics).enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

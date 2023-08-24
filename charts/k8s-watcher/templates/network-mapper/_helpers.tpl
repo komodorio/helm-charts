@@ -1,9 +1,9 @@
 {{- define "network.sniffer.fullName" -}}
-network-sniffer
+network-sniffer-{{ .Values.watcher.clusterName }}
 {{- end -}}
 {{- define "network.mapper.fullName" -}}
-network-mapper
+network-mapper-{{ .Values.watcher.clusterName }}
 {{- end -}}
 {{- define "network.mapper.configMapName" -}}
-network-mapper-store
+network-mapper-store-{{ .Values.watcher.clusterName }}
 {{- end -}}

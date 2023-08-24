@@ -1,17 +1,15 @@
 {{- define "network_mapper.daemonset.container" }}
-{{- if and .Values.network_mapper ((.Values.watcher.networkMapper).enable | default false) }}
+{{- if (.Values.watcher.networkMapper).enable | default true }}
 - name: {{ template "network.sniffer.fullName" . }}
-  image: "{{ .Values.network_mapper.sniffer.repository }}/{{ .Values.network_mapper.sniffer.image }}:{{ .Values.network_mapper.sniffer.tag }}"
-  {{ if .Values.network_mapper.sniffer.pullPolicy }}
-  imagePullPolicy: {{ .Values.network_mapper.sniffer.pullPolicy }}
-  {{ end }}
+  image: '{{ ((.Values.network_mapper).sniffer).repository | default "public.ecr.aws/komodor-public" }}/{{ ((.Values.network_mapper).sniffer).image | default "network-mapper-sniffer" }}:{{ ((.Values.network_mapper).sniffer).tag | default "v0.1.27" }}'
+  imagePullPolicy: {{ ((.Values.network_mapper).sniffer).pullPolicy | default "IfNotPresent" }}
   resources:
-    {{- toYaml .Values.network_mapper.sniffer.resources | nindent 10 }}
+    {{- toYaml ((.Values.network_mapper).sniffer).resources | nindent 10 }}
   env:
     - name: OTTERIZE_MAPPER_API_URL
       value: http://{{ template "network.mapper.fullName" . }}:9090/query
     - name: OTTERIZE_DEBUG
-      value: {{ .Values.network_mapper.debug | quote }}
+      value: {{ (.Values.network_mapper).debug | default "false" | quote }}
   volumeMounts:
     - mountPath: /hostproc
       name: proc
@@ -20,14 +18,14 @@
 {{- end }}
 
 {{- define "network_mapper.daemonset.network" }}
-{{- if and .Values.network_mapper ((.Values.watcher.networkMapper).enable | default false) }}
+{{- if(.Values.watcher.networkMapper).enable | default true }}
 hostNetwork: true
 dnsPolicy: ClusterFirstWithHostNet
 {{- end }}
 {{- end }}
 
 {{- define "network_mapper.daemonset.volumes" }}
-{{- if and .Values.network_mapper ((.Values.watcher.networkMapper).enable | default false) }}
+{{- if (.Values.watcher.networkMapper).enable | default true }}
 - hostPath:
     path: /proc
     type: ""

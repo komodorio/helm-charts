@@ -1,17 +1,26 @@
 {{- define "metrics.container" }}
 {{- if .Values.metrics.enabled }}
 - name: metrics
-  image: {{ .Values.daemon.image.repository }} 
-  imagePullPolicy: {{ .Values.daemon.image.pullPolicy }}
+  image: {{ (((.Values).daemon).image).repository | default "public.ecr.aws/komodor-public/telegraf:1.26" }} 
+  imagePullPolicy: {{ (((.Values).daemon).image).pullPolicy | default "IfNotPresent" }}
   volumeMounts:
   - name: {{ include "k8s-watcher.name" . }}-metrics-config
     mountPath: /etc/telegraf/telegraf.conf
     subPath: telegraf.conf
   resources:
-  {{- toYaml .Values.daemon.resources | nindent 4 }}
+  {{- if empty ((.Values).daemon).resources }}
+    limits:
+      cpu: 1
+      memory: 2Gi
+    requests:
+      cpu: 0.1
+      memory: 256Mi
+  {{- else }}
+    {{- toYaml ((.Values).daemon).resources | nindent 4 }}
+  {{- end }}
   envFrom:
   - configMapRef:
-      name:  {{ (or .Values.watcher.daemon .Values.watcher.metrics).varsConfigMapName }}
+      name:  {{ (or .Values.watcher.daemon .Values.watcher.metrics).varsConfigMapName | default "k8s-watcher-daemon-env-vars" }}
   env:
   {{- if .Values.proxy.http }}
   - name: KOMOKW_HTTP_PROXY_URL

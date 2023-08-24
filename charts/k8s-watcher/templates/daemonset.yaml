@@ -1,4 +1,4 @@
-{{- if (or (and (.Values.metrics).enabled .Values.daemon) (and (.Values.watcher.networkMapper).enable .Values.daemon))}}
+{{- if (or  (.Values.metrics).enabled (.Values.watcher.networkMapper).enable) }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -35,9 +35,11 @@ spec:
       containers:
         {{- include "metrics.daemonset.container" .        | indent 8 }}
         {{- include "network_mapper.daemonset.container" . | indent 8 }}
-      {{- with .Values.daemon.tolerations }}
       tolerations:
-        {{- toYaml . | nindent 8 }}
+      {{- if empty (.Values.daemon).tolerations }}
+        - operator: "Exists"
+      {{- else }}
+        {{- toYaml .Values.daemon.tolerations | nindent 8 }}
       {{- end }}
       {{- include "network_mapper.daemonset.network" .   | nindent 6 }}
       volumes:

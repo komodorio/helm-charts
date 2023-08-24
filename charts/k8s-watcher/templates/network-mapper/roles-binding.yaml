@@ -1,5 +1,5 @@
 {{- if .Values.serviceAccount.create -}}
-{{- if and .Values.network_mapper ((.Values.watcher.networkMapper).enable | default false) }}
+{{- if (.Values.watcher.networkMapper).enable | default true }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
