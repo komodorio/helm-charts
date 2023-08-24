@@ -4,7 +4,7 @@ metadata:
   name: k8s-watcher-daemon
   namespace: komodor
   labels:
-    helm.sh/chart: k8s-watcher-1.15.20
+    helm.sh/chart: k8s-watcher-1.15.21
     app.kubernetes.io/name: k8s-watcher-daemon
     app.kubernetes.io/instance: k8s-watcher-daemon
     app.kubernetes.io/version: "0.2.48"
@@ -24,13 +24,18 @@ spec:
       serviceAccountName: k8s-watcher
       initContainers:        
         - name: init-daemon
-          image: "public.ecr.aws/komodor-public/init-daemon-agent:0.2.48"
+          image: 'public.ecr.aws/komodor-public/init-daemon-agent:0.2.48'
           imagePullPolicy: IfNotPresent
           volumeMounts:
           - name: configuration
             mountPath: /etc/komodor
           resources:
-            null
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
           env:
           - name: NAMESPACE
             value: komodor
@@ -68,9 +73,25 @@ spec:
                 fieldPath: status.hostIP
           - name: CLUSTER_NAME
             value: YOUR_CLUSTER_NAME        
+        - name: network-sniffer-YOUR_CLUSTER_NAME
+          image: 'public.ecr.aws/komodor-public/network-mapper-sniffer:v0.1.27'
+          imagePullPolicy: IfNotPresent
+          resources:
+                  {}
+          env:
+            - name: OTTERIZE_MAPPER_API_URL
+              value: http://network-mapper-YOUR_CLUSTER_NAME:9090/query
+            - name: OTTERIZE_DEBUG
+              value: "false"
+          volumeMounts:
+            - mountPath: /hostproc
+              name: proc
+              readOnly: true
       tolerations:
         - operator: Exists
       
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       volumes:
         
         - name: k8s-watcher-daemon-config
@@ -82,4 +103,9 @@ spec:
             items:
               - key: komodor-k8s-watcher.yaml
                 path: komodor-k8s-watcher.yaml
+        
+        - hostPath:
+            path: /proc
+            type: ""
+          name: proc
 ---

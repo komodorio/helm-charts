@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: network-mapper-YOUR_CLUSTER_NAME
+  namespace: komodor
+spec:
+  selector:
+    app.kubernetes.io/name: k8s-watcher
+    app.kubernetes.io/instance: k8s-watcher
+  ports:
+    - protocol: TCP
+      port: 9090
+      name: http
+      targetPort: 9090
+---

@@ -1,0 +1,16 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: network-mapper-YOUR_CLUSTER_NAME
+  namespace: komodor
+rules:
+  - apiGroups:
+      - ''
+    resources:
+      - 'configmaps'
+    resourceNames:
+      - network-mapper-store-YOUR_CLUSTER_NAME
+    verbs:
+      - 'get'
+      - 'update'
+---

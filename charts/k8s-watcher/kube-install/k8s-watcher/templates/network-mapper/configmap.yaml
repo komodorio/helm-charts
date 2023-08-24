@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: network-mapper-store-YOUR_CLUSTER_NAME
+  namespace: komodor
+data: {}
+binaryData: {}
+---
