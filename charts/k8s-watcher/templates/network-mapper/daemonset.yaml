@@ -1,5 +1,5 @@
 {{- define "network_mapper.daemonset.container" }}
-{{- if (.Values.watcher.networkMapper).enable | default true }}
+{{- if ne (.Values.watcher.networkMapper).enable false }}
 - name: {{ template "network.sniffer.fullName" . }}
   image: '{{ ((.Values.network_mapper).sniffer).repository | default "public.ecr.aws/komodor-public" }}/{{ ((.Values.network_mapper).sniffer).image | default "network-mapper-sniffer" }}:{{ ((.Values.network_mapper).sniffer).tag | default "v0.1.27" }}'
   imagePullPolicy: {{ ((.Values.network_mapper).sniffer).pullPolicy | default "IfNotPresent" }}
@@ -25,7 +25,7 @@ dnsPolicy: ClusterFirstWithHostNet
 {{- end }}
 
 {{- define "network_mapper.daemonset.volumes" }}
-{{- if (.Values.watcher.networkMapper).enable | default true }}
+{{- if ne (.Values.watcher.networkMapper).enable false }}
 - hostPath:
     path: /proc
     type: ""
