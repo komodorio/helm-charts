@@ -23,6 +23,7 @@ data:
     enableAgentTaskExecution: true
     enableAgentTaskExecutionV2: true
     enableHelm: true
+    logsNamespacesAllowlist: []
     logsNamespacesDenylist: []
     memoryThresholdSafetyCheck:
       enable: true
