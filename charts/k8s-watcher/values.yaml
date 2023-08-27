@@ -136,6 +136,7 @@ watcher:
   watchNamespace: all
   namespacesDenylist: []
   logsNamespacesDenylist: []
+  logsNamespacesAllowlist: []
   nameDenylist: []
   redact: []
   redactLogs: []
