@@ -110,7 +110,6 @@ steps:
     agents:
       builder: "dind"
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
-    depends_on: "bump-versions"
   - wait
 
   - commands:
