@@ -67,7 +67,7 @@ daemon:
   tolerations:
     - operator: "Exists"
   image:
-    repository: public.ecr.aws/komodor-public/telegraf:1.26
+    repository: public.ecr.aws/komodor-public/telegraf:1.27
     pullPolicy: IfNotPresent
   init:
     image:
@@ -75,7 +75,7 @@ daemon:
       pullPolicy: IfNotPresent
       resources: {}
   resources: {}
-    
+
   configuration:
     apiServerUrl: "https://kubernetes.default.svc.cluster.local"
 

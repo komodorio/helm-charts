@@ -1,7 +1,7 @@
 {{- define "metrics.container" }}
 {{- if ne (.Values.metrics).enabled false }}
 - name: metrics
-  image: {{ (((.Values).daemon).image).repository | default "public.ecr.aws/komodor-public/telegraf:1.26" }} 
+  image: {{ (((.Values).daemon).image).repository | default "public.ecr.aws/komodor-public/telegraf:1.27" }} 
   imagePullPolicy: {{ (((.Values).daemon).image).pullPolicy | default "IfNotPresent" }}
   volumeMounts:
   - name: {{ include "k8s-watcher.name" . }}-metrics-config
