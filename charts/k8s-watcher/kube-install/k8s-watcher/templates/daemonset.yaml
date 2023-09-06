@@ -4,7 +4,7 @@ metadata:
   name: k8s-watcher-daemon
   namespace: komodor
   labels:
-    helm.sh/chart: k8s-watcher-1.16.9
+    helm.sh/chart: k8s-watcher-1.16.10
     app.kubernetes.io/name: k8s-watcher-daemon
     app.kubernetes.io/instance: k8s-watcher-daemon
     app.kubernetes.io/version: "0.2.53"
@@ -43,7 +43,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: k8s-watcher-secret
-                key: apiKey
+                key: apiKey          
       containers:        
         - name: daemon
           image: public.ecr.aws/komodor-public/telegraf:1.27 

@@ -4,7 +4,7 @@ metadata:
   name: k8s-watcher
   namespace: komodor
   labels:
-    helm.sh/chart: k8s-watcher-1.16.9
+    helm.sh/chart: k8s-watcher-1.16.10
     app.kubernetes.io/name: k8s-watcher
     app.kubernetes.io/instance: k8s-watcher
     app.kubernetes.io/version: "0.2.53"
@@ -68,7 +68,7 @@ spec:
                   name: k8s-watcher-secret
                   key: apiKey
             - name: KOMOKW_SERVERS_HEALTHCHECK_PORT
-              value: "8089"
+              value: "8089"            
           securityContext:
             readOnlyRootFilesystem: true
             runAsUser: 1000
@@ -127,7 +127,7 @@ spec:
             - name: HELM_CONFIG_HOME
               value: /opt/watcher/helm/config
             - name: HELM_DATA_HOME
-              value: /opt/watcher/helm/data
+              value: /opt/watcher/helm/data            
           securityContext:
             readOnlyRootFilesystem: true
             runAsUser: 1000
