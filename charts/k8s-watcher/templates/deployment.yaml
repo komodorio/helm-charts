@@ -64,7 +64,7 @@ spec:
             - name: KOMOKW_SERVERS_HEALTHCHECK_PORT
               value: "{{ .Values.supervisor.servers.healthCheck.port }}"
 {{- end }}
-{{- include "k8s-watcher.proxy-conf" . }}
+{{- include "k8s-watcher.proxy-conf" . | indent 12}}
           securityContext:
             readOnlyRootFilesystem: true
             runAsUser: 1000
@@ -133,7 +133,7 @@ spec:
               value: /opt/watcher/helm/config
             - name: HELM_DATA_HOME
               value: /opt/watcher/helm/data
-{{- include "k8s-watcher.proxy-conf" . }}
+{{- include "k8s-watcher.proxy-conf" . | indent 12}}
           securityContext:
             readOnlyRootFilesystem: true
             runAsUser: 1000

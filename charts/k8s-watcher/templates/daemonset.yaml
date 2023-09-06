@@ -31,7 +31,7 @@ spec:
       initContainers:
         {{- include "metrics.init" . | indent 8 }}
       {{- end }}
-{{- include "k8s-watcher.proxy-conf" . }}
+{{- include "k8s-watcher.proxy-conf" . | indent 10}}
       containers:
         {{- include "metrics.daemonset.container" .        | indent 8 }}
         {{- include "network_mapper.daemonset.container" . | indent 8 }}
