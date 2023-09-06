@@ -100,3 +100,23 @@ Create the name of the service account to use
 {{- $daemonEnabledValues := dict "daemon" (dict "enabled" ((.Values.metrics).enabled | default false)) }}
 {{- mergeOverwrite .Values.watcher $daemonEnabledValues  | toYaml  }}
 {{- end }}
+
+{{/*
+Tolerations allow the scheduler to schedule pods with matching taints
+*/}}
+{{- define "tolerations" }}
+{{- with .Values.tolerations }}
+tolerations:
+{{ toYaml . | indent 2 }}
+{{- end }}
+{{- end -}}
+
+{{/*
+Affinity gives you more control over the selection logic
+*/}}
+{{- define "affinity" }}
+{{- with .Values.affinity }}
+affinity:
+{{ toYaml . | indent 2 }}
+{{- end }}
+{{- end -}}

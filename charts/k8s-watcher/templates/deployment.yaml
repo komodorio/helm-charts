@@ -36,6 +36,8 @@ spec:
       nodeSelector:
       {{- toYaml .Values.nodeSelector | nindent 8 }}
       {{- end }}
+      {{- include "tolerations" .        | indent 6 }}
+      {{- include "affinity" .           | indent 6 }}
       containers:
         {{- include "metrics.container" .        | indent 8 }}
         {{- include "network_mapper.deployment.container" . | nindent 8 }}

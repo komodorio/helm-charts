@@ -44,6 +44,8 @@ existingSecret: ""
 
 apiKey: ""
 nodeSelector: {}
+tolerations: {}
+affinity: {}
 
 helm:
   enableActions: true
