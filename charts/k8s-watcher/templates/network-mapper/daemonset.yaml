@@ -1,7 +1,7 @@
 {{- define "network_mapper.daemonset.container" }}
 {{- if ne (.Values.watcher.networkMapper).enable false }}
 - name: {{ template "network.sniffer.fullName" . }}
-  image: '{{ ((.Values.network_mapper).sniffer).repository | default "public.ecr.aws/komodor-public" }}/{{ ((.Values.network_mapper).sniffer).image | default "network-mapper-sniffer" }}:{{ ((.Values.network_mapper).sniffer).tag | default "v0.1.29" }}'
+  image: '{{ ((.Values.network_mapper).sniffer).repository | default "public.ecr.aws/komodor-public" }}/{{ ((.Values.network_mapper).sniffer).image | default "network-mapper-sniffer" }}:{{ ((.Values.network_mapper).sniffer).tag | default "v0.1.32" }}'
   imagePullPolicy: {{ ((.Values.network_mapper).sniffer).pullPolicy | default "IfNotPresent" }}
   resources:
     {{- toYaml ((.Values.network_mapper).sniffer).resources | nindent 10 }}
