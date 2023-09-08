@@ -3940,6 +3940,17 @@ entries:
     version: 0.1.0
   komoplane:
   - apiVersion: v2
+    appVersion: 0.1.1
+    created: "2023-09-08T16:57:48.650261968Z"
+    description: Komodor tool to visualize Crossplane
+    digest: 81f0e630fc0397fc27921d5ed9f3d3a63fefea43d7ff5ef191e3199f878c58bc
+    icon: https://raw.githubusercontent.com/komodorio/komoplane/main/pkg/frontend/src/assets/logo.svg
+    name: komoplane
+    type: application
+    urls:
+    - https://github.com/komodorio/helm-charts/releases/download/komoplane-0.1.1/komoplane-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
     appVersion: 0.0.10
     created: "2023-09-06T14:38:24.011250974Z"
     description: Komodor tool to visualize Crossplane
@@ -4016,4 +4027,4 @@ entries:
     urls:
     - komoplane/komoplane-0.0.2.tgz
     version: 0.0.2
-generated: "2023-09-06T14:38:23.712834271Z"
+generated: "2023-09-08T16:57:48.651254382Z"
