@@ -100,3 +100,8 @@ Create the name of the service account to use
 {{- $daemonEnabledValues := dict "daemon" (dict "enabled" ((.Values.metrics).enabled | default false)) }}
 {{- mergeOverwrite .Values.watcher $daemonEnabledValues  | toYaml  }}
 {{- end }}
+
+{{- define "namespace" -}}
+{{- hasKey .Values "namespace" | ternary .Values.namespace .Release.Namespace }}
+{{- end }}
+

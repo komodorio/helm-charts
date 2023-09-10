@@ -3,9 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "network.mapper.configMapName" . }}
-  {{- if hasKey .Values "namespace" }}
-  namespace: {{ .Values.namespace }}
-  {{- end }}
+  namespace: {{ include "namespace" . }}
 data: {}
 binaryData: {}
 {{- end }}

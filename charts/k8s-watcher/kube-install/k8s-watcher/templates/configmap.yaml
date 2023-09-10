@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: k8s-watcher-config
-  namespace: komodor
+  namespace: {{ include "namespace" . }}
 data:
   clusterName: YOUR_CLUSTER_NAME
   komodor-k8s-watcher.yaml: |

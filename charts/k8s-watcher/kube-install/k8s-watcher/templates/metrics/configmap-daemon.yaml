@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: k8s-watcher-daemon-config
-  namespace: komodor
+  namespace: {{ include "namespace" . }}
 data:
   telegraf.conf: |
     [global_tags]

@@ -2,7 +2,7 @@ kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: k8s-watcher
-  namespace: komodor
+  namespace: {{ include "namespace" . }}
 rules:
   - apiGroups:
     - ""
@@ -295,5 +295,5 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: k8s-watcher
-    namespace: komodor
+    namespace: {{ include "namespace" . }}
 ---

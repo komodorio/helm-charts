@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: k8s-watcher-daemon
-  namespace: komodor
+  namespace: {{ include "namespace" . }}
   labels:
     helm.sh/chart: k8s-watcher-1.16.10
     app.kubernetes.io/name: k8s-watcher-daemon

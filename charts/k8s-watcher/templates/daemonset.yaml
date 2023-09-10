@@ -3,9 +3,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ include "k8s-watcher.fullname" . }}-daemon
-  {{- if hasKey .Values "namespace" }}
-  namespace: {{ .Values.namespace }}
-  {{- end }}
+  namespace: {{ include "namespace" . }}
   labels:
     {{- include "daemon.labels" . | nindent 4 }}
   {{- with .Values.deploymentAnnotations }}

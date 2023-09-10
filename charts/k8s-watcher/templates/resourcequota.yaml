@@ -4,10 +4,7 @@ metadata:
   labels:
     app: komodor
   name: komodor-critical-pods
-  {{- if hasKey .Values "namespace" }}
-  namespace: {{ .Values.namespace }}
-  {{- end}}
-spec:
+  namespace: {{ include "namespace" . }}spec:
   hard:
     pods: 2
   scopeSelector:

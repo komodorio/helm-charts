@@ -2,9 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "k8s-watcher.fullname" . }}
-  {{- if hasKey .Values "namespace" }}
-  namespace: {{ .Values.namespace }}
-  {{- end }}
+  namespace: {{ include "namespace" . }}
   labels:
     {{- include "k8s-watcher.labels" . | nindent 4 }}
   {{- with .Values.deploymentAnnotations }}
