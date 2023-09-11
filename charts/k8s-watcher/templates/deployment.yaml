@@ -36,7 +36,7 @@ spec:
       nodeSelector:
       {{- toYaml .Values.nodeSelector | nindent 8 }}
       {{- end }}
-{{- if ne (.Values.customCa).enabled false }}
+{{- if and .Values.customCa (ne (.Values.customCa).enabled false) }}
       initContainers:
         - name: init-cert
           image: "{{ ((.Values.supervisor.image)).repository | default "public.ecr.aws/komodor-public/supervisor" }}:{{ ((.Values.supervisor.image)).tag | default .Chart.AppVersion }}"

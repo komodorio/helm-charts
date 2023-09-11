@@ -3,7 +3,7 @@
 - name: init-daemon
   image: '{{ (((.Values.daemon).init).image).repository | default "public.ecr.aws/komodor-public/init-daemon-agent" }}:{{ .Values.image.tag | default .Chart.AppVersion }}'
   imagePullPolicy: {{ (((.Values.daemon).init).image).pullPolicy | default "IfNotPresent" }}
-  {{- if ne (.Values.customCa).enabled false }}
+  {{- if and .Values.customCa (ne (.Values.customCa).enabled false) }}
   command:
     - /bin/sh
     - -c
