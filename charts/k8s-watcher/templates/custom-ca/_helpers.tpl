@@ -39,3 +39,4 @@ lifecycle:
   mountPath: /etc/ssl/certs/
   readOnly: true
 {{- end }}
+{{- end }}
