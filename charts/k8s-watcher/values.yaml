@@ -29,9 +29,9 @@ proxy:
   https: ""
   no_proxy: ""
 
-# customCa:
-#   enabled: false
-#   secretName: ""
+customCa:
+  enabled: false
+  secretName: ""
 
 resources:
   limits:
