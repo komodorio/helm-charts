@@ -3,12 +3,11 @@
 - name: metrics
   image: {{ (((.Values).daemon).image).repository | default "public.ecr.aws/komodor-public/telegraf:1.27" }} 
   imagePullPolicy: {{ (((.Values).daemon).image).pullPolicy | default "IfNotPresent" }}
-  {{- include "custom-ca.lifecycle" . | indent 2 }}
   volumeMounts:
   - name: {{ include "k8s-watcher.name" . }}-metrics-config
     mountPath: /etc/telegraf/telegraf.conf
     subPath: telegraf.conf
-  {{- include "custom-ca.volumeMounts" . | indent 2 }}
+  {{- include "custom-ca.trusted-volumeMounts" . | indent 2 }}
   resources:
   {{- if empty ((.Values).daemon).resources }}
     limits:
