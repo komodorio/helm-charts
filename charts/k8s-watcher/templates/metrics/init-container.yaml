@@ -9,7 +9,7 @@
     - -c
     - cp /certs/* /etc/ssl/certs/ && 
       update-ca-certificates --fresh &&
-      ./daemon
+      daemon
   {{- end }}
   volumeMounts:
   - name: configuration
