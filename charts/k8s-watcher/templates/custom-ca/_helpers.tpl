@@ -1,5 +1,5 @@
 {{- define "custom-ca.lifecycle" -}}
-{{- if and .Values.customCa (ne (.Values.customCa).enabled false) }}
+{{- if ne (default false (.Values.customCa).enabled) false }}
 lifecycle:
   postStart:
     exec:
@@ -11,7 +11,7 @@ lifecycle:
 {{- end }}
 
 {{- define "custom-ca.volumeMounts" -}}
-{{- if and .Values.customCa (ne (.Values.customCa).enabled false) }}
+{{- if ne (default false (.Values.customCa).enabled) false }}
 - name: custom-ca
   mountPath: "/certs/"
   readOnly: true
@@ -19,7 +19,7 @@ lifecycle:
 {{- end }}
 
 {{- define "custom-ca.volume" -}}
-{{- if and .Values.customCa (ne (.Values.customCa).enabled false) }}
+{{- if ne (default false (.Values.customCa).enabled) false }}
 - name: custom-ca
   secret:
     secretName: {{ .Values.customCa.secretName }}
@@ -27,14 +27,14 @@ lifecycle:
 {{- end }}
 
 {{- define "custom-ca.trusted-volume" -}}
-{{- if and .Values.customCa (ne (.Values.customCa).enabled false) }}
+{{- if ne (default false (.Values.customCa).enabled) false }}
 - name: trusted-ca
   emptyDir: {}
 {{- end }}
 {{- end }}
 
 {{- define "custom-ca.trusted-volumeMounts" -}}
-{{- if and .Values.customCa (ne (.Values.customCa).enabled false) }}
+{{- if ne (default false (.Values.customCa).enabled) false }}
 - name: trusted-ca
   mountPath: /etc/ssl/certs/
   readOnly: true

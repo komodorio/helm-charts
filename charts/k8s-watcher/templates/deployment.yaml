@@ -36,7 +36,7 @@ spec:
       nodeSelector:
       {{- toYaml .Values.nodeSelector | nindent 8 }}
       {{- end }}
-{{- if and .Values.customCa (ne (.Values.customCa).enabled false) }}
+{{- if ne (default false (.Values.customCa).enabled) false }}
       initContainers:
         - name: init-cert
           image: "{{ ((.Values.supervisor.image)).repository | default "public.ecr.aws/komodor-public/supervisor" }}:{{ ((.Values.supervisor.image)).tag | default .Chart.AppVersion }}"
@@ -47,11 +47,11 @@ spec:
               update-ca-certificates --fresh &&
               cp -r /etc/ssl/certs/* /trusted-ca/
           volumeMounts:
-            {{- include "custom-ca.trusted-volumeMounts" .  | nindent 12 }}
+            {{- include "custom-ca.trusted-volumeMounts" .  | indent 12 }}
             {{- include "custom-ca.volumeMounts" .          | nindent 12 }}
 {{- end }}
       containers:
-        {{- include "metrics.container" .        | indent 8 }}
+        {{- include "metrics.container" .                   | indent 8 }}
         {{- include "network_mapper.deployment.container" . | nindent 8 }}
         
 {{- if ((.Values.supervisor)).enabled }}
