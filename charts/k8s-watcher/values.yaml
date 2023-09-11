@@ -29,6 +29,10 @@ proxy:
   https: ""
   no_proxy: ""
 
+customCa:
+  enabled: false
+  secretName: ""
+
 resources:
   limits:
     cpu: 2
