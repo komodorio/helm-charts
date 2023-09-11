@@ -46,7 +46,7 @@
 {{- end }}
 
 {{- define "metrics.daemonset.volumes" }}
-{{- if ne (.Values.metrics).enabled false) }}
+{{- if ne (.Values.metrics).enabled false }}
 - name: {{ include "k8s-watcher.name" . }}-daemon-config
   configMap:
     name: {{ include "k8s-watcher.name" . }}-daemon-config
