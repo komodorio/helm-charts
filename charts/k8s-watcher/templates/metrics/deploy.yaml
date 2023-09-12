@@ -7,6 +7,7 @@
   - name: {{ include "k8s-watcher.name" . }}-metrics-config
     mountPath: /etc/telegraf/telegraf.conf
     subPath: telegraf.conf
+  {{- include "custom-ca.trusted-volumeMounts" . | indent 2 }}
   resources:
   {{- if empty ((.Values).daemon).resources }}
     limits:
