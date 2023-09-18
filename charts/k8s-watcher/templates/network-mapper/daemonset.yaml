@@ -22,7 +22,7 @@
 {{- end }}
 
 {{- define "network_mapper.daemonset.network" }}
-{{- if(.Values.watcher.networkMapper).enable | default true }}
+{{- if ne (.Values.watcher.networkMapper).enable false }}
 hostNetwork: true
 dnsPolicy: ClusterFirstWithHostNet
 {{- end }}
