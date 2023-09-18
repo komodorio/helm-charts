@@ -5,12 +5,12 @@ metadata:
   namespace: {{ include "namespace" . }}
   labels:
     {{- include "k8s-watcher.labels" . | nindent 4 }}
-  {{- with .Values.deploymentAnnotations }}
+  {{- with .Values.components.komodorAgent.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   strategy:
     rollingUpdate:
       maxUnavailable: 0
@@ -30,15 +30,18 @@ spec:
     spec:
       priorityClassName: {{ .Release.Name }}-agent-high-priority
       serviceAccountName: {{ include "k8s-watcher.serviceAccountName" . }}
-      {{- if .Values.nodeSelector }}
+      {{- if .Values.components.komodorAgent.nodeSelector }}
       nodeSelector:
-      {{- toYaml .Values.nodeSelector | nindent 8 }}
+      {{- toYaml .Values.components.komodorAgent.nodeSelector| nindent 8 }}
       {{- end }}
+      tolerations:
+        {{- with .Values.components.komodorAgent.tolerations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       containers:
-        {{- include "metrics.container" .        | indent 8 }}
-        {{- include "network_mapper.deployment.container" . | nindent 8 }}
-        
-{{- if ((.Values.supervisor)).enabled }}
+        {{- include "metricsq.container" .        | indent 8 }}
+        {{- include "network_mapper.deployment.container" . | nindent 8 }}      
+        {{- if ((.Values.supervisor)).enabled }}
         - name: "supervisor"
           image: "{{ ((.Values.supervisor.image)).repository | default "public.ecr.aws/komodor-public/supervisor" }}:{{ ((.Values.supervisor.image)).tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ ((.Values.supervisor.image)).pullPolicy | default "IfNotPresent" }}
@@ -51,18 +54,18 @@ spec:
             - name: KOMOKW_API_KEY
               valueFrom:
                 secretKeyRef:
-{{- if .Values.existingSecret }}
+          {{- if .Values.existingSecret }}
                   name: {{ .Values.existingSecret | required "Existing secret name required!" }}
                   key: apiKey
-{{- else }}
+          {{- else }}
                   name: {{ include "k8s-watcher.name" . }}-secret
                   key: apiKey
-{{- end }}
-{{- if ((((((.Values.supervisor)).servers)).healthCheck)).port }}
+          {{- end }}
+          {{- if ((((((.Values.supervisor)).servers)).healthCheck)).port }}
             - name: KOMOKW_SERVERS_HEALTHCHECK_PORT
               value: "{{ .Values.supervisor.servers.healthCheck.port }}"
-{{- end }}
-{{- include "k8s-watcher.proxy-conf" . | indent 12}}
+          {{- end }}
+          {{- include "k8s-watcher.proxy-conf" . | indent 12}}
           securityContext:
             readOnlyRootFilesystem: true
             runAsUser: 1000
@@ -87,12 +90,12 @@ spec:
             periodSeconds: 5
             failureThreshold: 3
             successThreshold: 1
-{{- end }}
+        {{- end }}
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+          image: "{{ ((.Values.components.komodorAgent.watcher).repo) }}/{{ ((.Values.components.komodorAgent.watcher).name) }}:{{ ((.Values.components.komodorAgent.watcher).tag) | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ ((.Values.components.komodorAgent.watcher).image).pullPolicy }}
+          resources:0
+            {{- toYaml ((.Values.components.komodorAgent.watcher).resources) | nindent 12 }}
           volumeMounts:
             - name: agent-configuration
               mountPath: /etc/komodor
