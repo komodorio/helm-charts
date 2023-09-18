@@ -7,6 +7,9 @@ image:
 namespace: komodor
 createNamespace: true
 
+imagePullSecrets:
+  # - name: "secret-name"
+
 # enableMemLimitChecks will use downward API to tell the pod what is the allocated memory
 # when the allocated memory is almost full the agent will stop receiving new events
 # the process resumes once there is free memory to use

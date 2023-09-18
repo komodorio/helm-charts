@@ -100,3 +100,10 @@ Create the name of the service account to use
 {{- $daemonEnabledValues := dict "daemon" (dict "enabled" ((.Values.metrics).enabled | default false)) }}
 {{- mergeOverwrite .Values.watcher $daemonEnabledValues  | toYaml  }}
 {{- end }}
+
+{{- define "imagePullSecrets" -}}
+{{- if .Values.imagePullSecrets -}}
+imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 2 }}
+{{- end -}}
+{{- end -}}
