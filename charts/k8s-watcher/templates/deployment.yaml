@@ -22,24 +22,24 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-        {{- with .Values.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
+        {{- with .Values.components.komodorAgent.podAnnotations }}
+        {{- toYaml . | trim | nindent 8 }}
         {{- end }}
       labels:
         {{- include "k8s-watcher.selectorLabels" . | nindent 8 }}
     spec:
       priorityClassName: {{ .Release.Name }}-agent-high-priority
       serviceAccountName: {{ include "k8s-watcher.serviceAccountName" . }}
-      {{- if .Values.components.komodorAgent.nodeSelector }}
-      nodeSelector:
-      {{- toYaml .Values.components.komodorAgent.nodeSelector| nindent 8 }}
+      {{- if ((.Values.components).komodorAgent).nodeSelector }}
+      nodeSelector: 
+        {{- toYaml .Values.components.komodorAgent.nodeSelector | trim | nindent 8  }}
       {{- end }}
-      tolerations:
-        {{- with .Values.components.komodorAgent.tolerations }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
+      {{- if ((.Values.components).komodorAgent).tolerations }}
+      tolerations:        
+        {{- toYaml .Values.components.komodorAgent.tolerations | nindent 8 }}
+      {{- end }}
       containers:
-        {{- include "metricsq.container" .        | indent 8 }}
+        {{- include "metrics.container" .        | indent 8 }}
         {{- include "network_mapper.deployment.container" . | nindent 8 }}      
         {{- if ((.Values.supervisor)).enabled }}
         - name: "supervisor"
@@ -93,9 +93,8 @@ spec:
         {{- end }}
         - name: {{ .Chart.Name }}
           image: "{{ ((.Values.components.komodorAgent.watcher).repo) }}/{{ ((.Values.components.komodorAgent.watcher).name) }}:{{ ((.Values.components.komodorAgent.watcher).tag) | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ ((.Values.components.komodorAgent.watcher).image).pullPolicy }}
-          resources:0
-            {{- toYaml ((.Values.components.komodorAgent.watcher).resources) | nindent 12 }}
+          imagePullPolicy: {{ (.Values.components.komodorAgent.watcher.image).pullPolicy | default "IfNotPresent" }}
+          resources: {{ include "watcher.container.resources" . | trim | nindent 12 }}
           volumeMounts:
             - name: agent-configuration
               mountPath: /etc/komodor

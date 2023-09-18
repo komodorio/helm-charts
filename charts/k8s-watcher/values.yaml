@@ -216,16 +216,16 @@ watcher:
 
 components:
   komodorAgent:
-    annotations: # Add annotations to the komodor agent deployment <map of strings> eg. {"key": "value"}
+    annotations:  # Add annotations to the komodor agent deployment <map of strings> eg. {"key": "value"}
     nodeSelector:  # Add node selectors to the komodor agent deployment <map of strings> eg. {"key": "value"}
     tolerations: # Add tolerations to the komodor agent deployment <map of strings> eg. {"key": "value"}
+    podAnnotations: # Add annotations to the komodor agent watcher pod <map of strings> eg. {"key": "value"}
     watcher:
       image:
         repo: *repo # <string> eg. public.ecr.aws/komodor-public
         name: # <string> eg. k8s-watcher
         tag: # <string> eg. 1.0.0
         pullPolicy: # <ifNotPresent\Always\Never>
-      resources: # Add resources to the komodor agent watcher container <map of strings> eg. {"requests": {"memory": "256Mi", "cpu": "0.5"}, "limits": {"memory": "512Mi", "cpu": "1"}}
-      podAnnotations: # Add annotations to the komodor agent watcher pod <map of strings> eg. {"key": "value"}
+      resources: # Add custom resources to the komodor agent watcher container <map of strings> eg. {"requests": {"memory": "256Mi", "cpu": "0.5"}, "limits": {"memory": "512Mi", "cpu": "1"}}
       ports:
         healthCheck: # Override the health check port of the komodor agent watcher <int> eg. 8080

@@ -7,17 +7,7 @@
   - name: {{ include "k8s-watcher.name" . }}-metrics-config
     mountPath: /etc/telegraf/telegraf.conf
     subPath: telegraf.conf
-  resources:
-  {{- if empty ((.Values).daemon).resources }}
-    limits:
-      cpu: 1
-      memory: 2Gi
-    requests:
-      cpu: 0.1
-      memory: 256Mi
-  {{- else }}
-    {{- toYaml ((.Values).daemon).resources | nindent 4 }}
-  {{- end }}
+  resources: {{- include "metrics.container.resources" . | trim | nindent 4 }}
   envFrom:
   - configMapRef:
       name:  {{ (or .Values.watcher.daemon .Values.watcher.metrics).varsConfigMapName | default "k8s-watcher-daemon-env-vars" }}

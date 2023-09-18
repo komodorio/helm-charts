@@ -105,3 +105,37 @@ Create the name of the service account to use
 {{- hasKey .Values "namespace" | ternary .Values.namespace .Release.Namespace }}
 {{- end }}
 
+
+
+
+
+#  ------------------- #
+{{- define "metrics.container.resources" -}}
+{{- if (((.Values.components).komodorAgent).watcher).resources }}
+{{ toYaml .Values.components.komodorAgent.watcher.resources }}
+{{- else }}
+limits:
+    cpu: 1
+    memory: 2Gi
+requests:
+    cpu: 0.1
+    memory: 256Mi
+{{- end }}
+{{- end }}
+
+#  ------------------- #
+{{- define "watcher.container.resources" -}}
+{{- if empty (((.Values.components).komodorAgent).watcher).resources }}
+limits:
+    cpu: 2
+    memory: 8Gi
+requests:
+    cpu: 0.25
+    memory: 256Mi
+{{- else }}
+{{ toYaml ((((.Values).components).komodorAgent).watcher).resources }}
+{{- end }}
+{{- end }}
+
+
+
