@@ -30,18 +30,29 @@ spec:
     spec:
       priorityClassName: {{ .Release.Name }}-agent-high-priority
       serviceAccountName: {{ include "k8s-watcher.serviceAccountName" . }}
-      {{- if ((.Values.components).komodorAgent).nodeSelector }}
-      nodeSelector: 
-        {{- toYaml .Values.components.komodorAgent.nodeSelector | trim | nindent 8  }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+      {{- toYaml .Values.nodeSelector | nindent 8 }}
       {{- end }}
-      {{- if ((.Values.components).komodorAgent).tolerations }}
-      tolerations:        
-        {{- toYaml .Values.components.komodorAgent.tolerations | nindent 8 }}
-      {{- end }}
+{{- if ne (default false (.Values.customCa).enabled) false }}
+      initContainers:
+        - name: init-cert
+          image: "{{ ((.Values.supervisor.image)).repository | default "public.ecr.aws/komodor-public/supervisor" }}:{{ ((.Values.supervisor.image)).tag | default .Chart.AppVersion }}"
+          command: 
+            - sh
+            - -c
+            - cp /certs/* /etc/ssl/certs/ &&
+              update-ca-certificates --fresh &&
+              cp -r /etc/ssl/certs/* /trusted-ca/
+          volumeMounts:
+            {{- include "custom-ca.trusted-volumeMounts-init" .  | indent 12 }}
+            {{- include "custom-ca.volumeMounts" .          | nindent 12 }}
+{{- end }}
       containers:
-        {{- include "metrics.container" .        | indent 8 }}
-        {{- include "network_mapper.deployment.container" . | nindent 8 }}      
-        {{- if ((.Values.supervisor)).enabled }}
+        {{- include "metrics.container" .                   | indent 8 }}
+        {{- include "network_mapper.deployment.container" . | nindent 8 }}
+        
+{{- if ((.Values.supervisor)).enabled }}
         - name: "supervisor"
           image: "{{ ((.Values.supervisor.image)).repository | default "public.ecr.aws/komodor-public/supervisor" }}:{{ ((.Values.supervisor.image)).tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ ((.Values.supervisor.image)).pullPolicy | default "IfNotPresent" }}
@@ -112,6 +123,7 @@ spec:
             - name: kube-cache
               mountPath: /.kube
 {{- end }}
+{{- include "custom-ca.trusted-volumeMounts" . | nindent 12 }}
           env:
             - name: KOMOKW_API_KEY
               valueFrom:
@@ -189,3 +201,5 @@ spec:
           emptyDir:
             sizeLimit: 1Gi
 {{- end }}
+        {{- include "custom-ca.volume" .         | nindent 8}}
+        {{- include "custom-ca.trusted-volume" . | nindent 8}}
