@@ -3,7 +3,6 @@ kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ include "k8s-watcher.serviceAccountName" . }}}
-  namespace: {{ include "namespace" . }}
 rules:
   - apiGroups:
     - ""
@@ -510,5 +509,3 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: {{ include "k8s-watcher.serviceAccountName" . }}
-    namespace: {{ include "namespace" . }}
-

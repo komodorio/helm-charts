@@ -1,165 +1,35 @@
-repo: &repo public.ecr.aws/komodor-public
-
-# ReplicaCount should always be 1 - We do not properly support syncing state (yet) so it will cause the same events to be sent and overload the server.
-replicaCount: 1
-image:
-  repository: public.ecr.aws/komodor-public/k8s-watcher
-  pullPolicy: IfNotPresent
-
-namespace: komodor
-createNamespace: true
-
-# enableMemLimitChecks will use downward API to tell the pod what is the allocated memory
-# when the allocated memory is almost full the agent will stop receiving new events
-# the process resumes once there is free memory to use
-enableMemLimitChecks: true
-
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  # name: ""
-
-enableRWCache: true
-tags: ""
-
-proxy:
-  enabled: false
-  komodorOnly: true
-  http: ""
-  https: ""
-  no_proxy: ""
-
-customCa:
-  enabled: false
-  secretName: ""
-
-resources:
-  limits:
-    cpu: 2
-    memory: 8Gi
-  requests:
-    cpu: 0.25
-    memory: 256Mi
-
-deploymentAnnotations: {}
-podAnnotations: {}
-
-existingSecret: ""
-
-apiKey: ""
-nodeSelector: {}
-
-helm:
-  enableActions: true
-  volumeSizeLimit: "256Mi"
-
-supervisor:
-  enabled: true
-  image:
-    repository: public.ecr.aws/komodor-public/supervisor
-    pullPolicy: IfNotPresent
-  resources:
-    requests:
-      cpu: 0.1
-      memory: 256Mi
-  servers:
-    healthCheck:
-      port: 8089
-metrics:
-  enabled: true
-daemon:
-  tolerations:
-  - operator: "Exists"
-  image:
-    repository: public.ecr.aws/komodor-public/telegraf:1.27
-    pullPolicy: IfNotPresent
-  init:
-    image:
-      repository: public.ecr.aws/komodor-public/init-daemon-agent
-      pullPolicy: IfNotPresent
-      resources: {}
-  resources: {}
-
-  configuration:
-    apiServerUrl: "https://kubernetes.default.svc.cluster.local"
-
-network_mapper:
-  debug: false
-  allowGetAllResources: true
-
-  # Fields from All-in-one chart
-  global:
-    # If defined overrides `allowGetAllResources`
-    allowGetAllResources:
-
-  mapper:
-    repository: public.ecr.aws/komodor-public
-    image: network-mapper
-    tag: v0.1.32
-    pullPolicy: IfNotPresent
-    resources: {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    # requests:
-    #   cpu: 100m
-    #   memory: 128Mi
-
-  sniffer:
-    repository: public.ecr.aws/komodor-public
-    image: network-mapper-sniffer
-    tag: v0.1.32
-    pullPolicy: IfNotPresent
-    resources: {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    # requests:
-    #   cpu: 100m
-    #   memory: 128Mi
-
 watcher:
   # clusterName: ""
-  enableAgentTaskExecution: true
-  enableAgentTaskExecutionV2: true
-  allowReadingPodLogs: true
-  enableHelm: true
-  daemon:
-    varsConfigMapName: k8s-watcher-daemon-env-vars
+  enableAgentTaskExecution: true # default
+  enableAgentTaskExecutionV2: true # default
+  allowReadingPodLogs: true 
+  enableHelm: true # default
+  daemon: # deault
+    varsConfigMapName: k8s-watcher-daemon-env-vars # default
   servers:
-    healthCheck: {}
-  collectHistory: true
-  watchNamespace: all
-  namespacesDenylist: []
-  logsNamespacesDenylist: []
-  logsNamespacesAllowlist: []
-  nameDenylist: []
-  redact: []
-  redactLogs: []
+    healthCheck: {} # default
+  collectHistory: true # default
+  watchNamespace: all # events.watchNamespace
+  namespacesDenylist: [] #events.namespacesDenylist
+  logsNamespacesDenylist: [] #logs.logsNamespacesDenylist
+  logsNamespacesAllowlist: [] #logs.logsNamespacesAllowlist
+  nameDenylist: [] #logs.nameDenylist
+  redact: [] #events.redact
+  redactLogs: [] #logs.redactLogs
   actions:
-    basic: true
-    advanced: true
-    podExec: true
-    portforward: true
+    basic: true # capabilities.actions
+    advanced: true # capabilities.actions
+    podExec: true # default
+    portforward: true # default
   telemetry:
-    enable: true
-    collectApiServerMetrics: false
+    enable: true # default
+    collectApiServerMetrics: false # debug.collectApiServerMetrics
   memoryThresholdSafetyCheck:
-    enable: true
+    enable: true # default
   networkMapper:
-    enable: false
-  monitoringFQDN: ""
-  resources:
+    enable: false # capabilities.networkMapper
+  monitoringFQDN: "" # default
+  resources: # default
     event: true
     deployment: true
     replicationController: true
@@ -217,19 +87,112 @@ watcher:
     resync:
       period: "0"
 
+apiServerUrl: "https://kubernetes.default.svc.cluster.local"
+apiKey: # [MANDATORY] To be obtained from komodor app during onboarding <GUID>
+createNamespace: true
+tags: ""
+clusterName:  # [MANDATORY] Must be unique per account, will be shown as a the cluster name in komdor <string>
+serviceAccount:
+  create: # <boolean>
+  name: # Name of the service account <string>
+proxy:
+  enabled: # <boolean>
+  komodorOnly: # Only <boolean>
+  http: # <string> eg. http://proxy.com:8080
+  https: # HTTPS take precedence over HTTP for https requests <string> eg. https://proxy.com:8080
+  no_proxy: # Specify specific domains to ignore proxy for <string> eg. komodor.com,google.com
+customCa: 
+  enabled: false # Enable a custom CA to imported from secret to agent's workloads <boolean>
+  secretName: # Name of the secret containing the CA <string>
+imageRepo: public.ecr.aws/komodor-public # Override the komodor agent image repository <string> eg. public.ecr.aws/komodor-public
+pullPolicy: IfNotPresent # <ifNotPresent\Always\Never>
+
+
+capabilities:
+  metrics: false # Fetch workload metrics and send then to komodor backend <boolean>
+  networkMapper: # Enable network mapping capabilities by the komodor agent <boolean>
+  actions: # Allow users to perform actions on the cluster, granular access control is defined in the application<boolean>
+  events:
+    watchNamespace: # Only allow agents to watch a specific namesapce <all\string> eg. all, default
+    namespacesDenylist: [] # Do not watch events from these namespaces  <array of strings> eg. ["kube-system", "kube-public"]
+    redact: [] # Redact workload names from the komodor events <array of strings> eg. ["password", "token"]
+  logs:
+    enabled: true # Fetch pod logs from komodor backend <boolean>
+    logsNamespacesDenylist: [] # Do not fetch logs from these namespaces <array of strings> eg. ["kube-system", "kube-public"]
+    logsNamespacesAllowlist: [] # Only fetch logs from these namespaces <array of strings> eg. ["kube-system", "kube-public"]
+    nameDenylist: []  # Do not fetch logs from these workloads <array of strings> eg. ["supersecret-workload", "password-manager"]
+    redactLogs: [] # Redact logs from the komodor logs <array of strings> eg. ["password", "token"]
+  debug:
+    collectApiServerMetrics: false # Collect metrics from the api server <boolean>
 
 components:
   komodorAgent:
-    annotations:  # Add annotations to the komodor agent deployment <map of strings> eg. {"key": "value"}
-    nodeSelector:  # Add node selectors to the komodor agent deployment <map of strings> eg. {"key": "value"}
-    tolerations: # Add tolerations to the komodor agent deployment <map of strings> eg. {"key": "value"}
-    podAnnotations: # Add annotations to the komodor agent watcher pod <map of strings> eg. {"key": "value"}
+    affinity: {}
+    annotations: {}  # Add annotations to the komodor agent deployment <map of strings> eg. {"key": "value"}
+    nodeSelector: {}  # Add node selectors to the komodor agent deployment <map of strings> eg. {"key": "value"}
+    tolerations: [] # Add tolerations to the komodor agent deployment <map of strings> eg. {"key": "value"}
+    podAnnotations:  # Add annotations to the komodor agent watcher pod <map of strings> eg. {"key": "value"}     
     watcher:
       image:
-        repo: *repo # <string> eg. public.ecr.aws/komodor-public
-        name: # <string> eg. k8s-watcher
-        tag: # <string> eg. 1.0.0
-        pullPolicy: # <ifNotPresent\Always\Never>
+        name: k8s-watcher # <string> eg. k8s-watcher
+        tag:  # defaults to Chart.AppVersion
       resources: # Add custom resources to the komodor agent watcher container <map of strings> eg. {"requests": {"memory": "256Mi", "cpu": "0.5"}, "limits": {"memory": "512Mi", "cpu": "1"}}
+        limits:
+          cpu: 2
+          memory: 8Gi
+        requests:
+          cpu: 0.25
+          memory: 256Mi 
+      ports:
+        healthCheck: 8090 # Override the health check port of the komodor agent watcher <int> eg. 8080
+    supervisor:
+      image:
+        name: supervisor # <string> eg. supervisor
+        tag: # Defaults to Chart.app.version
+      resources:
+        requests:
+          cpu: 0.1
+          memory: 256Mi  # Add custom resources to the komodor agent watcher container <map of strings> eg. {"requests": {"memory": "256Mi", "cpu": "0.5"}, "limits": {"memory": "512Mi", "cpu": "1"}}
       ports:
         healthCheck: # Override the health check port of the komodor agent watcher <int> eg. 8080
+    networkMapper:
+      image:
+        name: network-mapper # <string> eg. k8s-watcher
+        tag: v0.1.32 # <string> eg. 1.0.0
+      resources: {} # Add custom resources to the network-mapper container <map of strings> eg. {"requests": {"memory": "256Mi", "cpu": "0.5"}, "limits": {"memory": "512Mi", "cpu": "1"}}
+    metrics:
+      # metrics container is deployed both as a deployment and a daemonset, only set once here
+      image:
+        name: telegraf
+        tag: 1.27
+      resources: 
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi # Add custom resources to the metrics container <map of strings> eg. {"requests": {"memory": "256Mi", "cpu": "0.5"}, "limits": {"memory": "512Mi", "cpu": "1"}}
+
+  komodorDaemon:
+      annotations: {}  # Add annotations to the komodor agent deployment <map of strings> eg. {"key": "value"}
+      tolerations: [] # Add tolerations to the komodor agent deployment <map of strings> eg. {"key": "value"}
+      podAnnotations: {} # Add annotations to the komodor agent watcher pod <map of strings> eg. {"key": "value"}
+      metrics:
+        resources: {} # Add custom resources to the komodor agent watcher container <map of strings> eg. {"requests": {"memory": "256Mi", "cpu": "0.5"}, "limits": {"memory": "512Mi", "cpu": "1"}}
+      metricsInit:
+        image:
+          name: # <string> eg. k8s-watcher
+          tag: # <string> eg. 1.0.0
+        resources: 
+          limits: # Add custom resources to the komodor agent watcher container <map of strings> eg. {"requests": {"memory": "256Mi", "cpu": "0.5"}, "limits": {"memory": "512Mi", "cpu": "1"}}
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi 
+      networkSniffer:
+        image:
+          name: network-mapper-sniffer # <string> eg. k8s-watcher
+          tag: v0.1.32 # <string> eg. 1.0.0
+        resources: {} # Add custom resources to the komodor agent watcher container <map of strings> eg. {"requests": {"memory": "256Mi", "cpu": "0.5"}, "limits": {"memory": "512Mi", "cpu": "1"}}
+

@@ -2,13 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "k8s-watcher.fullname" . }}
-  namespace: {{ include "namespace" . }}
   labels:
     {{- include "k8s-watcher.labels" . | nindent 4 }}
-  {{- with .Values.components.komodorAgent.annotations }}
   annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    {{ toYaml ((.Values.components).komodorAgent).annotations | nindent 4 }}
+  
 spec:
   replicas: 1
   strategy:
@@ -22,22 +20,25 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-        {{- with .Values.components.komodorAgent.podAnnotations }}
-        {{- toYaml . | trim | nindent 8 }}
+        {{- if not (empty (((.Values.components).komodorAgent).podAnnotations)) }}
+        {{- toYaml .Values.components.komodorAgent.podAnnotations | trim | nindent 8 }}
         {{- end }}
       labels:
         {{- include "k8s-watcher.selectorLabels" . | nindent 8 }}
     spec:
       priorityClassName: {{ .Release.Name }}-agent-high-priority
       serviceAccountName: {{ include "k8s-watcher.serviceAccountName" . }}
-      {{- if .Values.nodeSelector }}
+      affinity:
+        {{- toYaml .Values.components.komodorAgent.affinity | nindent 8 }}
       nodeSelector:
-      {{- toYaml .Values.nodeSelector | nindent 8 }}
-      {{- end }}
-{{- if ne (default false (.Values.customCa).enabled) false }}
+        {{- toYaml .Values.components.komodorAgent.nodeSelector | nindent 8 }}
+      tolerations:
+        {{- toYaml .Values.components.komodorAgent.tolerations | nindent 8 }}
+  
+      {{- if ne (default false (.Values.customCa).enabled) false }}
       initContainers:
         - name: init-cert
-          image: "{{ ((.Values.supervisor.image)).repository | default "public.ecr.aws/komodor-public/supervisor" }}:{{ ((.Values.supervisor.image)).tag | default .Chart.AppVersion }}"
+          image: {{ include "supervisor.container.image" . | trim}}
           command: 
             - sh
             - -c
@@ -45,161 +46,18 @@ spec:
               update-ca-certificates --fresh &&
               cp -r /etc/ssl/certs/* /trusted-ca/
           volumeMounts:
-            {{- include "custom-ca.trusted-volumeMounts-init" .  | indent 12 }}
-            {{- include "custom-ca.volumeMounts" .          | nindent 12 }}
-{{- end }}
+            {{- include "custom-ca.trusted-volumeMounts-init" .    | nindent 12 }}
+            {{- include "custom-ca.volumeMounts" .                 | nindent 12 }}
+      {{- end }}
+
       containers:
-        {{- include "metrics.container" .                   | indent 8 }}
-        {{- include "network_mapper.deployment.container" . | nindent 8 }}
-        
-{{- if ((.Values.supervisor)).enabled }}
-        - name: "supervisor"
-          image: "{{ ((.Values.supervisor.image)).repository | default "public.ecr.aws/komodor-public/supervisor" }}:{{ ((.Values.supervisor.image)).tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ ((.Values.supervisor.image)).pullPolicy | default "IfNotPresent" }}
-          resources:
-            {{- toYaml .Values.supervisor.resources | nindent 12 }}
-          volumeMounts:
-            - name: agent-configuration
-              mountPath: /etc/komodor
-          env:
-            - name: KOMOKW_API_KEY
-              valueFrom:
-                secretKeyRef:
-          {{- if .Values.existingSecret }}
-                  name: {{ .Values.existingSecret | required "Existing secret name required!" }}
-                  key: apiKey
-          {{- else }}
-                  name: {{ include "k8s-watcher.name" . }}-secret
-                  key: apiKey
-          {{- end }}
-          {{- if ((((((.Values.supervisor)).servers)).healthCheck)).port }}
-            - name: KOMOKW_SERVERS_HEALTHCHECK_PORT
-              value: "{{ .Values.supervisor.servers.healthCheck.port }}"
-          {{- end }}
-          {{- include "k8s-watcher.proxy-conf" . | indent 12}}
-          securityContext:
-            readOnlyRootFilesystem: true
-            runAsUser: 1000
-            runAsGroup: 1000
-            allowPrivilegeEscalation: false
-          ports:
-            - name: http-healthz
-              containerPort: {{ .Values.supervisor.servers.healthCheck.port | default 8089 }}
-          livenessProbe:
-            httpGet:
-              path: /healthz
-              port: http-healthz
-            periodSeconds: 60
-            initialDelaySeconds: 15
-            failureThreshold: 10
-            successThreshold: 1
-          readinessProbe:
-            httpGet:
-              path: /healthz
-              port: http-healthz
-            initialDelaySeconds: 5
-            periodSeconds: 5
-            failureThreshold: 3
-            successThreshold: 1
-        {{- end }}
-        - name: {{ .Chart.Name }}
-          image: "{{ ((.Values.components.komodorAgent.watcher).repo) }}/{{ ((.Values.components.komodorAgent.watcher).name) }}:{{ ((.Values.components.komodorAgent.watcher).tag) | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ (.Values.components.komodorAgent.watcher.image).pullPolicy | default "IfNotPresent" }}
-          resources: {{ include "watcher.container.resources" . | trim | nindent 12 }}
-          volumeMounts:
-            - name: agent-configuration
-              mountPath: /etc/komodor
-            - name: tmp
-              mountPath: /tmp
-{{- if .Values.enableMemLimitChecks }}
-            - name: podinfo
-              mountPath: /etc/podinfo
-{{- end }}
-{{- if ((.Values.helm).enableActions) }}
-            - name: helm-data
-              mountPath: /opt/watcher/helm
-{{- end }}
-{{- if .Values.enableRWCache }}
-            - name: kube-cache
-              mountPath: /.kube
-{{- end }}
-{{- include "custom-ca.trusted-volumeMounts" . | nindent 12 }}
-          env:
-            - name: KOMOKW_API_KEY
-              valueFrom:
-                secretKeyRef:
-{{- if .Values.existingSecret }}
-                  name: {{ .Values.existingSecret | required "Existing secret name required!" }}
-                  key: apiKey
-{{- else }}
-                  name: {{ include "k8s-watcher.name" . }}-secret
-                  key: apiKey
-{{- end }}
-{{- if not (hasKey .Values.watcher "tags") }}
-            - name: KOMOKW_TAGS
-              value: {{ .Values.tags | default "" | quote }}
-{{- end }}
-            - name: HELM_CACHE_HOME
-              value: /opt/watcher/helm/cache
-            - name: HELM_CONFIG_HOME
-              value: /opt/watcher/helm/config
-            - name: HELM_DATA_HOME
-              value: /opt/watcher/helm/data
-{{- include "k8s-watcher.proxy-conf" . | indent 12}}
-          securityContext:
-            readOnlyRootFilesystem: true
-            runAsUser: 1000
-            runAsGroup: 1000
-            allowPrivilegeEscalation: false
-          ports:
-            - name: http-healthz
-              containerPort: {{ .Values.watcher.servers.healthCheck.port | default 8090 }}
-          livenessProbe:
-            httpGet:
-              path: /healthz
-              port: http-healthz
-            periodSeconds: 60
-            initialDelaySeconds: 15
-            failureThreshold: 10
-            successThreshold: 1
-          readinessProbe:
-            httpGet:
-              path: /healthz
-              port: http-healthz
-            initialDelaySeconds: 5
-            periodSeconds: 5
-            failureThreshold: 3
-            successThreshold: 1
+        {{- include "metrics.container" .                   | trim | nindent 8 }}
+        {{- include "network_mapper.container" .            | trim | nindent 8 }}
+        {{- include "watcher.container" .                   | trim | nindent 8 }}
+        {{- include "supervisor.container" .                | trim | nindent 8 }}
+
       volumes:
-        {{- include "metrics.deploy.volumes" . | nindent 8 }}
-        - name: agent-configuration
-          configMap:
-            name: {{ include "k8s-watcher.name" . }}-config
-            items:
-              - key: komodor-k8s-watcher.yaml
-                path: komodor-k8s-watcher.yaml
-        - name: tmp
-          emptyDir:
-            sizeLimit: 100Mi
-{{- if .Values.enableMemLimitChecks }}
-        - name: podinfo
-          downwardAPI:
-            items:
-              - path: "mem_limit"
-                resourceFieldRef:
-                  containerName: {{ .Chart.Name }}
-                  resource: limits.memory
-                  divisor: 1Mi
-{{- end }}
-{{- if ((.Values.helm).enableActions) }}
-        - name: helm-data
-          emptyDir:
-            sizeLimit: {{ .Values.helm.volumeSizeLimit | default "256Mi" }}
-{{- end }}
-{{- if .Values.enableRWCache }}
-        - name: kube-cache
-          emptyDir:
-            sizeLimit: 1Gi
-{{- end }}
-        {{- include "custom-ca.volume" .         | nindent 8}}
-        {{- include "custom-ca.trusted-volume" . | nindent 8}}
+        {{- include "metrics.deploy.volumes" .              | trim | nindent 8 }}
+        {{- include "agent.deploy.volumes" .                | trim | nindent 8 }}
+        {{- include "custom-ca.volume" .                    | trim | nindent 8 }}
+        {{- include "custom-ca.trusted-volume" .            | trim | nindent 8 }}

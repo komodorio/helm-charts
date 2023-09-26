@@ -1,47 +1,48 @@
-{{- if (or  (.Values.metrics).enabled (.Values.watcher.networkMapper).enable) }}
+{{- if (or (ne .Values.capabilities.metrics false) (ne .Values.capabilities.networkMapper false)) }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: {{ include "k8s-watcher.fullname" . }}-daemon
-  namespace: {{ include "namespace" . }}
   labels:
     {{- include "daemon.labels" . | nindent 4 }}
-  {{- with .Values.deploymentAnnotations }}
-  annotations:
-    {{- toYaml . | nindent 4 }}
+  {{- if not (empty ((.Values.components).komodorDaemon).annotations) }}
+  annotations: {{ toYaml ((.Values.components).komodorDaemon).annotations | nindent 4 }}
   {{- end }}
 spec:
   selector:
-    matchLabels:
-      {{- include "daemon.selectorLabels" . | nindent 6 }}
+    matchLabels: {{- include "daemon.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      labels:
-        {{- include "daemon.selectorLabels" . | nindent 8 }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if not (empty (((.Values.components).komodorDaemon).podAnnotations)) }}
+        {{- toYaml .Values.components.komodorDaemon.podAnnotations | trim | nindent 8 }}
+        {{- end }}
+      labels: {{- include "daemon.selectorLabels" . | nindent 8 }}
     spec:
-      priorityClassName: "{{ .Release.Name }}-daemon-high-priority"
+      priorityClassName: {{ .Release.Name }}-daemon-high-priority
       serviceAccountName: {{ include "k8s-watcher.serviceAccountName" . }}
-      {{- if .Values.metrics.enabled }}
-      initContainers:
-        {{- include "metrics.init" . | indent 8 }}
-      {{- end }}
-{{- include "k8s-watcher.proxy-conf" . | indent 10}}
-      containers:
-        {{- include "metrics.daemonset.container" .        | indent 8 }}
-        {{- include "network_mapper.daemonset.container" . | indent 8 }}
+      affinity:
+        {{- toYaml .Values.components.komodorAgent.affinity | nindent 8 }}
+      nodeSelector:
+        {{- toYaml .Values.components.komodorAgent.nodeSelector | nindent 8 }}
       tolerations:
-      {{- if empty (.Values.daemon).tolerations }}
-        - operator: "Exists"
-      {{- else }}
-        {{- toYaml .Values.daemon.tolerations | nindent 8 }}
-      {{- end }}
-      {{- include "network_mapper.daemonset.network" .   | nindent 6 }}
+        {{- toYaml .Values.components.komodorAgent.tolerations | nindent 8 }}
+      containers:
+        {{- include "metrics.daemonset.container" .        | nindent 8 }}
+
       volumes:
         {{- include "metrics.daemonset.volumes" .        | nindent 8 }}
         {{- include "network_mapper.daemonset.volumes" . | nindent 8 }}
         {{- include "custom-ca.volume" .                 | nindent 8 }}
+
+      {{- if ne (default true (.Values.capabilities).metrics) false }}
+      initContainers:
+        {{- include "metrics.daemonset.init.container" . | indent 8 }}
+      {{- end }}
+
+      {{- if ne (default true (.Values.capabilities).networkMapper) false }}
+      {{- include "network_mapper.daemonset.network" .   | nindent 6 }}
+      {{- end }}
+
 {{- end }}
