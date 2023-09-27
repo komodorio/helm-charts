@@ -66,17 +66,18 @@ func writeNewValuesToFile(filename string, newValues map[string]interface{}) err
 
 func mapOldToNewValues(flatMap map[string]interface{}) map[string]interface{} {
 	newValues := make(map[string]interface{})
+	printHashMessage(fmt.Sprintf("Legend:\n -  Removed\n +  Mapped\n !  Not Changed\n\n"))
 	for oldKey, value := range flatMap {
 		if newKey, exists := mapping[oldKey]; exists {
 			if newKey == "" {
-				fmt.Printf("- Skipping: %s: %s\n", oldKey, value)
+				fmt.Printf(" -  %s\n", oldKey)
 				continue
 			}
 			setValueInMap(newValues, newKey, value)
-			fmt.Printf("+ Converted: %s > %s\n", oldKey, newKey)
+			fmt.Printf(" +  %s > %s\n", oldKey, newKey)
 		} else {
 			setValueInMap(newValues, oldKey, value)
-			fmt.Printf("= Not Changeg: %s\n", oldKey)
+			fmt.Printf(" !  %s\n", oldKey)
 		}
 	}
 	return newValues
