@@ -41,6 +41,10 @@ func main() {
 		return
 	}
 
+	printUpdateCommand(releaseName, outputFile, namespace)
+}
+
+func printUpdateCommand(releaseName string, outputFile string, namespace string) {
 	updateCmd := fmt.Sprintf("helm upgrade %s komodorio/k8s-watcher -f %s -n %s\n", releaseName, outputFile, namespace)
 	printHashMessage("Use the following command to upgrade the release:\n" + updateCmd)
 }
