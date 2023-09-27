@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "k8s-watcher.fullname" . }}
+  name: {{ include "komodorAgent.fullname" . }}
   labels:
-    {{- include "k8s-watcher.labels" . | nindent 4 }}
+    {{- include "komodorAgent.labels" . | nindent 4 }}
   annotations:
     {{ toYaml ((.Values.components).komodorAgent).annotations | nindent 4 }}
   
@@ -15,7 +15,7 @@ spec:
       maxSurge: 1
   selector:
     matchLabels:
-      {{- include "k8s-watcher.selectorLabels" . | nindent 6 }}
+      {{- include "komodorAgent.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
@@ -24,10 +24,10 @@ spec:
         {{- toYaml .Values.components.komodorAgent.podAnnotations | trim | nindent 8 }}
         {{- end }}
       labels:
-        {{- include "k8s-watcher.selectorLabels" . | nindent 8 }}
+        {{- include "komodorAgent.selectorLabels" . | nindent 8 }}
     spec:
       priorityClassName: {{ .Release.Name }}-agent-high-priority
-      serviceAccountName: {{ include "k8s-watcher.serviceAccountName" . }}
+      serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
       affinity:
         {{- toYaml .Values.components.komodorAgent.affinity | nindent 8 }}
       nodeSelector:
@@ -35,10 +35,10 @@ spec:
       tolerations:
         {{- toYaml .Values.components.komodorAgent.tolerations | nindent 8 }}
   
-      {{- if ne (default false (.Values.customCa).enabled) false }}
+      {{- if (.Values.customCa).enabled  }}
       initContainers:
         - name: init-cert
-          image: {{ include "supervisor.container.image" . | trim}}
+          image: {{ .Values.imageRepo }}/{{ .Values.components.komodorDaemon.metricsInit.image.name}}:{{ .Values.components.komodorDaemon.metricsInit.image.tag | default .Chart.AppVersion }}
           command: 
             - sh
             - -c

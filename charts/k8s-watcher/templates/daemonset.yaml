@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: {{ include "k8s-watcher.fullname" . }}-daemon
+  name: {{ include "komodorAgent.fullname" . }}-daemon
   labels:
     {{- include "daemon.labels" . | nindent 4 }}
   {{- if not (empty ((.Values.components).komodorDaemon).annotations) }}
@@ -20,29 +20,25 @@ spec:
         {{- end }}
       labels: {{- include "daemon.selectorLabels" . | nindent 8 }}
     spec:
+      {{- include "network_mapper.daemonset.network" .   | nindent 6 }}
+
       priorityClassName: {{ .Release.Name }}-daemon-high-priority
-      serviceAccountName: {{ include "k8s-watcher.serviceAccountName" . }}
+      serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
       affinity:
         {{- toYaml .Values.components.komodorAgent.affinity | nindent 8 }}
       nodeSelector:
         {{- toYaml .Values.components.komodorAgent.nodeSelector | nindent 8 }}
       tolerations:
-        {{- toYaml .Values.components.komodorAgent.tolerations | nindent 8 }}
+        {{- toYaml .Values.components.komodorAgent.tolerations | nindent 8}}
       containers:
         {{- include "metrics.daemonset.container" .        | nindent 8 }}
-
+        {{- include "network_mapper.daemonset.container" . | nindent 8 }}
       volumes:
         {{- include "metrics.daemonset.volumes" .        | nindent 8 }}
         {{- include "network_mapper.daemonset.volumes" . | nindent 8 }}
         {{- include "custom-ca.volume" .                 | nindent 8 }}
-
-      {{- if ne (default true (.Values.capabilities).metrics) false }}
       initContainers:
-        {{- include "metrics.daemonset.init.container" . | indent 8 }}
-      {{- end }}
+        {{- include "metrics.daemonset.init.container" . | nindent 8 }}
 
-      {{- if ne (default true (.Values.capabilities).networkMapper) false }}
-      {{- include "network_mapper.daemonset.network" .   | nindent 6 }}
-      {{- end }}
 
 {{- end }}

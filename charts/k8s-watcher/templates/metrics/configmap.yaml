@@ -1,8 +1,8 @@
-{{- if ne (.Values.metrics).enabled false }}
+{{- if .Values.capabilities.metrics }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "k8s-watcher.name" . }}-metrics-config
+  name: {{ include "komodorAgent.name" . }}-metrics-config
 data:
   telegraf.conf: |
     [global_tags]
@@ -15,7 +15,7 @@ data:
       metric_buffer_limit = ${BUFFER_LIMIT}
 
     [[outputs.http]]
-      url = "{{ include "daemon.serverHost" . }}/metrics-collector/api/v1/collect"
+      url = {{ include "metrics.collector.endpoint" . | quote}}
       timeout = "${OUTPUT_TIMEOUT}"
       content_encoding = "gzip"
       metric_batch_size= ${BATCH_SIZE}
@@ -29,7 +29,7 @@ data:
 
     [[inputs.kube_inventory]]
       ## URL for the Kubernetes API
-      url = "{{ include "daemon.apiServerUrl" . }}"
+      url = "{{ .Values.communications.apiServerUrl }}"
       namespace = ""
       bearer_token = "/run/secrets/kubernetes.io/serviceaccount/token"
       insecure_skip_verify = true

@@ -1,11 +1,11 @@
-{{- if ne (.Values.watcher.networkMapper).enable false }}
+{{- if .Values.capabilities.networkMapper }}
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "network.mapper.fullName" . }}
 spec:
   selector:
-    {{- include "k8s-watcher.selectorLabels" . | nindent 4 }}
+    {{- include "komodorAgent.selectorLabels" . | nindent 4 }}
   ports:
     - protocol: TCP
       port: 9090

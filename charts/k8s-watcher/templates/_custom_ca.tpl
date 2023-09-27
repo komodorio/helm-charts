@@ -1,6 +1,6 @@
 
 {{- define "custom-ca.volumeMounts" -}}
-{{- if ne (default false (.Values.customCa).enabled) false }}
+{{- if (.Values.customCa).enabled  }}
 - name: custom-ca
   mountPath: "/certs/"
   readOnly: true
@@ -8,7 +8,7 @@
 {{- end }}
 
 {{- define "custom-ca.volume" -}}
-{{- if ne (default false (.Values.customCa).enabled) false }}
+{{- if (.Values.customCa).enabled  }}
 - name: custom-ca
   secret:
     secretName: {{ .Values.customCa.secretName }}
@@ -16,14 +16,14 @@
 {{- end }}
 
 {{- define "custom-ca.trusted-volume" -}}
-{{- if ne (default false (.Values.customCa).enabled) false }}
+{{- if (.Values.customCa).enabled  }}
 - name: trusted-ca
   emptyDir: {}
 {{- end }}
 {{- end }}
 
 {{- define "custom-ca.trusted-volumeMounts" -}}
-{{- if ne (default false (.Values.customCa).enabled) false }}
+{{- if (.Values.customCa).enabled  }}
 - name: trusted-ca
   mountPath: /etc/ssl/certs/
   readOnly: true
@@ -31,7 +31,7 @@
 {{- end }}
 
 {{- define "custom-ca.trusted-volumeMounts-init" -}}
-{{- if ne (default false (.Values.customCa).enabled) false }}
+{{- if (.Values.customCa).enabled  }}
 - name: trusted-ca
   mountPath: /trusted-ca/
   readOnly: false

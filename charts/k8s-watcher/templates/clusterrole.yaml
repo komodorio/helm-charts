@@ -2,54 +2,54 @@
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ include "k8s-watcher.serviceAccountName" . }}}
+  name: {{ include "komodorAgent.serviceAccountName" . }}
 rules:
   - apiGroups:
     - ""
     resources:
-{{- if .Values.watcher.resources.event }}
+{{- if .Values.allowedResources.event }}
     - events
 {{- end }}
-{{- if .Values.watcher.resources.pod }}
+{{- if .Values.allowedResources.pod }}
     - pods
 {{- end }}
-{{- if .Values.watcher.resources.replicationController }}
+{{- if .Values.allowedResources.replicationController }}
     - replicationcontrollers
 {{- end }}
-{{- if .Values.watcher.resources.service }}
+{{- if .Values.allowedResources.service }}
     - services
 {{- end }}
-{{- if .Values.watcher.resources.namespace }}
+{{- if .Values.allowedResources.namespace }}
     - namespaces
 {{- end }}
-{{- if .Values.watcher.resources.configMap }}
+{{- if .Values.allowedResources.configMap }}
     - configmaps
 {{- end }}
-{{- if .Values.watcher.resources.node }}
+{{- if .Values.allowedResources.node }}
     - nodes
 {{- end }}
-{{- if .Values.watcher.resources.persistentVolume }}
+{{- if .Values.allowedResources.persistentVolume }}
     - persistentvolumes
 {{- end }}
-{{- if .Values.watcher.resources.persistentVolumeClaim }}
+{{- if .Values.allowedResources.persistentVolumeClaim }}
     - persistentvolumeclaims
 {{- end }}
-{{- if .Values.watcher.resources.serviceAccount }}
+{{- if .Values.allowedResources.serviceAccount }}
     - serviceaccounts
 {{- end }}
-{{- if .Values.watcher.resources.secret }}
+{{- if .Values.allowedResources.secret }}
     - secrets
 {{- end }}
-{{- if .Values.watcher.resources.endpoints }}
+{{- if .Values.allowedResources.endpoints }}
     - endpoints
 {{- end }}
-{{- if .Values.watcher.resources.limitRange }}
+{{- if .Values.allowedResources.limitRange }}
     - limitranges
 {{- end }}
-{{- if .Values.watcher.resources.podTemplate }}
+{{- if .Values.allowedResources.podTemplate }}
     - podtemplates
 {{- end }}
-{{- if .Values.watcher.resources.resourceQuota }}
+{{- if .Values.allowedResources.resourceQuota }}
     - resourcequotas
 {{- end }}
     verbs:
@@ -61,13 +61,13 @@ rules:
     - rbac.authorization.k8s.io
     resources:
     - clusterroles
-{{- if .Values.watcher.resources.clusterRoleBinding }}
+{{- if .Values.allowedResources.clusterRoleBinding }}
     - clusterrolebindings
 {{- end }}
-{{- if .Values.watcher.resources.roleBinding }}
+{{- if .Values.allowedResources.roleBinding }}
     - rolebindings
 {{- end }}
-{{- if .Values.watcher.resources.role }}
+{{- if .Values.allowedResources.role }}
     - roles
 {{- end }}
     verbs:
@@ -81,7 +81,7 @@ rules:
     - daemonsets
     - replicasets
     - statefulsets
-{{- if .Values.watcher.resources.controllerRevision }}
+{{- if .Values.allowedResources.controllerRevision }}
     - controllerrevisions
 {{- end }}
     verbs:
@@ -91,10 +91,10 @@ rules:
   - apiGroups:
     - batch
     resources:
-{{- if .Values.watcher.resources.job }}
+{{- if .Values.allowedResources.job }}
     - jobs
 {{- end }}
-{{- if .Values.watcher.resources.cronjob }}
+{{- if .Values.allowedResources.cronjob }}
     - cronjobs
 {{- end }}
     verbs:
@@ -104,13 +104,13 @@ rules:
   - apiGroups:
     - extensions
     resources:
-{{- if .Values.watcher.resources.ingress }}
+{{- if .Values.allowedResources.ingress }}
     - ingresses
 {{- end }}
-{{- if .Values.watcher.resources.networkPolicy }}
+{{- if .Values.allowedResources.networkPolicy }}
     - networkpolicies
 {{- end }}
-{{- if .Values.watcher.resources.ingressClass }}
+{{- if .Values.allowedResources.ingressClass }}
     - ingressclasses
 {{- end }}
     verbs:
@@ -120,47 +120,45 @@ rules:
   - apiGroups:
     - networking.k8s.io
     resources:
-{{- if .Values.watcher.resources.ingress }}
+{{- if .Values.allowedResources.ingress }}
     - ingresses
 {{- end }}  
-{{- if .Values.watcher.resources.ingressClass }}
+{{- if .Values.allowedResources.ingressClass }}
     - ingressclasses
 {{- end }}
-{{- if .Values.watcher.resources.networkPolicy }}
+{{- if .Values.allowedResources.networkPolicy }}
     - networkpolicies
 {{- end }}
     verbs:
     - get
     - watch
-    - list    
-{{- if .Values.watcher.enableAgentTaskExecution }}
+    - list
   - apiGroups:
     - ""
     resources:
     - pods
-{{- if .Values.watcher.allowReadingPodLogs }}
+{{- if .Values.capabilities.logs.enabled }}
     - pods/log
 {{- end }}
     verbs:
     - "get"
     - "list"
-{{- end }}
   - apiGroups:
     - storage.k8s.io
     resources:
-{{- if .Values.watcher.resources.storageClass }}
+{{- if .Values.allowedResources.storageClass }}
     - storageclasses
 {{- end }}
-{{- if .Values.watcher.resources.csiDriver }}
+{{- if .Values.allowedResources.csiDriver }}
     - csidrivers
 {{- end }}
-{{- if .Values.watcher.resources.csiNode }}
+{{- if .Values.allowedResources.csiNode }}
     - csinodes
 {{- end }}
-{{- if .Values.watcher.resources.csiStorageCapacity }}
+{{- if .Values.allowedResources.csiStorageCapacity }}
     - csistoragecapacities
 {{- end }}
-{{- if .Values.watcher.resources.volumeAttachment }}
+{{- if .Values.allowedResources.volumeAttachment }}
     - volumeattachments
 {{- end }}
     verbs:
@@ -176,7 +174,7 @@ rules:
     - get
     - watch
     - list
-{{- if .Values.watcher.resources.rollout }}
+{{- if .Values.allowedResources.rollout }}
   - apiGroups:
     - argoproj.io
     resources:
@@ -190,20 +188,20 @@ rules:
     - watch
     - list
 {{- end }}
-{{- if or (((.Values.watcher.resources.argoWorkflows)).workflows) (((.Values.watcher.resources.argoWorkflows)).cronWorkflows) }}
+{{- if or (((.Values.allowedResources.argoWorkflows)).workflows) (((.Values.allowedResources.argoWorkflows)).cronWorkflows) }}
   - apiGroups:
     - argoproj.io
     resources:
-    {{- if ((.Values.watcher.resources.argoWorkflows)).workflows }}
+    {{- if ((.Values.allowedResources.argoWorkflows)).workflows }}
     - workflows
     {{- end }}
-    {{- if ((.Values.watcher.resources.argoWorkflows)).cronWorkflows }}
+    {{- if ((.Values.allowedResources.argoWorkflows)).cronWorkflows }}
     - cronworkflows
     {{- end }}
-    {{- if ((.Values.watcher.resources.argoWorkflows)).workflowTemplates }}
+    {{- if ((.Values.allowedResources.argoWorkflows)).workflowTemplates }}
     - workflowtemplates
     {{- end }}
-    {{- if ((.Values.watcher.resources.argoWorkflows)).clusterWorkflowTemplates }}
+    {{- if ((.Values.allowedResources.argoWorkflows)).clusterWorkflowTemplates }}
     - clusterworkflowtemplates
     {{- end }}
     verbs:
@@ -211,7 +209,7 @@ rules:
     - watch
     - list
 {{- end }}
-{{- if or (.Values.watcher.resources.metrics) ((.Values.metrics).enabled) }}
+{{- if or (.Values.allowedResources.metrics) ((.Values.metrics).enabled) }}
   - apiGroups:
     - metrics.k8s.io
     resources:
@@ -222,7 +220,7 @@ rules:
     - watch
     - list
 {{- end }}
-{{- if .Values.watcher.resources.admissionRegistrationResources }}
+{{- if .Values.allowedResources.admissionRegistrationResources }}
   - apiGroups:
     - admissionregistration.k8s.io
     resources:
@@ -233,7 +231,7 @@ rules:
     - watch
     - list
 {{- end }}
-{{- if .Values.watcher.resources.authorizationResources }}
+{{- if .Values.allowedResources.authorizationResources }}
   - apiGroups:
     - authorization.k8s.io
     resources:
@@ -246,7 +244,7 @@ rules:
     - watch
     - list
 {{- end }}
-{{- if .Values.watcher.resources.horizontalPodAutoscaler }}
+{{- if .Values.allowedResources.horizontalPodAutoscaler }}
   - apiGroups:
     - autoscaling
     resources:
@@ -256,7 +254,7 @@ rules:
     - watch
     - list
 {{- end }}
-{{- if .Values.watcher.resources.certificateSigningRequest }}
+{{- if .Values.allowedResources.certificateSigningRequest }}
   - apiGroups:
     - certificates.k8s.io
     resources:
@@ -266,7 +264,7 @@ rules:
     - watch
     - list
 {{- end }}
-{{- if .Values.watcher.resources.lease }}
+{{- if .Values.allowedResources.lease }}
   - apiGroups:
     - coordination.k8s.io
     resources:
@@ -276,7 +274,7 @@ rules:
     - watch
     - list
 {{- end }}
-{{- if .Values.watcher.resources.endpointSlice }}
+{{- if .Values.allowedResources.endpointSlice }}
   - apiGroups:
     - discovery.k8s.io
     resources:
@@ -286,7 +284,7 @@ rules:
     - watch
     - list
 {{- end }}
-{{- if .Values.watcher.resources.flowControlResources }}
+{{- if .Values.allowedResources.flowControlResources }}
   - apiGroups:
     - flowcontrol.apiserver.k8s.io
     resources:
@@ -297,7 +295,7 @@ rules:
     - watch
     - list
 {{- end }}
-{{- if .Values.watcher.resources.runtimeClass }}
+{{- if .Values.allowedResources.runtimeClass }}
   - apiGroups:
     - node.k8s.io
     resources:
@@ -307,7 +305,7 @@ rules:
     - watch
     - list
 {{- end }}
-{{- if .Values.watcher.resources.policyResources }}
+{{- if .Values.allowedResources.policyResources }}
   - apiGroups:
     - policy
     resources:
@@ -318,7 +316,7 @@ rules:
     - watch
     - list
 {{- end }}
-{{- if .Values.watcher.resources.priorityClass }}
+{{- if .Values.allowedResources.priorityClass }}
   - apiGroups:
     - scheduling.k8s.io
     resources:
@@ -328,7 +326,7 @@ rules:
     - watch
     - list
 {{- end }}
-{{- if .Values.watcher.actions.basic }}
+{{- if .Values.capabilities.actions }}
   - apiGroups:
     - apps
     resources:
@@ -354,7 +352,7 @@ rules:
     - delete
     - create
 {{- end }}
-{{- if .Values.watcher.actions.advanced }}
+{{- if .Values.capabilities.actions }}
   - apiGroups:
     - ""
     resources:
@@ -402,7 +400,7 @@ rules:
     - update
     - create
 {{- end }}
-{{- if ne (.Values.metrics).enabled false }}
+{{- if .Values.capabilities.metrics }}
   - apiGroups:
     - ""
     resources:
@@ -436,42 +434,26 @@ rules:
     verbs:
       - get
 {{- end }}
-{{- if .Values.watcher.actions.advanced }}
+{{- if .Values.capabilities.actions }}
   - apiGroups:
     - ""
     resources:
     - nodes
     verbs:
     - patch
-{{- end}}
-{{- if .Values.watcher.actions.advanced }}
+
   - apiGroups:
     - ""
     resources:
     - pods/eviction
+    - pods/exec
+    - pods/portforward
     verbs:
     - create
 {{- end}}
 
-{{- if .Values.watcher.actions.podExec }}
-  - apiGroups:
-      - ""
-    resources:
-      - pods/exec
-    verbs:
-      - create
-{{- end}}
 
-{{- if .Values.watcher.actions.podExec }}
-  - apiGroups:
-      - ""
-    resources:
-      - pods/portforward
-    verbs:
-      - create
-{{- end}}
-
-{{- if ((.Values.helm).enableActions) }}
+{{- if .Values.capabilities.helm }}
   - apiGroups:
       - ""
     resources:
@@ -485,14 +467,14 @@ rules:
       - watch
 {{- end}}
 
-{{- if .Values.watcher.resources.allowReadAll }}
+{{- if .Values.allowedResources.allowReadAll }}
   - apiGroups: ["*"]
     resources: ["*"]
     verbs:     ["get", "watch", "list"]
 {{- end}}
 
-{{- if and .Values.watcher.resources.customReadAPIGroups (gt (len .Values.watcher.resources.customReadAPIGroups) 0) }}
-  - apiGroups: {{ .Values.watcher.resources.customReadAPIGroups }}
+{{- if and .Values.allowedResources.customReadAPIGroups (gt (len .Values.allowedResources.customReadAPIGroups) 0) }}
+  - apiGroups: {{ .Values.allowedResources.customReadAPIGroups }}
     resources: ["*"]
     verbs:     ["get", "watch", "list"]
 {{- end }}
@@ -501,11 +483,12 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ include "k8s-watcher.serviceAccountName" . }}
+  name: {{ include "komodorAgent.serviceAccountName" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ include "k8s-watcher.serviceAccountName" . }}
+  name: {{ include "komodorAgent.serviceAccountName" . }}
 subjects:
   - kind: ServiceAccount
-    name: {{ include "k8s-watcher.serviceAccountName" . }}
+    name: {{ include "komodorAgent.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}

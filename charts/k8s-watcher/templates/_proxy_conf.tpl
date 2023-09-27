@@ -1,4 +1,4 @@
-{{- define "k8s-watcher.proxy-conf" -}}
+{{- define "komodorAgent.proxy-conf" -}}
 {{- if .Values.proxy.enabled }}
 {{- if .Values.proxy.http }}
 - name: {{ .Values.proxy.komodorOnly | ternary "KOMOKW_HTTP_PROXY" "HTTP_PROXY" }}

@@ -1,5 +1,5 @@
 {{- if .Values.serviceAccount.create -}}
-{{- if ne (.Values.watcher.networkMapper).enable false }}
+{{- if .Values.capabilities.networkMapper }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -10,21 +10,21 @@ roleRef:
   name: {{ template "network.mapper.fullName" . }}
 subjects:
   - kind: ServiceAccount
-    name: {{ include "k8s-watcher.serviceAccountName" . }}
-    namespace: {{ include "namespace" . }}
+    name: {{ include "komodorAgent.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: {{ template "network.mapper.fullName" . }}
-  namespace: {{ include "namespace" . }}
+  namespace: {{ .Release.Namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: {{ template "network.mapper.fullName" . }}
 subjects:
   - kind: ServiceAccount
-    name: {{ include "k8s-watcher.serviceAccountName" . }}
-    namespace: {{ include "namespace" . }}
+    name: {{ include "komodorAgent.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
 {{- end }}
 {{- end }}
