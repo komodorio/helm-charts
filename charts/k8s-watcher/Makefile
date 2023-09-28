@@ -15,25 +15,13 @@ HELM_DOCS_ARGS := -s file \
                   -y="allowedResources"
 
 # Determine OS and Arch for downloading helm-docs
-UNAME_S := $(shell uname -s)
-UNAME_M := $(shell uname -m)
-ifeq ($(UNAME_S),Linux)
-  OS := Linux
-endif
-ifeq ($(UNAME_S),Darwin)
-  OS := Darwin
-endif
-ifeq ($(UNAME_M),x86_64)
-  ARCH := amd64
-endif
-ifeq ($(UNAME_M),aarch64)
-  ARCH := arm64
-endif
+OS := $(shell uname -s)
+ARCH := $(shell uname -m)
 
 # Targets
 .PHONY: install-helm-docs
 install-helm-docs:
-	curl -L "https://github.com/norwoodj/helm-docs/releases/download/$(HELM_DOCS_VERSION)/helm-docs_$(OS)_$(ARCH).tar.gz" | tar -xz
+	curl -L "https://github.com/norwoodj/helm-docs/releases/download/$(HELM_DOCS_VERSION)/helm-docs_$(OS)_$(ARCH).tar.gz" | tar -xz helm-docs
 	mv helm-docs /usr/local/bin/helm-docs
 
 .PHONY: generate-readme
