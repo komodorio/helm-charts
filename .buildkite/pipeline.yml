@@ -4,6 +4,13 @@ steps:
       builder: "dind"
     label: "helm template check for sanity"
     if: build.message !~ /feat\(OSS.+\):/i
+
+  - commands:
+      - cd charts/k8s-watcher && make install-helm-docs
+      - cd charts/k8s-watcher && make validate-readme
+    label: "Validate Readme is up to date"
+    if: build.message !~ /feat\(OSS.+\):/i
+
   - wait
 
   - commands:
