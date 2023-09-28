@@ -1,4 +1,8 @@
-# Komodor.io
+# k8s-watcher
+
+Watches and sends kubernetes resource-related events
+
+![Version: 1.16.14](https://img.shields.io/badge/Version-1.16.14-informational?style=flat-square) ![AppVersion: 0.2.55](https://img.shields.io/badge/AppVersion-0.2.55-informational?style=flat-square)
 
 ## TL;DR;
 
@@ -51,7 +55,7 @@ To install the chart with the release name `k8s-watcher`:
 helm upgrade --install k8s-watcher komodorio/k8s-watcher --create-namespace --set apiKey=YOUR_API_KEY_HERE --set watcher.clusterName=CLUSTER_NAME
 ```
 
-The command deploys the Komodor K8S-Watcher on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys the Komodor K8S-Watcher on the Kubernetes cluster in the default configuration. The [configuration](#Values) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -90,152 +94,131 @@ To install the chart directly with kubectl, use the manifests located in `./kube
    - `kubectl apply -f ./kube-install/k8s-watcher/templates/namespace.yaml`
    - `kubectl apply -f ./kube-install/k8s-watcher/templates`
 
-## Configuration
+## Values
 
-The following table lists the configurable parameters of the chart and their default values.
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| apiKey | guid | `nil` | **(*required*)** To be obtained from komodor app during onboarding |
+| createNamespace | bool | `true` | Creates the namespace |
+| tags | dict | `""` | Tags the agent in order to identify it based on `key:value` properties separated by semicolon (`;`) example: `--set tags="env:staging;team:product-a"` --- Can also be set in the values under `tags` as a dictionary of key:value strings |
+| clusterName | string | `nil` | **(*required*)** Name to be displayed in the Komodor web application |
+| serviceAccount | object | See sub-values | Configure service account for the agent |
+| serviceAccount.create | bool | `true` | Creates a service account for the agent |
+| serviceAccount.name | string | `nil` | Name of the service account, Required if `serviceAccount.create` is false |
+| serviceAccount.annotations | object | `{}` | Add annotations to the service account |
+| proxy.enabled | bool | `false` | Enable proxy for the agent |
+| proxy.komodorOnly | bool | `true` | Configure proxy to be applied only on communication to Komodor servers (comms. to K8S API remains without proxy) |
+| proxy.http | string | `nil` | Configure Proxy setting (HTTP_PROXY) `eg. http://proxy.com:8080` |
+| proxy.https | string | `nil` | Configure Proxy setting (HTTPS_PROXY) `eg. https://proxy.com:8080` |
+| proxy.no_proxy | string | `nil` | Specify specific domains to ignore proxy for. eg. `komodor.com,google.com` |
+| customCa | object | See sub-values | Configure custom CA for the agent |
+| customCa.enabled | bool | `false` | Enable custom CA certificate for the agent |
+| customCa.secretName | string | `nil` | Name of the secret containing the CA |
+| imageRepo | string | `"public.ecr.aws/komodor-public"` | Override the komodor agent image repository. |
+| pullPolicy | string | `"IfNotPresent"` | Image pull policy for the komodor agent image. |
+| imagePullSecret | string | `""` | Set the image pull secret for the komodor agent |
+| capabilities | object | See sub-values | Configure the agent capabilities |
+| capabilities.metrics | bool | `true` | Fetch workload metrics and send them to komodor backend |
+| capabilities.networkMapper | bool | `true` | Enable network mapping capabilities by the komodor agent |
+| capabilities.actions | bool | `true` | Allow users to perform actions on the cluster, granular access control is defined in the application<boolean> |
+| capabilities.helm | bool | `true` | Enable helm capabilities by the komodor agent |
+| capabilities.events | object | `{"namespacesDenylist":[],"redact":[],"watchNamespace":null}` | Configure the agent events capabilities |
+| capabilities.events.watchNamespace | string | all | Watch a specific namespace, or all namespaces ("", "all") |
+| capabilities.events.namespacesDenylist | array of strings | `[]` | Do not watch events from these namespaces. eg. `["kube-system", "kube-public"]` |
+| capabilities.events.redact | list | `[]` | Redact workload names from the komodor events. eg. `["password", "token"]` |
+| capabilities.logs | object | See sub-values | Configure the agent logs capabilities |
+| capabilities.logs.enabled | bool | `true` | Fetch pod logs from komodor backend |
+| capabilities.logs.logsNamespacesDenylist | list | `[]` | Do not fetch logs from these namespaces. eg. `["kube-system", "kube-public"]` |
+| capabilities.logs.logsNamespacesAllowlist | list | `[]` | Only fetch logs from these namespaces. eg. `["kube-system", "kube-public"]` |
+| capabilities.logs.nameDenylist | list | `[]` | Do not fetch logs from these workloads. eg. `["supersecret-workload", "password-manager"]` |
+| capabilities.logs.redact | list | `[]` | Redact logs from the komodor logs. eg. `["password", "token"]` |
+| capabilities.debug | object | `{"collectApiServerMetrics":false}` | Configure the agent debug capabilities |
+| capabilities.debug.collectApiServerMetrics | bool | `false` | Collect metrics from the api server |
+| components | object | See sub-values | Configure the agent components |
+| components.komodorAgent | object | See sub-values | Configure the komodor agent components |
+| components.komodorAgent.affinity | object | `{}` | Set node affinity for the komodor agent deployment |
+| components.komodorAgent.annotations | object | `{}` | Set annotations for the komodor agent deployment |
+| components.komodorAgent.nodeSelector | object | `{}` | Set node selectors for the komodor agent deployment |
+| components.komodorAgent.tolerations | list | `[]` | Set tolerations for the komodor agent deployment |
+| components.komodorAgent.podAnnotations | string | `nil` | Set pod annotations for the komodor agent deployment |
+| components.komodorAgent.watcher.image | object | `{ "name": "k8s-watcher", "tag": .Chart.AppVersion }` | Override the komodor agent watcher image name or tag. |
+| components.komodorAgent.watcher.resources | object | `{"limits":{"cpu":2,"memory":"8Gi"},"requests":{"cpu":0.25,"memory":"256Mi"}}` | Set custom resources to the komodor agent watcher container |
+| components.komodorAgent.watcher.ports | object | `{"healthCheck":8090}` | Override the komodor agent watcher ports configuration |
+| components.komodorAgent.watcher.ports.healthCheck | int | `8090` | Override the health check port of the komodor agent watcher |
+| components.komodorAgent.supervisor.image | object | `{ "name": "supervisor", "tag": .Chart.AppVersion }` | Override the komodor agent supervisor image name or tag. |
+| components.komodorAgent.supervisor.resources | object | `{"requests":{"cpu":0.1,"memory":"256Mi"}}` | Set custom resources to the komodor agent supervisor container |
+| components.komodorAgent.supervisor.ports | object | `{"healthCheck":8089}` | Override the komodor agent supervisor ports configuration |
+| components.komodorAgent.supervisor.ports.healthCheck | int | `8089` | Override the health check port of the komodor agent supervisor |
+| components.komodorAgent.networkMapper.image | object | `{"name":"network-mapper","tag":"v0.1.32"}` | Override the komodor agent network mapper image name or tag. |
+| components.komodorAgent.networkMapper.resources | object | `{}` | Set custom resources to the komodor agent network mapper container |
+| components.komodorAgent.metrics.image | object | `{"name":"telegraf","tag":1.27}` | Override the komodor agent metrics image name or tag. |
+| components.komodorAgent.metrics.resources | object | `{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Set custom resources to the komodor agent metrics container |
+| components.komodorDaemon.annotations | object | `{}` | Adds custom annotations - Example: `--set podAnnotations."app\.komodor\.com/app"="komodor-agent"` |
+| components.komodorDaemon.tolerations | list | `[]` | Add tolerations to the komodor agent deployment |
+| components.komodorDaemon.podAnnotations | object | `{}` | # Add annotations to the komodor agent watcher pod |
+| components.komodorDaemon.metrics | object | `{"resources":{}}` | Configure the komodor daemon metrics components |
+| components.komodorDaemon.metrics.resources | object | `{}` | Add custom resources to the komodor agent watcher container |
+| components.komodorDaemon.metricsInit | object | See sub-values | Configure the komodor daemon metrics init container |
+| components.komodorDaemon.metricsInit.image | object | `{ "name": "init-daemon-agent", "tag": .Chart.AppVersion }` | Override the komodor agent metrics init image name or tag. |
+| components.komodorDaemon.metricsInit.resources | object | `{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Set custom resources to the komodor agent metrics init container |
+| components.komodorDaemon.networkSniffer | object | See sub-values | Configure the komodor daemon network sniffer components |
+| components.komodorDaemon.networkSniffer.image | object | `{"name":"network-mapper-sniffer","tag":"v0.1.32"}` | Override the komodor agent network sniffer image name or tag. |
+| components.komodorDaemon.networkSniffer.resources | object | `{}` | Set custom resources to the komodor agent network sniffer container |
+| allowedResources.event | bool | `true` | Enables watching `event` |
+| allowedResources.deployment | bool | `true` | Enables watching `deployments` |
+| allowedResources.replicationController | bool | `true` | Enables watching `replicationControllers` |
+| allowedResources.replicaSet | bool | `true` | Enables watching `replicaSets` |
+| allowedResources.daemonSet | bool | `true` | Enables watching `daemonSets` |
+| allowedResources.statefulSet | bool | `true` | Enables watching `statefulSets` |
+| allowedResources.service | bool | `true` | Enables watching `services` |
+| allowedResources.pod | bool | `true` | Enables watching `pods` |
+| allowedResources.job | bool | `true` | Enables watching `jobs` |
+| allowedResources.cronjob | bool | `true` | Enables watching `cronjobs` |
+| allowedResources.node | bool | `true` | Enables watching `nodes` |
+| allowedResources.clusterRole | bool | `true` | Enables watching `clusterRoles` |
+| allowedResources.serviceAccount | bool | `true` | Enables watching `serviceAccounts` |
+| allowedResources.persistentVolume | bool | `true` | Enables watching `persistentVolumes` |
+| allowedResources.persistentVolumeClaim | bool | `true` | Enables watching `persistentVolumeClaims` |
+| allowedResources.namespace | bool | `true` | Enables watching `namespaces` |
+| allowedResources.secret | bool | `false` | Enables watching `secrets` |
+| allowedResources.configMap | bool | `true` | Enables watching `configmaps` |
+| allowedResources.ingress | bool | `true` | Enables watching `ingresses` |
+| allowedResources.endpoints | bool | `true` | Enables watching `endpoints` |
+| allowedResources.storageClass | bool | `true` | Enables watching `storageClasses` |
+| allowedResources.rollout | bool | `true` | Enables watching `rollouts` |
+| allowedResources.metrics | bool | `true` | Enables watching `metrics` |
+| allowedResources.limitRange | bool | `true` | Enables watching `limitRange` |
+| allowedResources.podTemplate | bool | `true` | Enables watching `podTemplate` |
+| allowedResources.resourceQuota | bool | `true` | Enables watching `resourceQuota` |
+| allowedResources.admissionRegistrationResources | bool | `true` | Enables watching `admissionRegistrationResources` |
+| allowedResources.controllerRevision | bool | `true` | Enables watching `controllerRevision` |
+| allowedResources.authorizationResources | bool | `true` | Enables watching `authorizationResources` |
+| allowedResources.horizontalPodAutoscaler | bool | `true` | Enables watching `horizontalPodAutoscaler` |
+| allowedResources.certificateSigningRequest | bool | `true` | Enables watching `certificateSigningRequest` |
+| allowedResources.lease | bool | `true` | Enables watching `lease` |
+| allowedResources.endpointSlice | bool | `true` | Enables watching `endpointslice` |
+| allowedResources.flowControlResources | bool | `true` | Enables watching `flowControlResources` |
+| allowedResources.ingressClass | bool | `true` | Enables watching `ingressClass` |
+| allowedResources.networkPolicy | bool | `true` | Enables watching `networkPolicy` |
+| allowedResources.runtimeClass | bool | `true` | Enables watching `runtimeClass` |
+| allowedResources.policyResources | bool | `true` | Enables watching `policyResources` |
+| allowedResources.clusterRoleBinding | bool | `true` | Enables watching `clusterRoleBinding` |
+| allowedResources.roleBinding | bool | `true` | Enables watching `roleBinding` |
+| allowedResources.role | bool | `true` | Enables watching `role` |
+| allowedResources.priorityClass | bool | `true` | Enables watching `priorityClass` |
+| allowedResources.csiDriver | bool | `true` | Enables watching `csiDriver` |
+| allowedResources.csiNode | bool | `true` | Enables watching `csiNode` |
+| allowedResources.csiStorageCapacity | bool | `true` | Enables watching `csiStorageCapacity` |
+| allowedResources.volumeAttachment | bool | `true` | Enables watching `volumeAttachment` |
+| allowedResources.argoWorkflows | object | See sub-values | Enables watching argo resources |
+| allowedResources.argoWorkflows.workflows | bool | `true` | Enables watching Argo `workflows` |
+| allowedResources.argoWorkflows.workflowTemplates | bool | `true` | Enables watching Argo `workflowTemplates` |
+| allowedResources.argoWorkflows.clusterWorkflowTemplates | bool | `true` | Enables watching Argo `clusterWorkflowTemplates` |
+| allowedResources.argoWorkflows.cronWorkflows | bool | `true` | Enables watching Argo `cronWorkflows` |
+| allowedResources.customReadAPIGroups | list | `[]` | A list of custom API groups to allow read access to - each array element should be a string which represents the group name |
+| allowedResources.allowReadAll | bool | `true` | Allow reading all the resources in the cluster |
 
-| Parameter                                                  | Description                                                                                                                                                                                                                                               | Default                             |
-|------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------|
-| `apiKey`                                                   | Komodor kubernetes api key (required if `existingSecret` not specified)                                                                                                                                                                                   | ``                                  |
-| `existingSecret`                                           | Existing kubernetes secret resource containing Komodor kubernetes apiKey (required if `apiKey` not specified)                                                                                                                                             | ``                                  |
-| `tags`                                                     | Tags the agent in order to identify it based on `key:value` properties separated by semicolon (`;`) - example: `--set tags="env:staging;team:product-a"` --- Can also be set in the values under `watcher.tags` as a dictionary of key:value strings      | ``                                  |
-| `enableRWCache`                                            | Mounts a ReadWrite cache volume for the kubernetes api cache                                                                                                                                                                                              | `true`                              |
-| `watcher.actions.basic`                                    | Enables basic actions (Delete pods. Scale and restart deployments, statefulsets, replicasets. Restart and trigger jobs)                                                                                                                                   | `false`                             |
-| `watcher.actions.advanced`                                 | Enables advanced actions (Update, Create and Delete resources)                                                                                                                                                                                            | `false`                             |
-| `watcher.actions.podExec`                                  | Enables executing arbitrary commands in pod containers                                                                                                                                                                                                    | `false`                             |
-| `watcher.actions.portforward`                              | Enables port-forwarding for pods                                                                                                                                                                                                                          | `false`                             |
-| `watcher.redact`                                           | List of regular expressions. Config values for keys that matches one of these expressions will show up at Komodor as "REDACTED:\<SHA of config value\>"                                                                                                   | `[]`                                |
-| `watcher.redactLogs`                                       | List of regular expressions. Patterns in Logs that matches one of these expressions will show up at Komodor as `<REDACTED>`                                                                                                                               | `[]`                                |
-| `watcher.enableHelm`                                       | Enables reporting of unredacted secrets of type "helm.sh/release.v1" containing helm releases data                                                                                                                                                        | `true`                              |
-| `watcher.clusterName`                                      | Cluster name to be displayed in the komodor web application (required)                                                                                                                                                                                    | ``                                  |
-| `watcher.watchNamespace`                                   | Watch a specific namespace, or all namespaces ("", "all")                                                                                                                                                                                                 | `all`                               |
-| `watcher.namespacesDenylist`                               | Exclude specific namespaces (list)                                                                                                                                                                                                                        | `[]`                                |
-| `watcher.logsNamespacesDenylist`                           | Exclude the ability to fetch container logs from specific namespaces (list)                                                                                                                                                                               | `[]`                                |
-| `watcher.logsNamespacesAllowlist`                           | Include the ability to fetch container logs for specific namespaces only (list)                                                                                                                                                                               | `[]`                                |
-| `watcher.nameDenylist`                                     | Exclude specific resource names that contains any of these strings (list) - example: `` watcher.nameDenylist=["dont-watch"] --> `pod/backend-dont-watch` wont be collected ``                                                                             | `[]`                                |
-| `watcher.collectHistory`                                   | On startup collect existing cluster resources in addition to watching new resources (true / false)                                                                                                                                                        | `true`                              |
-| `watcher.collectHistoryFrom`                               | Allows configuring specific resources to list on startup instead of everything (default). `[]string` - example: `watcher.collectHistoryFrom=["deployment","daemonset","statefulset"]` or `KOMOKW_COLLECT_HISTORY_FROM="deployment daemonset statefulset"` | `""`                                |
-| `watcher.monitoringFQDN`                                   | If you have custom FQDN for you monitoring tool (e.x. Prometheus)                                                                                                                                                                                         | `https:/www.myPrometheusServer.com` |
-| `watcher.sinks.webhook.headers`                            | Headers to attach to the webhooks                                                                                                                                                                                                                         | `{}`                                |
-| `watcher.resources.event`                                  | Enables watching Event                                                                                                                                                                                                                                    | `true`                              |
-| `watcher.resources.deployment`                             | Enables watching Deployments                                                                                                                                                                                                                              | `true`                              |
-| `watcher.resources.replicationController`                  | Enables watching ReplicationControllers                                                                                                                                                                                                                   | `true`                              |
-| `watcher.resources.replicaSet`                             | Enables watching ReplicaSets                                                                                                                                                                                                                              | `true`                              |
-| `watcher.resources.daemonSet`                              | Enables watching DaemonSets                                                                                                                                                                                                                               | `true`                              |
-| `watcher.resources.statefulSet`                            | Enables watching StatefulSets                                                                                                                                                                                                                             | `true`                              |
-| `watcher.resources.service`                                | Enables watching Services                                                                                                                                                                                                                                 | `true`                              |
-| `watcher.resources.pod`                                    | Enables watching Pods                                                                                                                                                                                                                                     | `true`                              |
-| `watcher.resources.job`                                    | Enables watching Jobs                                                                                                                                                                                                                                     | `true`                              |
-| `watcher.resources.node`                                   | Enables watching Nodes                                                                                                                                                                                                                                    | `true`                              |
-| `watcher.resources.clusterRole`                            | Enables watching ClusterRoles                                                                                                                                                                                                                             | `true`                              |
-| `watcher.resources.serviceAccount`                         | Enables watching ServiceAccounts                                                                                                                                                                                                                          | `true`                              |
-| `watcher.resources.persistentVolume`                       | Enables watching PersistentVolumes                                                                                                                                                                                                                        | `true`                              |
-| `watcher.resources.persistentVolumeClaim`                  | Enables watching PersistentVolumeClaims                                                                                                                                                                                                                   | `true`                              |
-| `watcher.resources.namespace`                              | Enables watching Namespaces                                                                                                                                                                                                                               | `true`                              |
-| `watcher.resources.secret`                                 | Enables watching Secrets                                                                                                                                                                                                                                  | `false`                             |
-| `watcher.resources.configMap`                              | Enables watching ConfigMaps                                                                                                                                                                                                                               | `true`                              |
-| `watcher.resources.ingress`                                | Enables watching Ingresses                                                                                                                                                                                                                                | `true`                              |
-| `watcher.resources.storageClass`                           | Enables watching StorageClasses                                                                                                                                                                                                                           | `true`                              |
-| `watcher.resources.rollout`                                | Enables watching Argo Rollouts                                                                                                                                                                                                                            | `true`                              |
-| `watcher.resources.argoWorkflows.workflows`                | Enables watching Argo Workflows                                                                                                                                                                                                                           | `true`                              |
-| `watcher.resources.argoWorkflows.cronWorkflows`            | Enables watching Argo CronWorkflows                                                                                                                                                                                                                       | `true`                              |
-| `watcher.resources.argoWorkflows.workflowTemplates`        | Enables watching Argo Workflow Templates                                                                                                                                                                                                                  | `true`                              |
-| `watcher.resources.argoWorkflows.clusterWorkflowTemplates` | Enables watching Argo Cluster Workflow Templates                                                                                                                                                                                                          | `true`                              |
-| `watcher.resources.metrics`                                | Enables watching Metrics                                                                                                                                                                                                                                  | `true`                              |
-| `watcher.resources.limitRange`                             | Enables watching LimitRange                                                                                                                                                                                                                               | `true`                              |
-| `watcher.resources.podTemplate`                            | Enables watching PodTemplate                                                                                                                                                                                                                              | `true`                              |
-| `watcher.resources.resourceQuota`                          | Enables watching ResourceQuota                                                                                                                                                                                                                            | `true`                              |
-| `watcher.resources.admissionRegistrationResources`         | Enables watching MutatingWebhookConfigurations and ValidatingWebhookConfigurations                                                                                                                                                                        | `true`                              |
-| `watcher.resources.controllerRevision`                     | Enables watching ControllerRevision                                                                                                                                                                                                                       | `true`                              |
-| `watcher.resources.authorizationResources`                 | Enables watching Authorization Resources                                                                                                                                                                                                                  | `true`                              |
-| `watcher.resources.horizontalPodAutoscaler`                | Enables watching HorizontalPodAutoscaler                                                                                                                                                                                                                  | `true`                              |
-| `watcher.resources.certificateSigningRequest`              | Enables watching CertificateSigningRequest                                                                                                                                                                                                                | `true`                              |
-| `watcher.resources.lease`                                  | Enables watching Lease                                                                                                                                                                                                                                    | `true`                              |
-| `watcher.resources.endpointSlice`                          | Enables watching EndpointSlice                                                                                                                                                                                                                            | `true`                              |
-| `watcher.resources.flowControlResources`                   | Enables watching FlowControl Resources                                                                                                                                                                                                                    | `true`                              |
-| `watcher.resources.ingressClass`                           | Enables watching IngressClass                                                                                                                                                                                                                             | `true`                              |
-| `watcher.resources.networkPolicy`                          | Enables watching NetworkPolicy                                                                                                                                                                                                                            | `true`                              |
-| `watcher.resources.runtimeClass`                           | Enables watching RuntimeClass                                                                                                                                                                                                                             | `true`                              |
-| `watcher.resources.policyResources`                        | Enables watching Policy Resources                                                                                                                                                                                                                         | `true`                              |
-| `watcher.resources.clusterRoleBinding`                     | Enables watching ClusterRoleBinding                                                                                                                                                                                                                       | `true`                              |
-| `watcher.resources.roleBinding`                            | Enables watching RoleBinding                                                                                                                                                                                                                              | `true`                              |
-| `watcher.resources.role`                                   | Enables watching Role                                                                                                                                                                                                                                     | `true`                              |
-| `watcher.resources.PriorityClass`                          | Enables watching PriorityClass                                                                                                                                                                                                                            | `true`                              |
-| `watcher.resources.csiDriver`                              | Enables watching CSIDriver                                                                                                                                                                                                                                | `true`                              |
-| `watcher.resources.csiNode`                                | Enables watching CSINode                                                                                                                                                                                                                                  | `true`                              |
-| `watcher.resources.csiStorageCapacity `                    | Enables watching CSIStorageCapacity                                                                                                                                                                                                                       | `true`                              |
-| `watcher.resources.volumeAttachment`                       | Enables watching VolumeAttachment                                                                                                                                                                                                                         | `true`                              |
-| `watcher.resources.allowReadAll`                           | Enables reading all the resources in the cluster                                                                                                                                                                                                          | `true`                              |
-| `watcher.resources.customReadAPIGroups`                    | A list of custom API groups to allow read access to - each array element should be a string which represents the group name                                                                                                                               | `[]`                                |
-| `watcher.servers.healthCheck.port`                         | Port of the health check server                                                                                                                                                                                                                           | `8090`                              |
-| `watcher.networkMapper.enable`                             | Enable the network mapper                                                                                                                                                                                                                                 | `true`                              |
-| `resources.requests.cpu`                                   | CPU resource requests                                                                                                                                                                                                                                     | `0.25`                              |
-| `resources.limits.cpu`                                     | CPU resource limits                                                                                                                                                                                                                                       | `1`                                 |
-| `resources.requests.memory`                                | Memory resource requests                                                                                                                                                                                                                                  | `256Mi`                             |
-| `resources.limits.memory`                                  | Memory resource limits                                                                                                                                                                                                                                    | `4096Mi`                            |
-| `image.repository`                                         | Image registry/name                                                                                                                                                                                                                                       | `docker.io/komodorio/k8s-watcher`   |
-| `image.tag`                                                | Image tag                                                                                                                                                                                                                                                 | `0.1.10`                            |
-| `image.pullPolicy`                                         | Image pull policy                                                                                                                                                                                                                                         | `IfNotPresent`                      |
-| `imagePullSecret`                                          | Image pull secret                                                                                                                                                                                                                                         | ``                                  |
-| `serviceAccount.create`                                    | Creates a service account                                                                                                                                                                                                                                 | `true`                              |
-| `serviceAccount.name`                                      | Optional name for the service account                                                                                                                                                                                                                     | `{RELEASE_FULLNAME}`                |
-| `proxy.enabled`                                            | Configure proxy for watcher                                                                                                                                                                                                                               | `false`                             |
-| `proxy.komodorOnly`                                        | Configure proxy to be applied only on communication to Komodor servers (comms. to K8S API remains without proxy)                                                                                                                                          | `true`                              |
-| `proxy.http`                                               | Configure Proxy setting (HTTP_PROXY)                                                                                                                                                                                                                      | ``                                  |
-| `proxy.https`                                              | Configure Proxy setting (HTTPS_PROXY)                                                                                                                                                                                                                     | ``                                  |
-| `proxy.no_proxy`                                           | Configure Proxy setting (NO_PROXY)                                                                                                                                                                                                                        | ``                                  |
-| `customCa.enabled`                                         | Enable custom CA certificate                                                                                                                                                                                                                              | `false`                             |
-| `customCa.secretName`                                      | Name of the secret containing the CA certificate (crt format)                                                                                                                                                                                             | ``                                  |
-| `watcher.controller.resync.period`                         | Resync period (in minutes, minimum 5) to resync the state of selected controllers (deployment, daemonset, statefulset)                                                                                                                                    | `"0"`                               |
-| `watcher.enableAgentTaskExecution`                         | Enable to the agent to execute tasks in the cluster such as log streaming                                                                                                                                                                                 | `true`                              |
-| `watcher.enableAgentTaskExecutionV2`                       | Enable to the agent to execute tasks in the cluster such as log streaming (dependent on `watcher.enableAgentTaskExecution`)                                                                                                                               | `true`                              |
-| `watcher.allowReadingPodLogs`                              | Enable the agent to read pod logs from the cluster                                                                                                                                                                                                        | `true`                              |
-| `watcher.telemetry.enable`                                 | Enable the agent's telemetry                                                                                                                                                                                                                              | `true`                              |
-| `watcher.telemetry.collectApiServerMetrics`                | Enable the agent's telemetry to collect metrics on the k8s api server                                                                                                                                                                                     | `false`                             |
-| `watcher.telemetry.flushTimeout`                           | Sets the timeout for sending telemetry data (time duration in seconds)                                                                                                                                                                                    | `15`                                |
-| `watcher.telemetry.bufferFlushInterval`                    | Sets the buffer flush interval of the telemetry client (time duration in seconds)                                                                                                                                                                         | `30`                                |
-| `createNamespace`                                          | Creates the namespace                                                                                                                                                                                                                                     | `true`                              |
-| `podAnnotations`                                           | Adds custom annotations on the agent pod - Example: `--set podAnnotations."app\.komodor\.com/app"="komodor-agent"`                                                                                                                                        | `{}`                                |
-| `deploymentAnnotations`                                    | Adds custom annotations on the agent deployment - Example: `--set deploymentAnnotations."app\.komodor\.com/app"="komodor-agent"`                                                                                                                          | `{}`                                |
-| `nodeSelector`                                             | Adds a custom node selector label on the agent deployment - Example: `--set nodeSelector=nodegroup:shared`                                                                                                                                                | `{}`                                |
-| `watcher.kubeconfigPath`                                   | Specifies a custom absolute path to load the kubeconfig file for authenticating to the requested cluster (by default, the agent will try to use the Pod's Service Account if it exists, or fallback to `$HOME/.kube/config`)                              | `""`                                |
-| `watcher.kubeMasterUrl`                                    | Specifies a custom absolute URL to the kubernetes master API for authenticating to the requested cluster (takes precedence over `kubeconfigPath` if set)                                                                                                  | `""`                                |
-| `helm.volumeSizeLimit`                                     | The size limit for the mounted volume holding helm metadata                                                                                                                                                                                               | `256Mi`                             |
-| `metrics.enabled`                                          | Enables metrics collection (CPU & Memory)                                                                                                                                                                                                                 | `false`                             |
-| `network_mapper.debug`                                     | Enable debug mode for network mapper                                                                                                                                                                                                                      | `false`                             |
-| `network_mapper.mapper.resources`                          | Set network mapper resources                                                                                                                                                                                                                              | `{}`                                |
-| `network_mapper.sniffer.resources`                         | Set resources for network mapper sniffer                                                                                                                                                                                                                  | `{}`                                |
-| `daemon.tolerations`                                       | Tolerations for daemonset pod assignment - Example:   --set 'daemon.tolerations[0].key=my-key' --set 'daemon.tolerations[0].operator=Equal' --set 'daemon.tolerations[0].value=my-value' --set 'daemon.tolerations[0].effect=NoSchedule'                  | `[]`                                |
-| `supervisor.enabled`                                       | Enables supervisor sidecar (monitoring the agent)                                                                                                                                                                                                         | `false`                             |
-
-
-
-The above parameters map to a yaml configuration file used by the watcher.
-
-Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
-
-```bash
-helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey="YOUR_API_KEY_HERE" --set watcher.enableAgentTaskExecution=true --set watcher.allowReadingPodLogs=true --set watcher.actions=true
-```
-
-Alternativly, you can pass the configuration as environment variables using the `KOMOKW_` prefix and by replacing all the `.` to `_`, for the root items the camelcase transforms into underscores as well. For example,
-
-```bash
-# apiKey
-KOMOKW_API_KEY=1a2b3c4d5e6f7g7h
-# watcher.resources.replicaSet
-KOMOKW_RESOURCES_REPLICASET=false
-
-# watcher.watchNamespace
-KOMOKW_WATCH_NAMESPACE=my-namespace
-# watcher.collectHistory
-KOMOKW_COLLECT_HISTORY=true
-
-# watcher.redact
-KOMOKW_REDACT="password PG.*"
-KOMOKW_REDACT_LOGS="password=(.+?)\b (?U)\"sessionId\": (\".+\"{1})"
-```
-
+[README.md](README.md)
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 ### Using a Proxy
@@ -246,3 +229,4 @@ Komodor supports the standard proxy environment variables (`HTTP_PROXY, HTTPS_PR
 
 - In-cluster proxy (which can communicate with local K8s IPs) - You can use either one of the solutions.
 - External proxy (which _cannot_ communicate with the local K8s IPs) - You need to use the `KOMOKW_` prefix to the proxy environment variables to have only the traffic to Komodor pass through the proxy. If you're using the Helm chart - this can be disabled by setting `--set proxy.komodorOnly=false`.
+

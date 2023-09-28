@@ -1,170 +1,318 @@
+# @ignored
 communications:
   apiServerUrl: https://kubernetes.default.svc.cluster.local
   serverHost: &serverHost https://app.komodor.com
   wsHost: *serverHost
   tasksServerHost: *serverHost
 
-apiKey: # [MANDATORY] To be obtained from komodor app during onboarding <GUID> eg 123e4567-e89b-12d3-a456-426614174000
-createNamespace: true # Create the installation namespace if it does not exist <boolean> 
-tags: "" # Cluster tags allowing to create a tag based policy <string> eg. "production, us-east-1"
-clusterName: "" # [MANDATORY] Must be unique per account, will be shown as a the cluster name in komdor <string>
+# apiKey -- (guid) **(*required*)** To be obtained from komodor app during onboarding
+apiKey:
+# createNamespace -- Creates the namespace
+createNamespace: true
+# tags -- (dict) Tags the agent in order to identify it based on `key:value` properties separated by semicolon (`;`)
+# example: `--set tags="env:staging;team:product-a"` --- Can also be set in the values under `tags` as a dictionary of key:value strings
+tags: ""
+# clusterName -- **(*required*)** Name to be displayed in the Komodor web application
+clusterName:
+
+# serviceAccount -- Configure service account for the agent
+# @default -- See sub-values
 serviceAccount:
-  create: true # create a service account for komodor workloads <boolean> 
-  name: # Only specify if create: false, the name of the current service account <string>
-  annotations: {} # Add annotations to the service account <map of strings> eg. {"key": "value"}
+  # serviceAccount.create -- Creates a service account for the agent
+  create: true
+  # serviceAccount.name -- (string) Name of the service account, Required if `serviceAccount.create` is false
+  name:
+    # serviceAccount.annotations -- Add annotations to the service account
+  annotations: {}
+
 proxy:
-  enabled: false # <boolean>
-  komodorOnly: false  # Only <boolean>
-  http: # Only required if proxy.enabled is true <string> eg. http://proxy.com:8080
-  https: # Only required if proxy.enabled is true HTTPS take precedence over HTTP for https requests <string> eg. https://proxy.com:8080
-  no_proxy: # Specify specific domains to ignore proxy for <string> eg. komodor.com,google.com
-customCa: 
-  enabled: false # Enable a custom CA to imported from secret to agent's workloads <boolean>
-  secretName: # Name of the secret containing the CA <string>
-imageRepo: public.ecr.aws/komodor-public # Override the komodor agent image repository <string> eg. public.ecr.aws/komodor-public
-pullPolicy: IfNotPresent # default pull policies for the container images <ifNotPresent\Always\Never>
+  # proxy.enabled -- Enable proxy for the agent
+  enabled: false
+  # proxy.komodorOnly -- Configure proxy to be applied only on communication to Komodor servers (comms. to K8S API remains without proxy)
+  komodorOnly: true
+  # proxy.http -- (string) Configure Proxy setting (HTTP_PROXY) `eg. http://proxy.com:8080`
+  http:
+  # proxy.https -- (string) Configure Proxy setting (HTTPS_PROXY) `eg. https://proxy.com:8080`
+  https:
+  # proxy.no_proxy -- (string) Specify specific domains to ignore proxy for. eg. `komodor.com,google.com`
+  no_proxy:
+
+# customCa -- Configure custom CA for the agent
+# @default -- See sub-values
+customCa:
+  # customCa.enabled -- (bool) Enable custom CA certificate for the agent
+  enabled: false
+  # customCa.secretName -- (string) Name of the secret containing the CA
+  secretName:
+
+# imageRepo -- (string) Override the komodor agent image repository.
+imageRepo: public.ecr.aws/komodor-public
+# pullPolicy -- (string) Image pull policy for the komodor agent image.
+pullPolicy: IfNotPresent # <ifNotPresent\Always\Never>
+# imagePullSecret -- (string) Set the image pull secret for the komodor agent
 imagePullSecret: ""
 
+# capabilities -- Configure the agent capabilities
+# @default -- See sub-values
 capabilities:
-  metrics: true # Fetch workload metrics and send then to komodor backend <boolean>
-  networkMapper: true # Enable network mapping capabilities by the komodor agent <boolean>
-  actions: true # Allow users to perform actions on the cluster, granular access control is defined in the application<boolean>
-  helm: true # Enable helm capabilities by the komodor agent <boolean>
-  events:
-    watchNamespace: all # Only allow agents to watch a specific namesapce <all\string> eg. all, default
-    namespacesDenylist: [] # Do not watch events from these namespaces  <array of strings> eg. ["kube-system", "kube-public"]
-    redact: [] # Redact workload names from the komodor events <array of strings> eg. ["password", "token"]
-  logs:
-    enabled: true # Fetch pod logs from komodor backend <boolean>
-    logsNamespacesDenylist: [] # Do not fetch logs from these namespaces <array of strings> eg. ["kube-system", "kube-public"]
-    logsNamespacesAllowlist: [] # Only fetch logs from these namespaces <array of strings> eg. ["kube-system", "kube-public"]
-    nameDenylist: []  # Do not fetch logs from these workloads <array of strings> eg. ["supersecret-workload", "password-manager"]
-    redact: [] # Redact logs from the komodor logs <array of strings> eg. ["password", "token"]
-  debug:
-    collectApiServerMetrics: false # Collect metrics from the api server <boolean>
+  # capabilities.metrics -- (bool) Fetch workload metrics and send them to komodor backend
+  metrics: true
+  # capabilities.networkMapper -- (bool) Enable network mapping capabilities by the komodor agent
+  networkMapper: true
+  # capabilities.actions -- (bool) Allow users to perform actions on the cluster, granular access control is defined in the application<boolean>
+  actions: true
+  # capabilities.helm -- Enable helm capabilities by the komodor agent
+  helm: true
 
+  # capabilities.events -- Configure the agent events capabilities
+  events:
+    # capabilities.events.watchNamespace -- (string) Watch a specific namespace, or all namespaces ("", "all")
+    # @default -- all
+    watchNamespace:
+    # capabilities.events.namespacesDenylist -- (array of strings) Do not watch events from these namespaces. eg. `["kube-system", "kube-public"]`
+    namespacesDenylist: []
+    # capabilities.events.redact -- (list) Redact workload names from the komodor events. eg. `["password", "token"]`
+    redact: []
+
+  # capabilities.logs -- Configure the agent logs capabilities
+  # @default -- See sub-values
+  logs:
+    # capabilities.logs.enabled -- (bool) Fetch pod logs from komodor backend
+    enabled: true
+    # capabilities.logs.logsNamespacesDenylist -- (list) Do not fetch logs from these namespaces. eg. `["kube-system", "kube-public"]`
+    logsNamespacesDenylist: []
+    # capabilities.logs.logsNamespacesAllowlist -- (list) Only fetch logs from these namespaces. eg. `["kube-system", "kube-public"]`
+    logsNamespacesAllowlist: []
+    # capabilities.logs.nameDenylist -- (list) Do not fetch logs from these workloads. eg. `["supersecret-workload", "password-manager"]`
+    nameDenylist: []
+    # capabilities.logs.redact -- (list) Redact logs from the komodor logs. eg. `["password", "token"]`
+    redact: []
+
+  # capabilities.debug -- Configure the agent debug capabilities
+  debug:
+    # capabilities.debug.collectApiServerMetrics -- Collect metrics from the api server
+    collectApiServerMetrics: false
+
+# components -- Configure the agent components
+# @default -- See sub-values
 components:
+  # components.komodorAgent -- Configure the komodor agent components
+  # @default -- See sub-values
   komodorAgent:
+    # components.komodorAgent.affinity -- Set node affinity for the komodor agent deployment
     affinity: {}
-    annotations: {}  # Add annotations to the komodor agent deployment <map of strings> eg. {"key": "value"}
-    nodeSelector: {}  # Add node selectors to the komodor agent deployment <map of strings> eg. {"key": "value"}
-    tolerations: [] # Add tolerations to the komodor agent deployment <map of strings> eg. {"key": "value"}
-    podAnnotations:  # Add annotations to the komodor agent watcher pod <map of strings> eg. {"key": "value"}     
+    # components.komodorAgent.annotations -- Set annotations for the komodor agent deployment
+    annotations: {}
+    # components.komodorAgent.nodeSelector -- Set node selectors for the komodor agent deployment
+    nodeSelector: {}
+    # components.komodorAgent.tolerations -- Set tolerations for the komodor agent deployment
+    tolerations: []
+    # components.komodorAgent.podAnnotations -- Set pod annotations for the komodor agent deployment
+    podAnnotations:
+
     watcher:
+      # components.komodorAgent.watcher.image -- Override the komodor agent watcher image name or tag.
+      # @default -- `{ "name": "k8s-watcher", "tag": .Chart.AppVersion }`
       image:
-        name: k8s-watcher # <string> eg. k8s-watcher
-        tag:  # defaults to Chart.AppVersion
-      resources: # Add custom resources to the komodor agent watcher container <map of strings> eg. {"requests": {"memory": "256Mi", "cpu": "0.5"}, "limits": {"memory": "512Mi", "cpu": "1"}}
+        name: k8s-watcher
+        tag:
+      # components.komodorAgent.watcher.resources -- Set custom resources to the komodor agent watcher container
+      resources:
         limits:
           cpu: 2
           memory: 8Gi
         requests:
           cpu: 0.25
-          memory: 256Mi 
+          memory: 256Mi
+      # components.komodorAgent.watcher.ports -- Override the komodor agent watcher ports configuration
       ports:
-        healthCheck: 8090 # Override the health check port of the komodor agent watcher <int> eg. 8080
+        # components.komodorAgent.watcher.ports.healthCheck -- Override the health check port of the komodor agent watcher
+        healthCheck: 8090
+
     supervisor:
+      # components.komodorAgent.supervisor.image -- Override the komodor agent supervisor image name or tag.
+      # @default -- `{ "name": "supervisor", "tag": .Chart.AppVersion }`
       image:
-        name: supervisor # <string> eg. supervisor
-        tag: # Defaults to Chart.app.version
+        # @ignored
+        name: supervisor
+        # @ignored
+        tag:
+      # components.komodorAgent.supervisor.resources -- Set custom resources to the komodor agent supervisor container
       resources:
         requests:
           cpu: 0.1
-          memory: 256Mi  # Add custom resources to the komodor agent watcher container <map of strings> eg. {"requests": {"memory": "256Mi", "cpu": "0.5"}, "limits": {"memory": "512Mi", "cpu": "1"}}
+          memory: 256Mi
+      # components.komodorAgent.supervisor.ports -- Override the komodor agent supervisor ports configuration
       ports:
-        healthCheck: 8089 # Override the health check port of the komodor agent watcher <int> eg. 8080
+        # components.komodorAgent.supervisor.ports.healthCheck -- Override the health check port of the komodor agent supervisor
+        healthCheck: 8089
+
     networkMapper:
+      # components.komodorAgent.networkMapper.image -- Override the komodor agent network mapper image name or tag.
       image:
-        name: network-mapper # <string> eg. k8s-watcher
-        tag: v0.1.32 # <string> eg. 1.0.0
-      resources: {} # Add custom resources to the network-mapper container <map of strings> eg. {"requests": {"memory": "256Mi", "cpu": "0.5"}, "limits": {"memory": "512Mi", "cpu": "1"}}
+        name: network-mapper
+        tag: v0.1.32
+      # components.komodorAgent.networkMapper.resources -- Set custom resources to the komodor agent network mapper container
+      resources: {}
+
     metrics:
-      # metrics container is deployed both as a deployment and a daemonset, only set once here
+      # components.komodorAgent.metrics.image -- Override the komodor agent metrics image name or tag.
       image:
         name: telegraf
         tag: 1.27
-      resources: 
+      # components.komodorAgent.metrics.resources -- Set custom resources to the komodor agent metrics container
+      resources:
         limits:
           cpu: 100m
           memory: 128Mi
         requests:
           cpu: 100m
-          memory: 128Mi # Add custom resources to the metrics container <map of strings> eg. {"requests": {"memory": "256Mi", "cpu": "0.5"}, "limits": {"memory": "512Mi", "cpu": "1"}}
+          memory: 128Mi
 
   komodorDaemon:
-      annotations: {}  # Add annotations to the komodor agent deployment <map of strings> eg. {"key": "value"}
-      tolerations: [] # Add tolerations to the komodor agent deployment <map of strings> eg. {"key": "value"}
-      podAnnotations: {} # Add annotations to the komodor agent watcher pod <map of strings> eg. {"key": "value"}
-      metrics:
-        resources: {} # Add custom resources to the komodor agent watcher container <map of strings> eg. {"requests": {"memory": "256Mi", "cpu": "0.5"}, "limits": {"memory": "512Mi", "cpu": "1"}}
-      metricsInit:
-        image:
-          name: init-daemon-agent # <string> 
-          tag: # <string> eg. 1.0.0
-        resources: 
-          limits: # Add custom resources to the komodor agent watcher container <map of strings> eg. {"requests": {"memory": "256Mi", "cpu": "0.5"}, "limits": {"memory": "512Mi", "cpu": "1"}}
-            cpu: 100m
-            memory: 128Mi
-          requests:
-            cpu: 100m
-            memory: 128Mi 
-      networkSniffer:
-        image:
-          name: network-mapper-sniffer # <string> 
-          tag: v0.1.32 # <string> eg. 1.0.0
-        resources: {} # Add custom resources to the komodor agent watcher container <map of strings> eg. {"requests": {"memory": "256Mi", "cpu": "0.5"}, "limits": {"memory": "512Mi", "cpu": "1"}}
+    # components.komodorDaemon.annotations -- Adds custom annotations - Example: `--set podAnnotations."app\.komodor\.com/app"="komodor-agent"`
+    annotations: {}
+    # components.komodorDaemon.tolerations -- Add tolerations to the komodor agent deployment
+    tolerations: []
+    # components.komodorDaemon.podAnnotations --  # Add annotations to the komodor agent watcher pod
+    podAnnotations: {}
+    # components.komodorDaemon.metrics -- Configure the komodor daemon metrics components
+    metrics:
+      # components.komodorDaemon.metrics.resources -- Add custom resources to the komodor agent watcher container
+      resources: {}
+
+    # components.komodorDaemon.metricsInit -- Configure the komodor daemon metrics init container
+    # @default -- See sub-values
+    metricsInit:
+      # components.komodorDaemon.metricsInit.image -- Override the komodor agent metrics init image name or tag.
+      # @default -- `{ "name": "init-daemon-agent", "tag": .Chart.AppVersion }`
+      image:
+        name: init-daemon-agent
+        tag:
+      # components.komodorDaemon.metricsInit.resources -- Set custom resources to the komodor agent metrics init container
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+    # components.komodorDaemon.networkSniffer -- Configure the komodor daemon network sniffer components
+    # @default -- See sub-values
+    networkSniffer:
+      # components.komodorDaemon.networkSniffer.image -- Override the komodor agent network sniffer image name or tag.
+      image:
+        name: network-mapper-sniffer
+        tag: v0.1.32
+      # components.komodorDaemon.networkSniffer.resources -- Set custom resources to the komodor agent network sniffer container
+      resources: {}
 
 allowedResources:
-    event: true
-    deployment: true
-    replicationController: true
-    replicaSet: true
-    daemonSet: true
-    statefulSet: true
-    service: true
-    pod: true
-    job: true
-    cronjob: true
-    node: true
-    clusterRole: true
-    serviceAccount: true
-    persistentVolume: true
-    persistentVolumeClaim: true
-    namespace: true
-    secret: false
-    configMap: true
-    ingress: true
-    endpoints: true
-    storageClass: true
-    rollout: true
-    metrics: true
-    limitRange: true
-    podTemplate: true
-    resourceQuota: true
-    admissionRegistrationResources: true
-    controllerRevision: true
-    authorizationResources: true
-    horizontalPodAutoscaler: true
-    certificateSigningRequest: true
-    lease: true
-    endpointSlice: true
-    flowControlResources: true
-    ingressClass: true
-    networkPolicy: true
-    runtimeClass: true
-    policyResources: true
-    clusterRoleBinding: true
-    roleBinding: true
-    role: true
-    priorityClass: true
-    csiDriver: true
-    csiNode: true
-    csiStorageCapacity: true
-    volumeAttachment: true
-    argoWorkflows:
-      workflows: true
-      workflowTemplates: true
-      clusterWorkflowTemplates: true
-      cronWorkflows: true
-    customReadAPIGroups: []
-    allowReadAll: true
+  # allowedResources.event -- Enables watching `event`
+  event: true
+  # allowedResources.deployment -- Enables watching `deployments`
+  deployment: true
+  # allowedResources.replicationController -- Enables watching `replicationControllers`
+  replicationController: true
+  # allowedResources.replicaSet -- Enables watching `replicaSets`
+  replicaSet: true
+  # allowedResources.daemonSet -- Enables watching `daemonSets`
+  daemonSet: true
+  # allowedResources.statefulSet -- Enables watching `statefulSets`
+  statefulSet: true
+  # allowedResources.service -- Enables watching `services`
+  service: true
+  # allowedResources.pod -- Enables watching `pods`
+  pod: true
+  # allowedResources.job -- Enables watching `jobs`
+  job: true
+  # allowedResources.cronjob -- Enables watching `cronjobs`
+  cronjob: true
+  # allowedResources.node -- Enables watching `nodes`
+  node: true
+  # allowedResources.clusterRole -- Enables watching `clusterRoles`
+  clusterRole: true
+  # allowedResources.serviceAccount -- Enables watching `serviceAccounts`
+  serviceAccount: true
+  # allowedResources.persistentVolume -- Enables watching `persistentVolumes`
+  persistentVolume: true
+  # allowedResources.persistentVolumeClaim -- Enables watching `persistentVolumeClaims`
+  persistentVolumeClaim: true
+  # allowedResources.namespace -- Enables watching `namespaces`
+  namespace: true
+  # allowedResources.secret -- Enables watching `secrets`
+  secret: false
+  # allowedResources.configMap -- Enables watching `configmaps`
+  configMap: true
+  # allowedResources.ingress -- Enables watching `ingresses`
+  ingress: true
+  # allowedResources.endpoints -- Enables watching `endpoints`
+  endpoints: true
+  # allowedResources.storageClass -- Enables watching `storageClasses`
+  storageClass: true
+  # allowedResources.rollout -- Enables watching `rollouts`
+  rollout: true
+  # allowedResources.metrics -- Enables watching `metrics`
+  metrics: true
+  # allowedResources.limitRange -- Enables watching `limitRange`
+  limitRange: true
+  # allowedResources.podTemplate -- Enables watching `podTemplate`
+  podTemplate: true
+  # allowedResources.resourceQuota -- Enables watching `resourceQuota`
+  resourceQuota: true
+  # allowedResources.admissionRegistrationResources -- Enables watching `admissionRegistrationResources`
+  admissionRegistrationResources: true
+  # allowedResources.controllerRevision -- Enables watching `controllerRevision`
+  controllerRevision: true
+  # allowedResources.authorizationResources -- Enables watching `authorizationResources`
+  authorizationResources: true
+  # allowedResources.horizontalPodAutoscaler -- Enables watching `horizontalPodAutoscaler`
+  horizontalPodAutoscaler: true
+  # allowedResources.certificateSigningRequest -- Enables watching `certificateSigningRequest`
+  certificateSigningRequest: true
+  # allowedResources.lease -- Enables watching `lease`
+  lease: true
+  # allowedResources.endpointSlice -- Enables watching `endpointslice`
+  endpointSlice: true
+  # allowedResources.flowControlResources -- Enables watching `flowControlResources`
+  flowControlResources: true
+  # allowedResources.ingressClass -- Enables watching `ingressClass`
+  ingressClass: true
+
+  # allowedResources.networkPolicy -- Enables watching `networkPolicy`
+  networkPolicy: true
+  # allowedResources.runtimeClass -- Enables watching `runtimeClass`
+  runtimeClass: true
+  # allowedResources.policyResources -- Enables watching `policyResources`
+  policyResources: true
+  # allowedResources.clusterRoleBinding -- Enables watching `clusterRoleBinding`
+  clusterRoleBinding: true
+  # allowedResources.roleBinding -- Enables watching `roleBinding`
+  roleBinding: true
+  # allowedResources.role -- Enables watching `role`
+  role: true
+  # allowedResources.priorityClass -- Enables watching `priorityClass`
+  priorityClass: true
+  # allowedResources.csiDriver -- Enables watching `csiDriver`
+  csiDriver: true
+  # allowedResources.csiNode -- Enables watching `csiNode`
+  csiNode: true
+  # allowedResources.csiStorageCapacity -- Enables watching `csiStorageCapacity`
+  csiStorageCapacity: true
+  # allowedResources.volumeAttachment -- Enables watching `volumeAttachment`
+  volumeAttachment: true
+  # allowedResources.argoWorkflows -- Enables watching argo resources
+  # @default -- See sub-values
+  argoWorkflows:
+    # allowedResources.argoWorkflows.workflows -- Enables watching Argo `workflows`
+    workflows: true
+    # allowedResources.argoWorkflows.workflowTemplates -- Enables watching Argo `workflowTemplates`
+    workflowTemplates: true
+    # allowedResources.argoWorkflows.clusterWorkflowTemplates -- Enables watching Argo `clusterWorkflowTemplates`
+    clusterWorkflowTemplates: true
+    # allowedResources.argoWorkflows.cronWorkflows -- Enables watching Argo `cronWorkflows`
+    cronWorkflows: true
+  # allowedResources.customReadAPIGroups -- A list of custom API groups to allow read access to - each array element should be a string which represents the group name
+  customReadAPIGroups: []
+  # allowedResources.allowReadAll -- Allow reading all the resources in the cluster
+  allowReadAll: true
