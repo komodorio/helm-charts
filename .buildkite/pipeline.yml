@@ -6,8 +6,9 @@ steps:
     if: build.message !~ /feat\(OSS.+\):/i
 
   - commands:
-      - cd charts/k8s-watcher && make install-helm-docs
-      - cd charts/k8s-watcher && make validate-readme
+      - cd charts/k8s-watcher
+      - make install-helm-docs
+      - make validate-readme
     label: "Validate Readme is up to date"
     if: build.message !~ /feat\(OSS.+\):/i
 
