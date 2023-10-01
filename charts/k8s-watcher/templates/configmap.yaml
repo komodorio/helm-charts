@@ -29,8 +29,9 @@ data:
       podExec: {{ .Values.capabilities.actions }}
       portforward: {{ .Values.capabilities.actions }}
     telemetry:
-      enable: true
-      collectApiServerMetrics: {{ .Values.capabilities.debug.collectApiServerMetrics }}
+      enable: {{ .Values.capabilities.telemetry.enabled }}
+      collectApiServerMetrics: {{ .Values.capabilities.telemetry.collectApiServerMetrics }}
+      serverHost: {{ .Values.communications.telemetryServerHost }}
 {{/*  #  memoryThresholdSafetyCheck:*/}}
 {{/*  #    enable: true # default*/}}
     networkMapper:
@@ -41,9 +42,6 @@ data:
         period: "0"
     resources:
       {{ toYaml .Values.allowedResources | trim | nindent 6 }}
-
-
-
 
   installed-values.yaml: |
     {{ toYaml .Values | nindent 4 }}   

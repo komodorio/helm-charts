@@ -122,8 +122,9 @@ To install the chart directly with kubectl, use the manifests located in `./kube
 | capabilities.networkMapper | bool | `true` | Enable network mapping capabilities by the komodor agent |
 | capabilities.actions | bool | `true` | Allow users to perform actions on the cluster, granular access control is defined in the application<boolean> |
 | capabilities.helm | bool | `true` | Enable helm capabilities by the komodor agent |
-| capabilities.events | object | `{"namespacesDenylist":[],"redact":[],"watchNamespace":null}` | Configure the agent events capabilities |
+| capabilities.events | object | `{"namespacesBlacklist":[],"namespacesDenylist":[],"redact":[],"watchNamespace":null}` | Configure the agent events capabilities |
 | capabilities.events.watchNamespace | string | all | Watch a specific namespace, or all namespaces ("", "all") |
+| capabilities.events.namespacesBlacklist | array of strings | `[]` | Do not watch events from these namespaces. eg. `["kube-system", "kube-public"]` |
 | capabilities.events.namespacesDenylist | array of strings | `[]` | Do not watch events from these namespaces. eg. `["kube-system", "kube-public"]` |
 | capabilities.events.redact | list | `[]` | Redact workload names from the komodor events. eg. `["password", "token"]` |
 | capabilities.logs | object | See sub-values | Configure the agent logs capabilities |
@@ -132,8 +133,9 @@ To install the chart directly with kubectl, use the manifests located in `./kube
 | capabilities.logs.logsNamespacesAllowlist | list | `[]` | Only fetch logs from these namespaces. eg. `["kube-system", "kube-public"]` |
 | capabilities.logs.nameDenylist | list | `[]` | Do not fetch logs from these workloads. eg. `["supersecret-workload", "password-manager"]` |
 | capabilities.logs.redact | list | `[]` | Redact logs from the komodor logs. eg. `["password", "token"]` |
-| capabilities.debug | object | `{"collectApiServerMetrics":false}` | Configure the agent debug capabilities |
-| capabilities.debug.collectApiServerMetrics | bool | `false` | Collect metrics from the api server |
+| capabilities.telemetry | object | See sub-values | Configure the agent telemetry capabilities |
+| capabilities.telemetry.enabled | bool | `true` | Enable telemetry capabilities by the komodor agent |
+| capabilities.telemetry.collectApiServerMetrics | bool | `false` | Collect metrics from the api server (Should only be used for debugging purposes) |
 | components | object | See sub-values | Configure the agent components |
 | components.komodorAgent | object | See sub-values | Configure the komodor agent components |
 | components.komodorAgent.affinity | object | `{}` | Set node affinity for the komodor agent deployment |

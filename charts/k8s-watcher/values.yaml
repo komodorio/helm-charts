@@ -4,6 +4,7 @@ communications:
   serverHost: &serverHost https://app.komodor.com
   wsHost: *serverHost
   tasksServerHost: *serverHost
+  telemetryServerHost: https://telemetry.komodor.com
 
 # apiKey -- (guid) **(*required*)** To be obtained from komodor app during onboarding
 apiKey:
@@ -88,10 +89,14 @@ capabilities:
     # capabilities.logs.redact -- (list) Redact logs from the komodor logs. eg. `["password", "token"]`
     redact: []
 
-  # capabilities.debug -- Configure the agent debug capabilities
-  debug:
-    # capabilities.debug.collectApiServerMetrics -- Collect metrics from the api server
+  # capabilities.telemetry -- Configure the agent telemetry capabilities
+  # @default -- See sub-values
+  telemetry:
+    # capabilities.telemetry.enabled -- (bool) Enable telemetry capabilities by the komodor agent
+    enabled: true
+    # capabilities.telemetry.collectApiServerMetrics -- Collect metrics from the api server (Should only be used for debugging purposes)
     collectApiServerMetrics: false
+
 
 # components -- Configure the agent components
 # @default -- See sub-values
