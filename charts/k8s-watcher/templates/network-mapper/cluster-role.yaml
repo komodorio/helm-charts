@@ -22,7 +22,6 @@ rules:
       - 'statefulsets'
     verbs:
       - 'get'
-{{ if or (((.Values.network_mapper).global).allowGetAllResources) ((.Values.network_mapper).allowGetAllResources) }}
 
   - apiGroups:
       - '*'
@@ -32,5 +31,4 @@ rules:
       - get
       - list
       - watch
-{{ end }}
 {{- end }}

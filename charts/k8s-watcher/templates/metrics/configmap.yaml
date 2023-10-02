@@ -29,7 +29,7 @@ data:
 
     [[inputs.kube_inventory]]
       ## URL for the Kubernetes API
-      url = "{{ .Values.communications.apiServerUrl }}"
+      url = {{ .Values.communications.apiServerUrl | quote }}
       namespace = ""
       bearer_token = "/run/secrets/kubernetes.io/serviceaccount/token"
       insecure_skip_verify = true

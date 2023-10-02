@@ -25,7 +25,8 @@
 - name: metrics
   image: {{ .Values.imageRepo }}/{{ .Values.components.komodorAgent.metrics.image.name}}:{{ .Values.components.komodorAgent.metrics.image.tag }}
   imagePullPolicy: {{ .Values.pullPolicy }}
-  resources: {{ toYaml .Values.components.komodorAgent.metrics.resources | trim | nindent 4 }}
+  resources:
+    {{ toYaml .Values.components.komodorAgent.metrics.resources | trim | nindent 4 }}
   volumeMounts:
   - name: {{ include "metrics.daemon.config.name" . }}
     mountPath: /etc/telegraf/telegraf.conf
@@ -53,15 +54,9 @@
 - name: init-daemon
   image: {{ .Values.imageRepo }}/{{ .Values.components.komodorDaemon.metricsInit.image.name}}:{{ .Values.components.komodorDaemon.metricsInit.image.tag | default .Chart.AppVersion }}
   imagePullPolicy: {{ .Values.pullPolicy }}
-  resources: {{ toYaml .Values.components.komodorDaemon.metricsInit.resources | trim | nindent 4 }}
-  {{- if .Values.customCa.enabled }}
-  command:
-    - /bin/sh
-    - -c
-    - cp /certs/* /etc/ssl/certs/ &&
-      update-ca-certificates --fresh &&
-      daemon
-  {{- end }}
+  resources:
+    {{ toYaml .Values.components.komodorDaemon.metricsInit.resources | trim | nindent 4 }}
+  {{ include "custom-ca.trusted-init-container.command" . | indent 2 }}
   volumeMounts:
   - name: configuration
     mountPath: /etc/komodor
@@ -76,7 +71,7 @@
         name: {{ .Values.apiKeySecret | required "Existing secret name required!" }}
         key: apiKey
         {{- else }}
-        name: {{ include "komodorAgent.name" . }}-secret
+        name: {{ include "komodorAgent.secret.name" . }}
         key: apiKey
         {{- end }}
 {{- end }}

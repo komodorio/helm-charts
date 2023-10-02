@@ -12,4 +12,5 @@
 - name: {{ .Values.proxy.komodorOnly | ternary "KOMOKW_NO_PROXY" "NO_PROXY" }}
   value: {{ .Values.proxy.no_proxy }}
 {{- end }}
-{{- end }}{{- end }}
+{{- end }}
+{{- end }}

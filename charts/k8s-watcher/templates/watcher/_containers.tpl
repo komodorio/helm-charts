@@ -31,7 +31,7 @@
         name: {{ .Values.apiKeySecret | required "Existing secret name required!" }}
         key: apiKey
         {{- else }}
-        name: {{ include "komodorAgent.name" . }}-secret
+        name: {{ include "komodorAgent.secret.name" . }}
         key: apiKey
         {{- end }}
   - name: KOMOKW_CLUSTER_NAME
@@ -91,7 +91,7 @@
           name: {{ .Values.apiKeySecret }}
           key: apiKey
           {{- else }}
-          name: {{ include "komodorAgent.name" . }}-secret
+          name: {{ include "komodorAgent.secret.name" . }}
           key: apiKey
           {{- end }}
     - name: KOMOKW_SERVERS_HEALTHCHECK_PORT

@@ -37,3 +37,14 @@
   readOnly: false
 {{- end }}
 {{- end }}
+
+{{- define "custom-ca.trusted-init-container.command" -}}
+{{- if (.Values.customCa).enabled  }}
+ command:
+  - /bin/sh
+  - -c
+  - cp /certs/* /etc/ssl/certs/ &&
+    update-ca-certificates --fresh &&
+    daemon
+{{- end }}
+{{- end -}}
