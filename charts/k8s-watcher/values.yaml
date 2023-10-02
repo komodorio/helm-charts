@@ -8,6 +8,8 @@ communications:
 
 # apiKey -- (guid) **(*required*)** To be obtained from komodor app during onboarding
 apiKey:
+# apiKeySecret -- (string) Secret name containing Komodor agent api key
+apiKeySecret:
 # createNamespace -- Creates the namespace
 createNamespace: true
 # tags -- (dict) Tags the agent in order to identify it based on `key:value` properties separated by semicolon (`;`)
@@ -66,6 +68,7 @@ capabilities:
   helm: true
 
   # capabilities.events -- Configure the agent events capabilities
+  # @default -- See sub-values
   events:
     # capabilities.events.watchNamespace -- (string) Watch a specific namespace, or all namespaces ("", "all")
     # @default -- all
@@ -74,6 +77,8 @@ capabilities:
     namespacesDenylist: []
     # capabilities.events.redact -- (list) Redact workload names from the komodor events. eg. `["password", "token"]`
     redact: []
+    # capabilities.events.enableRWCache -- (bool) Mounts a ReadWrite cache volume for the kubernetes api cache
+    enableRWCache: true
 
   # capabilities.logs -- Configure the agent logs capabilities
   # @default -- See sub-values

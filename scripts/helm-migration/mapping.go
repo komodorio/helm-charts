@@ -1,13 +1,16 @@
 package main
 
 var mapping = map[string]string{
-	"supervisor.enabled": "capabilities.supervisor",
+	"USER-SUPPLIED VALUES": "",
+	"existingSecret":       "apiKeySecret",
+	"nodeSelector":         "components.komodorAgent.nodeSelector",
+	"supervisor.enabled":   "capabilities.supervisor",
+	"enableRWCache":        "capabilities.events.enableRWCache",
 
 	"watcher.actions.basic":       "capabilities.actions.basic",
 	"watcher.actions.advanced":    "capabilities.actions.advanced",
 	"watcher.actions.podExec":     "",
 	"watcher.actions.portforward": "",
-
 	"watcher.allowReadingPodLogs": "capabilities.logs.enabled",
 	"watcher.clusterName":         "clusterName",
 	"watcher.collectHistory":      "",
@@ -101,4 +104,8 @@ var mapping = map[string]string{
 	"watcher.kialiApiKey":                        "",
 	"watcher.nameBlacklist":                      "",
 	"watcher.namespacesBlacklist":                "",
+}
+
+var deprecatedKeys = map[string]string{
+	"watcher.namespacesBlacklist": "capabilities.events.namespacesDenylist",
 }

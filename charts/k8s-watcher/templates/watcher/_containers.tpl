@@ -27,8 +27,8 @@
   - name: KOMOKW_API_KEY
     valueFrom:
       secretKeyRef:
-        {{- if .Values.existingSecret }}
-        name: {{ .Values.existingSecret | required "Existing secret name required!" }}
+        {{- if .Values.apiKeySecret }}
+        name: {{ .Values.apiKeySecret | required "Existing secret name required!" }}
         key: apiKey
         {{- else }}
         name: {{ include "komodorAgent.name" . }}-secret
@@ -87,8 +87,8 @@
     - name: KOMOKW_API_KEY
       valueFrom:
         secretKeyRef:
-          {{- if .Values.existingSecret }}
-          name: {{ .Values.existingSecret }}
+          {{- if .Values.apiKeySecret }}
+          name: {{ .Values.apiKeySecret }}
           key: apiKey
           {{- else }}
           name: {{ include "komodorAgent.name" . }}-secret

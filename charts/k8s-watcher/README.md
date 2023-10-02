@@ -62,7 +62,7 @@ The command deploys the Komodor K8S-Watcher on the Kubernetes cluster in the def
 ## Api Key
 
 The Komodor kubernetes api key can be provided in the helm upgrade command, in the `values.yaml` file or can be taken from an existing kubernetes secret resource.
-When using an existing kubernetes secret resource, specify the secret name in `existingSecret` and store the api key under the name 'apiKey'.
+When using an existing kubernetes secret resource, specify the secret name in `apiKeySecret` and store the api key under the name 'apiKey'.
 
 ## Uninstalling the Chart
 
@@ -99,6 +99,7 @@ To install the chart directly with kubectl, use the manifests located in `./kube
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | apiKey | guid | `nil` | **(*required*)** To be obtained from komodor app during onboarding |
+| apiKeySecret | string | `nil` | Secret name containing Komodor agent api key |
 | createNamespace | bool | `true` | Creates the namespace |
 | tags | dict | `""` | Tags the agent in order to identify it based on `key:value` properties separated by semicolon (`;`) example: `--set tags="env:staging;team:product-a"` --- Can also be set in the values under `tags` as a dictionary of key:value strings |
 | clusterName | string | `nil` | **(*required*)** Name to be displayed in the Komodor web application |
@@ -122,11 +123,11 @@ To install the chart directly with kubectl, use the manifests located in `./kube
 | capabilities.networkMapper | bool | `true` | Enable network mapping capabilities by the komodor agent |
 | capabilities.actions | bool | `true` | Allow users to perform actions on the cluster, granular access control is defined in the application<boolean> |
 | capabilities.helm | bool | `true` | Enable helm capabilities by the komodor agent |
-| capabilities.events | object | `{"namespacesBlacklist":[],"namespacesDenylist":[],"redact":[],"watchNamespace":null}` | Configure the agent events capabilities |
+| capabilities.events | object | `{"enableRWCache":true,"namespacesDenylist":[],"redact":[],"watchNamespace":null}` | Configure the agent events capabilities |
 | capabilities.events.watchNamespace | string | all | Watch a specific namespace, or all namespaces ("", "all") |
-| capabilities.events.namespacesBlacklist | array of strings | `[]` | Do not watch events from these namespaces. eg. `["kube-system", "kube-public"]` |
 | capabilities.events.namespacesDenylist | array of strings | `[]` | Do not watch events from these namespaces. eg. `["kube-system", "kube-public"]` |
 | capabilities.events.redact | list | `[]` | Redact workload names from the komodor events. eg. `["password", "token"]` |
+| capabilities.events.enableRWCache | bool | `true` | Mounts a ReadWrite cache volume for the kubernetes api cache |
 | capabilities.logs | object | See sub-values | Configure the agent logs capabilities |
 | capabilities.logs.enabled | bool | `true` | Fetch pod logs from komodor backend |
 | capabilities.logs.logsNamespacesDenylist | list | `[]` | Do not fetch logs from these namespaces. eg. `["kube-system", "kube-public"]` |

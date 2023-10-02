@@ -41,7 +41,19 @@ func main() {
 		return
 	}
 
+	printDeprecationWarning(flatMap)
 	printUpdateCommand(releaseName, outputFile, namespace)
+}
+
+func printDeprecationWarning(flatMap map[string]interface{}) {
+	var foundDeprecated []string
+
+	for k := range flatMap {
+		if _, exists := deprecatedKeys[k]; exists {
+			foundDeprecated = append(foundDeprecated, fmt.Sprintf("%s --> %s\n", k, deprecatedKeys[k]))
+		}
+	}
+	printHashMessage(fmt.Sprintf("Found deprecated keys:\n%s", strings.Join(foundDeprecated, "")))
 }
 
 func printUpdateCommand(releaseName string, outputFile string, namespace string) {
