@@ -48,8 +48,9 @@ def kube_client():
     return client.CoreV1Api()
 
 
-def helm_agent_install(settings=f'--set apiKey={API_KEY} --set clusterName={CLUSTER_NAME} --create-namespace'):
-    output, exit_code = cmd(f"helm install {RELEASE_NAME} {CHART_PATH} {settings} --namespace={NAMESPACE} --wait")
+def helm_agent_install(settings=f'--set apiKey={API_KEY} --set clusterName={CLUSTER_NAME} --create-namespace',
+                       additional_settings=""):
+    output, exit_code = cmd(f"helm install {RELEASE_NAME} {CHART_PATH} {settings} {additional_settings} --namespace={NAMESPACE} --wait")
     return output, exit_code
 
 
