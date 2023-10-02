@@ -1,3 +1,3 @@
-{{- define "komodorAgent.secret.name"-}}
+{{- define "komodorAgent.secret.name" -}}
 {{ include "komodorAgent.name" . }}-secret
 {{- end -}}

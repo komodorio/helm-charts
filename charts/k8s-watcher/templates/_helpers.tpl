@@ -53,24 +53,3 @@ Selector labels
 app.kubernetes.io/name: {{ include "komodorAgent.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
-
-{{/*
-Common daemon labels
-*/}}
-{{- define "daemon.labels" -}}
-helm.sh/chart: {{ include "komodorAgent.chart" . }}
-{{ include "daemon.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
-app.kubernetes.io/managed-by: {{ .Release.Service }}
-{{- end }}
-
-{{/*
-Selector daemon labels
-*/}}
-{{- define "daemon.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "komodorAgent.name" . }}-daemon
-app.kubernetes.io/instance: {{ .Release.Name }}-daemon
-{{- end }}
-

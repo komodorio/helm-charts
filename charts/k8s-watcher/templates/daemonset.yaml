@@ -4,13 +4,13 @@ kind: DaemonSet
 metadata:
   name: {{ include "komodorAgent.fullname" . }}-daemon
   labels:
-    {{- include "daemon.labels" . | nindent 4 }}
+    {{- include "komodorAgent.labels" . | nindent 4 }}
   {{- if not (empty ((.Values.components).komodorDaemon).annotations) }}
   annotations: {{ toYaml ((.Values.components).komodorDaemon).annotations | nindent 4 }}
   {{- end }}
 spec:
   selector:
-    matchLabels: {{- include "daemon.selectorLabels" . | nindent 6 }}
+    matchLabels: {{- include "komodorAgent.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
@@ -18,7 +18,7 @@ spec:
         {{- if not (empty (((.Values.components).komodorDaemon).podAnnotations)) }}
         {{- toYaml .Values.components.komodorDaemon.podAnnotations | trim | nindent 8 }}
         {{- end }}
-      labels: {{- include "daemon.selectorLabels" . | nindent 8 }}
+      labels: {{- include "komodorAgent.selectorLabels" . | nindent 8 }}
     spec:
       {{- include "network_mapper.daemonset.network" .   | nindent 6 }}
 
