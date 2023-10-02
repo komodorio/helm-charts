@@ -2,7 +2,7 @@
 communications:
   apiServerUrl: https://kubernetes.default.svc.cluster.local
   serverHost: &serverHost https://app.komodor.com
-  wsHost: *serverHost
+  wsHost: wss://app.komodor.com
   tasksServerHost: *serverHost
   telemetryServerHost: https://telemetry.komodor.com
 
@@ -72,7 +72,7 @@ capabilities:
   events:
     # capabilities.events.watchNamespace -- (string) Watch a specific namespace, or all namespaces ("", "all")
     # @default -- all
-    watchNamespace:
+    watchNamespace: all
     # capabilities.events.namespacesDenylist -- (array of strings) Do not watch events from these namespaces. eg. `["kube-system", "kube-public"]`
     namespacesDenylist: []
     # capabilities.events.redact -- (list) Redact workload names from the komodor events. eg. `["password", "token"]`
