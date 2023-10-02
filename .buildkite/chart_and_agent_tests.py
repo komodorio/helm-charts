@@ -2,6 +2,9 @@ import subprocess
 import pytest
 import os
 import yaml
+import requests
+import base64
+import time
 from kubernetes import client, config
 
 
@@ -28,11 +31,13 @@ def cmd(commands, silent=False):
 
 
 API_KEY = os.environ.get("API_KEY", "92dc9cf8-dcf6-40c9-87e1-a0fd2835ef47")
-CLUSTER_NAME = os.environ.get("CLUSTER_NAME", "helm-chart-test-nba")
+API_KEY_B64 = base64.b64encode(API_KEY.encode()).decode()
+CLUSTER_NAME = os.environ.get("CLUSTER_NAME", "helm-chart-test-mk")
 RELEASE_NAME = os.environ.get("RELEASE_NAME", "helm-test")
 CHART_PATH = os.environ.get("CHART_PATH", "../charts/k8s-watcher")
 VALUES_FILE_PATH = os.environ.get("VALUES_FILE_PATH", "")
 NAMESPACE = os.environ.get("NAMESPACE", "komodor")
+BE_BASE_URL = os.environ.get("BE_BASE_URL", "https://app.komodor.com")
 
 
 @pytest.fixture(scope='module')
@@ -40,6 +45,7 @@ def setup_cluster():
     cluster_name = "test"
     cmd(f"kind create cluster --name {cluster_name} --wait 5m")
     config.load_kube_config()
+    cmd(f"kubectl apply -f ./test-data/network-mapper.yaml")
     yield
     cmd(f"kind delete cluster --name {cluster_name}")
 
@@ -49,6 +55,18 @@ def kube_client():
     return client.CoreV1Api()
 
 
+@pytest.fixture(scope="function", autouse=True)
+def cleanup_agent_from_cluster(request):
+
+    yield
+    # Skip teardown for tests marked with 'no_cleanup'
+    # To skip cleanup, add the following decorator to the test: @pytest.mark.no_agent_cleanup
+    if request.node.get_closest_marker('no_agent_cleanup'):
+        return
+
+    helm_agent_uninstall()
+
+
 def helm_agent_install(settings=f'--set apiKey={API_KEY} --set clusterName={CLUSTER_NAME} --create-namespace',
                        additional_settings=""):
     output, exit_code = cmd(
@@ -56,11 +74,15 @@ def helm_agent_install(settings=f'--set apiKey={API_KEY} --set clusterName={CLUS
     return output, exit_code
 
 
-
 def helm_agent_template(settings=f'--set apiKey={API_KEY} --set clusterName={CLUSTER_NAME} --create-namespace',
                         additional_settings=""):
     output, exit_code = cmd(
         f"helm template {RELEASE_NAME} {CHART_PATH} {settings} {additional_settings} --namespace={NAMESPACE}")
+    return output, exit_code
+
+
+def helm_agent_uninstall():
+    output, exit_code = cmd(f"helm uninstall {RELEASE_NAME} {CHART_PATH} --namespace={NAMESPACE} --wait")
     return output, exit_code
 
 
@@ -79,11 +101,6 @@ def get_value_from_helm_template(helm_output, resource_kind, resource_name, fiel
     raise ValueError(f"Resource of kind {resource_kind} and name {resource_name} not found in helm output.")
 
 
-
-
-
-
-
 def check_pods_running(kube_client, label_selector):
     pods = kube_client.list_pod_for_all_namespaces(label_selector=label_selector)
     if len(pods.items) == 0:
@@ -92,6 +109,35 @@ def check_pods_running(kube_client, label_selector):
         for container_status in pod.status.container_statuses:
             assert container_status.ready, f"Container {container_status.name} in Pod {pod.metadata.name} is not ready"
 
+
+def create_namespace(kube_client, namespace_name):
+    namespace_body = client.V1Namespace(
+        metadata=client.V1ObjectMeta(name=namespace_name)
+    )
+    kube_client.create_namespace(body=namespace_body)
+
+
+def create_secret(kube_client, namespace_name, secret_name, data):
+    secret_body = client.V1Secret(
+        metadata=client.V1ObjectMeta(name=secret_name, namespace=namespace_name),
+        data=data
+    )
+    kube_client.create_namespaced_secret(namespace=namespace_name, body=secret_body)
+
+
+def create_komodor_uid(kind, name, namespace=NAMESPACE, cluster_name=CLUSTER_NAME):
+    return f"{kind}|{cluster_name}|{namespace}|{name}"
+
+
+def query_resources_api(url):
+    payload={}
+    headers = {
+        'Accept': 'application/json',
+        'x-api-key': API_KEY
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+    return response
 
 # Starting tests here #
 
@@ -109,7 +155,7 @@ def test_dont_provide_required_values(setup_cluster, settings, missing_value):
     assert exit_code != 0, f"helm install should fail, output: {output}"
 
 
-def test_helm_installation():
+def test_helm_installation(setup_cluster):
     output, exit_code = helm_agent_install()
     assert exit_code == 0, "helm install failed, output: {}".format(output)
 
@@ -122,14 +168,40 @@ def test_all_pods_are_running_in_chart(setup_cluster, kube_client):
     check_pods_running(kube_client, 'app.kubernetes.io/name=k8s-watcher-daemon')
 
 
-def test_get_configmap_from_resources_api(setup_cluster, api_key, cluster_name, config_map_name):
-    # Placeholder assertion, implement actual logic
-    assert True
+def test_get_configmap_from_resources_api(setup_cluster):
+    output, exit_code = helm_agent_install()
+    kuid = create_komodor_uid("configmap", "k8s-watcher-config")
+    url = f"{BE_BASE_URL}/resources/api/v1/configurations/config-maps/events/search?komodorUids={kuid}&limit=1&fields=clusterName&order=DESC"
+
+    response = query_resources_api(url)
+
+    assert response.status_code == 200, f"Failed to get configmap from resources api, response: {response}"
+    assert len(response.json()['data']) > 0, f"Failed to get configmap from resources api, response: {response}"
+    assert response.json()['data'][0]['clusterName'] == CLUSTER_NAME, f"Wrong configmap returned from resources api, response: {response}"
 
 
-def test_get_network_mapper_from_resources_api():
-    # Placeholder assertion, implement actual logic
-    assert True
+def test_get_network_mapper_from_resources_api(setup_cluster):
+    namespace = "client-namespace"
+    deployment_name = "nc-client"
+
+    output, exit_code = helm_agent_install()
+    assert exit_code == 0, "Agent installation failed, output: {}".format(output)
+
+    kuid = create_komodor_uid("Deployment", deployment_name, namespace)
+    url = f"{BE_BASE_URL}/resources/api/v1/network-maps/graph?clusterNames={CLUSTER_NAME}&namespaces={namespace}&komodorUids={kuid}"
+
+    for i in range(120):  # ~2 minutes
+        response = query_resources_api(url)
+        if len(response.json()['nodes']) != 0:
+            break
+        time.sleep(1)
+    else:
+        assert False, f"Failed to get network map from resources api, response: {response.json()}"
+
+    assert response.status_code == 200, f"Failed to get configmap from resources api, response: {response}"
+    assert len(response.json()['nodes']) == 2, f"Expected two items in the 'nodes', response: {response}"
+    assert len(response.json()['edges']) == 1, f"Expected one item in the 'edges', response: {response}"
+    assert kuid in response.json()['nodes'], f"Expected to find {kuid} in the 'nodes', response: {response}"
 
 
 def test_get_metrics_from_metrics_api():
@@ -138,6 +210,12 @@ def test_get_metrics_from_metrics_api():
 
 
 # apiKeysecret as apikey
+def test_api_key_secret_as_api_key(setup_cluster, kube_client):
+    cmd(f"kubectl delete namespace {NAMESPACE}")
+    create_namespace(kube_client, NAMESPACE)
+    create_secret(kube_client, NAMESPACE, "api-secret", {"apiKey": API_KEY_B64})
+    output, exit_code = helm_agent_install(f"--set apiKeySecret=api-secret --set clusterName={CLUSTER_NAME}")
+    assert exit_code == 0, f"helm install failed, output: {output}"
 
 # tags and policies
 
@@ -156,25 +234,6 @@ def test_get_metrics_from_metrics_api():
 # disable agent capabilities (helm, actions) -t
 
 # define events.watchnamespace
-def validate_configmap_from_resources_api(api_key, clusterName):
-    url = "https://app.komodor.com/resources/api/v1/configurations/config-maps/events/search?komodorUids=configmap%7Cproduction%7Ckomodor%7Ck8s-watcher-config&limit=1&fields=clusterName&order=DESC"
-
-    payload = {}
-    headers = {
-        'Accept': 'application/json',
-        'x-api-key': '2b08f337-d5e9-4d60-ba6c-53263a77ba9b'
-    }
-
-    response = requests.request("GET", url, headers=headers, data=payload)
-    # check if the response is 200
-
-    if response.json()['data'][0]['clusterName'] == clusterName:
-        print("Success : Configmap from resources api validated successfully")
-        return True
-
-    print(response)
-    return False
-
 
 # ---reached events.watchNamespace
 

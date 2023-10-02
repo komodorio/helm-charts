@@ -37,13 +37,23 @@ Create chart name and version as used by the chart label.
 {{/*
 Common labels
 */}}
-{{- define "komodorAgent.labels" -}}
+
+{{- define "komodorAgent.commonLabels" -}}
 helm.sh/chart: {{ include "komodorAgent.chart" . }}
-{{ include "komodorAgent.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{- define "komodorAgent.labels" -}}
+{{ include "komodorAgent.selectorLabels" .}}
+{{ include "komodorAgent.commonLabels" . }}
+{{- end }}
+
+{{- define "komodorAgentDaemon.labels" -}}
+{{ include "komodorAgentDaemon.selectorLabels" . }}
+{{ include "komodorAgent.commonLabels" . }}
 {{- end }}
 
 {{/*
@@ -53,3 +63,9 @@ Selector labels
 app.kubernetes.io/name: {{ include "komodorAgent.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{- define "komodorAgentDaemon.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "komodorAgent.name" . }}-daemon
+app.kubernetes.io/instance: {{ .Release.Name }}-daemon
+{{- end }}
+
