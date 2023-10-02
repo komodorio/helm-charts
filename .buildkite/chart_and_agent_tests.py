@@ -26,9 +26,9 @@ def cmd(commands, silent=False):
     return output.strip(), p.wait()
 
 
-API_KEY = os.environ.get("API_KEY", "2b08f337-d5e9-4d60-ba6c-53263a77ba9b")
-CLUSTER_NAME = os.environ.get("CLUSTER_NAME", "production")
-RELEASE_NAME = os.environ.get("RELEASE_NAME", "production-test")
+API_KEY = os.environ.get("API_KEY", "92dc9cf8-dcf6-40c9-87e1-a0fd2835ef47")
+CLUSTER_NAME = os.environ.get("CLUSTER_NAME", "helm-chart-test")
+RELEASE_NAME = os.environ.get("RELEASE_NAME", "helm-test")
 CHART_PATH = os.environ.get("CHART_PATH", "../charts/k8s-watcher")
 VALUES_FILE_PATH = os.environ.get("VALUES_FILE_PATH", "")
 NAMESPACE = os.environ.get("NAMESPACE", "komodor")
@@ -48,8 +48,8 @@ def kube_client():
     return client.CoreV1Api()
 
 
-def helm_agent_install(settings='--set apiKey={API_KEY} --set clusterName={CLUSTER_NAME}'):
-    output, exit_code = cmd(f"helm install {RELEASE_NAME} {CHART_PATH} {settings} -n namespace={NAMESPACE} --wait")
+def helm_agent_install(settings=f'--set apiKey={API_KEY} --set clusterName={CLUSTER_NAME} --create-namespace'):
+    output, exit_code = cmd(f"helm install {RELEASE_NAME} {CHART_PATH} {settings} --namespace={NAMESPACE} --wait")
     return output, exit_code
 
 
@@ -86,6 +86,7 @@ def test_helm_installation():
 def test_all_pods_are_running_in_chart(setup_cluster, kube_client):
     output, exit_code = helm_agent_install()
     assert exit_code == 0, "helm install failed, output: {}".format(output)
+
     check_pods_running(kube_client, 'app.kubernetes.io/name=k8s-watcher')
     check_pods_running(kube_client, 'app.kubernetes.io/name=k8s-watcher-daemon')
 
