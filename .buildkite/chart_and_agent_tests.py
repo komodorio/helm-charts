@@ -1,6 +1,7 @@
 import subprocess
 import pytest
 import os
+import yaml
 from kubernetes import client, config
 
 
@@ -27,7 +28,7 @@ def cmd(commands, silent=False):
 
 
 API_KEY = os.environ.get("API_KEY", "92dc9cf8-dcf6-40c9-87e1-a0fd2835ef47")
-CLUSTER_NAME = os.environ.get("CLUSTER_NAME", "helm-chart-test")
+CLUSTER_NAME = os.environ.get("CLUSTER_NAME", "helm-chart-test-nba")
 RELEASE_NAME = os.environ.get("RELEASE_NAME", "helm-test")
 CHART_PATH = os.environ.get("CHART_PATH", "../charts/k8s-watcher")
 VALUES_FILE_PATH = os.environ.get("VALUES_FILE_PATH", "")
@@ -36,7 +37,7 @@ NAMESPACE = os.environ.get("NAMESPACE", "komodor")
 
 @pytest.fixture(scope='module')
 def setup_cluster():
-    cluster_name = "banana"
+    cluster_name = "test"
     cmd(f"kind create cluster --name {cluster_name} --wait 5m")
     config.load_kube_config()
     yield
@@ -50,8 +51,37 @@ def kube_client():
 
 def helm_agent_install(settings=f'--set apiKey={API_KEY} --set clusterName={CLUSTER_NAME} --create-namespace',
                        additional_settings=""):
-    output, exit_code = cmd(f"helm install {RELEASE_NAME} {CHART_PATH} {settings} {additional_settings} --namespace={NAMESPACE} --wait")
+    output, exit_code = cmd(
+        f"helm install {RELEASE_NAME} {CHART_PATH} {settings} {additional_settings} --namespace={NAMESPACE} --wait")
     return output, exit_code
+
+
+
+def helm_agent_template(settings=f'--set apiKey={API_KEY} --set clusterName={CLUSTER_NAME} --create-namespace',
+                        additional_settings=""):
+    output, exit_code = cmd(
+        f"helm template {RELEASE_NAME} {CHART_PATH} {settings} {additional_settings} --namespace={NAMESPACE}")
+    return output, exit_code
+
+
+def get_value_from_helm_template(helm_output, resource_kind, resource_name, field_path_str):
+    keys = field_path_str.split('.')
+    documents = list(yaml.safe_load_all(helm_output))
+    for doc in documents:
+        if doc.get("kind") == resource_kind and doc.get("metadata", {}).get("name") == resource_name:
+            temp = doc
+            for key in keys:
+                if key.isdigit():
+                    temp = temp[int(key)]
+                else:
+                    temp = temp[key]
+            return temp
+    raise ValueError(f"Resource of kind {resource_kind} and name {resource_name} not found in helm output.")
+
+
+
+
+
 
 
 def check_pods_running(kube_client, label_selector):
@@ -129,7 +159,7 @@ def test_get_metrics_from_metrics_api():
 def validate_configmap_from_resources_api(api_key, clusterName):
     url = "https://app.komodor.com/resources/api/v1/configurations/config-maps/events/search?komodorUids=configmap%7Cproduction%7Ckomodor%7Ck8s-watcher-config&limit=1&fields=clusterName&order=DESC"
 
-    payload={}
+    payload = {}
     headers = {
         'Accept': 'application/json',
         'x-api-key': '2b08f337-d5e9-4d60-ba6c-53263a77ba9b'
@@ -144,6 +174,7 @@ def validate_configmap_from_resources_api(api_key, clusterName):
 
     print(response)
     return False
+
 
 # ---reached events.watchNamespace
 
@@ -168,5 +199,23 @@ def validate_configmap_from_resources_api(api_key, clusterName):
 # change kubernetes Agent settings (affinity, annotations, nodeSelector, tollerations, podAnnotations)
 
 # change an image tag -t
+def test_override_image_tag():
+    test_image_tag = "13"
+    yaml_templates, exit_code = helm_agent_template(
+        additional_settings=f"--set components.komodorAgent.networkMapper.image.tag={test_image_tag}")
+    mapper_tag_value = get_value_from_helm_template(yaml_templates, "Deployment", f"{RELEASE_NAME}-k8s-watcher", "spec.template.spec.containers.1.image")
+
+    assert exit_code == 0, f"helm template failed, output: {yaml_templates}"
+    assert test_image_tag in mapper_tag_value, f"Expected image name {mapper_tag_value} in watcher image value {test_image_tag}"
+
 
 # change an image name -t
+def test_override_image_name():
+    test_image_name = "other-image-name"
+    yaml_templates, exit_code = helm_agent_template(
+        additional_settings=f"--set components.komodorAgent.watcher.image.name={test_image_name}")
+    watcher_image_value = get_value_from_helm_template(yaml_templates, "Deployment", f"{RELEASE_NAME}-k8s-watcher", "spec.template.spec.containers.2.image")
+
+    assert exit_code == 0, f"helm template failed, output: {yaml_templates}"
+    assert test_image_name in watcher_image_value, f"Expected image name {test_image_name} in watcher image value {watcher_image_value}"
+
