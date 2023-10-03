@@ -5,6 +5,7 @@ import yaml
 import requests
 import base64
 import time
+from deepdiff import DeepDiff
 from kubernetes import client, config
 
 
@@ -57,7 +58,6 @@ def kube_client():
 
 @pytest.fixture(scope="function", autouse=True)
 def cleanup_agent_from_cluster(request):
-
     yield
     # Skip teardown for tests marked with 'no_cleanup'
     # To skip cleanup, add the following decorator to the test: @pytest.mark.no_agent_cleanup
@@ -106,7 +106,7 @@ def get_value_from_helm_template(helm_output, resource_kind, resource_name, fiel
                     temp = temp[int(key)]
                 else:
                     temp = temp[key]
-            return temp
+            return yaml.dump(temp)
     raise ValueError(f"Resource of kind {resource_kind} and name {resource_name} not found in helm output.")
 
 
@@ -148,8 +148,15 @@ def query_resources_api(url):
     response = requests.request("GET", url, headers=headers, data=payload)
     return response
 
-# Starting tests here #
+def validate_template_value_by_values_path(test_value, values_path, resource_type, resource_name, yaml_path):
+    yaml_templates, exit_code = helm_agent_template(additional_settings=f"--set {values_path}={test_value}")
+    actual_value = get_value_from_helm_template(yaml_templates, resource_type, resource_name, yaml_path)
 
+    assert exit_code == 0, f"helm template failed, output: {yaml_templates}"
+    assert test_value in actual_value, f"Expected {test_value} in value {actual_value}"
+
+
+# Starting tests here #
 @pytest.mark.parametrize(
     "settings, missing_value",
     [
@@ -241,6 +248,17 @@ def test_api_key_secret_as_api_key(setup_cluster, kube_client):
 # disable installation capabilities (mapper, metrics) -t
 
 # disable agent capabilities (helm, actions) -t
+# def test_disable_helm_capabilities():
+#     test_value = "false"
+#     set_path = "capabilities.helm"
+#     template_path = "test"
+#
+#     # check configmap
+#     validate_template_value_by_values_path(test_value, set_path, "ConfigMap", "k8s-watcher-config",
+#                                            'data.komodor-k8s-watcher.yaml')
+#     # check clusterRole
+#     validate_template_value_by_values_path(test_value, set_path, "ClusterRole", "k8s-watcher",
+#                                            template_path)
 
 # define events.watchnamespace
 
@@ -262,9 +280,17 @@ def test_api_key_secret_as_api_key(setup_cluster, kube_client):
 
 # debug Allow collection of api metrics and validate that it sends metrics to collector
 
-# change kubernetes deployment settings (affinity, annotations, nodeSelector, tollerations, podAnnotations)
-
 # change kubernetes Agent settings (affinity, annotations, nodeSelector, tolerations, podAnnotations)
+
+
+def test_override_deployment_pod_annotations():
+    test_value = "test_value"
+    set_path = "components.komodorAgent.podAnnotations.test"
+    template_path = "spec.template.metadata.annotations.test"
+
+    validate_template_value_by_values_path(test_value, set_path, "Deployment", f"{RELEASE_NAME}-k8s-watcher",
+                                           template_path)
+
 
 def test_override_deployment_tolerations():
     values_file = """
@@ -278,42 +304,31 @@ def test_override_deployment_tolerations():
     """
 
     yaml_templates, exit_code = helm_agent_template(values_file=values_file)
-
     resp = get_value_from_helm_template(yaml_templates, "Deployment", f"{RELEASE_NAME}-k8s-watcher",
-                                                       "spec.template.spec.tolerations")
-    response_yaml = yaml.dump(resp)
-    values_file_yaml = yaml.dump(yaml.safe_load(values_file))
+                                        "spec.template.spec.tolerations")
+    response_yaml = yaml.safe_load(resp)
+    values_dict = yaml.safe_load(values_file)
+    validate_diff = DeepDiff(values_dict['components']['komodorAgent']['tolerations'], response_yaml)
 
     assert exit_code == 0, f"helm template failed, output: {yaml_templates}"
-    assert response_yaml in values_file_yaml, f"Expected tolerations: {response_yaml} in values file {values_file_yaml}"
+    assert validate_diff == {}, f"Expected affinity: {values_dict['components']['komodorAgent']['tolerations']} in values file {response_yaml}"
+
 
 def test_override_deployment_node_selector():
-    expected_value = "test_value"
+    test_value = "test_node_selector"
+    set_path = "components.komodorAgent.nodeSelector.test_node_selector"
+    template_path = "spec.template.spec.nodeSelector.test_node_selector"
 
-    yaml_templates, exit_code = helm_agent_template(
-        additional_settings=f"--set components.komodorAgent.nodeSelector.test_node_selector={expected_value}")
-
-    actual_node_selector = get_value_from_helm_template(yaml_templates, "Deployment",
-                                                        f"{RELEASE_NAME}-k8s-watcher",
-                                                        "spec.template.spec.nodeSelector.test_node_selector")
-
-    assert exit_code == 0, f"helm template failed, output: {yaml_templates}"
-    assert actual_node_selector == expected_value, f"Expected deployment annotation to be {expected_value}, got {actual_node_selector}"
-
+    validate_template_value_by_values_path(test_value, set_path, "Deployment", f"{RELEASE_NAME}-k8s-watcher",
+                                           template_path)
 
 def test_override_deployment_annotations():
-    expected_value = "test_value"
+    test_value = "test_value"
+    set_path = "components.komodorAgent.annotations.test"
+    template_path = "metadata.annotations.test"
 
-    yaml_templates, exit_code = helm_agent_template(
-        additional_settings=f"--set components.komodorAgent.annotations.test={expected_value}")
-
-    actual_deployment_annotation = get_value_from_helm_template(yaml_templates, "Deployment",
-                                                                f"{RELEASE_NAME}-k8s-watcher",
-                                                                "metadata.annotations.test")
-
-    assert exit_code == 0, f"helm template failed, output: {yaml_templates}"
-    assert actual_deployment_annotation == expected_value, f"Expected deployment annotation to be {expected_value}, got {actual_deployment_annotation} "
-
+    validate_template_value_by_values_path(test_value, set_path, "Deployment", f"{RELEASE_NAME}-k8s-watcher",
+                                           template_path)
 
 def test_override_deployment_affinity():
     values_file = """
@@ -332,32 +347,27 @@ def test_override_deployment_affinity():
     """
 
     yaml_templates, exit_code = helm_agent_template(values_file=values_file)
-
     resp = get_value_from_helm_template(yaml_templates, "Deployment", f"{RELEASE_NAME}-k8s-watcher",
                                                        "spec.template.spec.affinity")
-    values_dict = yaml.load(values_file)
+    response_yaml = yaml.safe_load(resp)
+    values_dict = yaml.safe_load(values_file)
+    validate_diff = DeepDiff(values_dict['components']['komodorAgent']['affinity'], response_yaml)
 
     assert exit_code == 0, f"helm template failed, output: {yaml_templates}"
-    assert not is_subset_dict(resp, values_dict), f"Expected affinity {resp} in values file {values_dict}"
-
+    assert validate_diff == {}, f"Expected affinity: {values_dict['components']['komodorAgent']['affinity']} in values file {response_yaml}"
 
 def test_override_image_tag():
-    test_image_tag = "13"
-    yaml_templates, exit_code = helm_agent_template(
-        additional_settings=f"--set components.komodorAgent.networkMapper.image.tag={test_image_tag}")
-    mapper_tag_value = get_value_from_helm_template(yaml_templates, "Deployment", f"{RELEASE_NAME}-k8s-watcher",
-                                                    "spec.template.spec.containers.1.image")
+    test_value = "13"
+    set_path = "components.komodorAgent.networkMapper.image.tag"
+    template_path = "spec.template.spec.containers.1.image"
 
-    assert exit_code == 0, f"helm template failed, output: {yaml_templates}"
-    assert test_image_tag in mapper_tag_value, f"Expected image name {mapper_tag_value} in watcher image value {test_image_tag}"
+    validate_template_value_by_values_path(test_value, set_path, "Deployment", f"{RELEASE_NAME}-k8s-watcher", template_path)
 
 
 def test_override_image_name():
-    test_image_name = "other-image-name"
-    yaml_templates, exit_code = helm_agent_template(
-        additional_settings=f"--set components.komodorAgent.watcher.image.name={test_image_name}")
-    watcher_image_value = get_value_from_helm_template(yaml_templates, "Deployment", f"{RELEASE_NAME}-k8s-watcher",
-                                                       "spec.template.spec.containers.2.image")
+    test_value = "other-image-name"
+    set_path = "components.komodorAgent.watcher.image.name"
+    template_path = "spec.template.spec.containers.2.image"
 
-    assert exit_code == 0, f"helm template failed, output: {yaml_templates}"
-    assert test_image_name in watcher_image_value, f"Expected image name {test_image_name} in watcher image value {watcher_image_value}"
+    validate_template_value_by_values_path(test_value, set_path, "Deployment", f"{RELEASE_NAME}-k8s-watcher", template_path)
+
