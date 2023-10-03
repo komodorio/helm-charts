@@ -442,11 +442,11 @@ def test_define_events_watchnamespace(setup_cluster):
     assert exit_code == 0, f"Agent installation failed, output: {output}"
 
     # Create deploy event
-    cmd(f'kubectl scale deployment {watch_deployment} -n {watch_namespace} --replicas=0')
-    cmd(f'kubectl scale deployment {un_watch_deployment} -n {un_watch_namespace} --replicas=0')
+    cmd(f'kubectl rollout restart deployment/{watch_deployment} -n {watch_namespace}')
+    cmd(f'kubectl rollout restart deployment/{un_watch_deployment} -n {un_watch_namespace}')
 
     # Wait for event to be sent
-    time.sleep(5)
+    time.sleep(10)
     end_time = int(time.time() * 1000) + 120_000  # two minutes from now
 
     # Verify events from watched namespace
@@ -477,11 +477,11 @@ def test_block_namespace(setup_cluster):
     assert exit_code == 0, f"Agent installation failed, output: {output}"
 
     # Create deploy event
-    cmd(f'kubectl scale deployment {watch_deployment} -n {watch_namespace} --replicas=0')
-    cmd(f'kubectl scale deployment {un_watch_deployment} -n {un_watch_namespace} --replicas=0')
+    cmd(f'kubectl rollout restart deployment/{watch_deployment} -n {watch_namespace}')
+    cmd(f'kubectl rollout restart deployment/{un_watch_deployment} -n {un_watch_namespace}')
 
     # Wait for event to be sent
-    time.sleep(5)
+    time.sleep(10)
     end_time = int(time.time() * 1000) + 120_000  # two minutes from now
 
     # Verify events from watched namespace
