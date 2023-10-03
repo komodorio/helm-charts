@@ -46,7 +46,7 @@ def setup_cluster():
     cluster_name = "test"
     cmd(f"kind create cluster --name {cluster_name} --wait 5m")
     config.load_kube_config()
-    cmd(f"kubectl apply -f ./test-data/*.yaml")
+    cmd(f"kubectl apply -f ./test-data")
     yield
     cmd(f"kind delete cluster --name {cluster_name}")
 
@@ -119,7 +119,7 @@ def check_pods_running(kube_client, label_selector):
             assert container_status.ready, f"Container {container_status.name} in Pod {pod.metadata.name} is not ready"
 
 
-def create_namespace(kube_client, namespace_name):
+def create_namespace(kube_client, namespace_name=NAMESPACE):
     namespace_body = client.V1Namespace(
         metadata=client.V1ObjectMeta(name=namespace_name)
     )
@@ -134,11 +134,54 @@ def create_secret(kube_client, namespace_name, secret_name, data):
     kube_client.create_namespaced_secret(namespace=namespace_name, body=secret_body)
 
 
+def create_service_account(service_account_name, namespace=NAMESPACE) -> bool:
+    v1 = client.CoreV1Api()
+
+    service_account = client.V1ServiceAccount(
+        metadata=client.V1ObjectMeta(
+            name=service_account_name,
+            namespace=namespace
+        )
+    )
+
+    try:
+        v1.create_namespaced_service_account(
+            namespace=namespace,
+            body=service_account
+        )
+        print("Service account created successfully.")
+        return True
+    except client.exceptions.ApiException as e:
+        print(f"Failed to create service account: {e}")
+        return False
+
+
+def wait_for_pod_ready(pod_name, namespace, timeout=300):
+    v1 = client.CoreV1Api()
+    start_time = time.time()
+    while True:
+        try:
+            pod = v1.read_namespaced_pod(name=pod_name, namespace=namespace)
+            if all(container.ready for container in pod.status.container_statuses):
+                print(f"Pod {pod_name} is ready.")
+                return True
+        except client.exceptions.ApiException as e:
+            print(f"An error occurred: {e}")
+
+        elapsed_time = time.time() - start_time
+        if elapsed_time > timeout:
+            print(f"Timed out waiting for pod {pod_name} to be ready.")
+            return False
+
+        print(f"Waiting for pod {pod_name} to be ready...")
+        time.sleep(2)
+
+
 def create_komodor_uid(kind, name, namespace=NAMESPACE, cluster_name=CLUSTER_NAME):
     return f"{kind}|{cluster_name}|{namespace}|{name}"
 
 
-def query_resources_api(url):
+def query_backend(url):
     payload={}
     headers = {
         'Accept': 'application/json',
@@ -148,12 +191,43 @@ def query_resources_api(url):
     response = requests.request("GET", url, headers=headers, data=payload)
     return response
 
+
 def validate_template_value_by_values_path(test_value, values_path, resource_type, resource_name, yaml_path):
     yaml_templates, exit_code = helm_agent_template(additional_settings=f"--set {values_path}={test_value}")
     actual_value = get_value_from_helm_template(yaml_templates, resource_type, resource_name, yaml_path)
 
     assert exit_code == 0, f"helm template failed, output: {yaml_templates}"
     assert test_value in actual_value, f"Expected {test_value} in value {actual_value}"
+
+
+def find_pod_name_by_deployment(deployment_name, namespace):
+    v1 = client.CoreV1Api()
+    apps_v1 = client.AppsV1Api()
+
+    try:
+        # Get the Deployment object
+        deployment = apps_v1.read_namespaced_deployment(
+            name=deployment_name,
+            namespace=namespace
+        )
+        # Get the label selector from the Deployment object
+        label_selector = ",".join(
+            [f"{k}={v}" for k, v in deployment.spec.selector.match_labels.items()]
+        )
+        # List Pods using the label selector
+        pods = v1.list_namespaced_pod(
+            namespace=namespace,
+            label_selector=label_selector
+        )
+        # If there are any Pods, return the name of the first one
+        if pods.items:
+            return pods.items[0].metadata.name
+        else:
+            print(f"No Pods found for Deployment {deployment_name}")
+            return None
+    except client.exceptions.ApiException as e:
+        print(f"An error occurred: {e}")
+        return None
 
 
 # Starting tests here #
@@ -189,7 +263,7 @@ def test_get_configmap_from_resources_api(setup_cluster):
     kuid = create_komodor_uid("configmap", "k8s-watcher-config")
     url = f"{BE_BASE_URL}/resources/api/v1/configurations/config-maps/events/search?komodorUids={kuid}&limit=1&fields=clusterName&order=DESC"
 
-    response = query_resources_api(url)
+    response = query_backend(url)
 
     assert response.status_code == 200, f"Failed to get configmap from resources api, response: {response}"
     assert len(response.json()['data']) > 0, f"Failed to get configmap from resources api, response: {response}"
@@ -207,7 +281,7 @@ def test_get_network_mapper_from_resources_api(setup_cluster):
     url = f"{BE_BASE_URL}/resources/api/v1/network-maps/graph?clusterNames={CLUSTER_NAME}&namespaces={namespace}&komodorUids={kuid}"
 
     for i in range(120):  # ~2 minutes
-        response = query_resources_api(url)
+        response = query_backend(url)
         if len(response.json()['nodes']) != 0:
             break
         time.sleep(1)
@@ -220,9 +294,41 @@ def test_get_network_mapper_from_resources_api(setup_cluster):
     assert kuid in response.json()['nodes'], f"Expected to find {kuid} in the 'nodes', response: {response}"
 
 
-def test_get_metrics_from_metrics_api():
-    # Placeholder assertion, implement actual logic
-    assert True
+def test_get_metrics_from_metrics_api(setup_cluster, kube_client):
+    def wait_for_metrics():
+        start_time = int(time.time() * 1000) - 120_000  # two minutes ago
+        for _ in range(120):  # ~2 minutes
+            end_time = int(time.time() * 1000)
+            url = (f"{BE_BASE_URL}/metrics/api/v1/fullMetrics/pod/{container_name}/cpu?"
+                   f"clusterName={CLUSTER_NAME}&namespace={NAMESPACE}&podName={pod_name}&"
+                   f"fromEpoch={start_time}&pageSize=1&timeWindow=1d&endTime={end_time}&"
+                   f"aggregationTypes=p96&aggregationTypes=p99")
+            response = query_backend(url)
+            if response.json().get('request'):
+                return response
+            time.sleep(1)
+        return None
+
+    def verify_metrics_response(response):
+        assert response.status_code == 200, f"Failed to get metrics from metrics api, response: {response}"
+        assert response.json().get('request'), f"Expected at least one item in the 'request', response: {response}"
+        assert response.json().get('avgUtilization'), f"Expected at least one item in the 'avgUtilization', response: {response}"
+
+    #######################
+    # Starting here       #
+    #######################
+    output, exit_code = helm_agent_install()
+    assert exit_code == 0, f"Agent installation failed, output: {output}"
+
+    container_name = "k8s-watcher"
+    deployment_name = f"{RELEASE_NAME}-{container_name}"
+    pod_name = find_pod_name_by_deployment(deployment_name, NAMESPACE)
+    assert pod_name, "Failed to find pod by deployment name"
+
+    response = wait_for_metrics()
+    assert response, "Failed to get metrics from metrics API"
+
+    verify_metrics_response(response)
 
 
 # apiKeysecret as apikey
@@ -234,10 +340,67 @@ def test_api_key_secret_as_api_key(setup_cluster, kube_client):
     assert exit_code == 0, f"helm install failed, output: {output}"
 
 # tags and policies
+# ToDo: Check with Mick
+
 
 # use an existing service_account with annotations
+def test_use_existing_service_account(setup_cluster, kube_client):
+    create_namespace(kube_client, NAMESPACE)
+    service_account_name = "test-service-account"
+    create_service_account(service_account_name, NAMESPACE)
+
+    output, exit_code = helm_agent_install(additional_settings=f"--set serviceAccount.create=false "
+                                                               f"--set serviceAccount.name={service_account_name}")
+    assert exit_code == 0, f"Agent installation failed, output: {output}"
+
 
 # use a proxy + customCA
+def test_use_proxy_and_custom_ca(setup_cluster, kube_client):
+    def extract_root_ca(pem_file_path, output_file_path):
+        with open(pem_file_path, 'r') as file:
+            pem_data = file.read()
+
+        certificates = pem_data.split('-----END RSA PRIVATE KEY-----')
+        # Get the last certificate, ignoring any trailing whitespace or empty strings
+        root_ca_certificate = next((cert for cert in reversed(certificates) if cert.strip()), None)
+
+        if root_ca_certificate:
+            root_ca_certificate = root_ca_certificate.strip() + "\n"
+            with open(output_file_path, 'w') as file:
+                file.write(root_ca_certificate)
+            print(f'Root CA certificate extracted to {output_file_path}')
+            return True
+
+        print('No certificate found')
+        return False
+
+    #################
+    # Starting here #
+    #################
+    proxy_ready = wait_for_pod_ready("mitm", "proxy")
+    assert proxy_ready, "Failed to wait for mitmproxy pod to be ready"
+
+    root_ca_pem = "/tmp/mitmproxy-ca.pem"
+    output, exit_code = cmd(f"kubectl cp -n proxy  mitm:root/.mitmproxy/mitmproxy-ca.pem  {root_ca_pem}")
+    assert exit_code == 0, f"Failed to copy ca from mitmproxy pod, output: {output}"
+
+    # Extract ca from pem file
+    root_ca_path = root_ca_pem.replace(".pem", ".crt")
+    ca_extracted = extract_root_ca(root_ca_pem, root_ca_path)
+    assert ca_extracted, f"Failed to extract root ca from {root_ca_pem}"
+
+    # create ns and secret
+    create_namespace(kube_client)
+    secret_name = "mitmproxysecret"
+    cmd(f"kubectl create secret generic {secret_name}  --from-file={root_ca_path} -n {NAMESPACE}")
+    # install with proxy and custom ca
+    output, exit_code = helm_agent_install(additional_settings=f"--set proxy.enabled=true "
+                                                               f"--set proxy.http=http://mitm.proxy:8080 "
+                                                               f"--set proxy.https=http://mitm.proxy:8080 "
+                                                               f"--set customCa.enabled=true "
+                                                               f"--set customCa.secretName={secret_name} ")
+
+    assert exit_code == 0, f"Agent installation failed, output: {output}"
 
 # changing image repository -t
 

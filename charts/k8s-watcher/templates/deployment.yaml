@@ -37,7 +37,7 @@ spec:
       {{- if (.Values.customCa).enabled  }}
       initContainers:
         - name: init-cert
-          image: {{ .Values.imageRepo }}/{{ .Values.components.komodorDaemon.metricsInit.image.name}}:{{ .Values.components.komodorDaemon.metricsInit.image.tag | default .Chart.AppVersion }}
+          image: {{ .Values.imageRepo }}/{{ .Values.components.komodorAgent.supervisor.image.name}}:{{ .Values.components.komodorAgent.supervisor.image.tag | default .Chart.AppVersion }}
           command: 
             - sh
             - -c
