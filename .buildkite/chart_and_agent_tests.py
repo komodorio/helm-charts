@@ -65,6 +65,7 @@ def cleanup_agent_from_cluster(request):
         return
 
     helm_agent_uninstall()
+    cmd(f"kubectl delete namespace {NAMESPACE}")
 
 
 def helm_agent_install(settings=f'--set apiKey={API_KEY} --set clusterName={CLUSTER_NAME} --create-namespace',
