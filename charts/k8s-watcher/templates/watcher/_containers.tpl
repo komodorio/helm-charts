@@ -22,7 +22,7 @@
   - name: kube-cache
     mountPath: /.kube
   {{- end }}
-  {{- include "custom-ca.trusted-volumeMounts" .  |  nindent 12 }}
+  {{- include "custom-ca.trusted-volumeMounts" .  |  nindent 2 }}
   env:
   - name: KOMOKW_API_KEY
     valueFrom:
@@ -46,7 +46,7 @@
     value: /opt/watcher/helm/config
   - name: HELM_DATA_HOME
     value: /opt/watcher/helm/data
-  {{- include "komodorAgent.proxy-conf" . | indent 12 }}
+  {{- include "komodorAgent.proxy-conf" . | indent 2 }}
   securityContext:
     readOnlyRootFilesystem: true
     runAsUser: 1000
@@ -96,7 +96,7 @@
           {{- end }}
     - name: KOMOKW_SERVERS_HEALTHCHECK_PORT
       value: {{ .Values.components.komodorAgent.supervisor.ports.healthCheck | quote }}
-  {{- include "komodorAgent.proxy-conf" . | indent 12 }}
+  {{- include "komodorAgent.proxy-conf" . | indent 4 }}
   securityContext:
     readOnlyRootFilesystem: true
     runAsUser: 1000

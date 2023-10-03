@@ -40,7 +40,7 @@
 
 {{- define "custom-ca.trusted-init-container.command" -}}
 {{- if (.Values.customCa).enabled  }}
- command:
+command:
   - /bin/sh
   - -c
   - cp /certs/* /etc/ssl/certs/ &&

@@ -14,7 +14,7 @@
   - configMapRef:
       name:  "k8s-watcher-daemon-env-vars"
   env:
-  {{- include "komodorAgent.proxy-conf" . | indent 12 }}
+  {{- include "komodorAgent.proxy-conf" . | indent 2 }}
   - name: CLUSTER_NAME
     value: {{ .Values.clusterName }}
 {{- end }}
@@ -35,7 +35,7 @@
   - configMapRef:
       name:  "k8s-watcher-daemon-env-vars"
   env:
-  {{- include "komodorAgent.proxy-conf" . | indent 12 }}
+  {{- include "komodorAgent.proxy-conf" . | indent 2 }}
   - name: NODE_NAME
     valueFrom:
       fieldRef:
