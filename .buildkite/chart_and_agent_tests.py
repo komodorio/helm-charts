@@ -95,13 +95,12 @@ def helm_agent_uninstall():
     return output, exit_code
 
 
-def get_value_from_helm_template(helm_output, resource_kind, resource_name, field_path_str):
-    keys = field_path_str.split('.')
+def get_value_from_helm_template(helm_output, resource_kind, resource_name, field_path_array):
     documents = list(yaml.safe_load_all(helm_output))
     for doc in documents:
         if doc.get("kind") == resource_kind and doc.get("metadata", {}).get("name") == resource_name:
             temp = doc
-            for key in keys:
+            for key in field_path_array:
                 if key.isdigit():
                     temp = temp[int(key)]
                 else:
@@ -193,6 +192,8 @@ def query_backend(url):
 
 
 def validate_template_value_by_values_path(test_value, values_path, resource_type, resource_name, yaml_path):
+    if not isinstance(yaml_path, list):
+        yaml_path = yaml_path.split(".")
     yaml_templates, exit_code = helm_agent_template(additional_settings=f"--set {values_path}={test_value}")
     actual_value = get_value_from_helm_template(yaml_templates, resource_type, resource_name, yaml_path)
 
@@ -411,17 +412,16 @@ def test_use_proxy_and_custom_ca(setup_cluster, kube_client):
 # disable installation capabilities (mapper, metrics) -t
 
 # disable agent capabilities (helm, actions) -t
-# def test_disable_helm_capabilities():
-#     test_value = "false"
-#     set_path = "capabilities.helm"
-#     template_path = "test"
-#
-#     # check configmap
-#     validate_template_value_by_values_path(test_value, set_path, "ConfigMap", "k8s-watcher-config",
-#                                            'data.komodor-k8s-watcher.yaml')
-#     # check clusterRole
-#     validate_template_value_by_values_path(test_value, set_path, "ClusterRole", "k8s-watcher",
-#                                            template_path)
+def test_disable_helm_capabilities():
+    test_value = "false"
+    set_path = "capabilities.helm"
+
+    # check configmap
+    validate_template_value_by_values_path(test_value, set_path, "ConfigMap", "k8s-watcher-config",
+                                           ['data', 'komodor-k8s-watcher.yaml', 'enableHelm'])
+    # # check clusterRole
+    # validate_template_value_by_values_path(test_value, set_path, "ClusterRole", "k8s-watcher",
+    #                                        template_path)
 
 
 # define events.watchnamespace
@@ -533,7 +533,7 @@ def test_override_deployment_tolerations():
 
     yaml_templates, exit_code = helm_agent_template(values_file=values_file)
     resp = get_value_from_helm_template(yaml_templates, "Deployment", f"{RELEASE_NAME}-k8s-watcher",
-                                        "spec.template.spec.tolerations")
+                                        "spec.template.spec.tolerations".split("."))
     response_yaml = yaml.safe_load(resp)
     values_dict = yaml.safe_load(values_file)
     validate_diff = DeepDiff(values_dict['components']['komodorAgent']['tolerations'], response_yaml)
@@ -576,7 +576,7 @@ def test_override_deployment_affinity():
 
     yaml_templates, exit_code = helm_agent_template(values_file=values_file)
     resp = get_value_from_helm_template(yaml_templates, "Deployment", f"{RELEASE_NAME}-k8s-watcher",
-                                                       "spec.template.spec.affinity")
+                                                       "spec.template.spec.affinity".split("."))
     response_yaml = yaml.safe_load(resp)
     values_dict = yaml.safe_load(values_file)
     validate_diff = DeepDiff(values_dict['components']['komodorAgent']['affinity'], response_yaml)
