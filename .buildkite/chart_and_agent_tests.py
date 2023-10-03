@@ -45,7 +45,7 @@ def setup_cluster():
     cluster_name = "test"
     cmd(f"kind create cluster --name {cluster_name} --wait 5m")
     config.load_kube_config()
-    cmd(f"kubectl apply -f ./test-data/network-mapper.yaml")
+    cmd(f"kubectl apply -f ./test-data/*.yaml")
     yield
     cmd(f"kind delete cluster --name {cluster_name}")
 
@@ -75,7 +75,16 @@ def helm_agent_install(settings=f'--set apiKey={API_KEY} --set clusterName={CLUS
 
 
 def helm_agent_template(settings=f'--set apiKey={API_KEY} --set clusterName={CLUSTER_NAME} --create-namespace',
-                        additional_settings=""):
+                        additional_settings="", values_file=False):
+    if values_file:
+        temp_path = os.path.join(os.path.dirname(__file__), "temp-values.yaml")
+        print(f"Using values file: {temp_path}, content: {values_file}")
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+        with open(temp_path, "w") as f:
+            f.write(values_file)
+        additional_settings += f" -f {temp_path}"
+
     output, exit_code = cmd(
         f"helm template {RELEASE_NAME} {CHART_PATH} {settings} {additional_settings} --namespace={NAMESPACE}")
     return output, exit_code
@@ -255,26 +264,100 @@ def test_api_key_secret_as_api_key(setup_cluster, kube_client):
 
 # change kubernetes deployment settings (affinity, annotations, nodeSelector, tollerations, podAnnotations)
 
-# change kubernetes Agent settings (affinity, annotations, nodeSelector, tollerations, podAnnotations)
+# change kubernetes Agent settings (affinity, annotations, nodeSelector, tolerations, podAnnotations)
 
-# change an image tag -t
+def test_override_deployment_tolerations():
+    values_file = """
+    components:
+        komodorAgent:
+          tolerations:
+          - key: "gpu"
+            operator: "Equal"
+            value: "true"
+            effect: "NoSchedule"
+    """
+
+    yaml_templates, exit_code = helm_agent_template(values_file=values_file)
+
+    resp = get_value_from_helm_template(yaml_templates, "Deployment", f"{RELEASE_NAME}-k8s-watcher",
+                                                       "spec.template.spec.tolerations")
+    response_yaml = yaml.dump(resp)
+    values_file_yaml = yaml.dump(yaml.safe_load(values_file))
+
+    assert exit_code == 0, f"helm template failed, output: {yaml_templates}"
+    assert response_yaml in values_file_yaml, f"Expected tolerations: {response_yaml} in values file {values_file_yaml}"
+
+def test_override_deployment_node_selector():
+    expected_value = "test_value"
+
+    yaml_templates, exit_code = helm_agent_template(
+        additional_settings=f"--set components.komodorAgent.nodeSelector.test_node_selector={expected_value}")
+
+    actual_node_selector = get_value_from_helm_template(yaml_templates, "Deployment",
+                                                        f"{RELEASE_NAME}-k8s-watcher",
+                                                        "spec.template.spec.nodeSelector.test_node_selector")
+
+    assert exit_code == 0, f"helm template failed, output: {yaml_templates}"
+    assert actual_node_selector == expected_value, f"Expected deployment annotation to be {expected_value}, got {actual_node_selector}"
+
+
+def test_override_deployment_annotations():
+    expected_value = "test_value"
+
+    yaml_templates, exit_code = helm_agent_template(
+        additional_settings=f"--set components.komodorAgent.annotations.test={expected_value}")
+
+    actual_deployment_annotation = get_value_from_helm_template(yaml_templates, "Deployment",
+                                                                f"{RELEASE_NAME}-k8s-watcher",
+                                                                "metadata.annotations.test")
+
+    assert exit_code == 0, f"helm template failed, output: {yaml_templates}"
+    assert actual_deployment_annotation == expected_value, f"Expected deployment annotation to be {expected_value}, got {actual_deployment_annotation} "
+
+
+def test_override_deployment_affinity():
+    values_file = """
+    components:
+        komodorAgent:
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: kubernetes.io/e2e-az-name
+                    operator: In
+                    values:
+                    - e2e-az1
+                    - e2e-az2
+    """
+
+    yaml_templates, exit_code = helm_agent_template(values_file=values_file)
+
+    resp = get_value_from_helm_template(yaml_templates, "Deployment", f"{RELEASE_NAME}-k8s-watcher",
+                                                       "spec.template.spec.affinity")
+    values_dict = yaml.load(values_file)
+
+    assert exit_code == 0, f"helm template failed, output: {yaml_templates}"
+    assert not is_subset_dict(resp, values_dict), f"Expected affinity {resp} in values file {values_dict}"
+
+
 def test_override_image_tag():
     test_image_tag = "13"
     yaml_templates, exit_code = helm_agent_template(
         additional_settings=f"--set components.komodorAgent.networkMapper.image.tag={test_image_tag}")
-    mapper_tag_value = get_value_from_helm_template(yaml_templates, "Deployment", f"{RELEASE_NAME}-k8s-watcher", "spec.template.spec.containers.1.image")
+    mapper_tag_value = get_value_from_helm_template(yaml_templates, "Deployment", f"{RELEASE_NAME}-k8s-watcher",
+                                                    "spec.template.spec.containers.1.image")
 
     assert exit_code == 0, f"helm template failed, output: {yaml_templates}"
     assert test_image_tag in mapper_tag_value, f"Expected image name {mapper_tag_value} in watcher image value {test_image_tag}"
 
 
-# change an image name -t
 def test_override_image_name():
     test_image_name = "other-image-name"
     yaml_templates, exit_code = helm_agent_template(
         additional_settings=f"--set components.komodorAgent.watcher.image.name={test_image_name}")
-    watcher_image_value = get_value_from_helm_template(yaml_templates, "Deployment", f"{RELEASE_NAME}-k8s-watcher", "spec.template.spec.containers.2.image")
+    watcher_image_value = get_value_from_helm_template(yaml_templates, "Deployment", f"{RELEASE_NAME}-k8s-watcher",
+                                                       "spec.template.spec.containers.2.image")
 
     assert exit_code == 0, f"helm template failed, output: {yaml_templates}"
     assert test_image_name in watcher_image_value, f"Expected image name {test_image_name} in watcher image value {watcher_image_value}"
-

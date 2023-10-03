@@ -5,8 +5,7 @@ metadata:
   labels:
     {{- include "komodorAgent.labels" . | nindent 4 }}
   annotations:
-    {{ toYaml ((.Values.components).komodorAgent).annotations | nindent 4 }}
-  
+    {{ toYaml .Values.components.komodorAgent.annotations | nindent 4 }}
 spec:
   replicas: 1
   strategy:
