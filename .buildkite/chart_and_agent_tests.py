@@ -423,11 +423,76 @@ def test_use_proxy_and_custom_ca(setup_cluster, kube_client):
 #     validate_template_value_by_values_path(test_value, set_path, "ClusterRole", "k8s-watcher",
 #                                            template_path)
 
-# define events.watchnamespace
 
-# ---reached events.watchNamespace
+# define events.watchnamespace
+def test_define_events_watchnamespace(setup_cluster):
+    def query_events(namespace, deployment, start_time, end_time):
+        kuid = create_komodor_uid("Deployment", deployment, namespace)
+        url = f"{BE_BASE_URL}/resources/api/v1/events/general?fromEpoch={start_time}&toEpoch={end_time}&komodorUids={kuid}"
+        return query_backend(url)
+
+    watch_namespace = "client-namespace"
+    watch_deployment = "nc-client"
+    un_watch_namespace = "server-namespace"
+    un_watch_deployment = "nc-server"
+    start_time = int(time.time() * 1000)
+
+    output, exit_code = helm_agent_install(additional_settings=f"--set capabilities.events.watchNamespace={watch_namespace}")
+    assert exit_code == 0, f"Agent installation failed, output: {output}"
+
+    # Create deploy event
+    cmd(f'kubectl scale deployment {watch_deployment} -n {watch_namespace} --replicas=0')
+    cmd(f'kubectl scale deployment {un_watch_deployment} -n {un_watch_namespace} --replicas=0')
+
+    # Wait for event to be sent
+    time.sleep(5)
+    end_time = int(time.time() * 1000) + 120_000  # two minutes from now
+
+    # Verify events from watched namespace
+    response = query_events(watch_namespace, watch_deployment, start_time, end_time)
+    assert response.status_code == 200, f"Failed to get configmap from resources api, response: {response}"
+    assert len(response.json()['event_deploy']) > 0, f"Failed to get event_deploy from resources api, response: {response}"
+
+    # Verify that we dont get events from unwatched namespace
+    response = query_events(un_watch_namespace, un_watch_deployment, start_time, end_time)
+    assert response.status_code == 200, f"Failed to get configmap from resources api, response: {response}"
+    assert len(response.json()['event_deploy']) == 0, f"Failed to get event_deploy from resources api, response: {response}"
+
 
 # Block namespace and validate that no events are sent
+def test_block_namespace(setup_cluster):
+    def query_events(namespace, deployment, start_time, end_time):
+        kuid = create_komodor_uid("Deployment", deployment, namespace)
+        url = f"{BE_BASE_URL}/resources/api/v1/events/general?fromEpoch={start_time}&toEpoch={end_time}&komodorUids={kuid}"
+        return query_backend(url)
+
+    un_watch_namespace = "client-namespace"
+    un_watch_deployment = "nc-client"
+    watch_namespace = "server-namespace"
+    watch_deployment = "nc-server"
+    start_time = int(time.time() * 1000)
+
+    output, exit_code = helm_agent_install(additional_settings=f"--set capabilities.events.namespacesDenylist={{{un_watch_namespace}}}")
+    assert exit_code == 0, f"Agent installation failed, output: {output}"
+
+    # Create deploy event
+    cmd(f'kubectl scale deployment {watch_deployment} -n {watch_namespace} --replicas=0')
+    cmd(f'kubectl scale deployment {un_watch_deployment} -n {un_watch_namespace} --replicas=0')
+
+    # Wait for event to be sent
+    time.sleep(5)
+    end_time = int(time.time() * 1000) + 120_000  # two minutes from now
+
+    # Verify events from watched namespace
+    response = query_events(watch_namespace, watch_deployment, start_time, end_time)
+    assert response.status_code == 200, f"Failed to get configmap from resources api, response: {response}"
+    assert len(response.json()['event_deploy']) > 0, f"Failed to get event_deploy from resources api, response: {response}"
+
+    # Verify that we dont get events from unwatched namespace
+    response = query_events(un_watch_namespace, un_watch_deployment, start_time, end_time)
+    assert response.status_code == 200, f"Failed to get configmap from resources api, response: {response}"
+    assert len(response.json()['event_deploy']) == 0, f"Failed to get event_deploy from resources api, response: {response}"
+
 
 # Event redaction - validate that workload is redacted in komodor
 
