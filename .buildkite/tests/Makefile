@@ -21,13 +21,13 @@ install-kind:
 			[ $$ARCH = arm64 ] && curl -Lo $(KIND_BINARY) $(KIND_URL_BASE)/kind-darwin-arm64 ; \
 		fi ; \
 		chmod +x $(KIND_BINARY) ; \
-		sudo mv $(KIND_BINARY) /usr/local/bin/kind ; \
+		mv $(KIND_BINARY) /usr/local/bin/kind ; \
 	else \
 		echo "kind is already installed" ; \
 	fi
 
 setup-venv:
-	python3 -m venv $(VENV_NAME)
+	python3 -m virtualenv $(VENV_NAME)
 	$(VENV_ACTIVATE) ; pip install -r requirements.txt
 
 test-all: setup-venv install-kind
