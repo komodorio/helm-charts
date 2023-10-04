@@ -70,7 +70,7 @@ def test_get_network_mapper_from_resources_api(setup_cluster):
     output, exit_code = helm_agent_install(CLUSTER_NAME)
     assert exit_code == 0, "Agent installation failed, output: {}".format(output)
 
-    kuid = create_komodor_uid("Deployment", deployment_name, namespace)
+    kuid = create_komodor_uid("Deployment", deployment_name, namespace, CLUSTER_NAME)
     url = f"{BE_BASE_URL}/resources/api/v1/network-maps/graph?clusterNames={CLUSTER_NAME}&namespaces={namespace}&komodorUids={kuid}"
 
     for i in range(120):  # ~2 minutes

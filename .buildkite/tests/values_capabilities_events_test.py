@@ -11,7 +11,7 @@ CLUSTER_NAME = get_filename_as_cluster_name(__file__)
 # define events.watchnamespace
 def test_define_events_watchnamespace(setup_cluster):
     def query_events(namespace, deployment, start_time, end_time):
-        kuid = create_komodor_uid("Deployment", deployment, namespace)
+        kuid = create_komodor_uid("Deployment", deployment, namespace, CLUSTER_NAME)
         url = f"{BE_BASE_URL}/resources/api/v1/events/general?fromEpoch={start_time}&toEpoch={end_time}&komodorUids={kuid}"
         return query_backend(url)
 
@@ -46,7 +46,7 @@ def test_define_events_watchnamespace(setup_cluster):
 # Block namespace and validate that no events are sent
 def test_block_namespace(setup_cluster):
     def query_events(namespace, deployment, start_time, end_time):
-        kuid = create_komodor_uid("Deployment", deployment, namespace)
+        kuid = create_komodor_uid("Deployment", deployment, namespace, CLUSTER_NAME)
         url = f"{BE_BASE_URL}/resources/api/v1/events/general?fromEpoch={start_time}&toEpoch={end_time}&komodorUids={kuid}"
         return query_backend(url)
 
