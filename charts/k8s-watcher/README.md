@@ -2,7 +2,7 @@
 
 Watches and sends kubernetes resource-related events
 
-![Version: 1.16.14](https://img.shields.io/badge/Version-1.16.14-informational?style=flat-square) ![AppVersion: 0.2.55](https://img.shields.io/badge/AppVersion-0.2.55-informational?style=flat-square)
+![Version: 1.16.14](https://img.shields.io/badge/Version-1.16.14-informational?style=flat-square) ![AppVersion: 0.2.59](https://img.shields.io/badge/AppVersion-0.2.59-informational?style=flat-square)
 
 ## TL;DR;
 
@@ -123,7 +123,7 @@ To install the chart directly with kubectl, use the manifests located in `./kube
 | capabilities.networkMapper | bool | `true` | Enable network mapping capabilities by the komodor agent |
 | capabilities.actions | bool | `true` | Allow users to perform actions on the cluster, granular access control is defined in the application<boolean> |
 | capabilities.helm | bool | `true` | Enable helm capabilities by the komodor agent |
-| capabilities.events | object | `{"enableRWCache":true,"namespacesDenylist":[],"redact":[],"watchNamespace":null}` | Configure the agent events capabilities |
+| capabilities.events | object | See sub-values | Configure the agent events capabilities |
 | capabilities.events.watchNamespace | string | all | Watch a specific namespace, or all namespaces ("", "all") |
 | capabilities.events.namespacesDenylist | array of strings | `[]` | Do not watch events from these namespaces. eg. `["kube-system", "kube-public"]` |
 | capabilities.events.redact | list | `[]` | Redact workload names from the komodor events. eg. `["password", "token"]` |
