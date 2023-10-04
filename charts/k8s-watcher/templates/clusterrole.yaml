@@ -220,6 +220,8 @@ rules:
     resources:
     - nodes
     - pods
+    - nodes/stats
+    - nodes/proxy
     verbs:
     - get
     - watch
