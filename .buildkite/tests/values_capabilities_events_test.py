@@ -107,4 +107,4 @@ def test_redact_workload_names(setup_cluster):
         data = response.json()["data"][0]["newObj"]["spec"]["template"]["spec"]["containers"][0]["env"][0]["value"]
         assert "REDACTED:" in data, f"Failed to redact workload env, response: {response}"
     except:
-        assert False, f"Failed to find expected redacted value, response: {response}"
+        assert False, f"Failed to find expected redacted value, response: {response.json()}"

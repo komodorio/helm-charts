@@ -12,6 +12,48 @@ steps:
     label: "Validate Readme is up to date"
     if: build.message !~ /feat\(OSS.+\):/i
 
+  - label: "Basic tests"
+    commands:
+      - cd .buildkite/tests
+      - make basic_test
+    agents:
+      builder: "dind"
+
+  - label: "values_base_test"
+    commands:
+      - cd .buildkite/tests
+      - make values_base_test
+    agents:
+      builder: "dind"
+
+  - label: "values_capabilities_events_test"
+    commands:
+      - cd .buildkite/tests
+      - make values_capabilities_events_test
+    agents:
+      builder: "dind"
+
+  - label: "values_capabilities_proxy_test"
+    commands:
+      - cd .buildkite/tests
+      - make values_capabilities_proxy_test
+    agents:
+      builder: "dind"
+
+  - label: "values_capabilities_test"
+    commands:
+      - cd .buildkite/tests
+      - make values_capabilities_test
+    agents:
+      builder: "dind"
+
+  - label: "values_components_test"
+    commands:
+      - cd .buildkite/tests
+      - make values_components_test
+    agents:
+      builder: "dind"
+
   - wait
 
   - commands:
