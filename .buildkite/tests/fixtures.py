@@ -9,7 +9,7 @@ from config import NAMESPACE
 def setup_cluster():
     cluster_name = "test"
     cmd(f"kind create cluster --name {cluster_name} --wait 5m")
-    config.load_kube_config()
+    config.load_kube_config(context=f"kind-{cluster_name}")
     cmd(f"kubectl apply -f ./test-data")
     yield
     cmd(f"kind delete cluster --name {cluster_name}")
