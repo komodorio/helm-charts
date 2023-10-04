@@ -1,8 +1,10 @@
 from config import NAMESPACE
 from fixtures import setup_cluster, kube_client, cleanup_agent_from_cluster
-from helpers.utils import cmd
+from helpers.utils import cmd, get_filename_as_cluster_name
 from helpers.helm_helper import helm_agent_install
 from helpers.kubernetes_helper import create_namespace,wait_for_pod_ready
+
+CLUSTER_NAME = get_filename_as_cluster_name(__file__)
 
 
 # use a proxy + customCA
@@ -45,7 +47,7 @@ def test_use_proxy_and_custom_ca(setup_cluster, kube_client):
     secret_name = "mitmproxysecret"
     cmd(f"kubectl create secret generic {secret_name}  --from-file={root_ca_path} -n {NAMESPACE}")
     # install with proxy and custom ca
-    output, exit_code = helm_agent_install(additional_settings=f"--set proxy.enabled=true "
+    output, exit_code = helm_agent_install(CLUSTER_NAME, additional_settings=f"--set proxy.enabled=true "
                                                                f"--set proxy.http=http://mitm.proxy:8080 "
                                                                f"--set proxy.https=http://mitm.proxy:8080 "
                                                                f"--set customCa.enabled=true "

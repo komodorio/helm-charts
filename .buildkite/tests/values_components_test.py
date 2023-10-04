@@ -1,10 +1,12 @@
 import yaml
 from fixtures import setup_cluster, kube_client
-from helpers.utils import cmd
+from helpers.utils import cmd, get_filename_as_cluster_name
 from deepdiff import DeepDiff
-from config import API_KEY, API_KEY_B64, CLUSTER_NAME, RELEASE_NAME, NAMESPACE, BE_BASE_URL
+from config import API_KEY, API_KEY_B64, RELEASE_NAME, NAMESPACE, BE_BASE_URL
 from helpers.helm_helper import (helm_agent_install, helm_agent_template, get_value_from_helm_template,
                                  validate_template_value_by_values_path)
+
+CLUSTER_NAME = get_filename_as_cluster_name(__file__)
 
 
 def test_override_deployment_pod_annotations():
@@ -27,7 +29,7 @@ def test_override_deployment_tolerations():
             effect: "NoSchedule"
     """
 
-    yaml_templates, exit_code = helm_agent_template(values_file=values_file)
+    yaml_templates, exit_code = helm_agent_template("test", values_file=values_file)
     resp = get_value_from_helm_template(yaml_templates, "Deployment", f"{RELEASE_NAME}-k8s-watcher",
                                         "spec.template.spec.tolerations".split("."))
     response_yaml = yaml.safe_load(resp)
@@ -70,7 +72,7 @@ def test_override_deployment_affinity():
                     - e2e-az2
     """
 
-    yaml_templates, exit_code = helm_agent_template(values_file=values_file)
+    yaml_templates, exit_code = helm_agent_template("test", values_file=values_file)
     resp = get_value_from_helm_template(yaml_templates, "Deployment", f"{RELEASE_NAME}-k8s-watcher",
                                                        "spec.template.spec.affinity".split("."))
     response_yaml = yaml.safe_load(resp)

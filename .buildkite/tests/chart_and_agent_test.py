@@ -4,7 +4,7 @@ import time
 from fixtures import setup_cluster, kube_client
 from helpers.utils import cmd
 from deepdiff import DeepDiff
-from config import API_KEY, API_KEY_B64, CLUSTER_NAME, RELEASE_NAME, NAMESPACE, BE_BASE_URL
+from config import API_KEY, API_KEY_B64, RELEASE_NAME, NAMESPACE, BE_BASE_URL
 from helpers.kubernetes_helper import check_pods_running, create_namespace, create_secret, create_service_account, wait_for_pod_ready, find_pod_name_by_deployment
 from helpers.helm_helper import helm_agent_install, helm_agent_template, get_value_from_helm_template, validate_template_value_by_values_path
 from helpers.komodor_helper import create_komodor_uid, query_backend

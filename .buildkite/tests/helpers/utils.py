@@ -1,4 +1,5 @@
 import subprocess
+import os
 
 
 def cmd(commands, silent=False):
@@ -21,3 +22,9 @@ def cmd(commands, silent=False):
             if not silent:
                 print(line, end="")
     return output.strip(), p.wait()
+
+
+def get_filename_as_cluster_name(filepath):
+    base_name = os.path.basename(filepath)  # Get the base name of the file
+    file_name_without_ext = os.path.splitext(base_name)[0]  # Remove the extension
+    return file_name_without_ext.replace("_", "-")

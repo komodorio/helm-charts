@@ -1,9 +1,11 @@
 import time
 from config import BE_BASE_URL
 from fixtures import setup_cluster, cleanup_agent_from_cluster
-from helpers.utils import cmd
+from helpers.utils import cmd, get_filename_as_cluster_name
 from helpers.helm_helper import helm_agent_install
 from helpers.komodor_helper import create_komodor_uid, query_backend
+
+CLUSTER_NAME = get_filename_as_cluster_name(__file__)
 
 
 # define events.watchnamespace
@@ -19,7 +21,7 @@ def test_define_events_watchnamespace(setup_cluster):
     un_watch_deployment = "nc-server"
     start_time = int(time.time() * 1000)
 
-    output, exit_code = helm_agent_install(additional_settings=f"--set capabilities.events.watchNamespace={watch_namespace}")
+    output, exit_code = helm_agent_install(CLUSTER_NAME, additional_settings=f"--set capabilities.events.watchNamespace={watch_namespace}")
     assert exit_code == 0, f"Agent installation failed, output: {output}"
 
     # Create deploy event
@@ -54,7 +56,7 @@ def test_block_namespace(setup_cluster):
     watch_deployment = "nc-server"
     start_time = int(time.time() * 1000)
 
-    output, exit_code = helm_agent_install(additional_settings=f"--set capabilities.events.namespacesDenylist={{{un_watch_namespace}}}")
+    output, exit_code = helm_agent_install(CLUSTER_NAME, additional_settings=f"--set capabilities.events.namespacesDenylist={{{un_watch_namespace}}}")
     assert exit_code == 0, f"Agent installation failed, output: {output}"
 
     # Create deploy event

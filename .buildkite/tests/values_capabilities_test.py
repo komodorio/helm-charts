@@ -1,9 +1,12 @@
 import time
-from config import BE_BASE_URL, CLUSTER_NAME, NAMESPACE, RELEASE_NAME
+from config import BE_BASE_URL, NAMESPACE, RELEASE_NAME
+from helpers.utils import get_filename_as_cluster_name
 from fixtures import setup_cluster, cleanup_agent_from_cluster
 from helpers.helm_helper import helm_agent_install,validate_template_value_by_values_path
 from helpers.komodor_helper import query_backend, create_komodor_uid
 from helpers.kubernetes_helper import find_pod_name_by_deployment
+
+CLUSTER_NAME = get_filename_as_cluster_name(__file__)
 
 
 # disable agent capabilities (helm, actions) -t
@@ -42,7 +45,7 @@ def verify_metrics_response(response):
 
 
 def test_get_metrics_from_metrics_api(setup_cluster):
-    output, exit_code = helm_agent_install()
+    output, exit_code = helm_agent_install(CLUSTER_NAME)
     assert exit_code == 0, f"Agent installation failed, output: {output}"
 
     container_name = "k8s-watcher"
@@ -64,7 +67,7 @@ def test_get_network_mapper_from_resources_api(setup_cluster):
     namespace = "client-namespace"
     deployment_name = "nc-client"
 
-    output, exit_code = helm_agent_install()
+    output, exit_code = helm_agent_install(CLUSTER_NAME)
     assert exit_code == 0, "Agent installation failed, output: {}".format(output)
 
     kuid = create_komodor_uid("Deployment", deployment_name, namespace)

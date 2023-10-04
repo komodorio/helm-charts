@@ -1,8 +1,10 @@
-from config import API_KEY_B64, CLUSTER_NAME, NAMESPACE, RELEASE_NAME
-from helpers.utils import cmd
+from config import API_KEY_B64, NAMESPACE, RELEASE_NAME
+from helpers.utils import cmd, get_filename_as_cluster_name
 from helpers.helm_helper import helm_agent_install, validate_template_value_by_values_path
 from helpers.kubernetes_helper import create_namespace, create_secret, create_service_account
 from fixtures import setup_cluster, kube_client, cleanup_agent_from_cluster
+
+CLUSTER_NAME = get_filename_as_cluster_name(__file__)
 
 
 def test_override_image_tag():
@@ -28,7 +30,7 @@ def test_api_key_secret_as_api_key(setup_cluster, kube_client):
     cmd(f"kubectl delete namespace {NAMESPACE}")
     create_namespace(kube_client, NAMESPACE)
     create_secret(kube_client, NAMESPACE, "api-secret", {"apiKey": API_KEY_B64})
-    output, exit_code = helm_agent_install(f"--set apiKeySecret=api-secret --set clusterName={CLUSTER_NAME}")
+    output, exit_code = helm_agent_install(None, f"--set apiKeySecret=api-secret --set clusterName={CLUSTER_NAME}")
     assert exit_code == 0, f"helm install failed, output: {output}"
 
 
@@ -38,6 +40,6 @@ def test_use_existing_service_account(setup_cluster, kube_client):
     service_account_name = "test-service-account"
     create_service_account(service_account_name, NAMESPACE)
 
-    output, exit_code = helm_agent_install(additional_settings=f"--set serviceAccount.create=false "
+    output, exit_code = helm_agent_install(CLUSTER_NAME, additional_settings=f"--set serviceAccount.create=false "
                                                                f"--set serviceAccount.name={service_account_name}")
     assert exit_code == 0, f"Agent installation failed, output: {output}"

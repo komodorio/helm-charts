@@ -1,8 +1,8 @@
 import requests
-from config import API_KEY, CLUSTER_NAME, NAMESPACE
+from config import API_KEY
 
 
-def create_komodor_uid(kind, name, namespace=NAMESPACE, cluster_name=CLUSTER_NAME):
+def create_komodor_uid(kind, name, namespace, cluster_name):
     return f"{kind}|{cluster_name}|{namespace}|{name}"
 
 

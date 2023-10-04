@@ -1,18 +1,20 @@
 import yaml
 import os
-from config import API_KEY, CLUSTER_NAME, NAMESPACE, RELEASE_NAME, CHART_PATH
+from config import API_KEY, NAMESPACE, RELEASE_NAME, CHART_PATH
 from helpers.utils import cmd
 
 
-def helm_agent_install(settings=f'--set apiKey={API_KEY} --set clusterName={CLUSTER_NAME} --create-namespace',
-                       additional_settings=""):
+def helm_agent_install(cluster_name, settings=None, additional_settings=""):
+    if settings is None:
+        settings=f'--set apiKey={API_KEY} --set clusterName={cluster_name} --create-namespace'
     output, exit_code = cmd(
         f"helm install {RELEASE_NAME} {CHART_PATH} {settings} {additional_settings} --namespace={NAMESPACE} --wait")
     return output, exit_code
 
 
-def helm_agent_template(settings=f'--set apiKey={API_KEY} --set clusterName={CLUSTER_NAME} --create-namespace',
-                        additional_settings="", values_file=False):
+def helm_agent_template(cluster_name, settings=None,additional_settings="", values_file=False):
+    if settings is None:
+        settings=f'--set apiKey={API_KEY} --set clusterName={cluster_name} --create-namespace'
     if values_file:
         temp_path = os.path.join(os.path.dirname(__file__), "temp-values.yaml")
         print(f"Using values file: {temp_path}, content: {values_file}")
@@ -49,7 +51,7 @@ def get_value_from_helm_template(helm_output, resource_kind, resource_name, fiel
 def validate_template_value_by_values_path(test_value, values_path, resource_type, resource_name, yaml_path):
     if not isinstance(yaml_path, list):
         yaml_path = yaml_path.split(".")
-    yaml_templates, exit_code = helm_agent_template(additional_settings=f"--set {values_path}={test_value}")
+    yaml_templates, exit_code = helm_agent_template("test", additional_settings=f"--set {values_path}={test_value}")
     actual_value = get_value_from_helm_template(yaml_templates, resource_type, resource_name, yaml_path)
 
     assert exit_code == 0, f"helm template failed, output: {yaml_templates}"
