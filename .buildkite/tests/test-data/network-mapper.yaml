@@ -28,6 +28,9 @@ spec:
       containers:
         - name: nc-server
           image: busybox
+          env:
+            - name: TOP_SECRET
+              value: "42"
           args:
             - /bin/sh
             - -c

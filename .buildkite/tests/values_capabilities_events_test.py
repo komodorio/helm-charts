@@ -76,3 +76,35 @@ def test_block_namespace(setup_cluster):
     response = query_events(un_watch_namespace, un_watch_deployment, start_time, end_time)
     assert response.status_code == 200, f"Failed to get configmap from resources api, response: {response}"
     assert len(response.json()['event_deploy']) == 0, f"Failed to get event_deploy from resources api, response: {response}"
+
+
+def test_redact_workload_names(setup_cluster):
+    # start_time = int(time.time() * 1000)
+    # end_time = start_time + 120_000  # two minutes from now
+    deployment = "nc-server"
+    namespace = "server-namespace"
+
+    output, exit_code = helm_agent_install(CLUSTER_NAME, additional_settings=f"--set capabilities.events.redact={{TOP_SECRET}}")
+    assert exit_code == 0, f"Agent installation failed, output: {output}"
+    #
+    # cmd(f'kubectl rollout restart deployment/{deployment} -n {namespace}')
+    # time.sleep(3)
+
+    kuid = create_komodor_uid("Deployment", deployment, namespace, CLUSTER_NAME)
+    url = (f"{BE_BASE_URL}/resources/api/v1/workloads/events/search"
+           f"?limit=1"
+           f"&order=DESC"
+           f"&komodorUids={kuid}"
+           f"&queryRR=true"
+           f"&resourceVersionOrder=DESC"
+           f"&creationTimestampOrder=DESC")
+
+    response = query_backend(url)
+
+    assert response.status_code == 200, f"Failed to get configmap from resources api, response: {response}"
+    assert len(response.json()['data']) > 0, f"Failed to get configmap from resources api, response: {response}"
+    try:
+        data = response.json()["data"][0]["newObj"]["spec"]["template"]["spec"]["containers"][0]["env"][0]["value"]
+        assert "REDACTED:" in data, f"Failed to redact workload env, response: {response}"
+    except:
+        assert False, f"Failed to find expected redacted value, response: {response}"
