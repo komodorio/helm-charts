@@ -32,13 +32,15 @@ def test_all_pods_are_running_in_chart(setup_cluster, kube_client):
     output, exit_code = helm_agent_install(CLUSTER_NAME)
     assert exit_code == 0, "helm install failed, output: {}".format(output)
 
-    kubernetes_helper.check_pods_running(kube_client, 'app.kubernetes.io/name=k8s-watcher')
-    kubernetes_helper.check_pods_running(kube_client, 'app.kubernetes.io/name=k8s-watcher-daemon')
+    kubernetes_helper.check_pods_running(kube_client, 'app.kubernetes.io/name=komodor-agent')
+    kubernetes_helper.check_pods_running(kube_client, 'app.kubernetes.io/name=komodor-agent-daemon')
 
 
 def test_get_configmap_from_resources_api(setup_cluster):
     output, exit_code = helm_agent_install(CLUSTER_NAME)
-    kuid = create_komodor_uid("configmap", "k8s-watcher-config", NAMESPACE, CLUSTER_NAME)
+    assert exit_code == 0, f"Agent installation failed, output: {output}"
+
+    kuid = create_komodor_uid("configmap", "komodor-agent-config", NAMESPACE, CLUSTER_NAME)
     url = f"{BE_BASE_URL}/resources/api/v1/configurations/config-maps/events/search?komodorUids={kuid}&limit=1&fields=clusterName&order=DESC"
 
     response = query_backend(url)
