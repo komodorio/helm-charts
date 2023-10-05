@@ -1,36 +1,36 @@
-# k8s-watcher
+# komodor-agent
 
 Watches and sends kubernetes resource-related events
 
-![Version: 1.16.14](https://img.shields.io/badge/Version-1.16.14-informational?style=flat-square) ![AppVersion: 0.2.59](https://img.shields.io/badge/AppVersion-0.2.59-informational?style=flat-square)
+![Version: 1.17.0](https://img.shields.io/badge/Version-1.17.0-informational?style=flat-square) ![AppVersion: 0.2.59](https://img.shields.io/badge/AppVersion-0.2.59-informational?style=flat-square)
 
 ## TL;DR;
 
 ```bash
 helm repo add komodorio https://helm-charts.komodor.io
 helm repo update
-helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=YOUR_API_KEY_HERE --set watcher.clusterName=CLUSTER_NAME --set watcher.allowReadingPodLogs=true --set watcher.enableAgentTaskExecution=true --set watcher.enableAgentTaskExecutionV2=true --set watcher.enableHelm=true  --set helm.enableActions=true --wait --timeout=90s
+helm upgrade --install komodor-agent komodorio/komodor-agent --set apiKey=YOUR_API_KEY_HERE --set watcher.clusterName=CLUSTER_NAME --set watcher.allowReadingPodLogs=true --set watcher.enableAgentTaskExecution=true --set watcher.enableAgentTaskExecutionV2=true --set watcher.enableHelm=true  --set helm.enableActions=true --wait --timeout=90s
 ```
 
 In case of error try contact us for assistance via intercom at: https://app.komodor.com
 Or run:
 
-1. Logs of k8s-watcher
+1. Logs of komodor-agent
 
 ```bash
-kubectl logs --tail=10 deployment/k8s-watcher  -n komodor
+kubectl logs --tail=10 deployment/komodor-agent  -n komodor
 ```
 
 2. Helm status
 
 ```bash
-helm status k8s-watcher
+helm status komodor-agent
 ```
 
 3. Reinstall
 
 ```bash
-helm uninstall helm-k8s-watcher
+helm uninstall komodor-agent
 ```
 
 ## Introduction
@@ -49,13 +49,13 @@ This chart bootstraps a Kubernetes Resources/Event Watcher deployment on a [Kube
 
 ## Installing the Chart
 
-To install the chart with the release name `k8s-watcher`:
+To install the chart with the release name `komodor-agent`:
 
 ```bash
-helm upgrade --install k8s-watcher komodorio/k8s-watcher --create-namespace --set apiKey=YOUR_API_KEY_HERE --set watcher.clusterName=CLUSTER_NAME
+helm upgrade --install komodor-agent komodorio/komodor-agent --create-namespace --set apiKey=YOUR_API_KEY_HERE --set watcher.clusterName=CLUSTER_NAME
 ```
 
-The command deploys the Komodor K8S-Watcher on the Kubernetes cluster in the default configuration. The [configuration](#Values) section lists the parameters that can be configured during installation.
+The command deploys the komodor-agent on the Kubernetes cluster in the default configuration. The [configuration](#Values) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -66,18 +66,18 @@ When using an existing kubernetes secret resource, specify the secret name in `a
 
 ## Uninstalling the Chart
 
-To uninstall/delete the `k8s-watcher` deployment:
+To uninstall/delete the `komodor-agent` deployment:
 
 Helm 3:
 
 ```bash
-helm uninstall k8s-watcher
+helm uninstall komodor-agent
 ```
 
 Helm 2:
 
 ```bash
-helm delete --purge k8s-watcher
+helm delete --purge komodor-agent
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
@@ -86,13 +86,13 @@ The command removes all the Kubernetes components associated with the chart and 
 
 To install the chart directly with kubectl, use the manifests located in `./kube-install`.
 
-1. Make sure to set the apiKey (as base 64) secret value in `./kube-install/k8s-watcher/templates/secret-credentials.yaml`
-   - `KOMOKW_APIKEY=YOUR_APIKEY sed -i "s/YOUR_APIKEY_AS_BASE_64/$(echo $KOMOKW_APIKEY | base64)/g" kube-install/k8s-watcher/templates/secret-credentials.yaml`
-2. Make sure to set the cluster name in `./kube-install/k8s-watcher/templates/*.yaml`
-   - `CLUSTER_NAME=YOUR_CLUSTER_NAME sed -i "s/YOUR_CLUSTER_NAME/$CLUSTER_NAME/g" kube-install/k8s-watcher/templates/*.yaml`
+1. Make sure to set the apiKey (as base 64) secret value in `./kube-install/komodor-agent/templates/secret-credentials.yaml`
+   - `KOMOKW_APIKEY=YOUR_APIKEY sed -i "s/YOUR_APIKEY_AS_BASE_64/$(echo $KOMOKW_APIKEY | base64)/g" kube-install/komodor-agent/templates/secret-credentials.yaml`
+2. Make sure to set the cluster name in `./kube-install/komodor-agent/templates/*.yaml`
+   - `CLUSTER_NAME=YOUR_CLUSTER_NAME sed -i "s/YOUR_CLUSTER_NAME/$CLUSTER_NAME/g" kube-install/komodor-agent/templates/*.yaml`
 3. Then just apply everything in order:
-   - `kubectl apply -f ./kube-install/k8s-watcher/templates/namespace.yaml`
-   - `kubectl apply -f ./kube-install/k8s-watcher/templates`
+   - `kubectl apply -f ./kube-install/komodor-agent/templates/namespace.yaml`
+   - `kubectl apply -f ./kube-install/komodor-agent/templates`
 
 ## Values
 

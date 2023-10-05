@@ -1,8 +1,14 @@
 steps:
-  - command: helm template k8s-watcher charts/k8s-watcher -f charts/k8s-watcher/values.yaml --set apiKey="sanity" --set clusterName=test-template
+  - command: helm template k8s-watcher charts/k8s-watcher -f charts/k8s-watcher/values.yaml --set apiKey="sanity" --set watcher.clusterName=test-template
     agents:
       builder: "dind"
-    label: "helm template check for sanity"
+    label: "LEGACY: helm template check for sanity"
+    if: build.message !~ /feat\(OSS.+\):/i
+
+  - label: "helm template check for sanity"
+    command: helm template komodor-agent charts/komodor-agent -f charts/komodor-agent/values.yaml --set apiKey="sanity" --set clusterName=test-template
+    agents:
+      builder: "dind"
     if: build.message !~ /feat\(OSS.+\):/i
 
   - commands:
