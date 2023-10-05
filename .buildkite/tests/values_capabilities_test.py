@@ -11,31 +11,6 @@ import yaml
 CLUSTER_NAME = get_filename_as_cluster_name(__file__)
 
 
-def test_disable_helm_capabilities():
-    test_value = "false"
-    test_path = "capabilities.helm"
-
-    yaml_templates, exit_code = helm_agent_template(additional_settings=f"--set {test_path}={test_value}")
-    assert exit_code == 0, f"Failed to get helm template, output: {yaml_templates}"
-
-    config_map_string = get_value_from_helm_template(yaml_templates, "ConfigMap", "komodor-agent-config", ["data"])
-    helm_enabled_in_configmap = yaml.safe_load(yaml.safe_load(config_map_string)['komodor-k8s-watcher.yaml'])['enableHelm']
-    assert not helm_enabled_in_configmap, f"Expected enableHelm to be false, got: {helm_enabled_in_configmap}"
-
-def test_disable_actions_capabilities():
-    test_value = "false"
-    test_path = "capabilities.actions"
-
-    yaml_templates, exit_code = helm_agent_template(additional_settings=f"--set {test_path}={test_value}")
-    assert exit_code == 0, f"Failed to get helm template, output: {yaml_templates}"
-
-    config_map_string = get_value_from_helm_template(yaml_templates, "ConfigMap", "komodor-agent-config", ["data"])
-    agent_configuration_yaml = yaml.safe_load(yaml.safe_load(config_map_string)['komodor-k8s-watcher.yaml'])
-
-    assert not agent_configuration_yaml['actions']['basic'], f"Expected actions.basic to be false, got: {agent_configuration_yaml['actions']['basic']}"
-    assert not agent_configuration_yaml['actions']['advanced'], f"Expected actions.basic to be false, got: {agent_configuration_yaml['actions']['basic']}"
-    assert not agent_configuration_yaml['actions']['podExec'], f"Expected actions.basic to be false, got: {agent_configuration_yaml['actions']['basic']}"
-    assert not agent_configuration_yaml['actions']['portforward'], f"Expected actions.basic to be false, got: {agent_configuration_yaml['actions']['basic']}"
 
 
 def wait_for_metrics(container_name, pod_name):
@@ -109,3 +84,30 @@ def test_network_mapper(setup_cluster):
     assert len(response.json()['nodes']) == 2, f"Expected two items in the 'nodes', response: {response}"
     assert len(response.json()['edges']) == 1, f"Expected one item in the 'edges', response: {response}"
     assert kuid in response.json()['nodes'], f"Expected to find {kuid} in the 'nodes', response: {response}"
+
+
+def test_disable_helm_capabilities():
+    test_value = "false"
+    test_path = "capabilities.helm"
+
+    yaml_templates, exit_code = helm_agent_template(additional_settings=f"--set {test_path}={test_value}")
+    assert exit_code == 0, f"Failed to get helm template, output: {yaml_templates}"
+
+    config_map_string = get_value_from_helm_template(yaml_templates, "ConfigMap", "komodor-agent-config", ["data"])
+    helm_enabled_in_configmap = yaml.safe_load(yaml.safe_load(config_map_string)['komodor-k8s-watcher.yaml'])['enableHelm']
+    assert not helm_enabled_in_configmap, f"Expected enableHelm to be false, got: {helm_enabled_in_configmap}"
+
+def test_disable_actions_capabilities():
+    test_value = "false"
+    test_path = "capabilities.actions"
+
+    yaml_templates, exit_code = helm_agent_template(additional_settings=f"--set {test_path}={test_value}")
+    assert exit_code == 0, f"Failed to get helm template, output: {yaml_templates}"
+
+    config_map_string = get_value_from_helm_template(yaml_templates, "ConfigMap", "komodor-agent-config", ["data"])
+    agent_configuration_yaml = yaml.safe_load(yaml.safe_load(config_map_string)['komodor-k8s-watcher.yaml'])
+
+    assert not agent_configuration_yaml['actions']['basic'], f"Expected actions.basic to be false, got: {agent_configuration_yaml['actions']['basic']}"
+    assert not agent_configuration_yaml['actions']['advanced'], f"Expected actions.basic to be false, got: {agent_configuration_yaml['actions']['basic']}"
+    assert not agent_configuration_yaml['actions']['podExec'], f"Expected actions.basic to be false, got: {agent_configuration_yaml['actions']['basic']}"
+    assert not agent_configuration_yaml['actions']['portforward'], f"Expected actions.basic to be false, got: {agent_configuration_yaml['actions']['basic']}"

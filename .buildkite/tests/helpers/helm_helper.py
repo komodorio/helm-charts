@@ -56,3 +56,22 @@ def validate_template_value_by_values_path(test_value, values_path, resource_typ
 
     assert exit_code == 0, f"helm template failed, output: {yaml_templates}"
     assert test_value in actual_value, f"Expected {test_value} in value {actual_value}"
+
+def get_yaml_from_helm_template(set_command, resource_kind, resource_name, field_path_array):
+    yaml_templates, exit_code = helm_agent_template(additional_settings=f"--set {set_command}")
+    assert exit_code == 0, f"helm template failed, output: {yaml_templates}"
+
+    if not isinstance(field_path_array, list):
+        field_path_array = field_path_array.split(".")
+
+    documents = list(yaml.safe_load_all(yaml_templates))
+    for doc in documents:
+        if doc.get("kind") == resource_kind and doc.get("metadata", {}).get("name") == resource_name:
+            temp = doc
+            for key in field_path_array:
+                if key.isdigit():
+                    temp = temp[int(key)]
+                else:
+                    temp = temp[key]
+            return temp
+    raise ValueError(f"Resource of kind {resource_kind} and name {resource_name} not found in helm output.")

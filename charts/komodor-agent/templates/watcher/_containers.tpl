@@ -1,6 +1,6 @@
 
 {{- define "watcher.container" -}}
-- name: "komodor-agent"
+- name: "k8s-watcher"
   image: {{ .Values.imageRepo }}/{{ .Values.components.komodorAgent.watcher.image.name}}:{{ .Values.components.komodorAgent.watcher.image.tag | default .Chart.AppVersion }}
   imagePullPolicy: {{ .Values.pullPolicy }}
   resources:
