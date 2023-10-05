@@ -86,10 +86,17 @@ steps:
 
   - wait
 
-  - commands:
+  - label: "LEGACY: dry-run installation on staging before version bump"
+    commands:
       - komo ctx staging
       - helm upgrade --install k8s-watcher-production --reuse-values --dry-run charts/k8s-watcher --set apiKey="test" --set clusterName=staging-test
-    label: "dry-run installation on staging before version bump"
+    if: build.message !~ /feat\(OSS.+\):/i
+
+  - label: "dry-run installation on staging before version bump"
+    commands:
+      - komo ctx staging
+      - helm get values komodor-agent-production > prod-values.yaml
+      - helm upgrade --install komodor-agent-production -f prod-values.yaml --dry-run charts/komodor-agent --set apiKey="test" --set clusterName=staging-test
     if: build.message !~ /feat\(OSS.+\):/i
   - wait
 
