@@ -2,24 +2,40 @@ import time
 from config import BE_BASE_URL, NAMESPACE, RELEASE_NAME
 from helpers.utils import get_filename_as_cluster_name
 from fixtures import setup_cluster, cleanup_agent_from_cluster
-from helpers.helm_helper import helm_agent_install,validate_template_value_by_values_path
+from helpers.helm_helper import helm_agent_install, validate_template_value_by_values_path, helm_agent_template, \
+    get_value_from_helm_template
 from helpers.komodor_helper import query_backend, create_komodor_uid
 from helpers.kubernetes_helper import find_pod_name_by_deployment
+import yaml
 
 CLUSTER_NAME = get_filename_as_cluster_name(__file__)
 
 
-# disable agent capabilities (helm, actions) -t
 def test_disable_helm_capabilities():
     test_value = "false"
-    set_path = "capabilities.helm"
+    test_path = "capabilities.helm"
 
-    # check configmap
-    validate_template_value_by_values_path(test_value, set_path, "ConfigMap", "k8s-watcher-config",
-                                           ['data', 'komodor-k8s-watcher.yaml', 'enableHelm'])
-    # # check clusterRole
-    # validate_template_value_by_values_path(test_value, set_path, "ClusterRole", "k8s-watcher",
-    #                                        template_path)
+    yaml_templates, exit_code = helm_agent_template(additional_settings=f"--set {test_path}={test_value}")
+    assert exit_code == 0, f"Failed to get helm template, output: {yaml_templates}"
+
+    config_map_string = get_value_from_helm_template(yaml_templates, "ConfigMap", "komodor-agent-config", ["data"])
+    helm_enabled_in_configmap = yaml.safe_load(yaml.safe_load(config_map_string)['komodor-k8s-watcher.yaml'])['enableHelm']
+    assert not helm_enabled_in_configmap, f"Expected enableHelm to be false, got: {helm_enabled_in_configmap}"
+
+def test_disable_actions_capabilities():
+    test_value = "false"
+    test_path = "capabilities.actions"
+
+    yaml_templates, exit_code = helm_agent_template(additional_settings=f"--set {test_path}={test_value}")
+    assert exit_code == 0, f"Failed to get helm template, output: {yaml_templates}"
+
+    config_map_string = get_value_from_helm_template(yaml_templates, "ConfigMap", "komodor-agent-config", ["data"])
+    agent_configuration_yaml = yaml.safe_load(yaml.safe_load(config_map_string)['komodor-k8s-watcher.yaml'])
+
+    assert not agent_configuration_yaml['actions']['basic'], f"Expected actions.basic to be false, got: {agent_configuration_yaml['actions']['basic']}"
+    assert not agent_configuration_yaml['actions']['advanced'], f"Expected actions.basic to be false, got: {agent_configuration_yaml['actions']['basic']}"
+    assert not agent_configuration_yaml['actions']['podExec'], f"Expected actions.basic to be false, got: {agent_configuration_yaml['actions']['basic']}"
+    assert not agent_configuration_yaml['actions']['portforward'], f"Expected actions.basic to be false, got: {agent_configuration_yaml['actions']['basic']}"
 
 
 def wait_for_metrics(container_name, pod_name):
@@ -57,6 +73,7 @@ def test_get_metrics_from_metrics_api(setup_cluster):
     assert response, "Failed to get metrics from metrics API"
 
     verify_metrics_response(response)
+
 
 ##################
 # Network-Mapper #

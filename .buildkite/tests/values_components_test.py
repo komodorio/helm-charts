@@ -8,7 +8,6 @@ from helpers.helm_helper import (helm_agent_install, helm_agent_template, get_va
 
 CLUSTER_NAME = get_filename_as_cluster_name(__file__)
 
-
 def test_override_deployment_pod_annotations():
     test_value = "test_value"
     set_path = "components.komodorAgent.podAnnotations.test"
@@ -29,7 +28,7 @@ def test_override_deployment_tolerations():
             effect: "NoSchedule"
     """
 
-    yaml_templates, exit_code = helm_agent_template("test", values_file=values_file)
+    yaml_templates, exit_code = helm_agent_template(values_file=values_file)
     resp = get_value_from_helm_template(yaml_templates, "Deployment", f"{RELEASE_NAME}-komodor-agent",
                                         "spec.template.spec.tolerations".split("."))
     response_yaml = yaml.safe_load(resp)
@@ -72,7 +71,7 @@ def test_override_deployment_affinity():
                     - e2e-az2
     """
 
-    yaml_templates, exit_code = helm_agent_template("test", values_file=values_file)
+    yaml_templates, exit_code = helm_agent_template(values_file=values_file)
     resp = get_value_from_helm_template(yaml_templates, "Deployment", f"{RELEASE_NAME}-komodor-agent",
                                                        "spec.template.spec.affinity".split("."))
     response_yaml = yaml.safe_load(resp)

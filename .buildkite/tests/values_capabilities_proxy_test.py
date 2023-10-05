@@ -7,7 +7,6 @@ from helpers.kubernetes_helper import create_namespace,wait_for_pod_ready
 CLUSTER_NAME = get_filename_as_cluster_name(__file__)
 
 
-# use a proxy + customCA
 def test_use_proxy_and_custom_ca(setup_cluster, kube_client):
     def extract_root_ca(pem_file_path, output_file_path):
         with open(pem_file_path, 'r') as file:
