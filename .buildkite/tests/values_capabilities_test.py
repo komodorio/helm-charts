@@ -37,12 +37,11 @@ def test_get_metrics(setup_cluster):
     output, exit_code = helm_agent_install(CLUSTER_NAME)
     assert exit_code == 0, f"Agent installation failed, output: {output}"
 
-    container_name = "komodor-agent"
-    deployment_name = f"{RELEASE_NAME}-{container_name}"
+    deployment_name = f"{RELEASE_NAME}-komodor-agent"
     pod_name = find_pod_name_by_deployment(deployment_name, NAMESPACE)
     assert pod_name, "Failed to find pod by deployment name"
 
-    response = wait_for_metrics(container_name, pod_name)
+    response = wait_for_metrics("k8s-watcher", pod_name)
     assert response, "Failed to get metrics from metrics API"
 
     verify_metrics_response(response)
