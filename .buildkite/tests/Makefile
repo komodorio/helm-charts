@@ -1,7 +1,7 @@
 # Variables
 VENV_NAME = .venv
 VENV_ACTIVATE = . $(VENV_NAME)/bin/activate
-KIND_VERSION = v0.20.0
+KIND_VERSION = v0.19.0
 KIND_URL_BASE = https://kind.sigs.k8s.io/dl/$(KIND_VERSION)
 KIND_BINARY = ./kind
 
