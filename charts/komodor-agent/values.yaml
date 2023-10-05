@@ -50,8 +50,8 @@ customCa:
 
 # imageRepo -- (string) Override the komodor agent image repository.
 imageRepo: public.ecr.aws/komodor-public
-# pullPolicy -- (string) Image pull policy for the komodor agent image.
-pullPolicy: IfNotPresent # <ifNotPresent\Always\Never>
+# pullPolicy -- (string) Default Image pull policy for the komodor agent image exceptable values <ifNotPresent\Always\Never>.
+pullPolicy: IfNotPresent
 # imagePullSecret -- (string) Set the image pull secret for the komodor agent
 imagePullSecret: ""
 
