@@ -39,8 +39,8 @@ This chart bootstraps a Kubernetes Resources/Event Watcher deployment on a [Kube
 
 ### Supported architectures
 
-- [x] linux/amd64
-- [x] linux/arm64
+- :white_check_mark: linux/amd64
+- :white_check_mark: linux/arm64
 
 ## Prerequisites
 
