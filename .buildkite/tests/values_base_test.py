@@ -35,7 +35,6 @@ def test_override_image_name():
 
 
 
-# apiKeysecret as apikey
 def test_api_key_from_secret(setup_cluster, kube_client):
     cmd(f"kubectl delete namespace {NAMESPACE}")
     create_namespace(kube_client, NAMESPACE)
@@ -44,7 +43,7 @@ def test_api_key_from_secret(setup_cluster, kube_client):
     assert exit_code == 0, f"helm install failed, output: {output}"
 
 
-# use an existing service_account with annotations
+
 def test_use_existing_service_account(setup_cluster, kube_client):
     create_namespace(kube_client, NAMESPACE)
     service_account_name = "test-service-account"
@@ -71,3 +70,14 @@ def test_override_image_default_pull_policy():
     for container in daemonset_containers:
         assert container[
                    "imagePullPolicy"] == "Always", f"imagePullPolicy is not set to: Always in daemonset {daemonset_name}"
+
+
+def test_image_pull_secret_for_service_account():
+    set_path = "imagePullSecret"
+    value = "other-image-name"
+    set_command = f"{set_path}={value}"
+
+    service_account_name = f'{RELEASE_NAME}-komodor-agent'
+    image_pull_secret = get_yaml_from_helm_template(set_command, "ServiceAccount", service_account_name, "imagePullSecrets")
+
+    assert image_pull_secret[0]["name"] == value, f"Expected {value} in imagePullSecrets {image_pull_secret[0]['name']}"
