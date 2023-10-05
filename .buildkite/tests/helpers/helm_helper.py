@@ -25,7 +25,7 @@ def helm_agent_template(cluster_name, settings=None,additional_settings="", valu
         additional_settings += f" -f {temp_path}"
 
     output, exit_code = cmd(
-        f"helm template {RELEASE_NAME} {CHART_PATH} {settings} {additional_settings} --namespace={NAMESPACE}")
+        f"helm template {RELEASE_NAME} {CHART_PATH} {settings} {additional_settings} --namespace={NAMESPACE}", silent=True)
     return output, exit_code
 
 

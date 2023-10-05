@@ -13,7 +13,7 @@ def test_override_image_tag():
     template_path = "spec.template.spec.containers.1.image"
 
     validate_template_value_by_values_path(test_value, set_path, "Deployment",
-                                           f"{RELEASE_NAME}-k8s-watcher", template_path)
+                                           f"{RELEASE_NAME}-komodor-agent", template_path)
 
 
 def test_override_image_name():
@@ -22,7 +22,7 @@ def test_override_image_name():
     template_path = "spec.template.spec.containers.2.image"
 
     validate_template_value_by_values_path(test_value, set_path, "Deployment",
-                                           f"{RELEASE_NAME}-k8s-watcher", template_path)
+                                           f"{RELEASE_NAME}-komodor-agent", template_path)
 
 
 # apiKeysecret as apikey
