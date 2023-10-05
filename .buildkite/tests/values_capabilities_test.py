@@ -2,15 +2,13 @@ import time
 from config import BE_BASE_URL, NAMESPACE, RELEASE_NAME
 from helpers.utils import get_filename_as_cluster_name
 from fixtures import setup_cluster, cleanup_agent_from_cluster
-from helpers.helm_helper import helm_agent_install, validate_template_value_by_values_path, helm_agent_template, \
-    get_value_from_helm_template
+from helpers.helm_helper import helm_agent_install, helm_agent_template, \
+    get_yaml_from_helm_template
 from helpers.komodor_helper import query_backend, create_komodor_uid
 from helpers.kubernetes_helper import find_pod_name_by_deployment
 import yaml
 
 CLUSTER_NAME = get_filename_as_cluster_name(__file__)
-
-
 
 
 def wait_for_metrics(container_name, pod_name):
@@ -87,27 +85,33 @@ def test_network_mapper(setup_cluster):
 
 
 def test_disable_helm_capabilities():
-    test_value = "false"
-    test_path = "capabilities.helm"
+    set_path = "capabilities.helm"
+    value = "false"
+    set_command = f"{set_path}={value}"
 
-    yaml_templates, exit_code = helm_agent_template(additional_settings=f"--set {test_path}={test_value}")
-    assert exit_code == 0, f"Failed to get helm template, output: {yaml_templates}"
+    configmap_name = "komodor-agent-config"
+    configmap_data = get_yaml_from_helm_template(set_command, "ConfigMap", configmap_name, ["data"])
 
-    config_map_string = get_value_from_helm_template(yaml_templates, "ConfigMap", "komodor-agent-config", ["data"])
-    helm_enabled_in_configmap = yaml.safe_load(yaml.safe_load(config_map_string)['komodor-k8s-watcher.yaml'])['enableHelm']
-    assert not helm_enabled_in_configmap, f"Expected enableHelm to be false, got: {helm_enabled_in_configmap}"
+    agent_configuration_yaml = yaml.safe_load(configmap_data['komodor-k8s-watcher.yaml'])
+    assert agent_configuration_yaml[
+               'enableHelm'] == False, f"Expected enableHelm to be false, got: {agent_configuration_yaml['enableHelm']} "
+
 
 def test_disable_actions_capabilities():
-    test_value = "false"
-    test_path = "capabilities.actions"
+    set_path = "capabilities.actions"
+    value = "false"
+    set_command = f"{set_path}={value}"
 
-    yaml_templates, exit_code = helm_agent_template(additional_settings=f"--set {test_path}={test_value}")
-    assert exit_code == 0, f"Failed to get helm template, output: {yaml_templates}"
+    configmap_name = "komodor-agent-config"
+    configmap_data = get_yaml_from_helm_template(set_command, "ConfigMap", configmap_name, ["data"])
 
-    config_map_string = get_value_from_helm_template(yaml_templates, "ConfigMap", "komodor-agent-config", ["data"])
-    agent_configuration_yaml = yaml.safe_load(yaml.safe_load(config_map_string)['komodor-k8s-watcher.yaml'])
+    agent_configuration_yaml = yaml.safe_load(configmap_data['komodor-k8s-watcher.yaml'])
 
-    assert not agent_configuration_yaml['actions']['basic'], f"Expected actions.basic to be false, got: {agent_configuration_yaml['actions']['basic']}"
-    assert not agent_configuration_yaml['actions']['advanced'], f"Expected actions.basic to be false, got: {agent_configuration_yaml['actions']['basic']}"
-    assert not agent_configuration_yaml['actions']['podExec'], f"Expected actions.basic to be false, got: {agent_configuration_yaml['actions']['basic']}"
-    assert not agent_configuration_yaml['actions']['portforward'], f"Expected actions.basic to be false, got: {agent_configuration_yaml['actions']['basic']}"
+    assert not agent_configuration_yaml['actions'][
+        'basic'], f"Expected actions.basic to be false, got: {agent_configuration_yaml['actions']['basic']}"
+    assert not agent_configuration_yaml['actions'][
+        'advanced'], f"Expected actions.basic to be false, got: {agent_configuration_yaml['actions']['basic']}"
+    assert not agent_configuration_yaml['actions'][
+        'podExec'], f"Expected actions.basic to be false, got: {agent_configuration_yaml['actions']['basic']}"
+    assert not agent_configuration_yaml['actions'][
+        'portforward'], f"Expected actions.basic to be false, got: {agent_configuration_yaml['actions']['basic']}"

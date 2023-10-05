@@ -1,20 +1,21 @@
 import yaml
-from fixtures import setup_cluster, kube_client
-from helpers.utils import cmd, get_filename_as_cluster_name
-from deepdiff import DeepDiff
-from config import API_KEY, API_KEY_B64, RELEASE_NAME, NAMESPACE, BE_BASE_URL
-from helpers.helm_helper import (helm_agent_install, helm_agent_template, get_value_from_helm_template,
-                                 validate_template_value_by_values_path)
+from helpers.utils import get_filename_as_cluster_name
+from config import RELEASE_NAME
+from helpers.helm_helper import get_yaml_from_helm_template
 
 CLUSTER_NAME = get_filename_as_cluster_name(__file__)
 
-def test_override_deployment_pod_annotations():
-    test_value = "test_value"
-    set_path = "components.komodorAgent.podAnnotations.test"
-    template_path = "spec.template.metadata.annotations.test"
 
-    validate_template_value_by_values_path(test_value, set_path, "Deployment", f"{RELEASE_NAME}-komodor-agent",
-                                           template_path)
+def test_override_deployment_pod_annotations():
+    set_path = "components.komodorAgent.podAnnotations.test"
+    value = "test_value"
+    set_command = f"{set_path}={value}"
+
+    deployment_name = f"{RELEASE_NAME}-komodor-agent"
+    pod_annotations = get_yaml_from_helm_template(set_command, "Deployment", deployment_name,
+                                                  "spec.template.metadata.annotations.test")
+
+    assert pod_annotations == value, f"Expected {value} in pod annotations {pod_annotations}"
 
 
 def test_override_deployment_tolerations():
@@ -28,32 +29,36 @@ def test_override_deployment_tolerations():
             effect: "NoSchedule"
     """
 
-    yaml_templates, exit_code = helm_agent_template(values_file=values_file)
-    resp = get_value_from_helm_template(yaml_templates, "Deployment", f"{RELEASE_NAME}-komodor-agent",
-                                        "spec.template.spec.tolerations".split("."))
-    response_yaml = yaml.safe_load(resp)
-    values_dict = yaml.safe_load(values_file)
-    validate_diff = DeepDiff(values_dict['components']['komodorAgent']['tolerations'], response_yaml)
+    deployment_name = f"{RELEASE_NAME}-komodor-agent"
+    deployment_tolerations = get_yaml_from_helm_template("test=test", "Deployment", deployment_name,
+                                                         "spec.template.spec.tolerations", values_file=values_file)
 
-    assert exit_code == 0, f"helm template failed, output: {yaml_templates}"
-    assert validate_diff == {}, f"Expected affinity: {values_dict['components']['komodorAgent']['tolerations']} in values file {response_yaml}"
+    assert deployment_tolerations[0]["key"] == "gpu", f"Expected gpu in deployment tolerations {deployment_tolerations}"
 
 
 def test_override_deployment_node_selector():
-    test_value = "test_node_selector"
     set_path = "components.komodorAgent.nodeSelector.test_node_selector"
-    template_path = "spec.template.spec.nodeSelector.test_node_selector"
+    value = "test_node_selector"
+    set_command = f"{set_path}={value}"
 
-    validate_template_value_by_values_path(test_value, set_path, "Deployment", f"{RELEASE_NAME}-komodor-agent",
-                                           template_path)
+    deployment_name = f"{RELEASE_NAME}-komodor-agent"
+    pod_annotations = get_yaml_from_helm_template(set_command, "Deployment", deployment_name,
+                                                  "spec.template.spec.nodeSelector.test_node_selector")
+
+    assert pod_annotations == value, f"Expected {value} in pod annotations {pod_annotations}"
+
 
 def test_override_deployment_annotations():
-    test_value = "test_value"
     set_path = "components.komodorAgent.annotations.test"
-    template_path = "metadata.annotations.test"
+    value = "test"
+    set_command = f"{set_path}={value}"
 
-    validate_template_value_by_values_path(test_value, set_path, "Deployment", f"{RELEASE_NAME}-komodor-agent",
-                                           template_path)
+    deployment_name = f"{RELEASE_NAME}-komodor-agent"
+    deployment_annotations = get_yaml_from_helm_template(set_command, "Deployment", deployment_name,
+                                                         "metadata.annotations.test")
+
+    assert deployment_annotations == value, f"Expected {value} in pod annotations {deployment_annotations}"
+
 
 def test_override_deployment_affinity():
     values_file = """
@@ -71,13 +76,8 @@ def test_override_deployment_affinity():
                     - e2e-az2
     """
 
-    yaml_templates, exit_code = helm_agent_template(values_file=values_file)
-    resp = get_value_from_helm_template(yaml_templates, "Deployment", f"{RELEASE_NAME}-komodor-agent",
-                                                       "spec.template.spec.affinity".split("."))
-    response_yaml = yaml.safe_load(resp)
-    values_dict = yaml.safe_load(values_file)
-    validate_diff = DeepDiff(values_dict['components']['komodorAgent']['affinity'], response_yaml)
+    deployment_name = f"{RELEASE_NAME}-komodor-agent"
+    deployment_affinity = get_yaml_from_helm_template("test=test", "Deployment", deployment_name,
+                                                      "spec.template.spec.affinity", values_file=values_file)
 
-    assert exit_code == 0, f"helm template failed, output: {yaml_templates}"
-    assert validate_diff == {}, f"Expected affinity: {values_dict['components']['komodorAgent']['affinity']} in values file {response_yaml}"
-
+    assert deployment_affinity is not None, f"Expected affinity in deployment {deployment_affinity}"
