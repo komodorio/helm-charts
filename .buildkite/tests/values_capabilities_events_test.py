@@ -79,19 +79,21 @@ def test_block_namespace(setup_cluster):
 
 
 def test_redact_workload_names(setup_cluster):
-    # start_time = int(time.time() * 1000)
-    # end_time = start_time + 120_000  # two minutes from now
+    start_time = int(time.time() * 1000)
+    end_time = start_time + 120_000  # two minutes from now
     deployment = "nc-server"
     namespace = "server-namespace"
 
     output, exit_code = helm_agent_install(CLUSTER_NAME, additional_settings=f"--set capabilities.events.redact={{TOP_SECRET}}")
     assert exit_code == 0, f"Agent installation failed, output: {output}"
     #
-    # cmd(f'kubectl rollout restart deployment/{deployment} -n {namespace}')
-    # time.sleep(3)
+    cmd(f'kubectl rollout restart deployment/{deployment} -n {namespace}')
+    time.sleep(3)
 
     kuid = create_komodor_uid("Deployment", deployment, namespace, CLUSTER_NAME)
     url = (f"{BE_BASE_URL}/resources/api/v1/workloads/events/search"
+           f"?fromEpoch={start_time}"
+           f"&toEpoch={end_time}"
            f"?limit=1"
            f"&order=DESC"
            f"&komodorUids={kuid}"
