@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "komodorAgent.name" . }}-config
+data:
+  clusterName: {{ .Values.clusterName | required "clusterName is a required value!" }}
+  komodor-k8s-watcher.yaml: |
+    {{ toYaml .Values.communications | trim | nindent 4 }}
+    # clusterName: ""
+    enableAgentTaskExecution: true
+    enableAgentTaskExecutionV2: true
+    allowReadingPodLogs: {{ .Values.capabilities.logs.enabled}}
+    enableHelm: {{ .Values.capabilities.helm }}
+    daemon:
+      enabled: {{ .Values.capabilities.metrics }}
+{{/*  #    varsConfigMapName: k8s-watcher-daemon-env-vars # default*/}}
+{{/*  #  servers:*/}}
+{{/*  #    healthCheck: {} # default*/}}
+    collectHistory: true
+    watchNamespace: {{ .Values.capabilities.events.watchNamespace }}
+    namespacesDenylist: {{ .Values.capabilities.events.namespacesDenylist }}
+    logsNamespacesDenylist: {{ .Values.capabilities.logs.logsNamespacesDenylist }}
+    logsNamespacesAllowlist: {{ .Values.capabilities.logs.logsNamespacesAllowlist }}
+    nameDenylist: {{ .Values.capabilities.logs.nameDenylist }}
+    redact: {{ .Values.capabilities.events.redact }}
+    redactLogs: {{ .Values.capabilities.logs.redact }}
+    actions:
+      basic: {{ .Values.capabilities.actions }}
+      advanced: {{ .Values.capabilities.actions }}
+      podExec: {{ .Values.capabilities.actions }}
+      portforward: {{ .Values.capabilities.actions }}
+    telemetry:
+      enable: {{ .Values.capabilities.telemetry.enabled }}
+      collectApiServerMetrics: {{ .Values.capabilities.telemetry.collectApiServerMetrics }}
+      serverHost: {{ .Values.communications.telemetryServerHost }}
+{{/*  #  memoryThresholdSafetyCheck:*/}}
+{{/*  #    enable: true # default*/}}
+    networkMapper:
+      enable: {{ .Values.capabilities.networkMapper }}
+{{/*  #  monitoringFQDN: "" # default*/}}
+{{/*  #  controller:*/}}
+    resync:
+      period: "0"
+    resources:
+      {{ toYaml .Values.allowedResources | trim | nindent 6 }}
+
+  installed-values.yaml: |
+    {{ toYaml .Values | nindent 4 }}   

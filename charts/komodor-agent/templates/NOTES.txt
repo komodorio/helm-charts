@@ -1,0 +1,9 @@
+Thank you for installing {{ .Chart.Name }}.
+
+The watcher was installed in  namespace: {{ .Release.Namespace }}
+
+Visit our site at:
+https://app.komodor.com
+
+To learn more about Komodor please visit:
+https://docs.komodor.com

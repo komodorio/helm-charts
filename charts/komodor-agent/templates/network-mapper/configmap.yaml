@@ -1,0 +1,8 @@
+{{- if .Values.capabilities.networkMapper }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "network.mapper.configMapName" . }}
+data: {}
+binaryData: {}
+{{- end }}

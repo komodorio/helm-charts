@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "komodorAgent.fullname" . }}
+  labels:
+    {{- include "komodorAgent.labels" . | nindent 4 }}
+  annotations:
+    {{ toYaml .Values.components.komodorAgent.annotations | nindent 4 }}
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      {{- include "komodorAgent.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if not (empty (((.Values.components).komodorAgent).podAnnotations)) }}
+        {{- toYaml .Values.components.komodorAgent.podAnnotations | trim | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "komodorAgent.selectorLabels" . | nindent 8 }}
+    spec:
+      priorityClassName: {{ .Release.Name }}-agent-high-priority
+      serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
+      affinity:
+        {{- toYaml .Values.components.komodorAgent.affinity | nindent 8 }}
+      nodeSelector:
+        {{- toYaml .Values.components.komodorAgent.nodeSelector | nindent 8 }}
+      tolerations:
+        {{- toYaml .Values.components.komodorAgent.tolerations | nindent 8 }}
+  
+      {{- if (.Values.customCa).enabled  }}
+      initContainers:
+        - name: init-cert
+          image: {{ .Values.imageRepo }}/{{ .Values.components.komodorAgent.supervisor.image.name}}:{{ .Values.components.komodorAgent.supervisor.image.tag | default .Chart.AppVersion }}
+          command: 
+            - sh
+            - -c
+            - cp /certs/* /etc/ssl/certs/ &&
+              update-ca-certificates --fresh &&
+              cp -r /etc/ssl/certs/* /trusted-ca/
+          volumeMounts:
+            {{- include "custom-ca.trusted-volumeMounts-init" .    | nindent 12 }}
+            {{- include "custom-ca.volumeMounts" .                 | nindent 12 }}
+      {{- end }}
+
+      containers:
+        {{- include "metrics.container" .                   | trim | nindent 8 }}
+        {{- include "network_mapper.container" .            | trim | nindent 8 }}
+        {{- include "watcher.container" .                   | trim | nindent 8 }}
+        {{- include "supervisor.container" .                | trim | nindent 8 }}
+
+      volumes:
+        {{- include "metrics.deploy.volumes" .              | trim | nindent 8 }}
+        {{- include "agent.deploy.volumes" .                | trim | nindent 8 }}
+        {{- include "custom-ca.volume" .                    | trim | nindent 8 }}
+        {{- include "custom-ca.trusted-volume" .            | trim | nindent 8 }}

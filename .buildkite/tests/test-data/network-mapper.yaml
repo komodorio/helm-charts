@@ -1,0 +1,82 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: server-namespace
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: client-namespace
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nc-server
+  namespace: server-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nc-server
+  template:
+    metadata:
+      labels:
+        app: nc-server
+    spec:
+      containers:
+        - name: nc-server
+          image: busybox
+          env:
+            - name: TOP_SECRET
+              value: "42"
+          args:
+            - /bin/sh
+            - -c
+            - |
+              while true; do
+                echo "Hello from server" | nc -l -p 12345 -w 1
+              done
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nc-service
+  namespace: server-namespace
+spec:
+  selector:
+    app: nc-server
+  ports:
+    - protocol: TCP
+      port: 12345
+      targetPort: 12345
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nc-client
+  namespace: client-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nc-client
+  template:
+    metadata:
+      labels:
+        app: nc-client
+    spec:
+      containers:
+        - name: nc-client
+          image: busybox
+          args:
+            - /bin/sh
+            - -c
+            - |
+              while true; do
+                echo "Hello from client" | nc nc-service.server-namespace 12345
+                sleep 1
+              done

@@ -1,0 +1,44 @@
+{{- if (or (ne .Values.capabilities.metrics false) (ne .Values.capabilities.networkMapper false)) }}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "komodorAgent.fullname" . }}-daemon
+  labels:
+    {{- include "komodorAgentDaemon.labels" . | nindent 4 }}
+  {{- if not (empty ((.Values.components).komodorDaemon).annotations) }}
+  annotations: {{ toYaml ((.Values.components).komodorDaemon).annotations | nindent 4 }}
+  {{- end }}
+spec:
+  selector:
+    matchLabels: {{- include "komodorAgentDaemon.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if not (empty (((.Values.components).komodorDaemon).podAnnotations)) }}
+        {{- toYaml .Values.components.komodorDaemon.podAnnotations | trim | nindent 8 }}
+        {{- end }}
+      labels: {{- include "komodorAgentDaemon.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- include "network_mapper.daemonset.network" .   | nindent 6 }}
+
+      priorityClassName: {{ .Release.Name }}-daemon-high-priority
+      serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
+      affinity:
+        {{- toYaml .Values.components.komodorAgent.affinity | nindent 8 }}
+      nodeSelector:
+        {{- toYaml .Values.components.komodorAgent.nodeSelector | nindent 8 }}
+      tolerations:
+        {{- toYaml .Values.components.komodorAgent.tolerations | nindent 8}}
+      containers:
+        {{- include "metrics.daemonset.container" .        | nindent 8 }}
+        {{- include "network_mapper.daemonset.container" . | nindent 8 }}
+      volumes:
+        {{- include "metrics.daemonset.volumes" .        | nindent 8 }}
+        {{- include "network_mapper.daemonset.volumes" . | nindent 8 }}
+        {{- include "custom-ca.volume" .                 | nindent 8 }}
+      initContainers:
+        {{- include "metrics.daemonset.init.container" . | nindent 8 }}
+
+
+{{- end }}
