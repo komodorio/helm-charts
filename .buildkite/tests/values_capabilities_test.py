@@ -60,11 +60,11 @@ def verify_metrics_response(response):
         'avgUtilization'), f"Expected at least one item in the 'avgUtilization', response: {response}"
 
 
-def test_get_metrics_from_metrics_api(setup_cluster):
+def test_get_metrics(setup_cluster):
     output, exit_code = helm_agent_install(CLUSTER_NAME)
     assert exit_code == 0, f"Agent installation failed, output: {output}"
 
-    container_name = "k8s-watcher"
+    container_name = "komodor-agent"
     deployment_name = f"{RELEASE_NAME}-{container_name}"
     pod_name = find_pod_name_by_deployment(deployment_name, NAMESPACE)
     assert pod_name, "Failed to find pod by deployment name"
@@ -80,17 +80,24 @@ def test_get_metrics_from_metrics_api(setup_cluster):
 ##################
 
 
-def test_get_network_mapper_from_resources_api(setup_cluster):
+def test_network_mapper(setup_cluster):
     namespace = "client-namespace"
     deployment_name = "nc-client"
+    start_time = int(time.time() * 1000)
+    end_time = int(time.time() * 1000) + 180_000  # three minutes from now
 
     output, exit_code = helm_agent_install(CLUSTER_NAME)
     assert exit_code == 0, "Agent installation failed, output: {}".format(output)
 
     kuid = create_komodor_uid("Deployment", deployment_name, namespace, CLUSTER_NAME)
-    url = f"{BE_BASE_URL}/resources/api/v1/network-maps/graph?clusterNames={CLUSTER_NAME}&namespaces={namespace}&komodorUids={kuid}"
+    url = (f"{BE_BASE_URL}/resources/api/v1/network-maps/graph"
+           f"?fromEpoch={start_time}"
+           f"&toEpoch={end_time}"
+           f"&clusterNames={CLUSTER_NAME}"
+           f"&namespaces={namespace}"
+           f"&komodorUids={kuid}")
 
-    for i in range(120):  # ~2 minutes
+    for i in range(180):  # ~3 minutes
         response = query_backend(url)
         if len(response.json()['nodes']) != 0:
             break
