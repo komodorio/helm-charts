@@ -94,7 +94,7 @@ def test_redact_workload_names(setup_cluster):
     url = (f"{BE_BASE_URL}/resources/api/v1/workloads/events/search"
            f"?fromEpoch={start_time}"
            f"&toEpoch={end_time}"
-           f"?limit=1"
+           f"&limit=1"
            f"&order=DESC"
            f"&komodorUids={kuid}"
            f"&queryRR=true"
