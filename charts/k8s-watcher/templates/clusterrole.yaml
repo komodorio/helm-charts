@@ -413,6 +413,8 @@ rules:
     - namespaces
     - pods
     - nodes
+    - nodes/stats
+    - nodes/proxy
     verbs:
     - get
     - list
