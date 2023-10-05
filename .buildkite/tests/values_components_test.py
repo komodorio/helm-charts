@@ -14,7 +14,7 @@ def test_override_deployment_pod_annotations():
     set_path = "components.komodorAgent.podAnnotations.test"
     template_path = "spec.template.metadata.annotations.test"
 
-    validate_template_value_by_values_path(test_value, set_path, "Deployment", f"{RELEASE_NAME}-k8s-watcher",
+    validate_template_value_by_values_path(test_value, set_path, "Deployment", f"{RELEASE_NAME}-komodor-agent",
                                            template_path)
 
 
@@ -30,7 +30,7 @@ def test_override_deployment_tolerations():
     """
 
     yaml_templates, exit_code = helm_agent_template("test", values_file=values_file)
-    resp = get_value_from_helm_template(yaml_templates, "Deployment", f"{RELEASE_NAME}-k8s-watcher",
+    resp = get_value_from_helm_template(yaml_templates, "Deployment", f"{RELEASE_NAME}-komodor-agent",
                                         "spec.template.spec.tolerations".split("."))
     response_yaml = yaml.safe_load(resp)
     values_dict = yaml.safe_load(values_file)
@@ -45,7 +45,7 @@ def test_override_deployment_node_selector():
     set_path = "components.komodorAgent.nodeSelector.test_node_selector"
     template_path = "spec.template.spec.nodeSelector.test_node_selector"
 
-    validate_template_value_by_values_path(test_value, set_path, "Deployment", f"{RELEASE_NAME}-k8s-watcher",
+    validate_template_value_by_values_path(test_value, set_path, "Deployment", f"{RELEASE_NAME}-komodor-agent",
                                            template_path)
 
 def test_override_deployment_annotations():
@@ -53,7 +53,7 @@ def test_override_deployment_annotations():
     set_path = "components.komodorAgent.annotations.test"
     template_path = "metadata.annotations.test"
 
-    validate_template_value_by_values_path(test_value, set_path, "Deployment", f"{RELEASE_NAME}-k8s-watcher",
+    validate_template_value_by_values_path(test_value, set_path, "Deployment", f"{RELEASE_NAME}-komodor-agent",
                                            template_path)
 
 def test_override_deployment_affinity():
@@ -73,7 +73,7 @@ def test_override_deployment_affinity():
     """
 
     yaml_templates, exit_code = helm_agent_template("test", values_file=values_file)
-    resp = get_value_from_helm_template(yaml_templates, "Deployment", f"{RELEASE_NAME}-k8s-watcher",
+    resp = get_value_from_helm_template(yaml_templates, "Deployment", f"{RELEASE_NAME}-komodor-agent",
                                                        "spec.template.spec.affinity".split("."))
     response_yaml = yaml.safe_load(resp)
     values_dict = yaml.safe_load(values_file)
