@@ -116,7 +116,7 @@ To install the chart directly with kubectl, use the manifests located in `./kube
 | customCa.enabled | bool | `false` | Enable custom CA certificate for the agent |
 | customCa.secretName | string | `nil` | Name of the secret containing the CA |
 | imageRepo | string | `"public.ecr.aws/komodor-public"` | Override the komodor agent image repository. |
-| pullPolicy | string | `"IfNotPresent"` | Image pull policy for the komodor agent image. |
+| pullPolicy | string | `"IfNotPresent"` | Default Image pull policy for the komodor agent image exceptable values <ifNotPresent\Always\Never>. |
 | imagePullSecret | string | `""` | Set the image pull secret for the komodor agent |
 | capabilities | object | See sub-values | Configure the agent capabilities |
 | capabilities.metrics | bool | `true` | Fetch workload metrics and send them to komodor backend |
