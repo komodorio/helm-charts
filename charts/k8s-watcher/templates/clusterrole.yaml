@@ -220,8 +220,6 @@ rules:
     resources:
     - nodes
     - pods
-    - nodes/stats
-    - nodes/proxy
     verbs:
     - get
     - watch
@@ -415,6 +413,8 @@ rules:
     - namespaces
     - pods
     - nodes
+    - nodes/stats
+    - nodes/proxy
     verbs:
     - get
     - list
