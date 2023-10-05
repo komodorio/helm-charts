@@ -1,5 +1,5 @@
 # Variables
-HELM_DOCS_VERSION := v1.11.2
+HELM_DOCS_VERSION := 1.11.2
 HELM_DOCS_ARGS := -s file \
                   -x \
                   -z=".*image.name.*" \
@@ -21,11 +21,13 @@ ARCH := $(shell uname -m)
 # Targets
 .PHONY: install-helm-docs
 install-helm-docs:
-	curl -L "https://github.com/norwoodj/helm-docs/releases/download/$(HELM_DOCS_VERSION)/helm-docs_$(OS)_$(ARCH).tar.gz" | tar -xz helm-docs
-	mv helm-docs /usr/local/bin/helm-docs
+	if ! helm-docs --version | grep -q $(HELM_DOCS_VERSION); then \
+		curl -L "https://github.com/norwoodj/helm-docs/releases/download/v$(HELM_DOCS_VERSION)/helm-docs_$(OS)_$(ARCH).tar.gz" | tar -xz helm-docs; \
+		mv helm-docs /usr/local/bin/helm-docs; \
+	fi
 
 .PHONY: generate-readme
-generate-readme:
+generate-readme: install-helm-docs
 	helm-docs $(HELM_DOCS_ARGS)
 
 	@if [ ! -f "README.md" ]; then \
@@ -34,7 +36,7 @@ generate-readme:
   	fi
 
 .PHONY: validate-readme
-validate-readme:
+validate-readme: install-helm-docs
 	helm-docs $(HELM_DOCS_ARGS) -d > /tmp/README.md
 
 	@if [ ! -s "/tmp/README.md" ]; then \
