@@ -1,8 +1,8 @@
 steps:
-  - command: helm template k8s-watcher charts/k8s-watcher -f charts/k8s-watcher/values.yaml --set apiKey="sanity" --set watcher.clusterName=test-template
+  - label: "LEGACY: helm template check for sanity"
+    command: helm template k8s-watcher charts/k8s-watcher -f charts/k8s-watcher/values.yaml --set apiKey="sanity" --set watcher.clusterName=test-template
     agents:
       builder: "dind"
-    label: "LEGACY: helm template check for sanity"
     if: build.message !~ /feat\(OSS.+\):/i
 
   - label: "helm template check for sanity"
@@ -93,17 +93,17 @@ steps:
     if: build.message !~ /feat\(OSS.+\):/i
   - wait
 
-  - commands:
+  - label: "LEGACY: test helm new install"
+    commands:
       - CURRENT_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'version:' | awk '{print \$2}' | awk '{ gsub("\\.", "-"); print }')
       - NEW_VERSION=$(echo $$CURRENT_VERSION | awk -F- '{\$NF = \$NF + 1;} 1' | sed 's/ /-/g')
       - komo ctx staging
-      - helm status ci-test-$$NEW_VERSION && helm uninstall ci-test-$$NEW_VERSION && sleep 10
+      - helm status ci-test-legacy-$$NEW_VERSION && helm uninstall ci-test-legacy-$$NEW_VERSION && sleep 10
       - echo "installing new helm chart on staging"
-      - helm install ci-test-$$NEW_VERSION charts/k8s-watcher --set clusterName=ci-test-$$NEW_VERSION --set imagePullSecret=docker-cfg-komodorio --set namespace=ci-test-namespace-$$NEW_VERSION --set supervisor.enabled=true --set watcher.serverHost=https://staging.app.komodor.com --set watcher.tasksServerHost=https://staging.app.komodor.com --set watcher.wsHost=wss://staging.app.komodor.com --set watcher.telemetry.enable=false --set watcher.telemetry.serverHost=https://staging.telemetry.komodor.com --set apiKey=$$STAGING_API_KEY --set watcher.collectHistory=true --set watcher.nameDenylist="{leader,election}" --set watcher.resources.secret=true --set watcher.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set watcher.enableAgentTaskExecution=true --set watcher.enableAgentTaskExecutionV2=true --set watcher.allowReadingPodLogs=true --set watcher.actions.basic=true --set watcher.actions.advanced=true --set watcher.enableHelm=true --set helm.enableActions=true --set watcher.actions.podExec=true --set metrics.enabled=true --set watcher.actions.portforward=true --set watcher.networkMapper.enable=false
+      - helm install ci-test-legacy-$$NEW_VERSION charts/k8s-watcher --set clusterName=ci-test-legacy-$$NEW_VERSION --set imagePullSecret=docker-cfg-komodorio --set namespace=ci-test-legacy-namespace-$$NEW_VERSION --set supervisor.enabled=true --set watcher.serverHost=https://staging.app.komodor.com --set watcher.tasksServerHost=https://staging.app.komodor.com --set watcher.wsHost=wss://staging.app.komodor.com --set watcher.telemetry.enable=false --set watcher.telemetry.serverHost=https://staging.telemetry.komodor.com --set apiKey=$$STAGING_API_KEY --set watcher.collectHistory=true --set watcher.nameDenylist="{leader,election}" --set watcher.resources.secret=true --set watcher.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set watcher.enableAgentTaskExecution=true --set watcher.enableAgentTaskExecutionV2=true --set watcher.allowReadingPodLogs=true --set watcher.actions.basic=true --set watcher.actions.advanced=true --set watcher.enableHelm=true --set helm.enableActions=true --set watcher.actions.podExec=true --set metrics.enabled=true --set watcher.actions.portforward=true --set watcher.networkMapper.enable=false
       - echo "uninstalling new helm chart on staging"
-      - helm uninstall ci-test-$$NEW_VERSION
-      - kubectl wait --for=delete namespace/ci-test-namespace-$$NEW_VERSION --timeout=3m
-
+      - helm uninstall ci-test-legacy-$$NEW_VERSION
+      - kubectl wait --for=delete namespace/ci-test-legacy-namespace-$$NEW_VERSION --timeout=3m
     agents:
       builder: "dind"
     plugins:
@@ -111,25 +111,58 @@ steps:
           parameters:
             STAGING_API_KEY: /komodor/staging/kubernetes/agent-api-key
             STAGING_API_KEY: /komodor/staging/kubernetes/agent-api-key
-    label: "test helm new install"
+    if: build.message !~ /feat\(OSS.+\):/i && build.branch != "master"
+
+  - label: "test helm new install"
+    commands:
+      - CURRENT_VERSION=$(cat charts/komodor-agent/Chart.yaml | grep 'version:' | awk '{print \$2}' | awk '{ gsub("\\.", "-"); print }')
+      - NEW_VERSION=$(echo $$CURRENT_VERSION | awk -F- '{\$NF = \$NF + 1;} 1' | sed 's/ /-/g')
+      - komo ctx staging
+      - helm status ci-test-$$NEW_VERSION && helm uninstall ci-test-$$NEW_VERSION && sleep 10
+      - echo "installing new helm chart on staging"
+      - helm install ci-test-$$NEW_VERSION charts/komodor-agent --set clusterName=ci-test-$$NEW_VERSION --set imagePullSecret=docker-cfg-komodorio --namespace=ci-test-namespace-$$NEW_VERSION --set communications.serverHost=https://staging.app.komodor.com --set communications.tasksServerHost=https://staging.app.komodor.com --set communications.wsHost=wss://staging.app.komodor.com --set capabilities.telemetry.enable=false --set communications.telemetryServerHost=https://staging.telemetry.komodor.com --set apiKey=$$STAGING_API_KEY --set allowedResources.secret=true --set capabilities.event.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}"
+      - echo "uninstalling new helm chart on staging"
+      - helm uninstall ci-test-$$NEW_VERSION
+      - kubectl wait --for=delete namespace/ci-test-namespace-$$NEW_VERSION --timeout=3m
+    agents:
+      builder: "dind"
+    plugins:
+      - zacharymctague/aws-ssm#v1.0.0:
+          parameters:
+            STAGING_API_KEY: /komodor/staging/kubernetes/agent-api-key
+            STAGING_API_KEY: /komodor/staging/kubernetes/agent-api-key
     if: build.message !~ /feat\(OSS.+\):/i && build.branch != "master"
   - wait
 
-  - label: "test helm update install"
+  - label: "LEGACY: test helm update install"
     commands:
       - CURRENT_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'version:' | awk '{print \$2}' | awk '{ gsub("\\.", "-"); print }')
+      - NEW_VERSION=$(echo $$CURRENT_VERSION | awk -F- '{\$NF = \$NF + 1;} 1' | sed 's/ /-/g')
+      - komo ctx staging
+      - helm status ci-test-legacy-$$NEW_VERSION && helm uninstall ci-test-legacy-$$NEW_VERSION && sleep 10
+      - BRANCH=$(git rev-parse --short HEAD)
+      - git checkout master
+      - echo "installing old helm chart on staging"
+      - helm install ci-test-$$NEW_VERSION charts/komodor-agent --set clusterName=ci-test-$$NEW_VERSION --set imagePullSecret=docker-cfg-komodorio --namespace=ci-test-namespace-$$NEW_VERSION --set communications.serverHost=https://staging.app.komodor.com --set communications.tasksServerHost=https://staging.app.komodor.com --set communications.wsHost=wss://staging.app.komodor.com --set capabilities.telemetry.enable=false --set communications.telemetryServerHost=https://staging.telemetry.komodor.com --set apiKey=$$STAGING_API_KEY --set allowedResources.secret=true --set capabilities.event.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}"
+      - git checkout $$BRANCH
+      - echo "upgrade to new helm chart on staging"
+      - helm upgrade --install ci-test-legacy-$$NEW_VERSION charts/k8s-watcher --set clusterName=ci-test-legacy-$$NEW_VERSION --set imagePullSecret=docker-cfg-komodorio --set namespace=ci-test-legacy-namespace-$$NEW_VERSION --set supervisor.enabled=true --set watcher.serverHost=https://staging.app.komodor.com --set watcher.tasksServerHost=https://staging.app.komodor.com --set watcher.wsHost=wss://staging.app.komodor.com --set watcher.telemetry.enable=false --set watcher.telemetry.serverHost=https://staging.telemetry.komodor.com --set apiKey=$$STAGING_API_KEY --set watcher.collectHistory=true --set watcher.nameDenylist="{leader,election}" --set watcher.resources.secret=true --set watcher.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set watcher.enableAgentTaskExecution=true --set watcher.enableAgentTaskExecutionV2=true --set watcher.allowReadingPodLogs=true --set watcher.actions.basic=true --set watcher.actions.advanced=true --set watcher.enableHelm=true --set helm.enableActions=true --set watcher.actions.podExec=true --set metrics.enabled=true --set watcher.actions.portforward=true --set watcher.networkMapper.enable=false
+      - helm uninstall ci-test-legacy-$$NEW_VERSION
+
+  - label: "test helm update install"
+    commands:
+      - CURRENT_VERSION=$(cat charts/komodor-agent/Chart.yaml | grep 'version:' | awk '{print \$2}' | awk '{ gsub("\\.", "-"); print }')
       - NEW_VERSION=$(echo $$CURRENT_VERSION | awk -F- '{\$NF = \$NF + 1;} 1' | sed 's/ /-/g')
       - komo ctx staging
       - helm status ci-test-$$NEW_VERSION && helm uninstall ci-test-$$NEW_VERSION && sleep 10
       - BRANCH=$(git rev-parse --short HEAD)
       - git checkout master
       - echo "installing old helm chart on staging"
-      - helm install ci-test-$$NEW_VERSION charts/k8s-watcher --set clusterName=ci-test-$$NEW_VERSION --set imagePullSecret=docker-cfg-komodorio --set namespace=ci-test-namespace-$$NEW_VERSION --set supervisor.enabled=true --set watcher.serverHost=https://staging.app.komodor.com --set watcher.tasksServerHost=https://staging.app.komodor.com --set watcher.wsHost=wss://staging.app.komodor.com --set watcher.telemetry.enable=false --set watcher.telemetry.serverHost=https://staging.telemetry.komodor.com --set apiKey=$$STAGING_API_KEY --set watcher.collectHistory=true --set watcher.nameDenylist="{leader,election}" --set watcher.resources.secret=true --set watcher.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set watcher.enableAgentTaskExecution=true --set watcher.enableAgentTaskExecutionV2=true --set watcher.allowReadingPodLogs=true --set watcher.actions.basic=true --set watcher.actions.advanced=true --set watcher.enableHelm=true --set helm.enableActions=true --set watcher.actions.podExec=true --set metrics.enabled=true --set watcher.actions.portforward=true --set watcher.networkMapper.enable=false
+      - helm install ci-test-$$NEW_VERSION charts/komodor-agent --set clusterName=ci-test-$$NEW_VERSION --set imagePullSecret=docker-cfg-komodorio --set namespace=ci-test-namespace-$$NEW_VERSION --set supervisor.enabled=true --set watcher.serverHost=https://staging.app.komodor.com --set watcher.tasksServerHost=https://staging.app.komodor.com --set watcher.wsHost=wss://staging.app.komodor.com --set watcher.telemetry.enable=false --set watcher.telemetry.serverHost=https://staging.telemetry.komodor.com --set apiKey=$$STAGING_API_KEY --set watcher.collectHistory=true --set watcher.nameDenylist="{leader,election}" --set watcher.resources.secret=true --set watcher.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set watcher.enableAgentTaskExecution=true --set watcher.enableAgentTaskExecutionV2=true --set watcher.allowReadingPodLogs=true --set watcher.actions.basic=true --set watcher.actions.advanced=true --set watcher.enableHelm=true --set helm.enableActions=true --set watcher.actions.podExec=true --set metrics.enabled=true --set watcher.actions
       - git checkout $$BRANCH
       - echo "upgrade to new helm chart on staging"
-      - helm upgrade --install ci-test-$$NEW_VERSION charts/k8s-watcher --set clusterName=ci-test-$$NEW_VERSION --set imagePullSecret=docker-cfg-komodorio --set namespace=ci-test-namespace-$$NEW_VERSION --set supervisor.enabled=true --set watcher.serverHost=https://staging.app.komodor.com --set watcher.tasksServerHost=https://staging.app.komodor.com --set watcher.wsHost=wss://staging.app.komodor.com --set watcher.telemetry.enable=false --set watcher.telemetry.serverHost=https://staging.telemetry.komodor.com --set apiKey=$$STAGING_API_KEY --set watcher.collectHistory=true --set watcher.nameDenylist="{leader,election}" --set watcher.resources.secret=true --set watcher.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set watcher.enableAgentTaskExecution=true --set watcher.enableAgentTaskExecutionV2=true --set watcher.allowReadingPodLogs=true --set watcher.actions.basic=true --set watcher.actions.advanced=true --set watcher.enableHelm=true --set helm.enableActions=true --set watcher.actions.podExec=true --set metrics.enabled=true --set watcher.actions.portforward=true --set watcher.networkMapper.enable=false
+      - helm get values ci-test-$$NEW_VERSION > old-values.yaml && helm upgrade --install ci-test-$$NEW_VERSION charts/k8s-watcher -f old-values.yaml
       - helm uninstall ci-test-$$NEW_VERSION
-
     agents:
       builder: "dind"
     plugins:
@@ -147,16 +180,34 @@ steps:
       - "git config user.name buildkite"
       - git fetch --tags
       - git checkout master
-      - APP_VERSION=$(buildkite-agent meta-data get "version" --job ${PARENT_JOB_ID}) || APP_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'appVersion:' | awk '{print \$2}')
+      - CHART=k8s-watcher
+      - APP_VERSION=$(buildkite-agent meta-data get "version" --job ${PARENT_JOB_ID}) || APP_VERSION=$(cat charts/$$CHART/Chart.yaml | grep 'appVersion:' | awk '{print \$2}')
       - echo "Updating app version to $$APP_VERSION"
-      - 'sed -i -e "s/appVersion.*/appVersion: $$APP_VERSION/g" charts/k8s-watcher/Chart.yaml'
+      - 'sed -i -e "s/appVersion.*/appVersion: $$APP_VERSION/g" charts/$$CHART/Chart.yaml'
       - 'buildkite-agent meta-data set "agent-version" "$$APP_VERSION"'
-      - CURRENT_VERSION=$(cat charts/k8s-watcher/Chart.yaml | grep 'version:' | awk '{print \$2}')
+      - CURRENT_VERSION=$(cat charts/$$CHART/Chart.yaml | grep 'version:' | awk '{print \$2}')
       - NEW_VERSION=$(echo $$CURRENT_VERSION | awk -F. '{\$NF = \$NF + 1;} 1' | sed 's/ /./g')
-      - echo "Updating chart version from $$CURRENT_VERSION to $$NEW_VERSION"
-      - 'sed -i -e "s/$$CURRENT_VERSION/$$NEW_VERSION/g" charts/k8s-watcher/Chart.yaml'
-      - 'buildkite-agent meta-data set "version" "$$NEW_VERSION"'
-      - "git add charts/k8s-watcher/Chart.yaml"
+      - echo "Updating chart '$$CHART' version from $$CURRENT_VERSION to $$NEW_VERSION"
+      - 'sed -i -e "s/$$CURRENT_VERSION/$$NEW_VERSION/g" charts/$$CHART/Chart.yaml'
+      - "git add charts/$$CHART/Chart.yaml"
+      - 'buildkite-agent meta-data set "$$CHART-version" "$$NEW_VERSION"'
+
+      - CHART=komodor-agent
+      - APP_VERSION=$(buildkite-agent meta-data get "version" --job ${PARENT_JOB_ID}) || APP_VERSION=$(cat charts/$$CHART/Chart.yaml | grep 'appVersion:' | awk '{print \$2}')
+      - echo "Updating app version to $$APP_VERSION"
+      - 'sed -i -e "s/appVersion.*/appVersion: $$APP_VERSION/g" charts/$$CHART/Chart.yaml'
+      - 'buildkite-agent meta-data set "agent-version" "$$APP_VERSION"'
+      - CURRENT_VERSION=$(cat charts/$$CHART/Chart.yaml | grep 'version:' | awk '{print \$2}')
+      - NEW_VERSION=$(echo $$CURRENT_VERSION | awk -F. '{\$NF = \$NF + 1;} 1' | sed 's/ /./g')
+      - echo "Updating chart '$$CHART' version from $$CURRENT_VERSION to $$NEW_VERSION"
+      - 'sed -i -e "s/$$CURRENT_VERSION/$$NEW_VERSION/g" charts/$$CHART/Chart.yaml'
+      - "git add charts/$$CHART/Chart.yaml"
+      - 'buildkite-agent meta-data set "$$CHART-version" "$$NEW_VERSION"'
+
+      - echo "Update readme"
+      - pushd charts/komodor-agent && make generate-readme && popd
+      - git add charts/komodor-agent/README.md
+
       - 'git commit -m "[skip ci] increment chart versions" || echo "Already up-to-date"'
       - 'git push -f || echo "Nothing to push!"'
     agents:
@@ -176,15 +227,13 @@ steps:
       - "git config user.email buildkite@users.noreply.github.com"
       - "git config user.name buildkite"
       - "git checkout master"
-      - NEW_VERSION=$(buildkite-agent meta-data get "version")
+      - LEGACY_NEW_VERSION=$(buildkite-agent meta-data get "k8s-watcher-version")
+      - NEW_VERSION=$(buildkite-agent meta-data get "komodor-agent-version")
       - APP_VERSION=$(buildkite-agent meta-data get "agent-version")
-      - 'sed -i -e "s/version.*/version: $$NEW_VERSION/g" charts/k8s-watcher/Chart.yaml'
+      - 'sed -i -e "s/version.*/version: $$LEGACY_NEW_VERSION/g" charts/k8s-watcher/Chart.yaml'
       - make generate-kube
-      - cd manifests/base
-      - kustomize edit set image komodorio/k8s-watcher=komodorio/k8s-watcher:$$APP_VERSION
-      - kustomize edit set label app.kubernetes.io/watcher-version:$$APP_VERSION
-      - cd ../..
-      - "git add manifests && git add charts/k8s-watcher"
+
+      - "git add charts/k8s-watcher"
       - "git status"
       - 'git commit -m "[skip ci] update generated manifests" && git tag $$NEW_VERSION || echo "Already up-to-date"'
       - 'git push -f && git push --tags || echo "Nothing to push!"'
@@ -194,22 +243,33 @@ steps:
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
   - wait
 
-  - commands:
-      - python3 ./.buildkite/validate_helm_chart_updated.py
+  - label: "LEGACY: validate helm chart version updated"
+    commands:
+      - python3 ./.buildkite/validate_helm_chart_updated.py "k8s-watcher"
     agents:
       builder: "dind"
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
-    label: "validate helm chart version updated"
+
+  - label: "validate helm chart version updated"
+    commands:
+      - python3 ./.buildkite/validate_helm_chart_updated.py "komodor-agent"
+    agents:
+      builder: "dind"
+    if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
   - wait
 
-  - commands:
+  - label: "Install new komodor-agent version on komodor staging :kubernetes: cluster"
+    commands:
       - komo ctx staging
       - helm repo add komodorio https://helm-charts.komodor.io
       - helm repo update
-      - helm upgrade --install k8s-watcher-staging komodorio/k8s-watcher --set apiKey=$$STAGING_API_KEY --reuse-values --dry-run
-      - helm upgrade --install k8s-watcher-staging komodorio/k8s-watcher --set clusterName=komodor-staging-eks --set imagePullSecret=docker-cfg-komodorio --set namespace=komodor-staging --set supervisor.enabled=true --set watcher.serverHost=https://staging.app.komodor.com --set watcher.tasksServerHost=https://staging.app.komodor.com --set watcher.wsHost=wss://staging.app.komodor.com --set watcher.telemetry.enable=false --set watcher.telemetry.serverHost=https://staging.telemetry.komodor.com --set apiKey=$$STAGING_API_KEY --set watcher.collectHistory=true --set watcher.nameDenylist="{leader,election}" --set watcher.resources.secret=true --set watcher.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set watcher.enableAgentTaskExecution=true --set watcher.enableAgentTaskExecutionV2=true --set watcher.allowReadingPodLogs=true --set watcher.actions.basic=true --set watcher.actions.advanced=true --set watcher.enableHelm=true --set helm.enableActions=true --set watcher.actions.podExec=true --set metrics.enabled=true --set watcher.actions.portforward=true --set watcher.networkMapper.enable=true --set tags="env:staging"
-      - helm upgrade --install k8s-watcher-production  komodorio/k8s-watcher --set apiKey=$$STAGING_PRODUCTION_API_KEY  --reuse-values --dry-run
-      - helm upgrade --install k8s-watcher-production komodorio/k8s-watcher --set clusterName=komodor-staging --set apiKey=$$STAGING_PRODUCTION_API_KEY --set imagePullSecret=docker-cfg-komodorio --set supervisor.enabled=true --set watcher.telemetry.enable=true --set watcher.collectHistory=true --set watcher.nameDenylist="{leader,election}" --set watcher.resources.secret=true --set watcher.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set watcher.enableAgentTaskExecution=true --set watcher.enableAgentTaskExecutionV2=true --set watcher.allowReadingPodLogs=true --set watcher.actions.basic=true --set watcher.actions.advanced=true --set watcher.enableHelm=true --set helm.enableActions=true --set watcher.actions.podExec=true --set metrics.enabled=true  --set watcher.actions.portforward=true --set watcher.networkMapper.enable=false --set tags="env:staging-on-prod"
+      - helm get values komodor-agent-staging > staging-values.yaml
+      - helm upgrade --install komodor-agent-staging komodorio/komodor-agent -f staging-values.yaml --dry-run
+      - helm upgrade --install komodor-agent-staging komodorio/komodor-agent -f staging-values.yaml --set clusterName=komodor-staging-eks --namespace=komodor-staging --set imagePullSecret=docker-cfg-komodorio --set communications.serverHost=https://staging.app.komodor.com --set communications.tasksServerHost=https://staging.app.komodor.com --set communications.wsHost=wss://staging.app.komodor.com --set capabilities.telemetry.enable=false --set communications.telemetryServerHost=https://staging.telemetry.komodor.com --set apiKey=$$STAGING_API_KEY --set allowedResources.secret=true --set capabilities.event.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}"
+
+      - helm get values komodor-agent-production > production-values.yaml
+      - helm upgrade --install komodor-agent-production  komodorio/komodor-agent -f production-values.yaml  --dry-run
+      - helm upgrade --install komodor-agent-production komodorio/komodor-agent --set clusterName=komodor-staging --set apiKey=$$STAGING_PRODUCTION_API_KEY --set imagePullSecret=docker-cfg-komodorio --set allowedResources.secret=true --set capabilities.event.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set tags="env:staging-on-prod"
     agents:
       builder: "dind"
     plugins:
@@ -217,35 +277,37 @@ steps:
           parameters:
             STAGING_API_KEY: /komodor/staging/kubernetes/agent-api-key
             STAGING_PRODUCTION_API_KEY: /komodor/staging/kubernetes/prod-agent-api-key
-    label: "Install new watcher version on komodor staging :kubernetes: cluster"
+
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
 
-  - commands:
+  - label: "Install new komodor-agent version on komodor production :kubernetes: cluster"
+    commands:
       - komo ctx production
       - helm repo add komodorio https://helm-charts.komodor.io
       - helm repo update
-      - helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=$$API_KEY --reuse-values --dry-run
-      - helm upgrade --install k8s-watcher komodorio/k8s-watcher --set clusterName=production --set apiKey=$$API_KEY --set imagePullSecret=docker-cfg-komodorio --set watcher.telemetry.enable=true --set supervisor.enabled=true --set watcher.collectHistory=true --set watcher.nameDenylist="{leader,election}" --set watcher.resources.secret=true --set watcher.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set watcher.enableAgentTaskExecution=true --set watcher.enableAgentTaskExecutionV2=true --set watcher.allowReadingPodLogs=true --set watcher.actions.basic=true --set watcher.actions.advanced=true --set watcher.enableHelm=true --set helm.enableActions=true --set watcher.actions.podExec=true --set metrics.enabled=true  --set watcher.actions.portforward=true --set watcher.networkMapper.enable=true --set tags="env:production"
+      - helm get values komodor-agent > production-values.yaml
+      - helm upgrade --install komodor-agent komodorio/komodor-agent -f production-values.yaml --set apiKey=$$API_KEY --dry-run
+      - helm upgrade --install komodor-agent komodorio/komodor-agent --set clusterName=production --set apiKey=$$API_KEY --set imagePullSecret=docker-cfg-komodorio --set allowedResources.secret=true --set capabilities.event.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set tags="env:production"
     agents:
       builder: "dind"
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
             API_KEY: /komodor/production/kubernetes/api-key
-    label: "Install new watcher version on komodor production :kubernetes: cluster"
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
 
-  - commands:
+  - label: "Install new watcher version on komodor ci :kubernetes: cluster"
+    commands:
       - komo ctx ci
       - helm repo add komodorio https://helm-charts.komodor.io
       - helm repo update
-      - helm upgrade --install k8s-watcher komodorio/k8s-watcher --set apiKey=$$API_KEY --reuse-values --dry-run
-      - helm upgrade --install k8s-watcher komodorio/k8s-watcher --set clusterName=buildkite-cluster --set apiKey=$$API_KEY --set imagePullSecret=docker-cfg-komodorio --set watcher.telemetry.enable=true --set supervisor.enabled=true --set watcher.collectHistory=true --set watcher.nameDenylist="{leader,election}" --set watcher.resources.secret=true --set watcher.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set watcher.enableAgentTaskExecution=true --set watcher.enableAgentTaskExecutionV2=true --set watcher.allowReadingPodLogs=true --set watcher.actions.basic=true --set watcher.actions.advanced=true --set watcher.enableHelm=true --set helm.enableActions=true --set watcher.actions.podExec=true --set metrics.enabled=true  --set watcher.actions.portforward=true --set tags="env:ci"
+      - helm get values komodor-agent > ci-values.yaml
+      - helm upgrade --install komodor-agent komodorio/komodor-agent --set apiKey=$$API_KEY -f ci-values.yaml --dry-run
+      - helm upgrade --install komodor-agent komodorio/komodor-agent --set clusterName=buildkite-cluster --set apiKey=$$API_KEY --set imagePullSecret=docker-cfg-komodorio --set allowedResources.secret=true --set capabilities.event.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" --set tags="env:ci"
     agents:
       builder: "dind"
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
             API_KEY: /komodor/ci/kubernetes/agent-api-key
-    label: "Install new watcher version on komodor ci :kubernetes: cluster"
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
