@@ -26,7 +26,7 @@ def test_override_image_name():
 
 
 # apiKeysecret as apikey
-def test_api_key_secret_as_api_key(setup_cluster, kube_client):
+def test_api_key_from_secret(setup_cluster, kube_client):
     cmd(f"kubectl delete namespace {NAMESPACE}")
     create_namespace(kube_client, NAMESPACE)
     create_secret(kube_client, NAMESPACE, "api-secret", {"apiKey": API_KEY_B64})

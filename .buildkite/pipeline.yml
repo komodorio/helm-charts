@@ -12,7 +12,7 @@ steps:
     if: build.message !~ /feat\(OSS.+\):/i
 
   - commands:
-      - cd charts/k8s-watcher
+      - cd charts/komodor-agent
       - make install-helm-docs
       - make validate-readme
     label: "Validate Readme is up to date"
@@ -24,6 +24,10 @@ steps:
       - make basic_test
     agents:
       builder: "dind"
+    plugins:
+      - zacharymctague/aws-ssm#v1.0.0:
+          parameters:
+            API_KEY: /helm-chart-test/production/API_KEY
 
   - label: "values_base_test"
     commands:
@@ -31,6 +35,10 @@ steps:
       - make values_base_test
     agents:
       builder: "dind"
+    plugins:
+      - zacharymctague/aws-ssm#v1.0.0:
+          parameters:
+            API_KEY: /helm-chart-test/production/API_KEY
 
   - label: "values_capabilities_events_test"
     commands:
@@ -38,6 +46,10 @@ steps:
       - make values_capabilities_events_test
     agents:
       builder: "dind"
+    plugins:
+      - zacharymctague/aws-ssm#v1.0.0:
+          parameters:
+            API_KEY: /helm-chart-test/production/API_KEY
 
   - label: "values_capabilities_proxy_test"
     commands:
@@ -45,6 +57,10 @@ steps:
       - make values_capabilities_proxy_test
     agents:
       builder: "dind"
+    plugins:
+      - zacharymctague/aws-ssm#v1.0.0:
+          parameters:
+            API_KEY: /helm-chart-test/production/API_KEY
 
   - label: "values_capabilities_test"
     commands:
@@ -52,6 +68,10 @@ steps:
       - make values_capabilities_test
     agents:
       builder: "dind"
+    plugins:
+      - zacharymctague/aws-ssm#v1.0.0:
+          parameters:
+            API_KEY: /helm-chart-test/production/API_KEY
 
   - label: "values_components_test"
     commands:
@@ -59,6 +79,10 @@ steps:
       - make values_components_test
     agents:
       builder: "dind"
+    plugins:
+      - zacharymctague/aws-ssm#v1.0.0:
+          parameters:
+            API_KEY: /helm-chart-test/production/API_KEY
 
   - wait
 
@@ -85,6 +109,7 @@ steps:
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
+            STAGING_API_KEY: /komodor/staging/kubernetes/agent-api-key
             STAGING_API_KEY: /komodor/staging/kubernetes/agent-api-key
     label: "test helm new install"
     if: build.message !~ /feat\(OSS.+\):/i && build.branch != "master"

@@ -1,4 +1,5 @@
 import time
+import json
 from config import BE_BASE_URL
 from fixtures import setup_cluster, cleanup_agent_from_cluster
 from helpers.utils import cmd, get_filename_as_cluster_name
@@ -86,27 +87,25 @@ def test_redact_workload_names(setup_cluster):
 
     output, exit_code = helm_agent_install(CLUSTER_NAME, additional_settings="--set capabilities.events.redact={TOP_SECRET}")
     assert exit_code == 0, f"Agent installation failed, output: {output}"
-    #
+
     cmd(f'kubectl rollout restart deployment/{deployment} -n {namespace}')
-    time.sleep(3)
+    time.sleep(5)
 
     kuid = create_komodor_uid("Deployment", deployment, namespace, CLUSTER_NAME)
-    url = (f"{BE_BASE_URL}/resources/api/v1/workloads/events/search"
+    url = (f"{BE_BASE_URL}/resources/api/v1/deploys/events/search"
            f"?fromEpoch={start_time}"
            f"&toEpoch={end_time}"
            f"&limit=1"
            f"&order=DESC"
-           f"&komodorUids={kuid}"
-           f"&queryRR=true"
-           f"&resourceVersionOrder=DESC"
-           f"&creationTimestampOrder=DESC")
+           f"&komodorUids={kuid}")
 
     response = query_backend(url)
 
     assert response.status_code == 200, f"Failed to get configmap from resources api, response: {response}"
     assert len(response.json()['data']) > 0, f"Failed to get configmap from resources api, response: {response}"
     try:
-        data = response.json()["data"][0]["newObj"]["spec"]["template"]["spec"]["containers"][0]["env"][0]["value"]
+        spec = response.json()["data"][0]["newSpec"]
+        data = json.loads(spec)["spec"]["template"]["spec"]["containers"][0]["env"][0]["value"]
         assert "REDACTED:" in data, f"Failed to redact workload env, response: {response}"
     except:
         assert False, f"Failed to find expected redacted value, response: {response.json()}"
