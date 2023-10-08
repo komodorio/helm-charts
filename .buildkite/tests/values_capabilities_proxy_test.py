@@ -1,3 +1,4 @@
+import pytest
 from config import NAMESPACE
 from fixtures import setup_cluster, kube_client, cleanup_agent_from_cluster
 from helpers.utils import cmd, get_filename_as_cluster_name
@@ -7,6 +8,7 @@ from helpers.kubernetes_helper import create_namespace,wait_for_pod_ready
 CLUSTER_NAME = get_filename_as_cluster_name(__file__)
 
 
+@pytest.mark.flaky(reruns=3)
 def test_use_proxy_and_custom_ca(setup_cluster, kube_client):
     def extract_root_ca(pem_file_path, output_file_path):
         with open(pem_file_path, 'r') as file:

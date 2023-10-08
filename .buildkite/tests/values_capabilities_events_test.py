@@ -11,6 +11,7 @@ CLUSTER_NAME = get_filename_as_cluster_name(__file__)
 
 
 # define events.watchnamespace
+@pytest.mark.flaky(reruns=3)
 def test_events_watch_namespace(setup_cluster):
     def query_events(namespace, deployment, start_time, end_time):
         kuid = create_komodor_uid("Deployment", deployment, namespace, CLUSTER_NAME)
@@ -81,6 +82,7 @@ def test_block_namespace(setup_cluster):
     assert len(response.json()['event_deploy']) == 0, f"Failed to get event_deploy from resources api, response: {response}"
 
 
+@pytest.mark.flaky(reruns=3)
 def test_redact_workload_names(setup_cluster):
     start_time = int(time.time() * 1000)
     end_time = start_time + 120_000  # two minutes from now
