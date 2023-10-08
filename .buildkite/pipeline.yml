@@ -132,6 +132,7 @@ steps:
       - helm install $$CHART_NAME charts/komodor-agent --set clusterName=$$CHART_NAME --set imagePullSecret=docker-cfg-komodorio --namespace=$$NAMESPACE --create-namespace --set communications.serverHost=https://staging.app.komodor.com --set communications.tasksServerHost=https://staging.app.komodor.com --set communications.wsHost=wss://staging.app.komodor.com --set capabilities.telemetry.enable=false --set communications.telemetryServerHost=https://staging.telemetry.komodor.com --set apiKey=$$KOMODOR_AGENT_STAGING_API_KEY --set allowedResources.secret=true --set capabilities.event.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}"
       - echo "uninstalling new helm chart on staging"
       - helm uninstall $$CHART_NAME -n $$NAMESPACE
+      - kubectl delete namespace $$NAMESPACE
       - kubectl wait --for=delete namespace/$$NAMESPACE --timeout=3m
     agents:
       builder: "dind"
@@ -173,6 +174,7 @@ steps:
       - echo "upgrade to new helm chart on staging"
       - helm get values $$CHART_NAME > old-values.yaml && helm upgrade --install $$CHART_NAME charts/komodor-agent -f old-values.yaml
       - helm uninstall $$CHART_NAME
+      - kubectl delete namespace $$NAMESPACE
     agents:
       builder: "dind"
     plugins:
