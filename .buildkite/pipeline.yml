@@ -127,7 +127,7 @@ steps:
       - komo ctx staging
       - helm status ci-test-$$NEW_VERSION && helm uninstall ci-test-$$NEW_VERSION && sleep 10
       - echo "installing new helm chart on staging"
-      - helm install ci-test-$$NEW_VERSION charts/komodor-agent --set clusterName=ci-test-$$NEW_VERSION --set imagePullSecret=docker-cfg-komodorio --namespace=ci-test-namespace-$$NEW_VERSION --set communications.serverHost=https://staging.app.komodor.com --set communications.tasksServerHost=https://staging.app.komodor.com --set communications.wsHost=wss://staging.app.komodor.com --set capabilities.telemetry.enable=false --set communications.telemetryServerHost=https://staging.telemetry.komodor.com --set apiKey=$$STAGING_API_KEY --set allowedResources.secret=true --set capabilities.event.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}"
+      - helm install ci-test-$$NEW_VERSION charts/komodor-agent --set clusterName=ci-test-$$NEW_VERSION --set imagePullSecret=docker-cfg-komodorio --namespace=ci-test-namespace-$$NEW_VERSION --create-namespace --set communications.serverHost=https://staging.app.komodor.com --set communications.tasksServerHost=https://staging.app.komodor.com --set communications.wsHost=wss://staging.app.komodor.com --set capabilities.telemetry.enable=false --set communications.telemetryServerHost=https://staging.telemetry.komodor.com --set apiKey=$$STAGING_API_KEY --set allowedResources.secret=true --set capabilities.event.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}"
       - echo "uninstalling new helm chart on staging"
       - helm uninstall ci-test-$$NEW_VERSION
       - kubectl wait --for=delete namespace/ci-test-namespace-$$NEW_VERSION --timeout=3m

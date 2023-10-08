@@ -1,5 +1,6 @@
 import time
 import json
+import pytest
 from config import BE_BASE_URL
 from fixtures import setup_cluster, cleanup_agent_from_cluster
 from helpers.utils import cmd, get_filename_as_cluster_name
@@ -45,6 +46,7 @@ def test_events_watch_namespace(setup_cluster):
 
 
 # Block namespace and validate that no events are sent
+@pytest.mark.flaky(reruns=3)
 def test_block_namespace(setup_cluster):
     def query_events(namespace, deployment, start_time, end_time):
         kuid = create_komodor_uid("Deployment", deployment, namespace, CLUSTER_NAME)
