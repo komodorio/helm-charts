@@ -174,7 +174,7 @@ steps:
       - komo ctx staging
       - helm status -n $$NAMESPACE $$CHART_NAME && helm uninstall $$CHART_NAME -n $$NAMESPACE && sleep 10
       - BRANCH=$(git rev-parse --short HEAD)
-      # TODO: REMOVE  << - git checkout master
+      - git checkout master
       - echo "installing old helm chart on staging"
       - helm install $$CHART_NAME charts/komodor-agent --set clusterName=$$CHART_NAME --set imagePullSecret=docker-cfg-komodorio --namespace=$$NAMESPACE --create-namespace --set communications.serverHost=https://staging.app.komodor.com --set communications.tasksServerHost=https://staging.app.komodor.com --set communications.wsHost=wss://staging.app.komodor.com --set capabilities.telemetry.enable=false --set communications.telemetryServerHost=https://staging.telemetry.komodor.com --set apiKey=$$KOMODOR_AGENT_STAGING_API_KEY --set allowedResources.secret=true --set capabilities.event.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}"
       - git checkout $$BRANCH
@@ -198,7 +198,7 @@ steps:
       - "git config user.email buildkite@users.noreply.github.com"
       - "git config user.name buildkite"
       - git fetch --tags
-      # TODO: REMOVE  << - git checkout master
+      - git checkout master
       - git checkout -b bump-versions-test
       - CHART=k8s-watcher
       - APP_VERSION=$(buildkite-agent meta-data get "version" --job ${PARENT_JOB_ID}) || APP_VERSION=$(cat charts/$$CHART/Chart.yaml | grep 'appVersion:' | awk '{print \$2}')
@@ -234,7 +234,7 @@ steps:
       builder: "dind"
     label: Bump Versions
     key: bump-versions
-    # TODO: REMOVE  << if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
+    if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
   - wait
 
   - block: ":rocket: release helm chart"
