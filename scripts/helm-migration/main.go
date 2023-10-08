@@ -57,8 +57,9 @@ func printDeprecationWarning(flatMap map[string]interface{}) {
 }
 
 func printUpdateCommand(releaseName string, outputFile string, namespace string) {
-	updateCmd := fmt.Sprintf("helm upgrade %s komodorio/komodor-agent -f %s -n %s\n", releaseName, outputFile, namespace)
-	printHashMessage("Use the following command to upgrade the release:\n" + updateCmd)
+	uninstallCmd := fmt.Sprintf("helm uninstall %s -n %s\n", releaseName, namespace)
+	updateCmd := fmt.Sprintf("helm install komodor-agent komodorio/komodor-agent -f %s -n %s\n", outputFile, namespace)
+	printHashMessage(fmt.Sprintf("1. Uninstall k8s-watcher chart:\n\t%s\n2. Use the following command to install the new 'komodor-agent':\n\t%s", uninstallCmd, updateCmd))
 }
 
 func showVersionAndExit(showVersion bool) {
@@ -235,8 +236,7 @@ func setValueInMap(m map[string]interface{}, key string, value interface{}) {
 }
 
 func printHashMessage(message string) {
-	length := len(message)
-	hashes := strings.Repeat("#", length+4)
+	hashes := strings.Repeat("#", 150)
 
 	fmt.Printf("\n")
 	fmt.Println(hashes)
