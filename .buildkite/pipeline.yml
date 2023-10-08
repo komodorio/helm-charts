@@ -180,7 +180,7 @@ steps:
       - git checkout $$BRANCH
       - echo "upgrade to new helm chart on staging"
       - helm get values $$CHART_NAME -n $$NAMESPACE > old-values.yaml && helm upgrade --install $$CHART_NAME charts/komodor-agent -n $$NAMESPACE -f old-values.yaml
-      - helm uninstall $$CHART_NAME
+      - helm uninstall $$CHART_NAME -n $$NAMESPACE
       - kubectl delete namespace $$NAMESPACE
     agents:
       builder: "dind"
