@@ -21,7 +21,7 @@ helm install "$CHART_NAME" charts/komodor-agent \
   --set clusterName="$CHART_NAME" \
   --namespace="$NAMESPACE" --create-namespace \
   --set apiKey="$KOMODOR_AGENT_STAGING_API_KEY" \
-  -f staging-values.yaml
+  -f "${SCRIPT_DIR}/staging-values.yaml"
 
 echo "upgrade to new helm chart on staging"
 git checkout "$BRANCH"
