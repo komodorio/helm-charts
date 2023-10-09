@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -ex
 
-pushd "$(dirname "$0")" > /dev/null
-source common.sh
+SCRIPT_DIR=$(dirname $(realpath "$0"))
+source "$SCRIPT_DIR/common.sh"
 
 
 CURRENT_VERSION=$(get_current_version "komodor-agent")
