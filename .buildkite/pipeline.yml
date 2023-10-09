@@ -126,7 +126,7 @@ steps:
 
   - label: ":weight_lifter: LEGACY: test helm update install"
     commands:
-      - ./buildkite/pipeline_scripts/legacy_test_helm_update_install.sh
+      - ./.buildkite/pipeline_scripts/legacy_test_helm_update_install.sh
     agents:
       builder: "dind"
     plugins:
@@ -136,7 +136,7 @@ steps:
 
   - label: ":weight_lifter: test helm update install"
     commands:
-      - ./buildkite/pipeline_scripts/test_helm_update_install.sh
+      - ./.buildkite/pipeline_scripts/test_helm_update_install.sh
     agents:
       builder: "dind"
     plugins:
@@ -152,7 +152,7 @@ steps:
 
   - label: "Bump Versions"
     commands:
-      - ./buildkite/pipeline_scripts/bump_versions.sh
+      - ./.buildkite/pipeline_scripts/bump_versions.sh
     agents:
       builder: "dind"
     key: bump-versions
@@ -167,7 +167,7 @@ steps:
       - GITHUB_PAGES_REPO: "komodorio/helm-charts"
       - BRANCH: $BUILDKITE_BRANCH
     commands:
-      - ./buildkite/pipeline_scripts/publish_helm_charts.sh
+      - ./.buildkite/pipeline_scripts/publish_helm_charts.sh
     agents:
       builder: "dind"
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"

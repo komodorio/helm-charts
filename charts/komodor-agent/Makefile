@@ -63,10 +63,10 @@ template:
 		--debug \
 		--output-dir $(OUTPUT_DIR)
 
-.PHONY: template-test
+.PHONY: template-help
 template-help:
-	@echo "Usage: make template-test [OUTPUT_DIR=<output_dir>] [VALUES_FILE=<values_file>] [SET_VARS=<set_vars>]"
-	@echo "Example: make template-test VALUES_FILE=values.yaml SET_VARS=\"--set banana.enabled=true --set banana.eat=true\""
+	@echo "Usage: make template [OUTPUT_DIR=<output_dir>] [VALUES_FILE=<values_file>] [SET_VARS=<set_vars>]"
+	@echo "Example: make template VALUES_FILE=values.yaml SET_VARS=\"--set banana.enabled=true --set banana.eat=true\""
 
 .PHONY: all
 all: install-helm-docs generate-readme validate-readme template
