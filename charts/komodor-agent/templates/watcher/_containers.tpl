@@ -47,7 +47,7 @@
   - name: HELM_DATA_HOME
     value: /opt/watcher/helm/data
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
-  {{- include "komodorAgent.securityContext" . | indent 2}}
+  {{- include "komodorAgent.securityContext" . | nindent 2}}
   ports:
     - name: http-healthz
       containerPort: {{ .Values.components.komodorAgent.watcher.ports.healthCheck  }}
@@ -93,7 +93,7 @@
     - name: KOMOKW_SERVERS_HEALTHCHECK_PORT
       value: {{ .Values.components.komodorAgent.supervisor.ports.healthCheck | quote }}
   {{- include "komodorAgent.proxy-conf" . | indent 4 }}
-  {{- include "komodorAgent.securityContext" . | indent 4}}
+  {{- include "komodorAgent.securityContext" . | nindent 2}}
   ports:
     - name: http-healthz
       containerPort: {{ .Values.components.komodorAgent.supervisor.ports.healthCheck }}

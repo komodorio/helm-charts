@@ -18,6 +18,12 @@ HELM_DOCS_ARGS := -s file \
 OS := $(shell uname -s)
 ARCH := $(shell uname -m)
 
+## TEMPLATE TEST ARGS
+OUTPUT_DIR ?= templates-test
+VALUES_FILE ?=
+SET_VARS ?=
+#######################
+
 # Targets
 .PHONY: install-helm-docs
 install-helm-docs:
@@ -46,5 +52,21 @@ validate-readme: install-helm-docs
 
 	diff README.md /tmp/README.md || (echo "README.md is different from generated version.\n Run 'make generate-readme'." && exit 1)
 
+.PHONY: template
+template:
+	@mkdir -p $(OUTPUT_DIR)
+	helm template komodor-agent-test . \
+		--namespace test-namespace \
+		--set apiKey=test-api-key \
+		--set clusterName=test-cluster-name \
+		$(if $(VALUES_FILE),-f $(VALUES_FILE),) $(if $(SET_VARS),$(SET_VARS),) \
+		--debug \
+		--output-dir $(OUTPUT_DIR)
+
+.PHONY: template-test
+template-help:
+	@echo "Usage: make template-test [OUTPUT_DIR=<output_dir>] [VALUES_FILE=<values_file>] [SET_VARS=<set_vars>]"
+	@echo "Example: make template-test VALUES_FILE=values.yaml SET_VARS=\"--set banana.enabled=true --set banana.eat=true\""
+
 .PHONY: all
-all: install-helm-docs generate-readme validate-readme
+all: install-helm-docs generate-readme validate-readme template

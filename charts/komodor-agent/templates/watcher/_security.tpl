@@ -1,4 +1,4 @@
-{{- define "komodorAgent.securityContext" -}}
+{{- define "komodorAgent.securityContext" }}
 securityContext:
   readOnlyRootFilesystem: true
   runAsUser: 1000
