@@ -114,3 +114,19 @@
     failureThreshold: 3
     successThreshold: 1
 {{- end -}}
+
+{{- define "ca-init.container" -}}
+{{- if (.Values.customCa).enabled  }}
+- name: init-cert
+  image: {{ .Values.imageRepo }}/{{ .Values.components.komodorAgent.supervisor.image.name}}:{{ .Values.components.komodorAgent.supervisor.image.tag | default .Chart.AppVersion }}
+  command:
+    - sh
+    - -c
+    - cp /certs/* /etc/ssl/certs/ &&
+      update-ca-certificates --fresh &&
+      cp -r /etc/ssl/certs/* /trusted-ca/
+  volumeMounts:
+    {{- include "custom-ca.trusted-volumeMounts-init" .    | nindent 4 }}
+    {{- include "custom-ca.volumeMounts" .                 | nindent 4 }}
+{{- end }}
+{{- end -}}

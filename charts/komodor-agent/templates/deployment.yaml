@@ -33,21 +33,9 @@ spec:
         {{- toYaml .Values.components.komodorAgent.nodeSelector | nindent 8 }}
       tolerations:
         {{- toYaml .Values.components.komodorAgent.tolerations | nindent 8 }}
-  
-      {{- if (.Values.customCa).enabled  }}
+
       initContainers:
-        - name: init-cert
-          image: {{ .Values.imageRepo }}/{{ .Values.components.komodorAgent.supervisor.image.name}}:{{ .Values.components.komodorAgent.supervisor.image.tag | default .Chart.AppVersion }}
-          command: 
-            - sh
-            - -c
-            - cp /certs/* /etc/ssl/certs/ &&
-              update-ca-certificates --fresh &&
-              cp -r /etc/ssl/certs/* /trusted-ca/
-          volumeMounts:
-            {{- include "custom-ca.trusted-volumeMounts-init" .    | nindent 12 }}
-            {{- include "custom-ca.volumeMounts" .                 | nindent 12 }}
-      {{- end }}
+        {{- include "ca-init.container" .                   | trim | nindent 8 }}
 
       containers:
         {{- include "metrics.container" .                   | trim | nindent 8 }}
