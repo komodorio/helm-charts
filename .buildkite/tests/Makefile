@@ -7,7 +7,7 @@ KIND_BINARY = ./kind
 
 # Targets
 .PHONY: install-kind setup-venv test-all basic_test values_base_test values_capabilities_events_test values_capabilities_proxy_test \
-	values_capabilities_test values_components_test
+	values_capabilities_test values_components_test cleanup-kind
 
 install-kind:
 	@if ! command -v kind &> /dev/null ; then \
@@ -30,23 +30,26 @@ setup-venv:
 	python3 -m virtualenv $(VENV_NAME)
 	$(VENV_ACTIVATE) ; pip install -r requirements.txt
 
-test-all: setup-venv install-kind
+cleanup-kind:
+	kind delete cluster --name test
+
+test-all: setup-venv install-kind cleanup-kind
 	$(VENV_ACTIVATE) ; pytest
 
-basic_test: setup-venv install-kind
+basic_test: setup-venv install-kind cleanup-kind
 	$(VENV_ACTIVATE) ; pytest basic_test.py
 
-values_base_test: setup-venv install-kind
+values_base_test: setup-venv install-kind cleanup-kind
 	$(VENV_ACTIVATE) ; pytest values_base_test.py
 
-values_capabilities_events_test: setup-venv install-kind
+values_capabilities_events_test: setup-venv install-kind cleanup-kind
 	$(VENV_ACTIVATE) ; pytest values_capabilities_events_test.py
 
-values_capabilities_proxy_test: setup-venv install-kind
+values_capabilities_proxy_test: setup-venv install-kind cleanup-kind
 	$(VENV_ACTIVATE) ; pytest values_capabilities_proxy_test.py
 
-values_capabilities_test: setup-venv install-kind
+values_capabilities_test: setup-venv install-kind cleanup-kind
 	$(VENV_ACTIVATE) ; pytest values_capabilities_test.py
 
-values_components_test: setup-venv install-kind
+values_components_test: setup-venv install-kind cleanup-kind
 	$(VENV_ACTIVATE) ; pytest values_components_test.py
