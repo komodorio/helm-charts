@@ -14,7 +14,10 @@ NAMESPACE="ci-test-legacy-namespace-$NEW_VERSION"
 komo ctx staging
 helm status "${CHART_NAME}" && helm uninstall "${CHART_NAME}" && sleep 10
 BRANCH=$(git rev-parse --short HEAD)
+
+git stash
 git checkout master
+
 echo "installing old helm chart on staging"
 helm install "${CHART_NAME}" charts/k8s-watcher \
   --set apiKey="$STAGING_API_KEY" \

@@ -14,6 +14,7 @@ NAMESPACE="ci-test-namespace-$NEW_VERSION"
 komo ctx staging
 helm status -n "$NAMESPACE" "$CHART_NAME" && helm uninstall "$CHART_NAME" -n "$NAMESPACE" && sleep 10
 BRANCH=$(git rev-parse --short HEAD)
+git stash
 git checkout master
 
 echo "installing old helm chart on staging"
