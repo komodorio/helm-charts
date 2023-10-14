@@ -95,7 +95,7 @@ network_mapper:
   mapper:
     repository: public.ecr.aws/komodor-public
     image: network-mapper
-    tag: v0.1.32
+    tag: v1.0.3
     pullPolicy: IfNotPresent
     resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
@@ -112,7 +112,7 @@ network_mapper:
   sniffer:
     repository: public.ecr.aws/komodor-public
     image: network-mapper-sniffer
-    tag: v0.1.32
+    tag: v1.0.3
     pullPolicy: IfNotPresent
     resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
