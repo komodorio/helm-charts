@@ -161,7 +161,7 @@ components:
       # components.komodorAgent.networkMapper.image -- Override the komodor agent network mapper image name or tag.
       image:
         name: network-mapper
-        tag: v1.0.3
+        tag: v0.1.32
       # components.komodorAgent.networkMapper.resources -- Set custom resources to the komodor agent network mapper container
       resources: {}
 
@@ -213,7 +213,7 @@ components:
       # components.komodorDaemon.networkSniffer.image -- Override the komodor agent network sniffer image name or tag.
       image:
         name: network-mapper-sniffer
-        tag: v1.0.3
+        tag: v0.1.32
       # components.komodorDaemon.networkSniffer.resources -- Set custom resources to the komodor agent network sniffer container
       resources: {}
 

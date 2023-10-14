@@ -23,18 +23,6 @@
   {{ end }}
   - name: OTTERIZE_UPLOAD_INTERVAL_SECONDS
     value: {{ ((.Values.network_mapper).mapper).uploadIntervalSeconds | default "60" | quote }}
-  livenessProbe:
-    httpGet:
-      path: /healthz
-      port: 9090
-    initialDelaySeconds: 5
-    periodSeconds: 20
-  readinessProbe:
-    httpGet:
-      path: /healthz
-      port: 9090
-    initialDelaySeconds: 5
-    periodSeconds: 20
   securityContext:
     allowPrivilegeEscalation: false
     capabilities:
@@ -59,22 +47,7 @@
     - mountPath: /hostproc
       name: proc
       readOnly: true
-  livenessProbe:
-    httpGet:
-      path: /healthz
-      port: 9090
-    initialDelaySeconds: 5
-    periodSeconds: 20
-  readinessProbe:
-    httpGet:
-      path: /healthz
-      port: 9090
-    initialDelaySeconds: 5
-    periodSeconds: 20
   securityContext:
-    privileged: false
-    allowPrivilegeEscalation: false
-    readOnlyRootFilesystem: true
     capabilities:
       add:
         - SYS_PTRACE
