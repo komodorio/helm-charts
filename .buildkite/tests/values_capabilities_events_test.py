@@ -69,7 +69,7 @@ def test_block_namespace(setup_cluster):
     cmd(f'kubectl rollout restart deployment/{un_watch_deployment} -n {un_watch_namespace}')
 
     # Wait for event to be sent
-    time.sleep(10)
+    time.sleep(15)
 
     # Verify events from watched namespace
     response = query_events(watch_namespace, watch_deployment, start_time, end_time)
