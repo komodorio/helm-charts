@@ -117,7 +117,7 @@ To install the chart directly with kubectl, use the manifests located in `./kube
 | customCa.secretName | string | `nil` | Name of the secret containing the CA |
 | imageRepo | string | `"public.ecr.aws/komodor-public"` | Override the komodor agent image repository. |
 | pullPolicy | string | `"IfNotPresent"` | Default Image pull policy for the komodor agent image exceptable values <ifNotPresent\Always\Never>. |
-| imagePullSecret | string | `""` | Set the image pull secret for the komodor agent |
+| imagePullSecret | string | `nil` | Set the image pull secret for the komodor agent |
 | capabilities | object | See sub-values | Configure the agent capabilities |
 | capabilities.metrics | bool | `true` | Fetch workload metrics and send them to komodor backend |
 | capabilities.networkMapper | bool | `true` | Enable network mapping capabilities by the komodor agent |
@@ -143,27 +143,32 @@ To install the chart directly with kubectl, use the manifests located in `./kube
 | components.komodorAgent.annotations | object | `{}` | Set annotations for the komodor agent deployment |
 | components.komodorAgent.nodeSelector | object | `{}` | Set node selectors for the komodor agent deployment |
 | components.komodorAgent.tolerations | list | `[]` | Set tolerations for the komodor agent deployment |
-| components.komodorAgent.podAnnotations | string | `nil` | Set pod annotations for the komodor agent deployment |
+| components.komodorAgent.podAnnotations | object | `{}` | Set pod annotations for the komodor agent deployment |
 | components.komodorAgent.watcher.image | object | `{ "name": "k8s-watcher", "tag": .Chart.AppVersion }` | Override the komodor agent watcher image name or tag. |
 | components.komodorAgent.watcher.resources | object | `{"limits":{"cpu":2,"memory":"8Gi"},"requests":{"cpu":0.25,"memory":"256Mi"}}` | Set custom resources to the komodor agent watcher container |
 | components.komodorAgent.watcher.ports | object | `{"healthCheck":8090}` | Override the komodor agent watcher ports configuration |
 | components.komodorAgent.watcher.ports.healthCheck | int | `8090` | Override the health check port of the komodor agent watcher |
+| components.komodorAgent.watcher.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorAgent.supervisor.image | object | `{ "name": "supervisor", "tag": .Chart.AppVersion }` | Override the komodor agent supervisor image name or tag. |
 | components.komodorAgent.supervisor.resources | object | `{"requests":{"cpu":0.1,"memory":"256Mi"}}` | Set custom resources to the komodor agent supervisor container |
 | components.komodorAgent.supervisor.ports | object | `{"healthCheck":8089}` | Override the komodor agent supervisor ports configuration |
 | components.komodorAgent.supervisor.ports.healthCheck | int | `8089` | Override the health check port of the komodor agent supervisor |
+| components.komodorAgent.supervisor.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorAgent.networkMapper.image | object | `{"name":"network-mapper","tag":"v1.0.3"}` | Override the komodor agent network mapper image name or tag. |
 | components.komodorAgent.networkMapper.resources | object | `{}` | Set custom resources to the komodor agent network mapper container |
 | components.komodorAgent.metrics.image | object | `{"name":"telegraf","tag":1.27}` | Override the komodor agent metrics image name or tag. |
 | components.komodorAgent.metrics.resources | object | `{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Set custom resources to the komodor agent metrics container |
+| components.komodorAgent.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemon.annotations | object | `{}` | Adds custom annotations - Example: `--set podAnnotations."app\.komodor\.com/app"="komodor-agent"` |
 | components.komodorDaemon.tolerations | list | `[]` | Add tolerations to the komodor agent deployment |
 | components.komodorDaemon.podAnnotations | object | `{}` | # Add annotations to the komodor agent watcher pod |
-| components.komodorDaemon.metrics | object | `{"resources":{}}` | Configure the komodor daemon metrics components |
+| components.komodorDaemon.metrics | object | `{"extraEnvVars":[],"resources":{}}` | Configure the komodor daemon metrics components |
 | components.komodorDaemon.metrics.resources | object | `{}` | Add custom resources to the komodor agent watcher container |
+| components.komodorDaemon.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemon.metricsInit | object | See sub-values | Configure the komodor daemon metrics init container |
 | components.komodorDaemon.metricsInit.image | object | `{ "name": "init-daemon-agent", "tag": .Chart.AppVersion }` | Override the komodor agent metrics init image name or tag. |
 | components.komodorDaemon.metricsInit.resources | object | `{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Set custom resources to the komodor agent metrics init container |
+| components.komodorDaemon.metricsInit.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemon.networkSniffer | object | See sub-values | Configure the komodor daemon network sniffer components |
 | components.komodorDaemon.networkSniffer.image | object | `{"name":"network-mapper-sniffer","tag":"v1.0.3"}` | Override the komodor agent network sniffer image name or tag. |
 | components.komodorDaemon.networkSniffer.resources | object | `{}` | Set custom resources to the komodor agent network sniffer container |

@@ -1,5 +1,3 @@
-{{/* vim: set filetype=mustache: */}}
-
 {{/*This template file should be used for common helpers shared by all components*/}}
 
 {{/*

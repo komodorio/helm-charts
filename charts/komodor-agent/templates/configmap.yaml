@@ -3,19 +3,15 @@ kind: ConfigMap
 metadata:
   name: {{ include "komodorAgent.name" . }}-config
 data:
-  clusterName: {{ .Values.clusterName | required "clusterName is a required value!" }}
   komodor-k8s-watcher.yaml: |
     {{ toYaml .Values.communications | trim | nindent 4 }}
-    # clusterName: ""
+    clusterName: {{ .Values.clusterName | required "clusterName is a required value!" }}
     enableAgentTaskExecution: true
     enableAgentTaskExecutionV2: true
     allowReadingPodLogs: {{ .Values.capabilities.logs.enabled}}
     enableHelm: {{ .Values.capabilities.helm }}
     daemon:
       enabled: {{ .Values.capabilities.metrics }}
-{{/*  #    varsConfigMapName: k8s-watcher-daemon-env-vars # default*/}}
-{{/*  #  servers:*/}}
-{{/*  #    healthCheck: {} # default*/}}
     collectHistory: true
     watchNamespace: {{ .Values.capabilities.events.watchNamespace }}
     namespacesDenylist: {{ .Values.capabilities.events.namespacesDenylist }}
@@ -33,12 +29,8 @@ data:
       enable: {{ .Values.capabilities.telemetry.enabled }}
       collectApiServerMetrics: {{ .Values.capabilities.telemetry.collectApiServerMetrics }}
       serverHost: {{ .Values.communications.telemetryServerHost }}
-{{/*  #  memoryThresholdSafetyCheck:*/}}
-{{/*  #    enable: true # default*/}}
     networkMapper:
       enable: {{ .Values.capabilities.networkMapper }}
-{{/*  #  monitoringFQDN: "" # default*/}}
-{{/*  #  controller:*/}}
     resync:
       period: "0"
     resources:

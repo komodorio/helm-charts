@@ -17,6 +17,9 @@
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
   - name: CLUSTER_NAME
     value: {{ .Values.clusterName }}
+  {{- if gt (len .Values.components.komodorAgent.metrics.extraEnvVars) 0 }}
+  {{ toYaml .Values.components.komodorAgent.metrics.extraEnvVars | nindent 2 }}
+  {{- end }}
 {{- end }}
 {{- end }}
 
@@ -46,6 +49,9 @@
         fieldPath: status.hostIP
   - name: CLUSTER_NAME
     value: {{ .Values.clusterName }}
+  {{- if gt (len .Values.components.komodorDaemon.metrics.extraEnvVars) 0 }}
+  {{ toYaml .Values.components.komodorDaemon.metrics.extraEnvVars | nindent 2 }}
+  {{- end }}
 {{- end }}
 {{- end }}
 
@@ -74,5 +80,8 @@
         name: {{ include "komodorAgent.secret.name" . }}
         key: apiKey
         {{- end }}
+  {{- if gt (len .Values.components.komodorDaemon.metricsInit.extraEnvVars) 0 }}
+  {{ toYaml .Values.components.komodorDaemon.metricsInit.extraEnvVars | nindent 2 }}
+  {{- end }}
 {{- end }}
 {{- end }}

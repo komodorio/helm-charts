@@ -46,6 +46,10 @@
     value: /opt/watcher/helm/config
   - name: HELM_DATA_HOME
     value: /opt/watcher/helm/data
+  {{- if gt (len .Values.components.komodorAgent.watcher.extraEnvVars) 0 }}
+  {{ toYaml .Values.components.komodorAgent.watcher.extraEnvVars | nindent 2 }}
+  {{- end }}
+
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
   {{- include "komodorAgent.securityContext" . | nindent 2}}
   ports:
@@ -92,6 +96,10 @@
           {{- end }}
     - name: KOMOKW_SERVERS_HEALTHCHECK_PORT
       value: {{ .Values.components.komodorAgent.supervisor.ports.healthCheck | quote }}
+    {{- if gt (len .Values.components.komodorAgent.supervisor.extraEnvVars) 0 }}
+    {{ toYaml .Values.components.komodorAgent.supervisor.extraEnvVars | nindent 4 }}
+    {{- end }}
+
   {{- include "komodorAgent.proxy-conf" . | indent 4 }}
   {{- include "komodorAgent.securityContext" . | nindent 2}}
   ports:
