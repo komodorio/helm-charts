@@ -93,7 +93,7 @@ def test_redact_workload_names(setup_cluster):
     assert exit_code == 0, f"Agent installation failed, output: {output}"
 
     cmd(f'kubectl rollout restart deployment/{deployment} -n {namespace}')
-    time.sleep(5)
+    time.sleep(10)
 
     kuid = create_komodor_uid("Deployment", deployment, namespace, CLUSTER_NAME)
     url = (f"{BE_BASE_URL}/resources/api/v1/deploys/events/search"
