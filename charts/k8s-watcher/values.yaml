@@ -69,9 +69,9 @@ metrics:
   enabled: true
 daemon:
   tolerations:
-  - operator: "Exists"
+    - operator: "Exists"
   image:
-    repository: public.ecr.aws/komodor-public/telegraf:1.27
+    repository: public.ecr.aws/komodor-public/telegraf:1.28
     pullPolicy: IfNotPresent
   init:
     image:
