@@ -2,7 +2,7 @@
 
 Watches and sends kubernetes resource-related events
 
-![Version: 2.0.0](https://img.shields.io/badge/Version-2.0.0-informational?style=flat-square) ![AppVersion: 0.2.59](https://img.shields.io/badge/AppVersion-0.2.59-informational?style=flat-square)
+![Version: 2.0.0](https://img.shields.io/badge/Version-2.0.0-informational?style=flat-square) ![AppVersion: 0.2.60](https://img.shields.io/badge/AppVersion-0.2.60-informational?style=flat-square)
 
 ## TL;DR;
 
@@ -152,7 +152,7 @@ To install the chart directly with kubectl, use the manifests located in `./kube
 | components.komodorAgent.supervisor.resources | object | `{"requests":{"cpu":0.1,"memory":"256Mi"}}` | Set custom resources to the komodor agent supervisor container |
 | components.komodorAgent.supervisor.ports | object | `{"healthCheck":8089}` | Override the komodor agent supervisor ports configuration |
 | components.komodorAgent.supervisor.ports.healthCheck | int | `8089` | Override the health check port of the komodor agent supervisor |
-| components.komodorAgent.networkMapper.image | object | `{"name":"network-mapper","tag":"v0.1.32"}` | Override the komodor agent network mapper image name or tag. |
+| components.komodorAgent.networkMapper.image | object | `{"name":"network-mapper","tag":"v1.0.3"}` | Override the komodor agent network mapper image name or tag. |
 | components.komodorAgent.networkMapper.resources | object | `{}` | Set custom resources to the komodor agent network mapper container |
 | components.komodorAgent.metrics.image | object | `{"name":"telegraf","tag":1.27}` | Override the komodor agent metrics image name or tag. |
 | components.komodorAgent.metrics.resources | object | `{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Set custom resources to the komodor agent metrics container |
@@ -165,7 +165,7 @@ To install the chart directly with kubectl, use the manifests located in `./kube
 | components.komodorDaemon.metricsInit.image | object | `{ "name": "init-daemon-agent", "tag": .Chart.AppVersion }` | Override the komodor agent metrics init image name or tag. |
 | components.komodorDaemon.metricsInit.resources | object | `{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Set custom resources to the komodor agent metrics init container |
 | components.komodorDaemon.networkSniffer | object | See sub-values | Configure the komodor daemon network sniffer components |
-| components.komodorDaemon.networkSniffer.image | object | `{"name":"network-mapper-sniffer","tag":"v0.1.32"}` | Override the komodor agent network sniffer image name or tag. |
+| components.komodorDaemon.networkSniffer.image | object | `{"name":"network-mapper-sniffer","tag":"v1.0.3"}` | Override the komodor agent network sniffer image name or tag. |
 | components.komodorDaemon.networkSniffer.resources | object | `{}` | Set custom resources to the komodor agent network sniffer container |
 | allowedResources.event | bool | `true` | Enables watching `event` |
 | allowedResources.deployment | bool | `true` | Enables watching `deployments` |
