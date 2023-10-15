@@ -71,7 +71,7 @@ def test_network_mapper(setup_cluster):
 
     for i in range(180):  # ~3 minutes
         response = query_backend(url)
-        if len(response.json()['nodes']) != 0:
+        if response.status_code == 200 and len(response.json()['nodes']) != 0:
             break
         time.sleep(1)
     else:
