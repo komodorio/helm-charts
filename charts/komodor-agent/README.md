@@ -9,7 +9,7 @@ Watches and sends kubernetes resource-related events
 ```bash
 helm repo add komodorio https://helm-charts.komodor.io
 helm repo update
-helm upgrade --install komodor-agent komodorio/komodor-agent --set apiKey=YOUR_API_KEY_HERE --set watcher.clusterName=CLUSTER_NAME --set watcher.allowReadingPodLogs=true --set watcher.enableAgentTaskExecution=true --set watcher.enableAgentTaskExecutionV2=true --set watcher.enableHelm=true  --set helm.enableActions=true --wait --timeout=90s
+helm upgrade --install komodor-agent komodorio/komodor-agent --set apiKey=YOUR_API_KEY_HERE --set clusterName=CLUSTER_NAME --wait --timeout=90s
 ```
 
 In case of error try contact us for assistance via intercom at: https://app.komodor.com
@@ -52,7 +52,7 @@ This chart bootstraps a Kubernetes Resources/Event Watcher deployment on a [Kube
 To install the chart with the release name `komodor-agent`:
 
 ```bash
-helm upgrade --install komodor-agent komodorio/komodor-agent --create-namespace --set apiKey=YOUR_API_KEY_HERE --set watcher.clusterName=CLUSTER_NAME
+helm upgrade --install komodor-agent komodorio/komodor-agent --create-namespace --set apiKey=YOUR_API_KEY_HERE --set clusterName=CLUSTER_NAME
 ```
 
 The command deploys the komodor-agent on the Kubernetes cluster in the default configuration. The [configuration](#Values) section lists the parameters that can be configured during installation.
