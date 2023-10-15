@@ -20,11 +20,11 @@ NAMESPACE="komodor-legacy-chart"
 komo ctx "${environment}"
 helm repo add komodorio https://helm-charts.komodor.io
 helm repo update
-#helm upgrade --install "${RELEASE_NAME}" komodorio/k8s-watcher \
-#  --set apiKey="${KOMODOR_AGENT_API_KEY}" \
-#  --set namespace="${NAMESPACE}" \
-#  --reuse-values \
-#  --dry-run
+helm upgrade --install "${RELEASE_NAME}" komodorio/k8s-watcher \
+  --set apiKey="${KOMODOR_AGENT_API_KEY}" \
+  --set namespace="${NAMESPACE}" \
+  --reuse-values \
+  --dry-run
 
 helm upgrade --install "${RELEASE_NAME}" komodorio/k8s-watcher \
   --set watcher.clusterName="${CLUSTER_NAME}" \
