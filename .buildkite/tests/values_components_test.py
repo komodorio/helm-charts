@@ -1,4 +1,5 @@
 import yaml
+import pytest
 from helpers.utils import get_filename_as_cluster_name
 from config import RELEASE_NAME
 from helpers.helm_helper import get_yaml_from_helm_template
@@ -81,3 +82,29 @@ def test_override_deployment_affinity():
                                                       "spec.template.spec.affinity", values_file=values_file)
 
     assert deployment_affinity is not None, f"Expected affinity in deployment {deployment_affinity}"
+
+
+@pytest.mark.parametrize(
+    "component, container_index",
+    [
+        ("metrics", "0"),
+        ("watcher", "2"),
+        ("supervisor", "3"),
+    ]
+)
+def test_extra_env_vars(component, container_index):
+    values_file = f"""
+    components:
+      komodorAgent:
+        {component}:
+          extraEnvVars:
+            - name: "TEST_ENV_VAR"
+              value: "test"
+    """
+
+    deployment_name = f"{RELEASE_NAME}-komodor-agent"
+    deployment_env_vars = get_yaml_from_helm_template("test=test", "Deployment", deployment_name,
+                                                      f"spec.template.spec.containers.{container_index}.env",
+                                                      values_file=values_file)
+
+    assert deployment_env_vars[-1]["name"] == "TEST_ENV_VAR", f"Expected TEST_ENV_VAR in deployment env vars {deployment_env_vars}"
