@@ -2,7 +2,7 @@
 
 Watches and sends kubernetes resource-related events
 
-![Version: 2.0.0](https://img.shields.io/badge/Version-2.0.0-informational?style=flat-square) ![AppVersion: Missing](https://img.shields.io/badge/AppVersion-Missing-informational?style=flat-square)
+![Version: 2.0.0](https://img.shields.io/badge/Version-2.0.0-informational?style=flat-square) ![AppVersion: 0.2.60](https://img.shields.io/badge/AppVersion-0.2.60-informational?style=flat-square)
 
 ## TL;DR;
 

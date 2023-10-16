@@ -13,7 +13,12 @@ configure_git() {
 
 get_app_version() {
     local chart=$1
-    buildkite-agent meta-data get "version" --job ${PARENT_JOB_ID} || grep 'appVersion:' charts/$chart/Chart.yaml | awk '{print $2}'
+    ver=$(buildkite-agent meta-data get "version" --job ${PARENT_JOB_ID})
+     if [ $? -eq 0 ]; then
+        echo $ver
+        return
+     fi
+     grep 'appVersion:' charts/$chart/Chart.yaml | awk '{print $2}'
 }
 
 update_chart_version() {
