@@ -82,18 +82,6 @@ helm delete --purge komodor-agent
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-## Alternative: Install without Helm
-
-To install the chart directly with kubectl, use the manifests located in `./kube-install`.
-
-1. Make sure to set the apiKey (as base 64) secret value in `./kube-install/komodor-agent/templates/secret-credentials.yaml`
-   - `KOMOKW_APIKEY=YOUR_APIKEY sed -i "s/YOUR_APIKEY_AS_BASE_64/$(echo $KOMOKW_APIKEY | base64)/g" kube-install/komodor-agent/templates/secret-credentials.yaml`
-2. Make sure to set the cluster name in `./kube-install/komodor-agent/templates/*.yaml`
-   - `CLUSTER_NAME=YOUR_CLUSTER_NAME sed -i "s/YOUR_CLUSTER_NAME/$CLUSTER_NAME/g" kube-install/komodor-agent/templates/*.yaml`
-3. Then just apply everything in order:
-   - `kubectl apply -f ./kube-install/komodor-agent/templates/namespace.yaml`
-   - `kubectl apply -f ./kube-install/komodor-agent/templates`
-
 ## Values
 
 | Key | Type | Default | Description |
