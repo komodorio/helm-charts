@@ -9,7 +9,13 @@ Watches and sends kubernetes resource-related events
 ```bash
 helm repo add komodorio https://helm-charts.komodor.io
 helm repo update
-helm upgrade --install komodor-agent komodorio/komodor-agent --set apiKey=YOUR_API_KEY_HERE --set clusterName=CLUSTER_NAME --wait --timeout=90s
+helm upgrade --install komodor-agent komodorio/komodor-agent \
+  --namespace komodor-agent \
+  --create-namespace \
+  --set apiKey=<YOUR_API_KEY_HERE> \
+  --set clusterName=<CLUSTER_NAME> \
+  --wait \
+  --timeout=90s
 ```
 
 In case of error try contact us for assistance via intercom at: https://app.komodor.com
@@ -18,19 +24,19 @@ Or run:
 1. Logs of komodor-agent
 
 ```bash
-kubectl logs --tail=10 deployment/komodor-agent  -n komodor
+kubectl logs --tail=10 deployment/komodor-agent  -n komodor-agent
 ```
 
 2. Helm status
 
 ```bash
-helm status komodor-agent
+helm status komodor-agent -n komodor-agent
 ```
 
 3. Reinstall
 
 ```bash
-helm uninstall komodor-agent
+helm uninstall komodor-agent -n komodor-agent
 ```
 
 ## Introduction
@@ -52,10 +58,14 @@ This chart bootstraps a Kubernetes Resources/Event Watcher deployment on a [Kube
 To install the chart with the release name `komodor-agent`:
 
 ```bash
-helm upgrade --install komodor-agent komodorio/komodor-agent --create-namespace --set apiKey=YOUR_API_KEY_HERE --set clusterName=CLUSTER_NAME
+helm upgrade --install komodor-agent komodorio/komodor-agent \
+  --namespace komodor-agent \
+  --create-namespace \
+  --set apiKey=<YOUR_API_KEY_HERE> \
+  --set clusterName=<CLUSTER_NAME>
 ```
 
-The command deploys the komodor-agent on the Kubernetes cluster in the default configuration. The [configuration](#Values) section lists the parameters that can be configured during installation.
+The command deploys the komodor-agent on the Kubernetes cluster with default configuration. The [configuration](#Values) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -71,13 +81,13 @@ To uninstall/delete the `komodor-agent` deployment:
 Helm 3:
 
 ```bash
-helm uninstall komodor-agent
+helm uninstall komodor-agent -n komodor-agent
 ```
 
 Helm 2:
 
 ```bash
-helm delete --purge komodor-agent
+helm delete --purge komodor-agent -n komodor-agent
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.

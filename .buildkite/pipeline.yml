@@ -96,8 +96,8 @@ steps:
   - label: ":running: dry-run installation on staging before version bump"
     commands:
       - komo ctx staging
-      - helm get values komodor-agent-production > prod-values.yaml
-      - helm upgrade --install komodor-agent-production -f prod-values.yaml --dry-run charts/komodor-agent --set apiKey="test" --set clusterName=staging-test
+      - helm get values komodor-agent-production -n komodor-agent > prod-values.yaml
+      - helm upgrade --install komodor-agent-production -n komodor-agent -f prod-values.yaml --dry-run charts/komodor-agent --set apiKey="test" --set clusterName=staging-test
     if: build.message !~ /feat\(OSS.+\):/i
   - wait
 
