@@ -133,6 +133,7 @@ steps:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
             STAGING_API_KEY: /komodor/staging/komodor-agent-chart/api-key
+    if: build.message !~ /feat\(OSS.+\):/i && build.branch != "master"
 
   - label: ":weight_lifter: test helm update install"
     commands:
@@ -152,7 +153,7 @@ steps:
 
   - label: "Bump Versions"
     commands:
-      - ./.buildkite/pipeline_scripts/bump_versions.sh
+      - ./.buildkite/pipeline_scripts/bump_version.sh
     agents:
       builder: "dind"
     key: bump-versions
