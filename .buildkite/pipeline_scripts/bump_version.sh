@@ -13,8 +13,7 @@ configure_git() {
 
 get_app_version() {
     local chart=$1
-    buildkite-agent meta-data get "version" --job ${PARENT_JOB_ID} || \
-    grep 'appVersion:' charts/$chart/Chart.yaml | awk '{print $2}'
+    buildkite-agent meta-data get "version" --job ${PARENT_JOB_ID} || grep 'appVersion:' charts/$chart/Chart.yaml | awk '{print $2}'
 }
 
 update_chart_version() {
@@ -55,4 +54,4 @@ for chart in k8s-watcher komodor-agent; do
 done
 
 update_readme
-commit_and_push
+#commit_and_push
