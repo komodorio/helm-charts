@@ -11,6 +11,8 @@ configure_git() {
   git checkout master
 }
 
+configure_git
+
 LEGACY_NEW_VERSION=$(buildkite-agent meta-data get "k8s-watcher-version")
 NEW_VERSION=$(buildkite-agent meta-data get "komodor-agent-version")
 APP_VERSION=$(buildkite-agent meta-data get "agent-version")
@@ -22,6 +24,13 @@ make generate-kube
 git add charts/k8s-watcher
 git add charts/komodor-agent
 git status
-git commit -m "[skip ci] update generated manifests" && git tag $NEW_VERSION || echo "Already up-to-date"
+git commit -m "[skip ci] update generated manifests"
+if [ $? -eq 0 ]; then
+  git tag "komodor-agent-${NEW_VERSION}"
+  git tag "k8s-watcher-${LEGACY_NEW_VERSION}"
+else
+  echo "Already up-to-date"
+fi
+
 git push -f && git push --tags || echo "Nothing to push!"
 GITHUB_PAGES_REPO=komodorio/helm-charts ./publish.sh
