@@ -1,0 +1,16 @@
+imagePullSecret: docker-cfg-komodorio
+
+communications:
+  serverHost: https://staging.app.komodor.com
+  tasksServerHost: https://staging.app.komodor.com
+  wsHost: wss://staging.app.komodor.com
+  telemetryServerHost: https://staging.telemetry.komodor.com
+
+capabilities:
+  telemetry:
+    enable: false
+  event:
+    redact: "{.*KEY.*,.*key.*,.*BUGSNAG.*}"
+
+allowedResources:
+  secret: true

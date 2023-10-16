@@ -1,0 +1,37 @@
+{{- if .Values.capabilities.metrics }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "komodorAgent.name" . }}-daemon-config
+data:
+  telegraf.conf: |
+    [global_tags]
+      account_id = "${ACCOUNT_ID}"
+      cluster_name = "${CLUSTER_NAME}"
+
+    [agent]
+      interval = "${INTERVAL}"
+      flush_interval = "${FLUSH_INTERVAL}"
+
+    [[outputs.http]]
+      url = {{ include "metrics.collector.endpoint" . | quote}}
+      timeout = "${OUTPUT_TIMEOUT}"
+      content_encoding = "gzip"
+      {{- if .Values.proxy.https }}
+      http_proxy_url = "${KOMOKW_HTTPS_PROXY_URL}"
+      {{- else if .Values.proxy.http }}
+      http_proxy_url = "${KOMOKW_HTTP_PROXY_URL}"
+      {{- end }}
+      [outputs.http.headers]
+        X-ACCOUNT-ID = "${ACCOUNT_ID}"
+
+    [[inputs.kubernetes]]
+      url = "https://$NODE_IP:10250"
+      bearer_token = "/run/secrets/kubernetes.io/serviceaccount/token"
+      insecure_skip_verify = true
+      fieldpass = ["memory_usage_bytes","cpu_usage_nanocores"]
+      namedrop = ["kubernetes_system_container"]
+      [inputs.kubernetes.tags]
+        measure_type = "usage"
+
+{{- end }}

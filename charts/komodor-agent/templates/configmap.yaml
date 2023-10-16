@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "komodorAgent.name" . }}-config
+data:
+  komodor-k8s-watcher.yaml: |
+    {{ toYaml .Values.communications | trim | nindent 4 }}
+    clusterName: {{ .Values.clusterName | required "clusterName is a required value!" }}
+    enableAgentTaskExecution: true
+    enableAgentTaskExecutionV2: true
+    allowReadingPodLogs: {{ .Values.capabilities.logs.enabled}}
+    enableHelm: {{ .Values.capabilities.helm }}
+    daemon:
+      enabled: {{ .Values.capabilities.metrics }}
+    collectHistory: true
+    watchNamespace: {{ .Values.capabilities.events.watchNamespace }}
+    namespacesDenylist: {{ .Values.capabilities.events.namespacesDenylist }}
+    logsNamespacesDenylist: {{ .Values.capabilities.logs.logsNamespacesDenylist }}
+    logsNamespacesAllowlist: {{ .Values.capabilities.logs.logsNamespacesAllowlist }}
+    nameDenylist: {{ .Values.capabilities.logs.nameDenylist }}
+    redact: {{ .Values.capabilities.events.redact }}
+    redactLogs: {{ .Values.capabilities.logs.redact }}
+    actions:
+      basic: {{ .Values.capabilities.actions }}
+      advanced: {{ .Values.capabilities.actions }}
+      podExec: {{ .Values.capabilities.actions }}
+      portforward: {{ .Values.capabilities.actions }}
+    telemetry:
+      enable: {{ .Values.capabilities.telemetry.enabled }}
+      collectApiServerMetrics: {{ .Values.capabilities.telemetry.collectApiServerMetrics }}
+      serverHost: {{ .Values.communications.telemetryServerHost }}
+    networkMapper:
+      enable: {{ .Values.capabilities.networkMapper }}
+    resync:
+      period: "0"
+    resources:
+      {{ toYaml .Values.allowedResources | trim | nindent 6 }}
+
+  installed-values.yaml: |
+    {{ toYaml .Values | nindent 4 }}   

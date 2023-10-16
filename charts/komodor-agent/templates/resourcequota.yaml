@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  labels:
+    app: komodor
+  name: komodor-critical-pods
+spec:
+  hard:
+    pods: 2
+  scopeSelector:
+    matchExpressions:
+      - operator: In
+        scopeName: PriorityClass
+        values:
+          - {{ .Release.Name }}-agent-high-priority

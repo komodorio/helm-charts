@@ -1,5 +1,21 @@
 # Komodor.io
 
+------
+
+## :rotating_light: `k8s-watcher` Helm Chart Deprecation
+
+We want to inform our users that the `k8s-watcher` Helm Chart will be deprecated in the near future. This decision has been made to streamline our Helm Chart offerings and provide a more unified and enhanced user experience.
+
+We will be replacing `k8s-watcher` with a new Helm chart named `komodor-agent`. 
+The `komodor-agent` chart is designed with common best practices, enhanced scalability, and easier configuration in mind. 
+We encourage all users to transition to the `komodor-agent` Helm chart at their earliest convenience to benefit from these improvements.
+
+Further details regarding the transition process, including the migration guide, will be shared shortly. In the meantime, feel free to reach out to our support team if you have any questions or need assistance with the migration.
+
+Thank you for your understanding and cooperation.
+
+-------
+
 ## TL;DR;
 
 ```bash

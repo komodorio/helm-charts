@@ -1,0 +1,14 @@
+{{- if .Values.capabilities.networkMapper }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "network.mapper.fullName" . }}
+spec:
+  selector:
+    {{- include "komodorAgent.selectorLabels" . | nindent 4 }}
+  ports:
+    - protocol: TCP
+      port: 9090
+      name: http
+      targetPort: 9090
+{{- end }}

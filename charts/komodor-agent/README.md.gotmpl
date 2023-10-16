@@ -1,0 +1,109 @@
+{{ template "chart.header" . }}
+{{ template "chart.description" . }}
+
+{{ template "chart.versionBadge" . }}{{ template "chart.typeBadge" . }}{{ template "chart.appVersionBadge" . }}
+
+## TL;DR;
+
+```bash
+helm repo add komodorio https://helm-charts.komodor.io
+helm repo update
+helm upgrade --install komodor-agent komodorio/komodor-agent \
+  --set apiKey=<YOUR_API_KEY_HERE> \
+  --set clusterName=<CLUSTER_NAME> \
+  --wait \
+  --timeout=90s
+```
+
+In case of error try contact us for assistance via intercom at: https://app.komodor.com
+Or run:
+
+1. Logs of komodor-agent
+
+```bash
+kubectl logs --tail=10 deployment/komodor-agent
+```
+
+2. Helm status
+
+```bash
+helm status komodor-agent
+```
+
+3. Reinstall
+
+```bash
+helm uninstall komodor-agent
+```
+
+## Introduction
+
+This chart bootstraps a Kubernetes Resources/Event Watcher deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+
+### Supported architectures
+
+- :white_check_mark: linux/amd64
+- :white_check_mark: linux/arm64
+
+## Prerequisites
+
+- Kubernetes 1.19+ (older versions not officially supported)
+- Helm 2/3
+
+## Installing the Chart
+
+To install the chart with the release name `komodor-agent`:
+
+```bash
+helm upgrade --install komodor-agent komodorio/komodor-agent \
+  --set apiKey=<YOUR_API_KEY_HERE> \
+  --set clusterName=<CLUSTER_NAME>
+```
+
+The command deploys the komodor-agent on the Kubernetes cluster with default configuration. The [configuration](#Values) section lists the parameters that can be configured during installation.
+
+> **Tip**: List all releases using `helm list`
+
+## Api Key
+
+The Komodor kubernetes api key can be provided in the helm upgrade command, in the `values.yaml` file or can be taken from an existing kubernetes secret resource.
+When using an existing kubernetes secret resource, specify the secret name in `apiKeySecret` and store the api key under the name 'apiKey'.
+
+## Uninstalling the Chart
+
+To uninstall/delete the `komodor-agent` deployment:
+
+Helm 3:
+
+```bash
+helm uninstall komodor-agent
+```
+
+Helm 2:
+
+```bash
+helm delete --purge komodor-agent
+```
+
+The command removes all the Kubernetes components associated with the chart and deletes the release.
+
+{{ template "chart.requirementsSection" . }}
+
+{{ template "chart.valuesSection" . }}
+
+[README.md](README.md)
+> **Tip**: You can use the default [values.yaml](values.yaml)
+
+### Using a Proxy
+
+Komodor supports the standard proxy environment variables (`HTTP_PROXY, HTTPS_PROXY, NO_PROXY`) as well as these variables prefixed by `KOMOKW_` which will assign the proxy only to the HTTP clients communicating with Komodor. This is useful in case you want to leave the communication to the Kubernetes API in-cluster.
+
+#### Use-cases:
+
+- In-cluster proxy (which can communicate with local K8s IPs) - You can use either one of the solutions.
+- External proxy (which _cannot_ communicate with the local K8s IPs) - You need to use the `KOMOKW_` prefix to the proxy environment variables to have only the traffic to Komodor pass through the proxy. If you're using the Helm chart - this can be disabled by setting `--set proxy.komodorOnly=false`.
+
+
+
+
+
