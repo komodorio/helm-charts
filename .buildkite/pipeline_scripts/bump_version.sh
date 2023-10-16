@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
 set -ex
 
-SCRIPT_DIR=$(dirname $(realpath "$0"))
-source "$SCRIPT_DIR/common.sh"
+get_current_version() {
+    grep 'version:' charts/"${1}"/Chart.yaml | awk '{print $2}'
+}
+
+increment_version() {
+    echo "${1}" | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g'
+}
 
 configure_git() {
     git config user.email buildkite@users.noreply.github.com
