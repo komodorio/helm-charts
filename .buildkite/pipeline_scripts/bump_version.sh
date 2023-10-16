@@ -54,4 +54,4 @@ for chart in k8s-watcher komodor-agent; do
 done
 
 update_readme
-#commit_and_push
+commit_and_push
