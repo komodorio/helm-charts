@@ -26,7 +26,7 @@ git add charts/komodor-agent
 git status
 git commit -m "[skip ci] update generated manifests"
 if [ $? -eq 0 ]; then
-  git tag "komodor-agent-${NEW_VERSION}"
+  # git tag "komodor-agent-${NEW_VERSION}"
   git tag "k8s-watcher-${LEGACY_NEW_VERSION}"
 else
   echo "Already up-to-date"
