@@ -6,9 +6,14 @@ from config import NAMESPACE
 
 
 @pytest.fixture(scope='module')
-def setup_cluster():
+def setup_cluster(request):
     cluster_name = "test"
-    cmd(f"kind create cluster --name {cluster_name} --wait 5m")
+
+    node = ""
+    if hasattr(request, 'param'):
+        node = f"--image=kindest/node:v{request.param}"
+
+    cmd(f"kind create cluster --name {cluster_name} {node} --wait 5m")
     config.load_kube_config(context=f"kind-{cluster_name}")
     cmd(f"kubectl apply -f ./test-data")
     yield
