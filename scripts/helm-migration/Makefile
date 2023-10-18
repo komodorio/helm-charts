@@ -30,4 +30,4 @@ endif
 
 .PHONY: release
 release: all
-	gh release create v$(VERSION) $(DIST_DIR)/* --title "$(APP_NAME) v$(VERSION)" --notes-file release-notes.md --draft
+	gh release create v$(VERSION) $(DIST_DIR)/* --title "$(APP_NAME) v$(VERSION)" --notes-file release-note.md --draft
