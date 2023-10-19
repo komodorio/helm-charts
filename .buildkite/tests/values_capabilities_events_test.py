@@ -6,15 +6,9 @@ from config import BE_BASE_URL
 from fixtures import setup_cluster, cleanup_agent_from_cluster
 from helpers.utils import cmd, get_filename_as_cluster_name
 from helpers.helm_helper import helm_agent_install
-from helpers.komodor_helper import create_komodor_uid, query_backend
+from helpers.komodor_helper import create_komodor_uid, query_backend_with_retry, query_backend
 
 CLUSTER_NAME = get_filename_as_cluster_name(__file__)
-
-
-def query_events(namespace, deployment, start_time, end_time):
-    kuid = create_komodor_uid("Deployment", deployment, namespace, CLUSTER_NAME)
-    url = f"{BE_BASE_URL}/resources/api/v1/events/general?fromEpoch={start_time}&toEpoch={end_time}&komodorUids={kuid}"
-    return query_backend(url)
 
 
 @pytest.fixture
@@ -44,6 +38,11 @@ def restart_deployment():
 def test_namespace_behavior(
         setup_cluster, install_agent, restart_deployment,
         watch_namespace, watch_deployment, un_watch_namespace, un_watch_deployment, additional_settings):
+
+    def query_url(namespace, deployment):
+        kuid = create_komodor_uid("Deployment", deployment, namespace, CLUSTER_NAME)
+        return f"{BE_BASE_URL}/resources/api/v1/events/general?fromEpoch={start_time}&toEpoch={end_time}&komodorUids={kuid}"
+
     start_time = int(time.time() * 1000)
     end_time = int(time.time() * 1000) + 120_000  # two minutes from now
 
@@ -55,12 +54,12 @@ def test_namespace_behavior(
     restart_deployment(un_watch_deployment, un_watch_namespace)
 
     # Verify events from watched namespace
-    response = query_events(watch_namespace, watch_deployment, start_time, end_time)
+    response = query_backend_with_retry(query_url(watch_namespace,watch_deployment), retries=10, object_to_wait_for="event_deploy")
     assert response.status_code == 200, f"Failed to get configmap from resources api, response: {response}"
     assert len(response.json()['event_deploy']) > 0, f"Failed to get event_deploy from resources api, response: {response}"
 
     # Verify that we dont get events from unwatched namespace
-    response = query_events(un_watch_namespace, un_watch_deployment, start_time, end_time)
+    response = query_backend(query_url(un_watch_namespace, un_watch_deployment))
     assert response.status_code == 200, f"Failed to get configmap from resources api, response: {response}"
     assert len(response.json()['event_deploy']) == 0, f"Found events for un-watched namespace {un_watch_namespace}, response: {response.json()}"
 
@@ -85,7 +84,7 @@ def test_redact_workload_names(setup_cluster):
            f"&order=DESC"
            f"&komodorUids={kuid}")
 
-    response = query_backend(url)
+    response = query_backend_with_retry(url, retries=10, object_to_wait_for="data")
 
     assert response.status_code == 200, f"Failed to get configmap from resources api, response: {response}"
     assert len(response.json()['data']) > 0, f"Failed to get configmap from resources api, response: {response}"
