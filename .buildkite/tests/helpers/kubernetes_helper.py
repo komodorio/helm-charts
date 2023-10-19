@@ -1,5 +1,6 @@
 import time
 import json
+from helpers.utils import cmd
 from kubernetes import client
 from config import NAMESPACE
 
@@ -124,3 +125,10 @@ def look_for_errors_in_pod_log(pod_name, container_name="k8s-watcher"):
         json_log = json.loads(line)
         if "level" in json_log and json_log["level"] == "error":
             assert False, f"Found error in logs of {pod_name}\nLog: {json_log['msg']}"
+
+
+def rollout_restart_and_wait(deployment_name, namespace):
+    cmd(f'kubectl rollout restart deployment/{deployment_name} -n {namespace}')
+    output, exit_code = cmd(f'kubectl rollout status deployment/{deployment_name} -n {namespace}')
+    return exit_code == 0
+
