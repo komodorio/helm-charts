@@ -10,7 +10,7 @@ HELM_DOCS_ARGS := -s file \
                   -y="components.komodorAgent.watcher" \
                   -y="components.komodorAgent.supervisor" \
                   -y="components.komodorAgent.networkMapper" \
-                  -y="components.komodorAgent.metrics" \
+                  -y="components.komodorDaemon.metrics" \
                   -y="components.komodorDaemon" \
                   -y="allowedResources"
 
