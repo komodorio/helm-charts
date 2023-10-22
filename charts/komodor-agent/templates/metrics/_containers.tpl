@@ -1,10 +1,10 @@
 {{- define "metrics.daemonset.container" }}
 {{- if .Values.capabilities.metrics }}
 - name: metrics
-  image: {{ .Values.imageRepo }}/{{ .Values.components.komodorAgent.metrics.image.name}}:{{ .Values.components.komodorAgent.metrics.image.tag }}
+  image: {{ .Values.imageRepo }}/{{ .Values.components.komodorDaemon.metrics.image.name}}:{{ .Values.components.komodorDaemon.metrics.image.tag }}
   imagePullPolicy: {{ .Values.pullPolicy }}
   resources:
-    {{ toYaml .Values.components.komodorAgent.metrics.resources | trim | nindent 4 }}
+    {{ toYaml .Values.components.komodorDaemon.metrics.resources | trim | nindent 4 }}
   volumeMounts:
   - name: {{ include "metrics.daemon.config.name" . }}
     mountPath: /etc/telegraf/telegraf.conf
