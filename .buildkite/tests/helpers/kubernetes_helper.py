@@ -117,7 +117,7 @@ def get_pod_logs(namespace, pod_name, container_name=None, tail_lines=100):
 
 
 def look_for_errors_in_pod_log(pod_name, container_name="k8s-watcher"):
-    assert pod_name, "Failed to find pod by deployment name"
+    assert pod_name, "Pod name is required"
     logs = get_pod_logs(NAMESPACE, pod_name, container_name)
     for line in logs.splitlines():
         if not line.startswith("{"):
