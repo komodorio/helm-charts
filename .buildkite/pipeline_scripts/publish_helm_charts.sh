@@ -5,7 +5,6 @@ SCRIPT_DIR=$(dirname $(realpath "$0"))
 source "$SCRIPT_DIR/common.sh"
 
 configure_git() {
-  git config user.email
   git config user.email buildkite@users.noreply.github.com
   git config user.name buildkite
   git checkout master
