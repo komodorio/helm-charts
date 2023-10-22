@@ -166,7 +166,7 @@ components:
       # components.komodorAgent.metrics.image -- Override the komodor agent metrics image name or tag.
       image:
         name: telegraf
-        tag: 1.27
+        tag: 1.28
       # components.komodorAgent.metrics.resources -- Set custom resources to the komodor agent metrics container
       resources: {}
       # components.komodorAgent.metrics.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair

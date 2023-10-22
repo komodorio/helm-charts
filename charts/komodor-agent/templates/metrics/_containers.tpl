@@ -1,28 +1,3 @@
-{{- define "metrics.container" -}}
-{{- if .Values.capabilities.metrics -}}
-- name: metrics
-  image: {{ .Values.imageRepo }}/{{ .Values.components.komodorAgent.metrics.image.name}}:{{ .Values.components.komodorAgent.metrics.image.tag }}
-  imagePullPolicy: {{ .Values.pullPolicy }}
-  resources:
-    {{ toYaml .Values.components.komodorAgent.metrics.resources | trim | nindent 4 }}
-  volumeMounts:
-  - name: {{ include "metrics.config.name" . }}
-    mountPath: /etc/telegraf/telegraf.conf
-    subPath: telegraf.conf
-  {{- include "custom-ca.trusted-volumeMounts" . | indent 2 }}
-  envFrom:
-  - configMapRef:
-      name:  "k8s-watcher-daemon-env-vars"
-  env:
-  {{- include "komodorAgent.proxy-conf" . | indent 2 }}
-  - name: CLUSTER_NAME
-    value: {{ .Values.clusterName }}
-  {{- if gt (len .Values.components.komodorAgent.metrics.extraEnvVars) 0 }}
-  {{ toYaml .Values.components.komodorAgent.metrics.extraEnvVars | nindent 2 }}
-  {{- end }}
-{{- end }}
-{{- end }}
-
 {{- define "metrics.daemonset.container" }}
 {{- if .Values.capabilities.metrics }}
 - name: metrics

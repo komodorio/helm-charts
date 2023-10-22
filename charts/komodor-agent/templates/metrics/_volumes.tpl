@@ -11,11 +11,3 @@
         path: komodor-k8s-watcher.yaml
 {{- end }}
 {{- end }}
-
-{{- define "metrics.deploy.volumes" }}
-{{- if .Values.capabilities.metrics }}
-- name: {{ include "metrics.config.name" . }}
-  configMap:
-    name: {{ include "metrics.config.name" . }}
-{{- end }}
-{{- end }}
