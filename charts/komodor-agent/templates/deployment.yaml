@@ -38,13 +38,11 @@ spec:
         {{- include "ca-init.container" .                   | trim | nindent 8 }}
 
       containers:
-        {{- include "metrics.container" .                   | trim | nindent 8 }}
         {{- include "network_mapper.container" .            | trim | nindent 8 }}
         {{- include "watcher.container" .                   | trim | nindent 8 }}
         {{- include "supervisor.container" .                | trim | nindent 8 }}
 
       volumes:
-        {{- include "metrics.deploy.volumes" .              | trim | nindent 8 }}
         {{- include "agent.deploy.volumes" .                | trim | nindent 8 }}
         {{- include "custom-ca.volume" .                    | trim | nindent 8 }}
         {{- include "custom-ca.trusted-volume" .            | trim | nindent 8 }}
