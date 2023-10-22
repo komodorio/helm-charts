@@ -2,7 +2,8 @@
 APP_NAME = komodor-helm-migration
 GO = go
 DIST_DIR = ./dist
-LDFLAGS = -ldflags "-X main.version=$(VERSION)"
+COMMIT := $(shell git rev-parse HEAD)
+LDFLAGS = -ldflags "-X main.version=$(VERSION) -X main.commit=$(COMMIT)"
 
 .PHONY: all windows linux darwin clean check-version
 
@@ -26,3 +27,7 @@ check-version:
 ifndef VERSION
 	$(error VERSION is not set. Use make all VERSION=x.y.z to set the version.)
 endif
+
+.PHONY: release
+release: all
+	gh release create v$(VERSION) $(DIST_DIR)/* --title "$(APP_NAME) v$(VERSION)" --notes-file release-note.md --draft
