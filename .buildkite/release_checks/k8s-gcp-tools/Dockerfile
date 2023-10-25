@@ -41,7 +41,9 @@ COPY --from=builder /usr/local/bin /usr/local/bin
 COPY --from=builder /root/google-cloud-sdk /root/google-cloud-sdk
 ENV PATH $PATH:/root/google-cloud-sdk/bin
 
-# Create entrypoint
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+#COPY entrypoint.sh /entrypoint.sh
+#RUN chmod +x /entrypoint.sh
+
+WORKDIR /app
+
+#ENTRYPOINT ["/entrypoint.sh"]
