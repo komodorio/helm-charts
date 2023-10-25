@@ -12,4 +12,4 @@ terraform init
 terraform apply -var="cluster_name=test" -auto-approve
 terraform output kubeconfig > ../kubeconfig.yaml
 popd
-timeout --preserve-status 10m python3 /app/main.py kubeconfig.yaml
+timeout --preserve-status 10m python3 /app/scenarios/main.py kubeconfig.yaml
