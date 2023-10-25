@@ -23,4 +23,9 @@ terraform {
       version = ">= 1.7.0"
     }
   }
+
+  backend "gcs" {
+    bucket  = "komodor-playground-terraform"
+    prefix  = "terraform/state"
+  }
 }
