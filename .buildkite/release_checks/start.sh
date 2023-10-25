@@ -18,6 +18,6 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-terraform output kubeconfig > ../kubeconfig.yaml
+terraform output -raw kubeconfig > ../kubeconfig.yaml
 popd
 timeout --preserve-status 10m python3 /app/scenarios/main.py /app/kubeconfig.yaml
