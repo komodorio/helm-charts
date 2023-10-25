@@ -5,7 +5,9 @@ cd /app
 gcloud auth activate-service-account --key-file=sa.json
 
 cp sa.json gcp-tf/sa.json
+
 pushd gcp-tf
+export GOOGLE_APPLICATION_CREDENTIALS=sa.json
 terraform init
 terraform workspace new test || true
 terraform workspace select test
