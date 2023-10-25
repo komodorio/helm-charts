@@ -4,7 +4,7 @@ cd /app
 
 gcloud auth activate-service-account --key-file=sa.json
 
-ln -s sa.json gcp-tf/sa.json
+cp sa.json gcp-tf/sa.json
 pushd gcp-tf
 terraform workspace new test || true
 terraform workspace select test

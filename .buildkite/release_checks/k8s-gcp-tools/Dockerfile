@@ -24,7 +24,7 @@ RUN curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/s
     && rm get_helm.sh
 
 # Install Terraform
-ENV TERRAFORM_VERSION=1.0.6
+ENV TERRAFORM_VERSION=1.6.2
 RUN wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
     && unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
     && mv terraform /usr/local/bin/terraform \
