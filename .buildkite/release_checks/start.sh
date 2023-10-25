@@ -20,4 +20,4 @@ fi
 
 terraform output kubeconfig > ../kubeconfig.yaml
 popd
-timeout --preserve-status 10m python3 /app/scenarios/main.py kubeconfig.yaml
+timeout --preserve-status 10m python3 /app/scenarios/main.py /app/kubeconfig.yaml
