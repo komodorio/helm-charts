@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+TIMEOUT=${RUN_TIMEOUT:-"10m"}
+
 cd /app
 
 gcloud auth activate-service-account --key-file=sa.json
@@ -21,4 +23,4 @@ fi
 terraform output -raw kubeconfig > ../kubeconfig.yaml
 chmod 400 ../kubeconfig.yaml
 popd
-timeout --preserve-status 10m python3 /app/scenarios/main.py /app/kubeconfig.yaml
+timeout --preserve-status ${TIMEOUT} python3 /app/scenarios/main.py /app/kubeconfig.yaml
