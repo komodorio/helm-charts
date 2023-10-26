@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -x
 
 TIMEOUT=${RUN_TIMEOUT:-"10m"}
 
@@ -23,4 +24,5 @@ fi
 terraform output -raw kubeconfig > ../kubeconfig.yaml
 chmod 400 ../kubeconfig.yaml
 popd
+echo "Scenarios will be running for the next: ${TIMEOUT}"
 timeout --preserve-status ${TIMEOUT} python3 /app/scenarios/main.py /app/kubeconfig.yaml
