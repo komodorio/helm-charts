@@ -7,17 +7,17 @@ DEPLOYMENT_TEMPLATE = """
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sample-app-{index}
+  name: edit-deployment-{index}
   namespace: {namespace}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: sample-app-{index}
+      app: edit-deployment-{index}
   template:
     metadata:
       labels:
-        app: sample-app-{index}
+        app: edit-deployment-{index}
     spec:
       containers:
       - name: busybox-container
@@ -46,31 +46,38 @@ class EditDeploymentScenario(Scenario):
         update_actions = [
             {
                 'command': lambda index: (
-                    f"{self.kubectl} label deployment sample-app-{index} "
+                    f"{self.kubectl} label deployment edit-deployment-{index} "
                     f"example-label=random-value-{random.randint(1, 100)} -n {self.namespace} --overwrite"
                 ),
-                'description': lambda index: f"Updating label for deployment sample-app-{index}"
+                'description': lambda index: f"Updating label for deployment edit-deployment-{index}"
             },
             {
                 'command': lambda index: (
-                    f"{self.kubectl} annotate deployment sample-app-{index} "
+                    f"{self.kubectl} annotate deployment edit-deployment-{index} "
                     f"example-annotation=random-value-{random.randint(1, 100)} -n {self.namespace} --overwrite"
                 ),
-                'description': lambda index: f"Updating annotation for deployment sample-app-{index}"
+                'description': lambda index: f"Updating annotation for deployment edit-deployment-{index}"
             },
             {
                 'command': lambda index: (
-                    f"{self.kubectl} set env deployment/sample-app-{index} "
+                    f"{self.kubectl} set env deployment/edit-deployment-{index} "
                     f"VAR=new_value_{random.randint(1, 100)} -n {self.namespace}"
                 ),
-                'description': lambda index: f"Updating environment variable for deployment sample-app-{index}"
+                'description': lambda index: f"Updating environment variable for deployment edit-deployment-{index}"
             },
             {
                 'command': lambda index: (
-                    f"{self.kubectl} scale deployment sample-app-{index} "
+                    f"{self.kubectl} scale deployment edit-deployment-{index} "
                     f"--replicas={random.randint(1, 5)} -n {self.namespace}"
                 ),
-                'description': lambda index: f"Updating replica count for deployment sample-app-{index}"
+                'description': lambda index: f"Updating replica count for deployment edit-deployment-{index}"
+            },
+            {
+                'command': lambda index: (
+                    f"{self.kubectl} set image deployment/edit-deployment-{index} "
+                    f"busybox-container={random.choice(['busybox:1.36', 'busybox:1.35', 'busybox:dummy'])} -n {self.namespace}"
+                ),
+                'description': lambda index: f"Updating image for deployment edit-deployment-{index}"
             },
         ]
 

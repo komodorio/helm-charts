@@ -14,7 +14,7 @@ data:
     #!/bin/sh
 
     # Generate a random duration between 10 seconds (10) and 15 minutes (900 seconds)
-    DURATION=$((RANDOM % 1791 + 10))
+    DURATION=$((RANDOM % 891 + 10))
 
     echo "Starting simulated work for $DURATION seconds..."
 
@@ -73,7 +73,7 @@ class JobsScenario(Scenario):
             if asyncio.current_task().cancelled():
                 self.log('Cancellation detected, exiting...')
                 return
-            for _ in range(5): # Create 5 jobs
+            for _ in range(5):  # Create 5 jobs
                 index += 1
                 name = f"simulated-job-id-{index}"
                 self.log(f"Deploying {name}")

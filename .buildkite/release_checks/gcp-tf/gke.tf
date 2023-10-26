@@ -1,10 +1,10 @@
 resource "google_container_cluster" "primary" {
-  name               = var.cluster_name
-  project  = var.project_id
-  location           = "us-central1-a"
+  name                     = var.cluster_name
+  project                  = var.project_id
+  location                 = "us-central1-a"
   remove_default_node_pool = true
-  initial_node_count       = 1
-  deletion_protection = false
+  initial_node_count       = 1 
+  deletion_protection      = false
 }
 
 resource "google_project_iam_member" "gcr_viewer" {
@@ -20,11 +20,10 @@ resource "google_service_account" "default" {
 }
 
 resource "google_container_node_pool" "primary_preemptible_nodes" {
-  name       = "agent-release-node-pool-${var.cluster_name}"
-  location   = "us-central1-a"
-  project = var.project_id
-  cluster    = google_container_cluster.primary.name
-  node_count = var.node_count
+  name     = "agent-release-node-pool-${var.cluster_name}"
+  location = "us-central1-a"
+  project  = var.project_id
+  cluster  = google_container_cluster.primary.name
 
   autoscaling {
     min_node_count = 1

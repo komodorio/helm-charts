@@ -13,7 +13,7 @@ class KomodorAgentScenario(Scenario):
         super().__init__("komodor-agent", kubeconfig)
 
     async def run(self):
-        await asyncio.sleep(60) # Wait x seconds before deploying, to let other deployments to finish
+        await asyncio.sleep(120)  # Wait x seconds before deploying, to let other deployments to finish
 
         self.log("Starting to deploy")
         install_cmd = (f"helm repo add komodorio https://helm-charts.komodor.io && "

@@ -9,7 +9,7 @@ from komodor_agent.scenario import KomodorAgentScenario
 from log_chaos.scenario import LogChaosScenario
 from jobs.scenario import JobsScenario
 from edit_deployment.scenario import EditDeploymentScenario
-
+from mass_deployment.scenario import MassDeploymentScenario
 
 async def main():
     kubeconfig_path = sys.argv[1]
@@ -22,7 +22,8 @@ async def main():
                  KomodorAgentScenario(kubeconfig_path),
                  LogChaosScenario(kubeconfig_path),
                  JobsScenario(kubeconfig_path),
-                 EditDeploymentScenario(kubeconfig_path)]
+                 EditDeploymentScenario(kubeconfig_path),
+                 MassDeploymentScenario(kubeconfig_path)]
 
     tasks = [asyncio.create_task(scenario.run()) for scenario in scenarios]
 
