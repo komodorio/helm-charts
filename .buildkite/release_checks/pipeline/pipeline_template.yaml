@@ -1,0 +1,55 @@
+steps:
+  - input: "RC Version"
+    fields:
+      - select: "Stream"
+        key: "rc-version"
+        required: true
+        hint: Select RC version to check and release as GA
+        options: []
+
+  - input: "Job Mode"
+    fields:
+      - select: "Stream"
+        key: "job-mode"
+        required: true
+        default: "ga"
+        hint: "GA: Check the version before releasing as GA,\nHOTFIX: Skip stability checks and just release the version"
+        options:
+          - label: "GA"
+            value: "ga"
+          - label: "Hotfix"
+            value: "hotfix"
+
+  - wait
+
+  - label: ":new: Setup cluster & run scenarios"
+    commands:
+      - cd .buildkite/release_checks
+      - komo ci docker-login
+      - echo $$SA_KEY > sa.json
+
+      - ./ci.sh
+    env:
+      RUN_TIMEOUT: 60m
+    agents:
+      builder: "dind"
+    plugins:
+      - zacharymctague/aws-ssm#v1.0.0:
+          parameters:
+            SA_KEY: /app/ci/gcp/AGENT_RELEASE_SA_KEY
+
+  - wait
+
+  - input: "Version increment type"
+    fields:
+      - select: "Stream"
+        key: "version-type"
+        default: "patch"
+        required: true
+        options:
+          - label: "Major"
+            value: "major"
+          - label: "minor"
+            value: "minor"
+          - label: "patch"
+            value: "patch"

@@ -13,5 +13,12 @@ run_in_docker() {
     "${command}"
 }
 
+work_mode=$(buildkite-agent meta-data get job-mode || echo "ga")
+
+if [[ "$work_mode" != "ga" ]]; then
+  echo "Running in '${work_mode}' mode, Skipping GA checks"
+  exit 0
+fi
+
 echo $SA_KEY > sa.json
 run_in_docker "./start.sh"

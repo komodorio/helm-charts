@@ -51,7 +51,7 @@ class MemoryLeakScenario(Scenario):
         name = f"memory-leak-{mem_to_allocate}mb"
 
         updated_template = TEMPLATE.format(name=name, mem=mem_to_allocate, namespace=NAMESPACE)
-        output, ecode = await cmd(f"echo '{updated_template}' | {self.kubectl} apply -f -", silent=True)
+        output, ecode = await cmd(f"echo '{updated_template}' | {self.kubectl} apply -f -")
         if ecode != 0:
             self.error(f"Failed to deploy: {output}")
     
