@@ -33,12 +33,13 @@ class EditDeploymentScenario(Scenario):
     def __init__(self, kubeconfig):
         super().__init__("edit-deployment", kubeconfig)
         self.namespace = self.name
+        self.num_of_deployments = 20
         self.interval = 60  # 1 minutes
 
     async def run(self):
         await self.create_namespace(self.namespace)
 
-        for index in range(1, 11):  # Deploy 10 sample apps
+        for index in range(1, self.num_of_deployments + 1):  # Deploy X sample apps
             deployment_yaml = DEPLOYMENT_TEMPLATE.format(index=index, namespace=self.namespace)
             await cmd(f"echo '{deployment_yaml}' | {self.kubectl} apply -f -")
             await asyncio.sleep(1)  # Stagger deployments slightly
@@ -86,12 +87,12 @@ class EditDeploymentScenario(Scenario):
                 self.log('Cancellation detected, exiting...')
                 return
 
-            for index in range(1, 11):
+            for index in range(1, self.num_of_deployments + 1):
                 action = random.choice(update_actions)
                 update_command = action['command'](index)
                 self.log(action['description'](index))  # Log the action being performed
                 await cmd(update_command)
-                await asyncio.sleep(10)
+                await asyncio.sleep(0.5)
 
             self.log(f"Finished updating deployments, waiting {self.interval} seconds before starting again")
             await asyncio.sleep(self.interval)

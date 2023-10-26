@@ -1,9 +1,26 @@
 #!/usr/bin/env bash
-set -x
+
+usage() {
+  echo "Usage: $0"
+  echo "  sa.json: Google service account key file should be in the same directory as this script"
+  echo "  RUN_TIMEOUT: Env var, define for how long to run the scenarios (default: 10m)"
+}
+
+if [[ "$1" == "-h" ]]; then
+  usage
+  exit 0
+fi
 
 TIMEOUT=${RUN_TIMEOUT:-"10m"}
+CLUSTER_NAME=${CLUSTER_NAME:-"test"}
 
 cd /app
+
+
+if [ ! -f sa.json ]; then
+  echo "sa.json file not found"
+  exit 1
+fi
 
 gcloud auth activate-service-account --key-file=sa.json
 
@@ -12,9 +29,9 @@ cp sa.json gcp-tf/sa.json
 pushd gcp-tf
 export GOOGLE_APPLICATION_CREDENTIALS=sa.json
 terraform init
-terraform workspace new test || true
-terraform workspace select test
-terraform apply -var="cluster_name=test" -auto-approve
+terraform workspace new "${CLUSTER_NAME}" || true
+terraform workspace select "${CLUSTER_NAME}"
+terraform apply -var="cluster_name=${CLUSTER_NAME}" -auto-approve
 
 if [ $? -ne 0 ]; then
   echo "Failed to create cluster"
