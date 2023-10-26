@@ -27,7 +27,7 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
 
   autoscaling {
     min_node_count = 1
-    max_node_count = 10
+    max_node_count = 15
   }
 
   node_config {

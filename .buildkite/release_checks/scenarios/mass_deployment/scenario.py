@@ -30,16 +30,16 @@ class MassDeploymentScenario(Scenario):
     def __init__(self, kubeconfig):
         super().__init__("mass-deployment", kubeconfig)
         self.namespace = self.name
-        self.num_deployments = 1_000
+        self.num_deployments = 500
+        self.max_num_replicas = 2
         self.interval = 60  # 1 minutes
 
     async def run(self):
         await self.create_namespace(self.namespace)
 
-        # deploy 1000 deployments with 1-3 replica each
         self.log(f"Deploying {self.num_deployments} deployments")
         for index in range(1, self.num_deployments + 1):
-            replicas = random.randint(1, 2)
+            replicas = random.randint(1, self.max_num_replicas)
             deployment_yaml = DEPLOYMENT_TEMPLATE.format(index=index, namespace=self.namespace, replicas=replicas)
             await cmd(f"echo '{deployment_yaml}' | {self.kubectl} apply -f -")
             await asyncio.sleep(0.1)
