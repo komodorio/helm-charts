@@ -16,7 +16,9 @@ class KomodorAgentScenario(Scenario):
         await asyncio.sleep(60) # Wait x seconds before deploying, to let other deployments to finish
 
         self.log("Starting to deploy")
-        install_cmd = (f"{self.helm} upgrade --install komodor-agent komodorio/komodor-agent "
+        install_cmd = (f"helm repo add komodorio https://helm-charts.komodor.io && "
+                       f"helm repo update && "
+                       f"{self.helm} upgrade --install komodor-agent komodorio/komodor-agent "
                        f"--set apiKey={API} "
                        f"--set clusterName=agent-release-checks")
         output, exit_code = await cmd(install_cmd, silent=True)
