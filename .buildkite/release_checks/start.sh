@@ -19,5 +19,6 @@ if [ $? -ne 0 ]; then
 fi
 
 terraform output -raw kubeconfig > ../kubeconfig.yaml
+chmod 400 ../kubeconfig.yaml
 popd
 timeout --preserve-status 10m python3 /app/scenarios/main.py /app/kubeconfig.yaml
