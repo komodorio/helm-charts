@@ -1,6 +1,7 @@
 import signal
 import sys
 import asyncio
+
 from memory_leak.scenario import MemoryLeakScenario
 from image_pull_backoff.scenario import ImagePullBackoffScenario
 from bank_of_anthos.scenario import BankOfAnthosScenario
@@ -10,6 +11,7 @@ from log_chaos.scenario import LogChaosScenario
 from jobs.scenario import JobsScenario
 from edit_deployment.scenario import EditDeploymentScenario
 from mass_deployment.scenario import MassDeploymentScenario
+
 
 async def main():
     kubeconfig_path = sys.argv[1]
