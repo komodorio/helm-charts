@@ -12,7 +12,7 @@ function create_cluster_name() {
     # Replace any characters that are not letters, numbers, or hyphens with hyphens
     local formatted_string="${input_string//[^a-zA-Z0-9]/-}"
     local lowercase_string="$(echo $formatted_string | tr '[:upper:]' '[:lower:]')"
-    echo "${lowercase_string}"
+    echo "komodor-agent-${lowercase_string}"
 }
 
 if [[ "$1" == "-h" ]]; then
