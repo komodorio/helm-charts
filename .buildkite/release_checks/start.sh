@@ -24,7 +24,7 @@ if [[ "$1" == "-h" ]]; then
 fi
 
 TIMEOUT=${RUN_TIMEOUT:-"10m"}
-RC_VERSION=$(buildkite-agent meta-data get job-mode rc-version)
+RC_VERSION=$(buildkite-agent meta-data get rc-version)
 CLUSTER_NAME=$(create_cluster_name "$RC_VERSION")
 
 cd /app
