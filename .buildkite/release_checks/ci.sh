@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+set -x
 # get current script file path
 SCRIPT_DIR=$(dirname $(realpath "$0"))
 pushd $SCRIPT_DIR

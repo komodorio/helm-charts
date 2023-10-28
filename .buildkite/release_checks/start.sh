@@ -30,6 +30,8 @@ if [ -z $1 ]; then
   exit 1
 fi
 
+set -x
+
 TIMEOUT=${RUN_TIMEOUT:-"10m"}
 RC_TAG="$1"
 CLUSTER_NAME=$(create_cluster_name "$RC_TAG")
