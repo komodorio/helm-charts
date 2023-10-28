@@ -37,6 +37,7 @@ steps:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
             SA_KEY: /app/ci/gcp/AGENT_RELEASE_SA_KEY
+            AGENT_API_KEY: /helm-chart-test/production/API_KEY
 
   - wait
 

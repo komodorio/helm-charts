@@ -9,6 +9,7 @@ run_in_docker() {
   docker run -it --rm \
     -v $(pwd):/app \
     -e RUN_TIMEOUT=${RUN_TIMEOUT:-"10m"} \
+    -e AGENT_API_KEY="${AGENT_API_KEY}"
     634375685434.dkr.ecr.us-east-1.amazonaws.com/k8s-gcp-tools \
     "$@"
 }

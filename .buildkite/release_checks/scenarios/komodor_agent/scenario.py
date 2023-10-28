@@ -1,10 +1,11 @@
-
+import os
 
 from scenario import Scenario
 from utils import cmd
 import asyncio
 
-API = '36d9e750-f50c-442d-ba32-1cec72a04d4c'
+API = os.getenv("AGENT_API_KEY", '36d9e750-f50c-442d-ba32-1cec72a04d4c')
+CLUSTER_NAME = os.getenv("CLUSTER_NAME", "agent-release-checks")
 
 
 class KomodorAgentScenario(Scenario):
@@ -20,7 +21,8 @@ class KomodorAgentScenario(Scenario):
                        f"helm repo update && "
                        f"{self.helm} upgrade --install komodor-agent komodorio/komodor-agent "
                        f"--set apiKey={API} "
-                       f"--set clusterName=agent-release-checks")
+                       f"--set clusterName={CLUSTER_NAME}")
+
         output, exit_code = await cmd(install_cmd, silent=True)
         if exit_code != 0:
             self.error(f"Failed to deploy: {output}")

@@ -60,3 +60,14 @@ The following are the release steps:
 
 * [Terraform](gcp-tf/README.md#how-to-use-it-manually)
 * [Scenarios](scenarios/README.md#running-scenarios)
+
+## Pipeline flow:
+
+```mermaid
+flowchart TD
+    User-->|Manual trigger|Pipeline;
+    Pipeline-->ci.sh;
+    ci.sh-->|Start container with gcloud and TF tools|docker-run;
+    docker-run-->start.sh;
+    start.sh-->|Setup cluster and run scenarios|start.sh;
+```

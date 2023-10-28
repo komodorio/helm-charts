@@ -35,8 +35,13 @@ init_tf_workspace() {
   terraform workspace select "${CLUSTER_NAME}"
 }
 
+cluster_cleanup(){
+  cd gcp-tf
+  terraform destroy -var="cluster_name=${CLUSTER_NAME}" -auto-approve
+}
+
 setup_cluster() {
-  trap "terraform destroy -var=\"cluster_name=${CLUSTER_NAME}\" -auto-approve" EXIT
+  trap cluster_cleanup EXIT
 
   # Create cluster
   terraform apply -var="cluster_name=${CLUSTER_NAME}" -auto-approve
@@ -53,6 +58,7 @@ get_kubeconfig(){
 
 run_scenarios() {
   echo "Scenarios will be running for the next: ${TIMEOUT}"
+  export CLUSTER_NAME=${CLUSTER_NAME}
   timeout --preserve-status ${TIMEOUT} python3 /app/scenarios/main.py /app/kubeconfig.yaml
 }
 
