@@ -2,7 +2,7 @@
 
 usage() {
   echo "Usage: $0 <RC-TAG>"
-  echo "  RC-TAG <string> - Example: 'komodor-agent/1.2.0+RC1'"
+  echo "  RC-TAG <string> - Example: '1.2.0+RC1'"
   echo "  sa.json: Google service account key file should be in the same directory as this script"
   echo "  RUN_TIMEOUT: Env var, define for how long to run the scenarios (default: 10m)"
 }

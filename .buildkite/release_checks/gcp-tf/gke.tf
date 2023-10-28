@@ -14,7 +14,7 @@ resource "google_project_iam_member" "gcr_viewer" {
 }
 
 resource "google_service_account" "default" {
-  account_id   = "service-account-${var.cluster_name}"
+  account_id   = "sa-${var.cluster_name}"
   display_name = "Service Account for ${var.cluster_name}"
   project = var.project_id
 }
