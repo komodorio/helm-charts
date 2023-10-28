@@ -37,14 +37,14 @@ init_tf_workspace() {
 
 cluster_cleanup(){
   cd gcp-tf
-  terraform destroy -var="cluster_name=${CLUSTER_NAME}" -auto-approve
+  terraform destroy -var="cluster_name=${CLUSTER_NAME}" -auto-approve -lock=false
 }
 
 setup_cluster() {
   trap cluster_cleanup EXIT
 
   # Create cluster
-  terraform apply -var="cluster_name=${CLUSTER_NAME}" -auto-approve
+  terraform apply -var="cluster_name=${CLUSTER_NAME}" -auto-approve -lock=false
   if [[ $? -ne 0 ]]; then
       echo "Failed to create cluster"
       exit 1
