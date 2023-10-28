@@ -1,63 +1,88 @@
 #!/usr/bin/env bash
 
 usage() {
-  echo "Usage: $0 <RC-TAG>"
-  echo "  RC-TAG <string> - Example: '1.2.0+RC1'"
-  echo "  sa.json: Google service account key file should be in the same directory as this script"
-  echo "  RUN_TIMEOUT: Env var, define for how long to run the scenarios (default: 10m)"
+    cat << EOF
+Usage: $0 <RC-TAG>
+
+  RC-TAG <string>  - Example: '1.2.0+RC1'
+  sa.json          - Google service account key file should be in the same directory as this script
+  RUN_TIMEOUT      - Env var, define for how long to run the scenarios (default: 10m)
+EOF
 }
 
-function create_cluster_name() {
+create_cluster_name() {
     local input_string="$1"
-    # Replace any characters that are not letters, numbers, or hyphens with hyphens
     local formatted_string="${input_string//[^a-zA-Z0-9]/-}"
     local lowercase_string="$(echo $formatted_string | tr '[:upper:]' '[:lower:]')"
     echo "komodor-agent-${lowercase_string}"
 }
 
-if [[ "$1" == "-h" ]]; then
-  usage
-  exit 0
-fi
+auth_gcloud_with_sa() {
+  if [[ ! -f sa.json ]]; then
+      echo "sa.json file not found"
+      exit 1
+  fi
 
-if [ -z $1 ]; then
-  echo "RC-TAG is missing"
-  usage
-  exit 1
+  gcloud auth activate-service-account --key-file=sa.json
+  cp sa.json gcp-tf/sa.json
+}
+
+init_tf_workspace() {
+  
+  export GOOGLE_APPLICATION_CREDENTIALS=sa.json
+  terraform init
+  terraform workspace new "${CLUSTER_NAME}" || true
+  terraform workspace select "${CLUSTER_NAME}"
+}
+
+setup_cluster() {
+  trap "terraform destroy -var=\"cluster_name=${CLUSTER_NAME}\" -auto-approve" EXIT
+
+  # Create cluster
+  terraform apply -var="cluster_name=${CLUSTER_NAME}" -auto-approve
+  if [[ $? -ne 0 ]]; then
+      echo "Failed to create cluster"
+      exit 1
+  fi
+}
+
+get_kubeconfig(){
+  terraform output -raw kubeconfig > ../kubeconfig.yaml
+  chmod 400 ../kubeconfig.yaml
+}
+
+run_scenarios() {
+  echo "Scenarios will be running for the next: ${TIMEOUT}"
+  timeout --preserve-status ${TIMEOUT} python3 /app/scenarios/main.py /app/kubeconfig.yaml
+}
+
+##############################################
+#         Main
+##############################################
+
+# Handle input arguments and display usage
+if [[ "$1" == "-h" ]]; then
+    usage
+    exit 0
+elif [[ -z $1 ]]; then
+    echo "RC-TAG is missing"
+    usage
+    exit 1
 fi
 
 set -x
-
 TIMEOUT=${RUN_TIMEOUT:-"10m"}
 RC_TAG="$1"
 CLUSTER_NAME=$(create_cluster_name "$RC_TAG")
 
 cd /app
 
-
-if [ ! -f sa.json ]; then
-  echo "sa.json file not found"
-  exit 1
-fi
-
-gcloud auth activate-service-account --key-file=sa.json
-
-cp sa.json gcp-tf/sa.json
+auth_gcloud_with_sa
 
 pushd gcp-tf
-export GOOGLE_APPLICATION_CREDENTIALS=sa.json
-terraform init
-terraform workspace new "${CLUSTER_NAME}" || true
-terraform workspace select "${CLUSTER_NAME}"
-terraform apply -var="cluster_name=${CLUSTER_NAME}" -auto-approve
-
-if [ $? -ne 0 ]; then
-  echo "Failed to create cluster"
-  exit 1
-fi
-
-terraform output -raw kubeconfig > ../kubeconfig.yaml
-chmod 400 ../kubeconfig.yaml
+init_tf_workspace
+setup_cluster
+get_kubeconfig
 popd
-echo "Scenarios will be running for the next: ${TIMEOUT}"
-timeout --preserve-status ${TIMEOUT} python3 /app/scenarios/main.py /app/kubeconfig.yaml
+
+run_scenarios

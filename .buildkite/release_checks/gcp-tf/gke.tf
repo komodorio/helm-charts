@@ -20,7 +20,7 @@ resource "google_service_account" "default" {
 }
 
 resource "google_container_node_pool" "primary_preemptible_nodes" {
-  name     = "agent-release-node-pool-${var.cluster_name}"
+  name     = "np-${var.cluster_name}"
   location = "us-central1-a"
   project  = var.project_id
   cluster  = google_container_cluster.primary.name
