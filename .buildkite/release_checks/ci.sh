@@ -9,7 +9,6 @@ run_in_docker() {
   docker run -it --rm \
     -v $(pwd):/app \
     -e RUN_TIMEOUT=${RUN_TIMEOUT:-"10m"} \
-    -e RC_TAG="$2" \
     634375685434.dkr.ecr.us-east-1.amazonaws.com/k8s-gcp-tools \
     "${command}"
 }
@@ -23,4 +22,4 @@ if [[ "$work_mode" != "ga" ]]; then
 fi
 
 echo $SA_KEY > sa.json
-run_in_docker "./start.sh" "$rc_tag"
+run_in_docker "./start.sh $rc_tag"
