@@ -9,14 +9,10 @@ usage() {
 
 function create_cluster_name() {
     local input_string="$1"
-    # Convert to lowercase
-    local lowercase_string="${input_string,,}"
-    # Replace any characters that are not lowercase letters, numbers, or hyphens with hyphens
-    local formatted_string="${lowercase_string//[^a-z0-9]/-}"
-    # Remove any non-alphanumeric characters at the beginning or end of the string
-    formatted_string="${formatted_string%%[-]*}"
-    formatted_string="${formatted_string##[-]*}"
-    echo "$formatted_string"
+    # Replace any characters that are not letters, numbers, or hyphens with hyphens
+    local formatted_string="${input_string//[^a-zA-Z0-9]/-}"
+    local lowercase_string="$(echo $formatted_string | tr '[:upper:]' '[:lower:]')"
+    echo "${lowercase_string}"
 }
 
 if [[ "$1" == "-h" ]]; then
