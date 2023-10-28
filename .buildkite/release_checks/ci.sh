@@ -9,11 +9,13 @@ run_in_docker() {
   docker run -it --rm \
     -v $(pwd):/app \
     -e RUN_TIMEOUT=${RUN_TIMEOUT:-"10m"} \
+    -e RC_TAG="$2" \
     634375685434.dkr.ecr.us-east-1.amazonaws.com/k8s-gcp-tools \
     "${command}"
 }
 
 work_mode=$(buildkite-agent meta-data get job-mode || echo "ga")
+rc_tag=$(buildkite-agent meta-data get rc-tag)
 
 if [[ "$work_mode" != "ga" ]]; then
   echo "Running in '${work_mode}' mode, Skipping GA checks"
@@ -21,4 +23,4 @@ if [[ "$work_mode" != "ga" ]]; then
 fi
 
 echo $SA_KEY > sa.json
-run_in_docker "./start.sh"
+run_in_docker "./start.sh" "$rc_tag"

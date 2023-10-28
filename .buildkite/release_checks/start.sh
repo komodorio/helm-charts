@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 usage() {
-  echo "Usage: $0"
+  echo "Usage: $0 <RC-TAG>"
+  echo "  RC-TAG <string> - Example: 'komodor-agent/1.2.0+RC1'"
   echo "  sa.json: Google service account key file should be in the same directory as this script"
   echo "  RUN_TIMEOUT: Env var, define for how long to run the scenarios (default: 10m)"
 }
@@ -23,9 +24,15 @@ if [[ "$1" == "-h" ]]; then
   exit 0
 fi
 
+if [ -z $1 ]; then
+  echo "RC-TAG is missing"
+  usage
+  exit 1
+fi
+
 TIMEOUT=${RUN_TIMEOUT:-"10m"}
-RC_VERSION=$(buildkite-agent meta-data get rc-version)
-CLUSTER_NAME=$(create_cluster_name "$RC_VERSION")
+RC_TAG="$1"
+CLUSTER_NAME=$(create_cluster_name "$RC_TAG")
 
 cd /app
 

@@ -1,10 +1,10 @@
 steps:
-  - input: "RC Version"
+  - input: "RC Tag"
     fields:
       - select: "Stream"
-        key: "rc-version"
+        key: "rc-tag"
         required: true
-        hint: Select RC version to check and release as GA
+        hint: Select RC tag to check and release as GA
         options: []
 
   - input: "Job Mode"
