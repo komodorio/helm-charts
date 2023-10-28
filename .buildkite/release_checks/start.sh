@@ -6,13 +6,26 @@ usage() {
   echo "  RUN_TIMEOUT: Env var, define for how long to run the scenarios (default: 10m)"
 }
 
+function create_cluster_name() {
+    local input_string="$1"
+    # Convert to lowercase
+    local lowercase_string="${input_string,,}"
+    # Replace any characters that are not lowercase letters, numbers, or hyphens with hyphens
+    local formatted_string="${lowercase_string//[^a-z0-9]/-}"
+    # Remove any non-alphanumeric characters at the beginning or end of the string
+    formatted_string="${formatted_string%%[-]*}"
+    formatted_string="${formatted_string##[-]*}"
+    echo "$formatted_string"
+}
+
 if [[ "$1" == "-h" ]]; then
   usage
   exit 0
 fi
 
 TIMEOUT=${RUN_TIMEOUT:-"10m"}
-CLUSTER_NAME=${CLUSTER_NAME:-"test"}
+RC_VERSION=$(buildkite-agent meta-data get job-mode rc-version)
+CLUSTER_NAME=$(create_cluster_name "$RC_VERSION")
 
 cd /app
 

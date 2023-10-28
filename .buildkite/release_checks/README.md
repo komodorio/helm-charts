@@ -7,21 +7,16 @@ This folder contains the pipeline and scripts for the agent release process.
 - **[gcp-tf](gcp-tf/README.md):** Terraform scripts to create the GCP cluster
 - **[k8s-gcp-tools](k8s-gcp-tools/README.md):** Dockerfile to build the image that contains needed tools (kubectl, helm, terraform, gcloud)
 - **[pipeline](pipeline/README.md):** The pipeline template and the script to generate the pipeline.yaml
-- **scenarios:** The scenarios scripts that will deploy different scenarios on the cluster
+- **[scenarios](scenarios/README.md):** The scenarios scripts that will deploy different scenarios on the cluster
 - **ci.sh:** The script that is used by the pipeline to start the k8s-gcp-tools container.
 - **start.sh:** This script is running inside the k8s-gcp-tools container and is used to provision the gke cluster and run the scenarios.
 
 ## How it works
 
 The release process is divided into 3 steps:
-
-- [Agent release](#agent-release)
-  - [Folder content](#folder-content)
-  - [How it works](#how-it-works)
-    - [RC release](#rc-release)
-    - [RC checks and stabilization pipeline:](#rc-checks-and-stabilization-pipeline)
-    - [Release RC to GA](#release-rc-to-ga)
-  - [How to run things manually](#how-to-run-things-manually)
+ - [RC release](#rc-release)
+ - [RC checks and stabilization pipeline:](#rc-checks-and-stabilization-pipeline)
+ - [Release RC to GA](#release-rc-to-ga)
 
 ### RC release
 
@@ -34,13 +29,16 @@ In case the last GA version was `1.1.1` the new RC version will be `1.1.1+RC1`.
 
 ### RC checks and stabilization pipeline:
 
+Once we decide to release a new version, we will use this pipeline to validate that we are releasing a stable version of the agent.
+The following are the release steps:
+
 1. The `release` pipeline is triggered manually
-2. The pipeline collects all the RC versions that are candidates for the GA release.
+2. The pipeline collects all the RC versions that are candidates for the next  GA release.
 3. The pipeline waits for two user inputs:
-    1. Select RC version to release
+    1. Select RC version to check & release
     2. Work mode (GA or Hotfix)
         > Hotfix mode is used to release a new version of the agent without executing all the check scenarios.
-4. The pipeline starts the `release setup & scenarios`
+4. The pipeline continue with the following steps:
     1. Create K8S cluster in GCP
     2. Deploy the scenarios data to the cluster
     3. Install komodor-agent on the cluster
