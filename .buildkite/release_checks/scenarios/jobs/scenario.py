@@ -1,7 +1,6 @@
 import asyncio
 import random
 from scenario import Scenario
-from utils import cmd
 
 CONFIGMAP_TEMPLATE = """
 apiVersion: v1
@@ -68,7 +67,7 @@ class JobsScenario(Scenario):
     async def run(self):
         await self.create_namespace(self.namespace)
         index = 0
-        await cmd(f"echo '{CONFIGMAP_TEMPLATE.format(namespace=self.namespace)}' | {self.kubectl} apply -f -")
+        await self.cmd(f"echo '{CONFIGMAP_TEMPLATE.format(namespace=self.namespace)}' | {self.kubectl} apply -f -")
         while True:
             if asyncio.current_task().cancelled():
                 self.log('Cancellation detected, exiting...')
@@ -77,7 +76,7 @@ class JobsScenario(Scenario):
                 index += 1
                 name = f"simulated-job-id-{index}"
                 self.log(f"Deploying {name}")
-                await cmd(f"echo '{TEMPLATE.format(name=name, namespace=self.namespace)}' | {self.kubectl} apply -f -")
+                await self.cmd(f"echo '{TEMPLATE.format(name=name, namespace=self.namespace)}' | {self.kubectl} apply -f -")
                 await asyncio.sleep(10)
 
             self.log(f"Finished deploying jobs, waiting {self.interval} seconds before starting again")
@@ -86,4 +85,4 @@ class JobsScenario(Scenario):
 
     async def cleanup(self):
         self.log(f"Deleting namespace {self.namespace}")
-        await cmd(f"{self.kubectl} delete namespace {self.namespace}")
+        await self.cmd(f"{self.kubectl} delete namespace {self.namespace}")

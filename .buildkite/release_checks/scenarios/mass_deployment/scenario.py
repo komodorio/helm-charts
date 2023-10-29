@@ -1,7 +1,6 @@
 import asyncio
 import random
 from scenario import Scenario
-from utils import cmd
 
 DEPLOYMENT_TEMPLATE = """
 apiVersion: apps/v1
@@ -41,10 +40,10 @@ class MassDeploymentScenario(Scenario):
         for index in range(1, self.num_deployments + 1):
             replicas = random.randint(1, self.max_num_replicas)
             deployment_yaml = DEPLOYMENT_TEMPLATE.format(index=index, namespace=self.namespace, replicas=replicas)
-            await cmd(f"echo '{deployment_yaml}' | {self.kubectl} apply -f -")
+            await self.cmd(f"echo '{deployment_yaml}' | {self.kubectl} apply -f -")
             await asyncio.sleep(0.1)
         self.log(f"Finished deploying all {self.num_deployments} deployments")
 
     async def cleanup(self):
         self.log(f"Deleting namespace {self.namespace}")
-        await cmd(f"{self.kubectl} delete namespace {self.namespace}")
+        await self.cmd(f"{self.kubectl} delete namespace {self.namespace}")

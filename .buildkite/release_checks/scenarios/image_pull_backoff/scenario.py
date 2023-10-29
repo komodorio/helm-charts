@@ -1,6 +1,5 @@
 import asyncio
 from scenario import Scenario
-from utils import cmd
 
 
 TEMPLATE = """
@@ -41,7 +40,7 @@ class ImagePullBackoffScenario(Scenario):
         while True:
             self.log(f"Starting to deploy")
             await self.create_namespace(self.namespace)
-            await cmd(f"echo '{TEMPLATE}' | {self.kubectl} apply -f -", silent=True)
+            await self.cmd(f"echo '{TEMPLATE}' | {self.kubectl} apply -f -", silent=True)
             self.log("Deployed")
 
             for _ in range(30): # Simulate 300 seconds sleep
@@ -51,10 +50,10 @@ class ImagePullBackoffScenario(Scenario):
                     return
 
             self.log(f"Deleting namespace {self.namespace}")
-            await cmd(f"{self.kubectl} delete namespace {self.namespace}")
+            await self.cmd(f"{self.kubectl} delete namespace {self.namespace}")
 
             await asyncio.sleep(60)
 
     async def cleanup(self):
         self.log(f"Deleting namespace {self.namespace}")
-        await cmd(f"{self.kubectl} delete namespace {self.namespace}")
+        await self.cmd(f"{self.kubectl} delete namespace {self.namespace}")

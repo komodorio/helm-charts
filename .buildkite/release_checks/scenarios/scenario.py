@@ -33,3 +33,11 @@ metadata:
 
     def error(self, msg: str):
         print(f"[{self.name}] ERROR: {msg}")
+
+    async def cmd(self, command, silent_output=True, silent_errors=False):
+        output, ecode = await cmd(command, silent_output)
+        if silent_errors:
+            return output, ecode
+
+        if ecode != 0:
+            self.error(f"An error has occurred during command execution.\n\tcmd: {command}\n\n\t{output}")

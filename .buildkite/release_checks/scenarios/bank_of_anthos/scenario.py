@@ -1,5 +1,4 @@
 from scenario import Scenario
-from utils import cmd
 import os
 
 
@@ -12,13 +11,14 @@ class BankOfAnthosScenario(Scenario):
 
     async def run(self):
         self.log("Starting to deploy")
-        await cmd(f"git clone {self.BANK_GIT_URL} {self.my_path}/bank-of-anthos")
-        await cmd(f"{self.kubectl} apply -f {self.my_path}/bank-of-anthos/extras/jwt/jwt-secret.yaml")
-        await cmd(f"{self.kubectl} apply -f {self.my_path}/bank-of-anthos/kubernetes-manifests")
+        await self.cmd(f"git clone {self.BANK_GIT_URL} {self.my_path}/bank-of-anthos")
+        await self.cmd(f"{self.kubectl} apply -f {self.my_path}/bank-of-anthos/extras/jwt/jwt-secret.yaml")
+        await self.cmd(f"{self.kubectl} apply -f {self.my_path}/bank-of-anthos/kubernetes-manifests")
+
         self.log("Finished deploying")
 
     async def cleanup(self):
         self.log("Uninstalling")
-        await cmd(f"{self.kubectl} delete -f {self.my_path}/bank-of-anthos/kubernetes-manifests")
-        await cmd(f"{self.kubectl} delete -f {self.my_path}/bank-of-anthos/extras/jwt/jwt-secret.yaml")
+        await self.cmd(f"{self.kubectl} delete -f {self.my_path}/bank-of-anthos/kubernetes-manifests")
+        await self.cmd(f"{self.kubectl} delete -f {self.my_path}/bank-of-anthos/extras/jwt/jwt-secret.yaml")
 

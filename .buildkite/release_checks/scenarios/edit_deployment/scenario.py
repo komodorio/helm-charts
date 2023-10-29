@@ -1,7 +1,6 @@
 import asyncio
 import random
 from scenario import Scenario
-from utils import cmd
 
 DEPLOYMENT_TEMPLATE = """
 apiVersion: apps/v1
@@ -41,7 +40,7 @@ class EditDeploymentScenario(Scenario):
 
         for index in range(1, self.num_of_deployments + 1):  # Deploy X sample apps
             deployment_yaml = DEPLOYMENT_TEMPLATE.format(index=index, namespace=self.namespace)
-            await cmd(f"echo '{deployment_yaml}' | {self.kubectl} apply -f -")
+            await self.cmd(f"echo '{deployment_yaml}' | {self.kubectl} apply -f -")
             await asyncio.sleep(1)  # Stagger deployments slightly
 
         update_actions = [
@@ -91,7 +90,7 @@ class EditDeploymentScenario(Scenario):
                 action = random.choice(update_actions)
                 update_command = action['command'](index)
                 self.log(action['description'](index))  # Log the action being performed
-                await cmd(update_command)
+                await self.cmd(update_command)
                 await asyncio.sleep(0.5)
 
             self.log(f"Finished updating deployments, waiting {self.interval} seconds before starting again")
@@ -99,4 +98,4 @@ class EditDeploymentScenario(Scenario):
 
     async def cleanup(self):
         self.log(f"Deleting namespace {self.namespace}")
-        await cmd(f"{self.kubectl} delete namespace {self.namespace}")
+        await self.cmd(f"{self.kubectl} delete namespace {self.namespace}")

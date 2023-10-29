@@ -1,7 +1,5 @@
 import asyncio
 from scenario import Scenario
-from utils import cmd
-import time
 import random
 
 NAMESPACE = "leaking"
@@ -51,9 +49,7 @@ class MemoryLeakScenario(Scenario):
         name = f"memory-leak-{mem_to_allocate}mb"
 
         updated_template = TEMPLATE.format(name=name, mem=mem_to_allocate, namespace=NAMESPACE)
-        output, ecode = await cmd(f"echo '{updated_template}' | {self.kubectl} apply -f -")
-        if ecode != 0:
-            self.error(f"Failed to deploy: {output}")
+        await self.cmd(f"echo '{updated_template}' | {self.kubectl} apply -f -")
     
     async def run(self):
         await self.create_namespace(self.namespace)
@@ -70,4 +66,4 @@ class MemoryLeakScenario(Scenario):
 
     async def cleanup(self):
         self.log(f"Deleting namespace {NAMESPACE}")
-        await cmd(f"{self.kubectl} delete namespace {NAMESPACE}")
+        await self.cmd(f"{self.kubectl} delete namespace {NAMESPACE}")

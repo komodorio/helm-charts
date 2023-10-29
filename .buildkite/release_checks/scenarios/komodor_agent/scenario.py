@@ -1,7 +1,6 @@
 import os
 
 from scenario import Scenario
-from utils import cmd
 import asyncio
 
 API = os.getenv("AGENT_API_KEY", '36d9e750-f50c-442d-ba32-1cec72a04d4c')
@@ -23,7 +22,7 @@ class KomodorAgentScenario(Scenario):
                        f"--set apiKey={API} "
                        f"--set clusterName={CLUSTER_NAME}")
 
-        output, exit_code = await cmd(install_cmd, silent=True)
+        output, exit_code = await self.cmd(install_cmd, silent_errors=True)
         if exit_code != 0:
             self.error(f"Failed to deploy: {output}")
             raise Exception(f"Failed to deploy: {self.name}")
@@ -31,5 +30,5 @@ class KomodorAgentScenario(Scenario):
 
     async def cleanup(self):
         self.log(f"Uninstalling {self.name}")
-        await cmd(f"{self.helm} uninstall komodor-agent")
+        await self.cmd(f"{self.helm} uninstall komodor-agent")
 

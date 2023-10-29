@@ -1,6 +1,5 @@
 import asyncio
 from scenario import Scenario
-from utils import cmd
 
 
 TEMPLATE = """
@@ -41,7 +40,7 @@ class LogChaosScenario(Scenario):
         for ds_number in range(1, 11):
             name = f"{self.name}-{ds_number}"
             self.log(f"Deploying {name}")
-            await cmd(f"echo '{TEMPLATE.format(name=name, namespace=self.namespace)}' | {self.kubectl} apply -f -")
+            await self.cmd(f"echo '{TEMPLATE.format(name=name, namespace=self.namespace)}' | {self.kubectl} apply -f -")
             await asyncio.sleep(10)
 
             if asyncio.current_task().cancelled():
@@ -51,4 +50,4 @@ class LogChaosScenario(Scenario):
 
     async def cleanup(self):
         self.log(f"Deleting namespace {self.namespace}")
-        await cmd(f"{self.kubectl} delete namespace {self.namespace}")
+        await self.cmd(f"{self.kubectl} delete namespace {self.namespace}")

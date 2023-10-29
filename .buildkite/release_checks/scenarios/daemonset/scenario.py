@@ -1,5 +1,4 @@
 from scenario import Scenario
-from utils import cmd
 import asyncio
 
 TEMPLATE = """
@@ -40,7 +39,7 @@ class DaemonSetScenario(Scenario):
         for ds_number in range(1, 11):
             name = f"daemonset-{ds_number}"
             self.log(f"Deploying {name}")
-            await cmd(f"echo '{TEMPLATE.format(name=name)}' | {self.kubectl} apply -n {self.namespace} -f -", silent=True)
+            await self.cmd(f"echo '{TEMPLATE.format(name=name)}' | {self.kubectl} apply -n {self.namespace} -f -")
             await asyncio.sleep(10)
 
             if asyncio.current_task().cancelled():
@@ -50,5 +49,5 @@ class DaemonSetScenario(Scenario):
 
     async def cleanup(self):
         self.log(f"Deleting namespace {self.namespace}")
-        await cmd(f"{self.kubectl} delete namespace {self.namespace}")
+        await self.cmd(f"{self.kubectl} delete namespace {self.namespace}")
 
