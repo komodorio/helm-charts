@@ -166,7 +166,7 @@ steps:
       - ./.buildkite/pipeline_scripts/legacy_bump_version.sh
     agents:
       builder: "dind"
-    key: bump-versions
+    key: bump-versions-legacy
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
 
   - label: "Bump Versions"
