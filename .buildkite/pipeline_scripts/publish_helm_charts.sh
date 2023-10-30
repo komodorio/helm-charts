@@ -21,7 +21,8 @@ sed -i -e "s/version.*/version: $NEW_VERSION/g" charts/komodor-agent/Chart.yaml
 make generate-kube
 
 git add charts/k8s-watcher
-git add charts/komodor-agent
+# git add charts/komodor-agent
+
 git status
 git commit -m "[skip ci] update generated manifests"
 if [ $? -eq 0 ]; then

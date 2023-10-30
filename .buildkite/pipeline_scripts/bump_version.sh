@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -ex
 
 configure_git() {
     git config user.email buildkite@users.noreply.github.com
@@ -25,7 +24,7 @@ generate_next_version() {
     else
         local major=$(echo $latest_tag | awk -F'.' '{print $1}')
         local minor=$(echo $latest_tag | awk -F'.' '{print $2}')
-        local patch=$(echo $latest_tag | awk -F'.' '{print $3}' | awk -F'+RC' '{print $1}')
+        local patch=$(echo $latest_tag | awk -F'.' '{print $3}' | awk -F'\\+RC' '{print $1}')
         if [[ ${increment_type} == "major" ]]; then
             echo "$((major + 1)).0.0"
         elif [[ ${increment_type} == "minor" ]]; then
@@ -79,12 +78,20 @@ commit_and_push() {
 ##################
 # Main Execution #
 ##################
-configure_git
+main () {
+  configure_git
 
-chart="komodor-agent"
-app_version=$(get_app_version "$chart")
-update_chart_app_version "$chart" "$app_version"
+  chart="komodor-agent"
+  app_version=$(get_app_version "$chart")
+  update_chart_app_version "$chart" "$app_version"
 
-update_readme
-increment_version
-commit_and_push
+  update_readme
+  increment_version
+  commit_and_push
+}
+
+# This condition ensures main is only executed when the script is run, not sourced
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  set -ex
+  main "$@"
+fi
