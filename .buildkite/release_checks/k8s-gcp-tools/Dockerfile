@@ -36,6 +36,11 @@ RUN kubectl version --client && helm version && gcloud version && terraform vers
 # New stage for the final image
 FROM python:3.9-slim
 
+# Install Git
+RUN apt update && \
+    apt install -y git && \
+    rm -rf /var/lib/apt/lists/*
+
 # Copy necessary files from builder stage
 COPY --from=builder /usr/local/bin /usr/local/bin
 COPY --from=builder /root/google-cloud-sdk /root/google-cloud-sdk

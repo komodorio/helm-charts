@@ -50,7 +50,8 @@ steps:
         options:
           - label: "Major"
             value: "major"
-          - label: "minor"
+          - label: "Minor"
             value: "minor"
-          - label: "patch"
+          - label: "Patch"
             value: "patch"
+
