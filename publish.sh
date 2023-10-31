@@ -18,6 +18,11 @@ WORKING_DIRECTORY="$PWD"
   exit 1
 }
 
+S3_BUCKET="helm-charts"
+if [ "${BUILDKITE_PIPELINE_SLUG}" == 'helm-charts-test' ]; then
+  S3_BUCKET="${S3_BUCKET}-test"
+fi
+
 echo "GITHUB_PAGES_REPO=$GITHUB_PAGES_REPO"
 echo "GITHUB_PAGES_BRANCH=$GITHUB_PAGES_BRANCH"
 echo "HELM_CHARTS_SOURCE=$HELM_CHARTS_SOURCE"
@@ -48,15 +53,15 @@ find "$HELM_CHARTS_SOURCE" -mindepth 1 -maxdepth 1 -type d | while read chart; d
   mkdir -p "$chart_name"
   helm package -d "$chart_name" "$chart"
   echo '>>> Syncing chart binaries to S3'
-  aws s3 sync "$chart_name" s3://helm-charts.komodor.com/"$chart_name"
-  aws s3 sync "$chart_name" s3://helm-charts.komodor.io/"$chart_name"
+  aws s3 sync "$chart_name" s3://${S3_BUCKET}.komodor.com/"$chart_name"
+  aws s3 sync "$chart_name" s3://${S3_BUCKET}.komodor.io/"$chart_name"
 done
 echo '>>> helm repo index'
 helm repo index .
 
 echo '>>> Syncing indexes to S3'
-aws s3 cp index.yaml s3://helm-charts.komodor.com/index.yaml
-aws s3 cp index.yaml s3://helm-charts.komodor.io/index.yaml
+aws s3 cp index.yaml s3://${S3_BUCKET}.komodor.com/index.yaml
+aws s3 cp index.yaml s3://${S3_BUCKET}.komodor.io/index.yaml
 
 if [ "$BUILDKITE_BRANCH" != "master" ]; then
   echo "Current branch is not master and do not publish"
