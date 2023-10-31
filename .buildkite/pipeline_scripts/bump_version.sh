@@ -67,7 +67,7 @@ get_increment_type() {
 
 increment_version() {
   increment_type=$(get_increment_type)
-  new_version=$(generate_next_version "$increment_type")
+  new_version="komodor-agent/$(generate_next_version $increment_type)"
   git tag "$new_version"
   buildkite-agent meta-data set "$chart-version" "$new_version"
 }
