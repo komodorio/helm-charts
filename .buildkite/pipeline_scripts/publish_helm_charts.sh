@@ -33,4 +33,4 @@ else
 fi
 
 git push -f && git push --tags || echo "Nothing to push!"
-GITHUB_PAGES_REPO=komodorio/helm-charts ./publish.sh
+GITHUB_PAGES_REPO=${GITHUB_PAGES_REPO} ./publish.sh
