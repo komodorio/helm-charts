@@ -58,7 +58,7 @@ commit_and_push() {
 ##################
 configure_git
 
-cart="k8s-watcher"
+chart="k8s-watcher"
 
 app_version=$(get_app_version "$chart")
 update_chart_version "$chart" "$app_version"

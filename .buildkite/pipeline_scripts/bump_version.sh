@@ -24,7 +24,7 @@ generate_next_version() {
     else
         local major=$(echo $latest_tag | awk -F'.' '{print $1}')
         local minor=$(echo $latest_tag | awk -F'.' '{print $2}')
-        local patch=$(echo $latest_tag | awk -F'.' '{print $3}' | awk -F'\\+RC' '{print $1}')
+        local patch=$(echo $latest_tag | awk -F'.' '{print $3}' | awk -F'+RC' '{print $1}')
         if [[ ${increment_type} == "major" ]]; then
             echo "$((major + 1)).0.0"
         elif [[ ${increment_type} == "minor" ]]; then
@@ -56,8 +56,17 @@ update_chart_app_version() {
     git add charts/$chart/Chart.yaml
 }
 
+get_increment_type() {
+    increment_type=$(buildkite-agent meta-data get "version-type" --job ${PARENT_JOB_ID})
+    if [ $? -eq 0 ]; then
+        echo $increment_type
+        return
+    fi
+    echo rc
+}
+
 increment_version() {
-  increment_type=$(buildkite-agent meta-data get "version-type" --job ${PARENT_JOB_ID} || echo "rc")
+  increment_type=$(get_increment_type)
   new_version=$(generate_next_version "$increment_type")
   git tag "$new_version"
   buildkite-agent meta-data set "$chart-version" "$new_version"
