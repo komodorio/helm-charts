@@ -39,7 +39,7 @@ echo '>> Building charts...'
 find "$HELM_CHARTS_SOURCE" -mindepth 1 -maxdepth 1 -type d | while read chart; do
   chart_name="`basename "$chart"`"
   echo ">>> fetching chart $chart_name version"
-  chart_version=$(cat $chart/Chart.yaml | grep -oE "version:\s[0-9]+\.[0-9]+\.[0-9]+" | grep -oE "[0-9]+\.[0-9]+\.[0-9]+")
+  chart_version=$(cat $chart/Chart.yaml | grep "^version:\s" | awk '{print $2}')
   echo ">>> checking if version is already published"
   if [ -f "$chart_name/$chart_name-$chart_version.tgz" ]; then
     echo ">>> VERSION $chart_version ALREADY EXISTS! Skipping..."
