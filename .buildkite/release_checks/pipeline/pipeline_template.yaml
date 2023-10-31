@@ -31,6 +31,9 @@ steps:
       - ./ci.sh
     env:
       RUN_TIMEOUT: 60m
+    retry:
+      manual:
+        permit_on_passed: true
     agents:
       builder: "dind"
     plugins:
