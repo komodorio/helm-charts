@@ -58,3 +58,11 @@ steps:
           - label: "Patch"
             value: "patch"
 
+  - wait
+
+  - label: ":new: Release new charts"
+    trigger: "helm-charts"
+    build:
+      message: "${BUILDKITE_MESSAGE}"
+      commit: "${BUILDKITE_COMMIT}"
+      branch: "${BUILDKITE_BRANCH}"
