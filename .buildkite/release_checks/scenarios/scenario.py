@@ -20,7 +20,7 @@ metadata:
     async def create_namespace(self, namespace: str):
         self.log(f"Creating namespace {namespace}")
         ns = self.NS_TEMPLATE.format(namespace=namespace)
-        await cmd(f"echo '{ns}' | {self.kubectl} apply -f -")
+        await self.cmd(f"echo '{ns}' | {self.kubectl} apply -f -")
         
     async def run(self):
         raise NotImplementedError

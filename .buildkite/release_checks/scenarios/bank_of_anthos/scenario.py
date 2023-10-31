@@ -3,7 +3,7 @@ import os
 
 
 class BankOfAnthosScenario(Scenario):
-    BANK_GIT_URL = "git@github.com:GoogleCloudPlatform/bank-of-anthos.git"
+    BANK_GIT_URL = "https://github.com/GoogleCloudPlatform/bank-of-anthos.git"
 
     def __init__(self, kubeconfig):
         super().__init__("bank-of-anthos", kubeconfig)
@@ -11,9 +11,9 @@ class BankOfAnthosScenario(Scenario):
 
     async def run(self):
         self.log("Starting to deploy")
-        await self.cmd(f"git clone {self.BANK_GIT_URL} {self.my_path}/bank-of-anthos", silent_output=True)
-        await self.cmd(f"{self.kubectl} apply -f {self.my_path}/bank-of-anthos/extras/jwt/jwt-secret.yaml", silent_output=True)
-        await self.cmd(f"{self.kubectl} apply -f {self.my_path}/bank-of-anthos/kubernetes-manifests",silent_output=True)
+        await self.cmd(f"git clone {self.BANK_GIT_URL} {self.my_path}/bank-of-anthos")
+        await self.cmd(f"{self.kubectl} apply -f {self.my_path}/bank-of-anthos/extras/jwt/jwt-secret.yaml")
+        await self.cmd(f"{self.kubectl} apply -f {self.my_path}/bank-of-anthos/kubernetes-manifests")
 
         self.log("Finished deploying")
 
