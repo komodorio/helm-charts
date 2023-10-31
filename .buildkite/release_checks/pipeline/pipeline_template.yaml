@@ -66,5 +66,5 @@ steps:
       message: "${BUILDKITE_MESSAGE}"
       commit: "${BUILDKITE_COMMIT}"
       branch: "${BUILDKITE_BRANCH}"
-    env:
-      PARENT_JOB_ID: "${BUILDKITE_JOB_ID}"
+      env:
+        PARENT_JOB_ID: "${BUILDKITE_JOB_ID}"
