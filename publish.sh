@@ -19,7 +19,7 @@ WORKING_DIRECTORY="$PWD"
 }
 
 S3_BUCKET="helm-charts"
-if [ "${BUILDKITE_PIPELINE_SLUG}" == 'helm-charts-test' ]; then
+if [ "${BUILDKITE_PIPELINE_SLUG}" = "helm-charts-test" ]; then
   S3_BUCKET="${S3_BUCKET}-test"
 fi
 
