@@ -40,7 +40,7 @@ class ImagePullBackoffScenario(Scenario):
         while True:
             self.log(f"Starting to deploy")
             await self.create_namespace(self.namespace)
-            await self.cmd(f"echo '{TEMPLATE}' | {self.kubectl} apply -f -", silent=True)
+            await self.cmd(f"echo '{TEMPLATE}' | {self.kubectl} apply -f -", silent_output=True)
             self.log("Deployed")
 
             for _ in range(30): # Simulate 300 seconds sleep
