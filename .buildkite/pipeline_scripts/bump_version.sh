@@ -4,7 +4,13 @@ configure_git() {
     git config user.email buildkite@users.noreply.github.com
     git config user.name buildkite
     git fetch --tags
-    git checkout master
+
+    branch_to_checkout=$(buildkite-agent meta-data get rc-tag --job ${PARENT_JOB_ID})
+    if [ $? -ne 0 ]; then
+        branch_to_checkout="master"
+    fi
+
+    git checkout "${branch_to_checkout}"
 }
 
 generate_next_version() {

@@ -167,7 +167,7 @@ steps:
     agents:
       builder: "dind"
     key: bump-versions-legacy
-    if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
+    if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master" && (build.source == 'trigger_job' && build.env('BUILDKITE_TRIGGERED_FROM_BUILD_ID') != '018b87b2-e272-40c5-acea-3ee1491e5dbc')
 
   - label: "Bump Versions"
     commands:
