@@ -11,9 +11,9 @@ class BankOfAnthosScenario(Scenario):
 
     async def run(self):
         self.log("Starting to deploy")
-        await self.cmd(f"git clone {self.BANK_GIT_URL} {self.my_path}/bank-of-anthos")
-        await self.cmd(f"{self.kubectl} apply -f {self.my_path}/bank-of-anthos/extras/jwt/jwt-secret.yaml")
-        await self.cmd(f"{self.kubectl} apply -f {self.my_path}/bank-of-anthos/kubernetes-manifests")
+        await self.cmd(f"git clone {self.BANK_GIT_URL} {self.my_path}/bank-of-anthos", silent_output=True)
+        await self.cmd(f"{self.kubectl} apply -f {self.my_path}/bank-of-anthos/extras/jwt/jwt-secret.yaml", silent_output=True)
+        await self.cmd(f"{self.kubectl} apply -f {self.my_path}/bank-of-anthos/kubernetes-manifests",silent_output=True)
 
         self.log("Finished deploying")
 
