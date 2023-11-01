@@ -8,7 +8,7 @@ SCRIPT_DIR = sys.path[0]
 
 
 def get_tags():
-    result = subprocess.run(['git', 'tag', '-l', 'komodor-agent/*'], text=True, capture_output=True)
+    result = subprocess.run(['git', 'tag', '--sort=committerdate', '-l', 'komodor-agent/*'], text=True, capture_output=True)
     tags = result.stdout.strip().split('\n')
     return [tag.split('/')[-1] for tag in tags if tag]
 
@@ -32,7 +32,7 @@ def find_rc_versions_after_last_ga(tags, last_ga):
 
 
 def find_rc_versions():
-    tags = sorted(get_tags(), key=version.parse)
+    tags = get_tags()
     latest_ga_tag = find_latest_ga_tag(tags)
     if latest_ga_tag:
         return find_rc_versions_after_last_ga(tags, latest_ga_tag)
