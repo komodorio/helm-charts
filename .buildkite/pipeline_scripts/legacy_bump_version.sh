@@ -43,11 +43,6 @@ update_chart_version() {
     buildkite-agent meta-data set "$chart-version" "$new_version"
 }
 
-update_readme() {
-    pushd charts/komodor-agent && make generate-readme && popd
-    git add charts/komodor-agent/README.md || echo "Nothing to add"
-}
-
 commit_and_push() {
     git commit -m "[skip ci] increment chart versions" || echo "Already up-to-date"
     git push -f || echo "Nothing to push!"
