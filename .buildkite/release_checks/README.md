@@ -20,8 +20,11 @@ The release process is divided into 3 steps:
 
 ### RC release
 
-RC version is created once a feature branch is merged to master.
-The RC version number is created automatically by a [pipeline](https://buildkite.com/komodor/k8s-watcher/builds?branch=master).
+RC version is created in two scenarios:
+* Scenario 1: An helm-chart feature branch is merged to master.
+* Scenario 2: A new agent version is released and as a result a new helm-chart version is created.
+In each scenario a new RC version is created.
+The RC version number is automatically created based on the last GA/RC tags.
 
 In case the last GA version was `1.1.1` the new RC version will be `1.1.1+RC1`.
 > NOTE: The `+RC1` means that this is the first RC version on top of GA version `1.1.1`.
@@ -29,20 +32,23 @@ In case the last GA version was `1.1.1` the new RC version will be `1.1.1+RC1`.
 
 ### RC checks and stabilization pipeline:
 
-Once we decide to release a new version, we will use this pipeline to validate that we are releasing a stable version of the agent.
+Once we decide to promote RC version to GA, we will use [this pipeline](https://buildkite.com/komodor/agent-stability-checks) to validate that we are releasing a stable version of the agent.
 The following are the release steps:
 
-1. The `release` pipeline is triggered manually
+1. The `release-check` pipeline is triggered manually
 2. The pipeline collects all the RC versions that are candidates for the next  GA release.
 3. The pipeline waits for two user inputs:
     1. Select RC version to check & release
     2. Work mode (GA or Hotfix)
         > Hotfix mode is used to release a new version of the agent without executing all the check scenarios.
 4. The pipeline continue with the following steps:
-    1. Create K8S cluster in GCP
+    1. Create K8S cluster in GCP using [terraform](gcp-tf/README.md#running-terraform)
     2. Deploy the scenarios data to the cluster
-    3. Install komodor-agent on the cluster
-    4. Wait for test timeout
+    3. Install two komodor-agents on the cluster
+       * The RC version that we want to check
+       * The last GA version
+       > NOTE: Installing two agents will allow us to compare the two versions.
+    4. Wait for test timeout (default is 1 hour)
     5. Cleanup the cluster
     6. Remove the cluster.
 5. The pipeline will wait for the user to choose how to increase the version number:
@@ -50,10 +56,11 @@ The following are the release steps:
 
 ### Release RC to GA
 
-* A pipeline that is triggered by the previous pipeline.
-* It will bump the version based on the user input in the previous pipeline.
-* It will create a draft release in github and will wait for the user to update and publish.
-* Then it will publish the new charts.
+* The regular [helm-chart](https://buildkite.com/komodor/helm-charts) pipeline is triggered by the previous pipeline.
+* It will bump the selected RC version based on the user input in the previous pipeline.
+* The user will have to unblock the pipeline and approve the release.
+   > NOTE: The pipeline will wait for the user to unblock to allow the user to create a release-note for the new version.
+* Publish the new charts.
 
 
 ## How to run things manually
@@ -65,7 +72,7 @@ The following are the release steps:
 
 ```mermaid
 flowchart TD
-    User-->|Manual trigger|Pipeline;
+    User-->|Manual trigger `Agent-stability-checks`|Pipeline;
     Pipeline-->ci.sh;
     ci.sh-->|Start container with gcloud and TF tools|docker-run;
     docker-run-->start.sh;

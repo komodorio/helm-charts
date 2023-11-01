@@ -24,8 +24,8 @@ steps:
 
   - label: ":console: Agent dashboard"
     command: |
-      start_time=$(date +'%s%3')
-      end_time=$(($start_time + 7200000)) # +2 hours
+      export start_time=$(date +'%s%3')
+      export end_time=$(($start_time + 7200000)) # +2 hours
       buildkite-agent annotate '*[Monitoring dashboard](https://app.datadoghq.com/dashboard/j69-vt8-tfq/komodor-agent-troubleshooting-dashboard?refresh_mode=sliding&tpl_var_accountname%5B0%5D=helm-chart-test&tpl_var_clustername%5B0%5D=komodor-agent-%2A&from_ts=${start_time}&to_ts=${end_time})*' --style 'info' --context 'ctx-agent-dashboard'
 
   - label: ":new: Setup cluster & run scenarios"
@@ -41,7 +41,7 @@ steps:
       manual:
         permit_on_passed: true
     agents:
-      builder: "dind"
+      builder: "heavy-dind-agent"
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
