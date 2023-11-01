@@ -1,3 +1,4 @@
+import os
 import signal
 import sys
 import asyncio
@@ -49,5 +50,9 @@ async def main():
 
 
 if __name__ == "__main__":
+    CHART_VERSION = os.getenv("CHART_VERSION", None)
+    if CHART_VERSION is None:
+        print("CHART_VERSION is not set")
+        sys.exit(1)
 
     asyncio.run(main())

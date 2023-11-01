@@ -59,6 +59,7 @@ get_kubeconfig(){
 run_scenarios() {
   echo "Scenarios will be running for the next: ${TIMEOUT}"
   export CLUSTER_NAME=${CLUSTER_NAME}
+  export CHART_VERSION="${RC_TAG}"
   timeout --preserve-status ${TIMEOUT} python3 /app/scenarios/main.py /app/kubeconfig.yaml
 }
 
