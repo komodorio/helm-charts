@@ -22,6 +22,10 @@ steps:
 
   - wait
 
+  - label: ":console: Agent dashboard"
+    command: |
+      buildkite-agent annotate '*[Monitoring dashboard](https://app.datadoghq.com/dashboard/j69-vt8-tfq/komodor-agent-troubleshooting-dashboard?refresh_mode=sliding&tpl_var_accountname%5B0%5D=helm-chart-test&tpl_var_clustername%5B0%5D=komodor-agent-%2A)*' --style 'info' --context 'ctx-agent-dashboard'
+
   - label: ":new: Setup cluster & run scenarios"
     commands:
       - cd .buildkite/release_checks
