@@ -1,15 +1,21 @@
 #!/usr/bin/env bash
 
+get_branch_to_release() {
+    set +x
+    branch_to_release=$(buildkite-agent meta-data get "branch-to-release" --job ${PARENT_JOB_ID})
+    if [ $? -en 0 ]; then
+        branch_to_release="master"
+    fi
+    set -x
+    echo $branch_to_release
+}
+
 configure_git() {
     git config user.email buildkite@users.noreply.github.com
     git config user.name buildkite
     git fetch --tags
 
-    branch_to_checkout=$(buildkite-agent meta-data get rc-tag --job ${PARENT_JOB_ID})
-    if [ $? -ne 0 ]; then
-        branch_to_checkout="master"
-    fi
-
+    branch_to_checkout=$(get_branch_to_release)
     git checkout "${branch_to_checkout}"
 }
 
