@@ -30,7 +30,7 @@ class KomodorAgentScenario(Scenario):
             raise Exception(f"Failed to deploy: {self.name}")
 
     async def run(self):
-        #await asyncio.sleep(120)  # Wait x seconds before deploying, to let other deployments to finish
+        await asyncio.sleep(120)  # Wait x seconds before deploying, to let other deployments to finish
         rc_chart_version = "--version " + os.getenv("CHART_VERSION")
         self.log("Starting to deploy")
         rc_agent_task = asyncio.create_task(self.install_komodor_agent(CLUSTER_NAME,
