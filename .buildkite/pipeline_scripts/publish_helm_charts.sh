@@ -9,6 +9,8 @@ get_branch_to_release() {
     branch_to_release=$(buildkite-agent meta-data get "rc-tag" --job ${PARENT_JOB_ID})
     if [ $? -ne 0 ]; then
         branch_to_release="master"
+    else
+        branch_to_release="komodor-agent/${branch_to_release}"
     fi
     set -e
     echo $branch_to_release
