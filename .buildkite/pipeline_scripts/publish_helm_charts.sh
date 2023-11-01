@@ -4,10 +4,23 @@ set -ex
 SCRIPT_DIR=$(dirname $(realpath "$0"))
 source "$SCRIPT_DIR/common.sh"
 
+get_branch_to_release() {
+    set +e
+    branch_to_release=$(buildkite-agent meta-data get "branch-to-release" --job ${PARENT_JOB_ID})
+    if [ $? -ne 0 ]; then
+        branch_to_release="master"
+    fi
+    set -e
+    echo $branch_to_release
+}
+
 configure_git() {
-  git config user.email buildkite@users.noreply.github.com
-  git config user.name buildkite
-  git checkout master
+    git config user.email buildkite@users.noreply.github.com
+    git config user.name buildkite
+    git fetch --tags
+
+    branch_to_checkout=$(get_branch_to_release)
+    git checkout "${branch_to_checkout}"
 }
 
 configure_git
