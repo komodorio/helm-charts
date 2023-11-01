@@ -11,6 +11,9 @@ class KomodorAgentScenario(Scenario):
 
     def __init__(self, kubeconfig):
         super().__init__("komodor-agent", kubeconfig)
+        rc_chart_version = "--version " + os.getenv("CHART_VERSION")
+        self.agents = [{"clusterName": CLUSTER_NAME, "agentVersion": rc_chart_version, "name": "komodor-agent-rc"},
+                       {"clusterName": "komodor-agent-ga", "agentVersion": "", "name": "komodor-agent-ga"}]
 
     def generate_installation_cmd(self, cluster_name, chart_version, name):
         return (f"helm repo add komodorio https://helm-charts.komodor.io && "
@@ -21,8 +24,9 @@ class KomodorAgentScenario(Scenario):
                 f"{chart_version} "
                 f"--namespace {name} --create-namespace")
 
-    async def install_komodor_agent(self, cluster_name, chart_version, namespace):
-        install_cmd = self.generate_installation_cmd(cluster_name, chart_version, namespace)
+    async def install_komodor_agent(self, cluster_name, chart_version, name):
+        self.log(f"Starting to deploy {name}")
+        install_cmd = self.generate_installation_cmd(cluster_name, chart_version, name)
 
         output, exit_code = await self.cmd(install_cmd, silent_errors=True)
         if exit_code != 0:
@@ -31,19 +35,22 @@ class KomodorAgentScenario(Scenario):
 
     async def run(self):
         await asyncio.sleep(120)  # Wait x seconds before deploying, to let other deployments to finish
-        rc_chart_version = "--version " + os.getenv("CHART_VERSION")
-        self.log("Starting to deploy")
-        rc_agent_task = asyncio.create_task(self.install_komodor_agent(CLUSTER_NAME,
-                                                                       rc_chart_version,
-                                                                       "komodor-agent-rc"))
-        gc_agent_task = asyncio.create_task(self.install_komodor_agent("komodor-agent-ga",
-                                                                       "",
-                                                                       "komodor-agent-ga"))
 
-        await asyncio.gather(rc_agent_task, gc_agent_task)
+        self.log("Starting to deploy")
+        installation_tasks = []
+        for agent in self.agents:
+            installation_tasks.append(asyncio.create_task(self.install_komodor_agent(agent["clusterName"],
+                                                                                     agent["agentVersion"],
+                                                                                     agent["name"])))
+
+        await asyncio.gather(*installation_tasks)
         self.log("Finished deploying")
 
     async def cleanup(self):
         self.log(f"Uninstalling {self.name}")
-        await self.cmd(f"{self.helm} uninstall komodor-agent")
+        uninstall_tasks = []
+        for agent in self.agents:
+            uninstall_tasks.append(asyncio.create_task(self.cmd(f"{self.helm} uninstall {agent['name']} -n {agent['name']}")))
+
+        await asyncio.gather(*uninstall_tasks)
 
