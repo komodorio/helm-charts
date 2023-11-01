@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
 get_branch_to_release() {
-    set +x
+    set +e
     branch_to_release=$(buildkite-agent meta-data get "branch-to-release" --job ${PARENT_JOB_ID})
     if [ $? -en 0 ]; then
         branch_to_release="master"
     fi
-    set -x
+    set -e
     echo $branch_to_release
 }
 
