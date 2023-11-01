@@ -16,6 +16,13 @@ fi
 RELEASE_NAME="${3:-komodor-agent}"
 KOMODOR_AGENT_API_KEY="${4:-$API_KEY}"
 NAMESPACE="${5:-komodor-agent}"
+CHART_VERSION="${6:-latest}"
+
+if [ $CHART_VERSION == "latest" ]; then
+  CHART_VERSION=""
+else
+  CHART_VERSION="--version $CHART_VERSION"
+fi
 
 komo ctx "${environment}"
 helm repo add komodorio https://helm-charts.komodor.io
@@ -30,4 +37,5 @@ helm upgrade --install "${RELEASE_NAME}"  komodorio/komodor-agent \
   --set imagePullSecret=docker-cfg-komodorio \
   --set allowedResources.secret=true \
   --set capabilities.event.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" \
-  --set tags="env:${environment}"
+  --set tags="env:${environment}" \
+  "$CHART_VERSION"

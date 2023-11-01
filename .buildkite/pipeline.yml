@@ -179,6 +179,7 @@ steps:
   - wait
 
   - block: ":rocket: release helm chart"
+    prompt: "Unblock this step only after there is a GitHub release for the new version"
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
 
   - label: Publish Helm charts to Github Pages
@@ -197,7 +198,7 @@ steps:
       - python3 ./.buildkite/validate_helm_chart_updated.py "k8s-watcher"
     agents:
       builder: "dind"
-    if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
+    if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master" && build.env('BUILDKITE_TRIGGERED_FROM_BUILD_PIPELINE_SLUG') != "agent-stability-checks"
 
   - label: ":eyeglasses: validate helm chart version updated"
     commands:
@@ -225,7 +226,7 @@ steps:
             STAGING_API_KEY: /komodor/staging/kubernetes/agent-api-key
             STAGING_PRODUCTION_API_KEY: /komodor/staging/kubernetes/prod-agent-api-key
 
-    if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
+    if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master" && build.env('BUILDKITE_TRIGGERED_FROM_BUILD_PIPELINE_SLUG') != "agent-stability-checks"
 
 
   - label: ":magic_wand: Install new komodor-agent version on komodor staging :kubernetes: cluster"
@@ -252,6 +253,7 @@ steps:
     commands:
       - ./.buildkite/pipeline_scripts/legacy_update_agent.sh production production-legacy-chart k8s-watcher-legacy
       - ./.buildkite/pipeline_scripts/update_agent.sh production production komodor-agent
+      # - ./.buildkite/pipeline_scripts/update_agent.sh production production-rc-chart komodor-agent "" "" "TODO: SET ver"
     agents:
       builder: "dind"
     plugins:
