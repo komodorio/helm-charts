@@ -3,7 +3,7 @@
 get_branch_to_release() {
     set +e
     branch_to_release=$(buildkite-agent meta-data get "branch-to-release" --job ${PARENT_JOB_ID})
-    if [ $? -en 0 ]; then
+    if [ $? -ne 0 ]; then
         branch_to_release="master"
     fi
     set -e
