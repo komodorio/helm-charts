@@ -20,7 +20,7 @@ class KomodorAgentScenario(Scenario):
                        f"helm repo update && "
                        f"{self.helm} upgrade --install komodor-agent komodorio/komodor-agent "
                        f"--set apiKey={API} "
-                       f"--set clusterName={CLUSTER_NAME}"
+                       f"--set clusterName={CLUSTER_NAME} "
                        f"--version {CHART_VERSION}")
 
         output, exit_code = await self.cmd(install_cmd, silent_errors=True)
