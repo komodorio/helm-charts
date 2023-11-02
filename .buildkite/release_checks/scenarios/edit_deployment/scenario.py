@@ -89,7 +89,7 @@ class EditDeploymentScenario(Scenario):
             for index in range(1, self.num_of_deployments + 1):
                 action = random.choice(update_actions)
                 update_command = action['command'](index)
-                self.log(action['description'](index))  # Log the action being performed
+                self.log(action['description'](index))
                 await self.cmd(update_command)
                 await asyncio.sleep(0.5)
 
