@@ -20,6 +20,8 @@ To run the scenarios, follow these steps:
 
 ### Prerequisites:
 1. Cluster `kubeconfig` file, see how to generate it from [terraform](../gcp-tf/README.md#running-terraform) 
+2. Environment variable `CHART_VERSION` with chart version to install. Example: `CHART_VERSION=x.y.z+RC1`
+3. *Optional:* Environment variable `AGENT_API_KEY`. Default value is api key to `nir` project in Komodor
 
 ### Running the scenarios script
 1. Use the following command to run the scenarios:
