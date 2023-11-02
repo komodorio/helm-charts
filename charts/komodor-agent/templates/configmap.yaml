@@ -6,6 +6,7 @@ data:
   komodor-k8s-watcher.yaml: |
     {{ toYaml .Values.communications | trim | nindent 4 }}
     clusterName: {{ .Values.clusterName | required "clusterName is a required value!" }}
+    chartVersion: {{ .Chart.Version | quote }}
     enableAgentTaskExecution: true
     enableAgentTaskExecutionV2: true
     allowReadingPodLogs: {{ .Values.capabilities.logs.enabled}}
