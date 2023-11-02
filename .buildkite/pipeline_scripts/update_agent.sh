@@ -18,15 +18,19 @@ KOMODOR_AGENT_API_KEY="${4:-$API_KEY}"
 NAMESPACE="${5:-komodor-agent}"
 CHART_VERSION="${6:-latest}"
 
-if [ $CHART_VERSION == "latest" ]; then
-  CHART_VERSION=""
-else
-  CHART_VERSION="--version $CHART_VERSION"
-fi
-
 komo ctx "${environment}"
 helm repo add komodorio https://helm-charts.komodor.io
 helm repo update
+
+if [ "$CHART_VERSION" == "latest" ]; then
+  CHART_VERSION=""
+elif [ "$CHART_VERSION" == "rc" ]; then
+  # Get latest RC version from the public repo
+  RC_VER=$(helm search repo komodorio/komodor-agent --versions | grep '+RC' |  awk '{ print $2 }' | sort -V | tail -n 1)
+  CHART_VERSION="--version $RC_VER"
+else
+  CHART_VERSION="--version $CHART_VERSION"
+fi
 
 helm get values "$RELEASE_NAME" -n "${NAMESPACE}" > current-values.yaml
 helm upgrade --install "${RELEASE_NAME}"  komodorio/komodor-agent -n "${NAMESPACE}" --create-namespace -f current-values.yaml  --dry-run

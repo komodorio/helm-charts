@@ -8,8 +8,8 @@ This folder contains the pipeline and scripts for the agent release process.
 - **[k8s-gcp-tools](k8s-gcp-tools/README.md):** Dockerfile to build the image that contains needed tools (kubectl, helm, terraform, gcloud)
 - **[pipeline](pipeline/README.md):** The pipeline template and the script to generate the pipeline.yaml
 - **[scenarios](scenarios/README.md):** The scenarios scripts that will deploy different scenarios on the cluster
-- **ci.sh:** The script that is used by the pipeline to start the k8s-gcp-tools container.
-- **start.sh:** This script is running inside the k8s-gcp-tools container and is used to provision the gke cluster and run the scenarios.
+- **ci.sh:** A script the pipeline uses to start the k8s-gcp-tools container.
+- **start.sh:** This script runs inside the k8s-gcp-tools container and is used to provision the gke cluster and run the scenarios.
 
 ## How it works
 
@@ -21,7 +21,7 @@ The release process is divided into 3 steps:
 ### RC release
 
 RC version is created in two scenarios:
-* Scenario 1: An helm-chart feature branch is merged to master.
+* Scenario 1: A helm-chart feature branch is merged to master.
 * Scenario 2: A new agent version is released and as a result a new helm-chart version is created.
 In each scenario a new RC version is created.
 The RC version number is automatically created based on the last GA/RC tags.
