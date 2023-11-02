@@ -50,27 +50,8 @@ steps:
 
   - wait
 
-  - input: "Version increment type"
-    fields:
-      - select: "Stream"
-        key: "version-type"
-        default: "patch"
-        required: true
-        options:
-          - label: "Major"
-            value: "major"
-          - label: "Minor"
-            value: "minor"
-          - label: "Patch"
-            value: "patch"
-
-  - wait
-
-  - label: ":new: Release new charts"
-    trigger: "helm-charts"
-    build:
-      message: "${BUILDKITE_MESSAGE}"
-      commit: "${BUILDKITE_COMMIT}"
-      branch: "${BUILDKITE_BRANCH}"
-      env:
-        PARENT_JOB_ID: "${BUILDKITE_JOB_ID}"
+  - label: Generate next step
+    commands:
+      - git pull --tags
+      - python3 .buildkite/release_checks/pipeline/generate.py phase2
+      - buildkite-agent pipeline upload < .buildkite/release_checks/pipeline/pipeline.yaml
