@@ -25,7 +25,7 @@ terraform {
   }
 
   backend "gcs" {
-    bucket  = "komodor-playground-terraform"
-    prefix  = "terraform/state"
+    bucket = "komodor-playground-terraform"
+    prefix = "terraform/state"
   }
 }

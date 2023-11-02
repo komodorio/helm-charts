@@ -3,7 +3,7 @@ resource "google_container_cluster" "primary" {
   project                  = var.project_id
   location                 = "us-central1-a"
   remove_default_node_pool = true
-  initial_node_count       = 1 
+  initial_node_count       = 1
   deletion_protection      = false
 }
 
@@ -16,7 +16,7 @@ resource "google_project_iam_member" "gcr_viewer" {
 resource "google_service_account" "default" {
   account_id   = "sa-${var.cluster_name}"
   display_name = "Service Account for ${var.cluster_name}"
-  project = var.project_id
+  project      = var.project_id
 }
 
 resource "google_container_node_pool" "primary_preemptible_nodes" {
@@ -36,15 +36,15 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
 
     # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
     service_account = google_service_account.default.email
-    oauth_scopes    = [
+    oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]
   }
-  
+
 }
 
 output "kubeconfig" {
-  value = <<EOT
+  value     = <<EOT
 apiVersion: v1
 clusters:
 - cluster:
