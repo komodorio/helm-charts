@@ -253,7 +253,7 @@ steps:
     commands:
       - ./.buildkite/pipeline_scripts/legacy_update_agent.sh production production-legacy-chart k8s-watcher-legacy
       - ./.buildkite/pipeline_scripts/update_agent.sh production production komodor-agent
-      - ./.buildkite/pipeline_scripts/update_agent.sh production production-rc-chart komodor-agent-rc "" "" "rc"
+      - ./.buildkite/pipeline_scripts/update_agent.sh production production-rc-chart komodor-agent-rc "" "komodor-agent-rc" "rc"
     agents:
       builder: "dind"
     plugins:
