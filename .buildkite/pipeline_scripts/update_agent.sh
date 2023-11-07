@@ -41,5 +41,4 @@ helm upgrade --install "${RELEASE_NAME}"  komodorio/komodor-agent \
   --set imagePullSecret=docker-cfg-komodorio \
   --set allowedResources.secret=true \
   --set capabilities.event.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" \
-  --set tags="env:${environment}" \
-  "$CHART_VERSION"
+  --set tags="env:${environment}" $CHART_VERSION
