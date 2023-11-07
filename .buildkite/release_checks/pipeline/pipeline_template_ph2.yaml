@@ -1,0 +1,19 @@
+steps:
+  - input: "Version increment type"
+    fields:
+      - select: "Stream"
+        key: "version-type"
+        default: "patch"
+        required: true
+        options: []
+
+  - wait
+
+  - label: ":new: Release new charts"
+    trigger: "helm-charts-test"
+    build:
+      message: "${BUILDKITE_MESSAGE}"
+      commit: "${BUILDKITE_COMMIT}"
+      branch: "${BUILDKITE_BRANCH}"
+      env:
+        PARENT_JOB_ID: "${BUILDKITE_JOB_ID}"
