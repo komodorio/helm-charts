@@ -34,8 +34,15 @@ data:
       enable: {{ .Values.capabilities.networkMapper }}
     resync:
       period: "0"
+
+    {{ with merge (dict "secret" true) .Values.allowedResources }}
     resources:
-      {{ toYaml .Values.allowedResources | trim | nindent 6 }}
+      {{- if $.Values.capabilities.helm -}}
+      {{- toYaml . | nindent 6 }}
+      {{- else -}}
+      {{- toYaml $.Values.allowedResources | nindent 6 }}
+      {{- end -}}
+    {{- end }}
 
   installed-values.yaml: |
-    {{ toYaml .Values | nindent 4 }}   
+    {{ toYaml .Values | nindent 4 }}
