@@ -43,4 +43,7 @@ if __name__ == "__main__":
         sys.exit(1)
     chart = sys.argv[1]
     new_version = run_cmd(f'buildkite-agent meta-data get "{chart}-version"', True)
+    if new_version == "skip":
+        print(f"Skipping chart {chart} validation")
+        sys.exit(0)
     main(chart, new_version)
