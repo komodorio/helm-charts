@@ -28,7 +28,7 @@ configure_git() {
 handle_legacy_cart() {
   set +e
   LEGACY_NEW_VERSION=$(buildkite-agent meta-data get "k8s-watcher-version")
-  if [ $? -eq 0 ]; then
+  if [[ $? -eq 0 ]] && [[ "${LEGACY_NEW_VERSION}" != 'skip' ]]; then
     set -e
     sed -i -e "s/version.*/version: $LEGACY_NEW_VERSION/g" charts/k8s-watcher/Chart.yaml
     make generate-kube

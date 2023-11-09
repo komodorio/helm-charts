@@ -67,8 +67,7 @@ should_bump_version() {
         return
     else
         echo "No files under 'charts/${chart}' were changed."
-        current_version=$(get_current_version "${chart}")
-        buildkite-agent meta-data set "$chart-version" "$current_version"
+        buildkite-agent meta-data set "$chart-version" "skip"
         exit 0
     fi
 }
