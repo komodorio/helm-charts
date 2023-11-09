@@ -182,7 +182,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | allowedResources.persistentVolume | bool | `true` | Enables watching `persistentVolumes` |
 | allowedResources.persistentVolumeClaim | bool | `true` | Enables watching `persistentVolumeClaims` |
 | allowedResources.namespace | bool | `true` | Enables watching `namespaces` |
-| allowedResources.secret | bool | `false` | Enables watching `secrets` |
+| allowedResources.secret | bool | `true` | Enables watching `secrets` |
 | allowedResources.configMap | bool | `true` | Enables watching `configmaps` |
 | allowedResources.ingress | bool | `true` | Enables watching `ingresses` |
 | allowedResources.endpoints | bool | `true` | Enables watching `endpoints` |

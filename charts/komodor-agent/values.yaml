@@ -262,7 +262,7 @@ allowedResources:
   # allowedResources.namespace -- Enables watching `namespaces`
   namespace: true
   # allowedResources.secret -- Enables watching `secrets`
-  secret: false
+  secret: true
   # allowedResources.configMap -- Enables watching `configmaps`
   configMap: true
   # allowedResources.ingress -- Enables watching `ingresses`

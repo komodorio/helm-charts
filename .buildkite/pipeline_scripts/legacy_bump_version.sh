@@ -48,12 +48,36 @@ commit_and_push() {
     git push -f || echo "Nothing to push!"
 }
 
+should_bump_version() {
+    local chart=$1
+
+    if [ "${BUILDKITE_TRIGGERED_FROM_BUILD_PIPELINE_SLUG}" = "${chart}" ]; then
+        echo "Build was triggered from ${chart} pipeline, need to bump version."
+        return
+    fi
+
+    # Find the last commit hash that doesn't contain [skip-ci] or [skip ci]
+    local last_commit=$(git --no-pager log --skip=1 --pretty=format:'%H %s' | grep -v -E '\[skip[- ]ci\]' | head -n 1 | awk '{print $1}')
+
+    # Check if any files have changed under the chart directory since that commit
+    if git --no-pager diff --name-only "$last_commit" HEAD | grep -q "^charts/${chart}/"; then
+        echo "At least one file under 'charts/${chart}' was changed, need to bump version."
+        return
+    else
+        echo "No files under 'charts/${chart}' were changed."
+        exit 0
+    fi
+}
+
+
 ##################
 # Main Execution #
 ##################
 configure_git
 
 chart="k8s-watcher"
+
+should_bump_version "$chart"
 
 app_version=$(get_app_version "$chart")
 update_chart_version "$chart" "$app_version"
