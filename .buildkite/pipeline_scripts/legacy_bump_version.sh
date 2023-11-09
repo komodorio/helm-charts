@@ -56,6 +56,8 @@ should_bump_version() {
         return
     fi
 
+    git fetch --deepen=10
+
     # Find the last commit hash that doesn't contain [skip-ci] or [skip ci]
     local last_commit=$(git --no-pager log --skip=1 --pretty=format:'%H %s' | grep -v -E '\[skip[- ]ci\]' | head -n 1 | awk '{print $1}')
 
@@ -75,13 +77,13 @@ should_bump_version() {
 ##################
 # Main Execution #
 ##################
-configure_git
+#configure_git
 
 chart="k8s-watcher"
 
 should_bump_version "$chart"
+echo "here"
+#app_version=$(get_app_version "$chart")
+#update_chart_version "$chart" "$app_version"
 
-app_version=$(get_app_version "$chart")
-update_chart_version "$chart" "$app_version"
-
-commit_and_push
+#commit_and_push
