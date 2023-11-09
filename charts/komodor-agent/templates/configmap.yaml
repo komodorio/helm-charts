@@ -36,7 +36,7 @@ data:
       period: "0"
 
     resources:
-      {{- toYaml .Values.allowedResources | nindent 6 }}
+      {{- toYaml .Values.allowedResources | trim | nindent 6 }}
 
   installed-values.yaml: |
     {{ toYaml .Values | nindent 4 }}
