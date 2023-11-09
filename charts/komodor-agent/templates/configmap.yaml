@@ -35,14 +35,8 @@ data:
     resync:
       period: "0"
 
-    {{ with merge (dict "secret" true) .Values.allowedResources }}
     resources:
-      {{- if $.Values.capabilities.helm -}}
-      {{- toYaml . | nindent 6 }}
-      {{- else -}}
-      {{- toYaml $.Values.allowedResources | nindent 6 }}
-      {{- end -}}
-    {{- end }}
+      {{- toYaml .Values.allowedResources | nindent 6 }}
 
   installed-values.yaml: |
     {{ toYaml .Values | nindent 4 }}
