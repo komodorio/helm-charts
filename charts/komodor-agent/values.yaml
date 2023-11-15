@@ -1,11 +1,3 @@
-# @ignored
-communications:
-  apiServerUrl: https://kubernetes.default.svc.cluster.local
-  serverHost: &serverHost https://app.komodor.com
-  wsHost: wss://app.komodor.com
-  tasksServerHost: *serverHost
-  telemetryServerHost: https://telemetry.komodor.com
-
 # apiKey -- (guid) **(*required*)** To be obtained from komodor app during onboarding
 apiKey:
 # apiKeySecret -- (string) Secret name containing Komodor agent api key
@@ -337,3 +329,11 @@ allowedResources:
   customReadAPIGroups: []
   # allowedResources.allowReadAll -- Allow reading all the resources in the cluster
   allowReadAll: true
+
+# @ignored
+communications:
+  apiServerUrl: https://kubernetes.default.svc.cluster.local
+  serverHost: &serverHost https://app.komodor.com
+  wsHost: wss://app.komodor.com
+  tasksServerHost: *serverHost
+  telemetryServerHost: https://telemetry.komodor.com

@@ -58,8 +58,15 @@ func printDeprecationWarning(flatMap map[string]interface{}) {
 }
 
 func printUpdateCommand(releaseName string, outputFile string, namespace string) {
+  var createNamespace string
+  if namespace != "default" {
+    createNamespace = fmt.Sprintf("--create-namespace")
+  } else {
+    createNamespace = ""
+  }
+
 	uninstallCmd := fmt.Sprintf("helm uninstall %s -n %s\n", releaseName, namespace)
-	updateCmd := fmt.Sprintf("helm install komodor-agent komodorio/komodor-agent -f %s -n %s\n", outputFile, namespace)
+	updateCmd := fmt.Sprintf("helm install komodor-agent komodorio/komodor-agent -f %s -n %s %s\n", outputFile, namespace, createNamespace)
 	printHashMessage(fmt.Sprintf("1. Uninstall k8s-watcher chart:\n\t%s\n2. Use the following command to install the new 'komodor-agent':\n\t%s", uninstallCmd, updateCmd))
 }
 
