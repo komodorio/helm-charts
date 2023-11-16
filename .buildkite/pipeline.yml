@@ -161,14 +161,6 @@ steps:
   - block: ":infinity: Bump Versions"
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
 
-  - label: "LEGACY: Bump Versions"
-    commands:
-      - ./.buildkite/pipeline_scripts/legacy_bump_version.sh
-    agents:
-      builder: "dind"
-    key: bump-versions-legacy
-    if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master" && build.env('BUILDKITE_TRIGGERED_FROM_BUILD_PIPELINE_SLUG') != "agent-stability-checks"
-
   - label: "Bump Versions"
     commands:
       - ./.buildkite/pipeline_scripts/bump_version.sh
@@ -176,6 +168,16 @@ steps:
       builder: "dind"
     key: bump-versions
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
+
+  - label: "LEGACY: Bump Versions"
+    commands:
+      - ./.buildkite/pipeline_scripts/legacy_bump_version.sh
+    agents:
+      builder: "dind"
+    key: bump-versions-legacy
+    depends_on: bump-versions
+    if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master" && build.env('BUILDKITE_TRIGGERED_FROM_BUILD_PIPELINE_SLUG') != "agent-stability-checks"
+
   - wait
 
   - block: ":rocket: release helm chart"
