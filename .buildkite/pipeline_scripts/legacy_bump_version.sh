@@ -76,13 +76,12 @@ should_bump_version() {
 ##################
 # Main Execution #
 ##################
-#configure_git
+configure_git
 
 chart="k8s-watcher"
 
 should_bump_version "$chart"
-echo "here"
-#app_version=$(get_app_version "$chart")
-#update_chart_version "$chart" "$app_version"
+app_version=$(get_app_version "$chart")
+update_chart_version "$chart" "$app_version"
 
-#commit_and_push
+commit_and_push
