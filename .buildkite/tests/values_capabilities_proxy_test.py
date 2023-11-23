@@ -47,6 +47,10 @@ def test_use_proxy_and_custom_ca(setup_cluster, kube_client):
     create_namespace(kube_client)
     secret_name = "mitmproxysecret"
     cmd(f"kubectl create secret generic {secret_name}  --from-file={root_ca_path} -n {NAMESPACE}")
+
+    # TODO: Find a way to add networkpolicy to prevent the agent from reaching the internet directly.
+    #  (at the moment it's not possible natively in kind)
+
     # install with proxy and custom ca
     output, exit_code = helm_agent_install(CLUSTER_NAME, additional_settings=f"--set proxy.enabled=true "
                                                                f"--set proxy.http=http://mitm.proxy:8080 "
