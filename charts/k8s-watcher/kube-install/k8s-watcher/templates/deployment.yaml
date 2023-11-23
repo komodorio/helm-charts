@@ -4,7 +4,7 @@ metadata:
   name: k8s-watcher
   namespace: komodor
   labels:
-    helm.sh/chart: k8s-watcher-1.17.11
+    helm.sh/chart: k8s-watcher-1.17.12
     app.kubernetes.io/name: k8s-watcher
     app.kubernetes.io/instance: k8s-watcher
     app.kubernetes.io/version: "0.2.65"
@@ -22,7 +22,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 91768cac97f9cce4a0c049fcecebede4bb453cdf78ddb10cabef4a183b49ef77
+        checksum/config: e21412debbf4b4eb5e6223f6722353300b1be46421b605495c724df10258c48d
       labels:
         app.kubernetes.io/name: k8s-watcher
         app.kubernetes.io/instance: k8s-watcher
@@ -51,6 +51,24 @@ spec:
           - name: CLUSTER_NAME
             value: YOUR_CLUSTER_NAME
         
+        - name: network-mapper-YOUR_CLUSTER_NAME
+          image: 'public.ecr.aws/komodor-public/network-mapper:v1.0.3'
+          imagePullPolicy: IfNotPresent
+          resources:
+            {}
+          env:
+          - name: OTTERIZE_DEBUG
+            value: "false"
+          
+          
+          
+          - name: OTTERIZE_UPLOAD_INTERVAL_SECONDS
+            value: "60"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - "ALL"
         - name: "supervisor"
           image: "public.ecr.aws/komodor-public/supervisor:0.2.65"
           imagePullPolicy: IfNotPresent
