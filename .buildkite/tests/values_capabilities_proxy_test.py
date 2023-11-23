@@ -91,4 +91,4 @@ def verify_communication_through_proxy():
         if attempt < attempts - 1:
             time.sleep(10)
 
-    assert success, "Failed to read mitmproxy access log or find URLs after 5 attempts"
+    assert success, f"Failed to read mitmproxy access log or find URLs after {attempts} attempts"
