@@ -4,6 +4,19 @@ metadata:
   name: proxy
 ---
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mitm-script
+  namespace: proxy
+data:
+  log_urls.py: |
+    from mitmproxy import http
+    def response(flow: http.HTTPFlow):
+        with open("/tmp/accessed_urls.log", "a") as log:
+            log.write(flow.request.url + "\n")
+
+---
+apiVersion: v1
 kind: Pod
 metadata:
   name: mitm
@@ -12,10 +25,17 @@ metadata:
     proxy: mitmproxy
 spec:
   containers:
-    - name: mitmweb
-      image: mitmproxy/mitmproxy
-      command: ["mitmweb"]
-      args: ["--web-host","0.0.0.0", "--set", "block_global=false"]
+  - name: mitmweb
+    image: mitmproxy/mitmproxy
+    command: ["mitmweb"]
+    args: ["-s", "/scripts/log_urls.py", "--web-host", "0.0.0.0", "--set", "block_global=false"]
+    volumeMounts:
+    - name: script-volume
+      mountPath: /scripts
+  volumes:
+  - name: script-volume
+    configMap:
+      name: mitm-script
 ---
 apiVersion: v1
 kind: Service

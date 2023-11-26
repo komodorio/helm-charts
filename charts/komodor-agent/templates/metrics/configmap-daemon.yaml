@@ -18,9 +18,9 @@ data:
       timeout = "${OUTPUT_TIMEOUT}"
       content_encoding = "gzip"
       {{- if .Values.proxy.https }}
-      http_proxy_url = "${KOMOKW_HTTPS_PROXY_URL}"
+      http_proxy_url = "${KOMOKW_HTTPS_PROXY}"
       {{- else if .Values.proxy.http }}
-      http_proxy_url = "${KOMOKW_HTTP_PROXY_URL}"
+      http_proxy_url = "${KOMOKW_HTTP_PROXY}"
       {{- end }}
       [outputs.http.headers]
         X-ACCOUNT-ID = "${ACCOUNT_ID}"

@@ -132,3 +132,10 @@ def rollout_restart_and_wait(deployment_name, namespace):
     output, exit_code = cmd(f'kubectl rollout status deployment/{deployment_name} -n {namespace}')
     return exit_code == 0
 
+
+def read_file_from_pod(pod_name, namespace, file_path):
+    get_file_content_command = f"kubectl exec {pod_name} -n {namespace} -- cat {file_path}"
+
+    output, exit_code = cmd(get_file_content_command)
+    return output if exit_code == 0 else None
+
