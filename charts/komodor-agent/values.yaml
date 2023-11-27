@@ -54,6 +54,8 @@ capabilities:
   metrics: true
   # capabilities.networkMapper -- (bool) Enable network mapping capabilities by the komodor agent
   networkMapper: true
+  # capabilities.nodeEnricher -- (bool) Enable node enricher capabilities by the komodor agent
+  nodeEnricher: true
   # capabilities.actions -- (bool) Allow users to perform actions on the cluster, granular access control is defined in the application<boolean>
   actions: true
   # capabilities.helm -- Enable helm capabilities by the komodor agent
@@ -93,7 +95,6 @@ capabilities:
     enabled: true
     # capabilities.telemetry.collectApiServerMetrics -- Collect metrics from the api server (Should only be used for debugging purposes)
     collectApiServerMetrics: false
-
 
 # components -- Configure the agent components
 # @default -- See sub-values
@@ -219,6 +220,16 @@ components:
         tag: v1.0.3
       # components.komodorDaemon.networkSniffer.resources -- Set custom resources to the komodor agent network sniffer container
       resources: {}
+
+    nodeEnricher:
+      # components.komodorDaemon.nodeEnricher.image -- Override the komodor agent node enricher image name or tag.
+      image:
+        name: node_enricher
+        tag:
+      # components.komodorDaemon.nodeEnricher.resources -- Set custom resources to the komodor agent node enricher container
+      resources: {}
+      # components.komodorDaemon.nodeEnricher.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
+      extraEnvVars: []
 
 allowedResources:
   # allowedResources.event -- Enables watching `event`
