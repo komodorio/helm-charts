@@ -151,10 +151,12 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorAgent.networkMapper.image | object | `{"name":"network-mapper","tag":"v1.0.3"}` | Override the komodor agent network mapper image name or tag. |
 | components.komodorAgent.networkMapper.resources | object | `{}` | Set custom resources to the komodor agent network mapper container |
 | components.komodorAgent.metrics.image | object | `{"name":"telegraf","tag":1.27}` | Override the komodor agent metrics image name or tag. |
-| components.komodorAgent.metrics.resources | object | `{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Set custom resources to the komodor agent metrics container |
+| components.komodorAgent.metrics.resources | object | `{}` | Set custom resources to the komodor agent metrics container |
 | components.komodorAgent.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
+| components.komodorDaemon.affinity | object | `{}` | Set node affinity for the komodor agent daemon |
 | components.komodorDaemon.annotations | object | `{}` | Adds custom annotations - Example: `--set podAnnotations."app\.komodor\.com/app"="komodor-agent"` |
-| components.komodorDaemon.tolerations | list | `[]` | Add tolerations to the komodor agent deployment |
+| components.komodorDaemon.nodeSelector | object | `{}` | Set node selectors for the komodor agent daemon |
+| components.komodorDaemon.tolerations | list | `[]` | Add tolerations to the komodor agent daemon |
 | components.komodorDaemon.podAnnotations | object | `{}` | # Add annotations to the komodor agent watcher pod |
 | components.komodorDaemon.metrics | object | `{"extraEnvVars":[],"resources":{}}` | Configure the komodor daemon metrics components |
 | components.komodorDaemon.metrics.resources | object | `{}` | Add custom resources to the komodor agent watcher container |

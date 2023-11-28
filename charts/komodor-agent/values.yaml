@@ -167,20 +167,18 @@ components:
         name: telegraf
         tag: 1.27
       # components.komodorAgent.metrics.resources -- Set custom resources to the komodor agent metrics container
-      resources:
-        limits:
-          cpu: 100m
-          memory: 128Mi
-        requests:
-          cpu: 100m
-          memory: 128Mi
+      resources: {}
       # components.komodorAgent.metrics.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
       extraEnvVars: []
 
   komodorDaemon:
+    # components.komodorDaemon.affinity -- Set node affinity for the komodor agent daemon
+    affinity: { }
     # components.komodorDaemon.annotations -- Adds custom annotations - Example: `--set podAnnotations."app\.komodor\.com/app"="komodor-agent"`
     annotations: {}
-    # components.komodorDaemon.tolerations -- Add tolerations to the komodor agent deployment
+    # components.komodorDaemon.nodeSelector -- Set node selectors for the komodor agent daemon
+    nodeSelector: { }
+    # components.komodorDaemon.tolerations -- Add tolerations to the komodor agent daemon
     tolerations: []
     # components.komodorDaemon.podAnnotations --  # Add annotations to the komodor agent watcher pod
     podAnnotations: {}
