@@ -25,11 +25,11 @@ spec:
       priorityClassName: {{ .Release.Name }}-daemon-high-priority
       serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
       affinity:
-        {{- toYaml .Values.components.komodorAgent.affinity | nindent 8 }}
+        {{- toYaml .Values.components.komodorDaemon.affinity | nindent 8 }}
       nodeSelector:
-        {{- toYaml .Values.components.komodorAgent.nodeSelector | nindent 8 }}
+        {{- toYaml .Values.components.komodorDaemon.nodeSelector | nindent 8 }}
       tolerations:
-        {{- toYaml .Values.components.komodorAgent.tolerations | nindent 8}}
+        {{- toYaml .Values.components.komodorDaemon.tolerations | nindent 8}}
       containers:
         {{- include "metrics.daemonset.container" .        | nindent 8 }}
         {{- include "network_mapper.daemonset.container" . | nindent 8 }}
