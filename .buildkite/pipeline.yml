@@ -193,6 +193,18 @@ steps:
     agents:
       builder: "dind"
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
+
+  - label: Create GitHub release
+    commands:
+      - ./.buildkite/pipeline_scripts/create_gh_pre_release.sh
+    plugins:
+      - zacharymctague/aws-ssm#v1.0.0:
+          parameters:
+            GH_TOKEN: /komo-cli/github/search-token
+
+    agents:
+      builder: "non-docker"
+    if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
   - wait
 
   - label: ":eyeglasses: LEGACY: validate helm chart version updated"
