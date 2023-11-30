@@ -191,7 +191,7 @@ components:
           memory: 1Gi
         requests:
           cpu: 0.1
-          memory: 512Mi
+          memory: 384Mi
       # components.komodorDaemon.metrics.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
       extraEnvVars: []
 
