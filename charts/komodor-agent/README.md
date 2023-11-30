@@ -158,8 +158,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemon.nodeSelector | object | `{}` | Set node selectors for the komodor agent daemon |
 | components.komodorDaemon.tolerations | list | `[]` | Add tolerations to the komodor agent daemon |
 | components.komodorDaemon.podAnnotations | object | `{}` | # Add annotations to the komodor agent watcher pod |
-| components.komodorDaemon.metrics | object | `{"extraEnvVars":[],"resources":{}}` | Configure the komodor daemon metrics components |
-| components.komodorDaemon.metrics.resources | object | `{}` | Add custom resources to the komodor agent watcher container |
+| components.komodorDaemon.metrics | object | `{"extraEnvVars":[],"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"512Mi"}}}` | Configure the komodor daemon metrics components |
+| components.komodorDaemon.metrics.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"512Mi"}}` | Add custom resources to the komodor agent watcher container |
 | components.komodorDaemon.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemon.metricsInit | object | See sub-values | Configure the komodor daemon metrics init container |
 | components.komodorDaemon.metricsInit.image | object | `{ "name": "init-daemon-agent", "tag": .Chart.AppVersion }` | Override the komodor agent metrics init image name or tag. |
