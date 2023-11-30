@@ -1,7 +1,7 @@
 {{- define "node_enricher.daemonset.container" }}
 {{- if .Values.capabilities.nodeEnricher }}
 - name: node-enricher
-  image: {{ .Values.imageRepo }}/{{ .Values.components.komodorDaemon.nodeEnricher.image.name}}:{{ .Values.components.komodorDaemon.nodeEnricher.image.tag }}
+  image: {{ .Values.imageRepo }}/{{ .Values.components.komodorDaemon.nodeEnricher.image.name}}:{{ .Values.components.komodorDaemon.nodeEnricher.image.tag | default .Chart.AppVersion }}
   imagePullPolicy: {{ .Values.pullPolicy }}
   resources:
     {{ toYaml .Values.components.komodorDaemon.nodeEnricher.resources | trim | nindent 4 }}
