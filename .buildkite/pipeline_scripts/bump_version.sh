@@ -26,12 +26,14 @@ generate_next_version() {
     local tags=$(git tag -l 'komodor-agent/*' | awk -F'/' '{print $NF}')
     local latest_tag=$(printf "%s\n" "${tags[@]}" | sort -V | tail -n 1 | tr '[:lower:]' '[:upper:]')
 
+    local latest_ga_version=${latest_tag%+RC*}
+    buildkite-agent meta-data set "komodor-agent-ga-version" "$latest_ga_version"
+
     if [[ ${increment_type} == "rc" ]]; then
         if [[ ${latest_tag} == *"+RC"* ]]; then
-            local base_version=${latest_tag%+RC*}
             local rc_part=${latest_tag##*+RC}
             local next_rc_number=$(( rc_part + 1 ))
-            echo "${base_version}+RC${next_rc_number}"
+            echo "${latest_ga_version}+RC${next_rc_number}"
         else
             echo "${latest_tag}+RC1"
         fi
