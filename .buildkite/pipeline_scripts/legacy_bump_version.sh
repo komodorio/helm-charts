@@ -62,7 +62,7 @@ should_bump_version() {
     local last_commit=$(git --no-pager log --skip=1 --pretty=format:'%H %s' | grep -v -E '\[skip[- ]ci\]' | head -n 1 | awk '{print $1}')
 
     # Check if any files have changed under the chart directory since that commit
-    if git --no-pager diff --name-only "$last_commit" HEAD | grep -q "^charts/${chart}/"; then
+    if git --no-pager diff --name-only "$last_commit" HEAD | grep -v "kube-install" | grep -q "^charts/${chart}/"; then
         echo "At least one file under 'charts/${chart}' was changed, need to bump version."
         return
     else
@@ -82,6 +82,6 @@ chart="k8s-watcher"
 
 should_bump_version "$chart"
 app_version=$(get_app_version "$chart")
-update_chart_version "$chart" "$app_version"
+#update_chart_version "$chart" "$app_version"
 
-commit_and_push
+#commit_and_push
