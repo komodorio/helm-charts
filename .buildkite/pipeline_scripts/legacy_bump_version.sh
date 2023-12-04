@@ -82,6 +82,6 @@ chart="k8s-watcher"
 
 should_bump_version "$chart"
 app_version=$(get_app_version "$chart")
-#update_chart_version "$chart" "$app_version"
+update_chart_version "$chart" "$app_version"
 
-#commit_and_push
+commit_and_push
