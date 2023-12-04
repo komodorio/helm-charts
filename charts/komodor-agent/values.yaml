@@ -55,7 +55,7 @@ capabilities:
   # capabilities.networkMapper -- (bool) Enable network mapping capabilities by the komodor agent
   networkMapper: true
   # capabilities.nodeEnricher -- (bool) Enable node enricher capabilities by the komodor agent
-  nodeEnricher: true
+  nodeEnricher: false
   # capabilities.actions -- (bool) Allow users to perform actions on the cluster, granular access control is defined in the application<boolean>
   actions: true
   # capabilities.helm -- Enable helm capabilities by the komodor agent
