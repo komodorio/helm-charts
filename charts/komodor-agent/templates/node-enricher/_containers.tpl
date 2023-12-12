@@ -10,6 +10,16 @@
     mountPath: /etc/komodor
   env:
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
+  - name: KOMOKW_API_KEY
+    valueFrom:
+      secretKeyRef:
+        {{- if .Values.apiKeySecret }}
+        name: {{ .Values.apiKeySecret | required "Existing secret name required!" }}
+        key: apiKey
+        {{- else }}
+        name: {{ include "komodorAgent.secret.name" . }}
+        key: apiKey
+        {{- end }}
   - name: NODE_NAME
     valueFrom:
       fieldRef:
