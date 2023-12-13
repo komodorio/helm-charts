@@ -18,7 +18,7 @@ AGENT_VERSION=$(buildkite-agent meta-data get "agent-version")
 AGENT_REPO="komodor-agent"
 # Fetch the last two tags from the additional repository
 AGENT_REPO_GA_TAG=$(git show "${HELM_CHART_REPO_GA_TAG}":charts/komodor-agent/Chart.yaml | grep appVersion | awk '{print $2}') # agent version in helm ga version
-AGENT_REPO_LATEST_TAG=$(git show "${HELM_CHART_REPO_RC_TAG}":charts/komodor-agent/Chart.yaml | grep appVersion | awk '{print $2}') # agent version in helm rc version
+AGENT_REPO_RC_TAG=$(git show "${HELM_CHART_REPO_RC_TAG}":charts/komodor-agent/Chart.yaml | grep appVersion | awk '{print $2}') # agent version in helm rc version
 
 
 collect_pr_title() {
@@ -60,13 +60,15 @@ process_repository() {
 
 # Initialize release notes file
 echo "## Helm Chart Updates" > release_notes.txt
-echo "\`${HELM_CHART_REPO_GA_TAG}\` -> \`${HELM_CHART_REPO_RC_TAG}\`" >> release_notes.txt
+echo "Chart versions: \`${HELM_CHART_REPO_GA_TAG}\` -> \`${HELM_CHART_REPO_RC_TAG}\`" >> release_notes.txt
+echo "Agent versions: \`${AGENT_REPO_GA_TAG}\` -> \`${AGENT_REPO_RC_TAG}\`" >> release_notes.txt
+
 
 # Process Helm Chart Repository
 process_repository "$HELM_CHART_REPO" "$HELM_CHART_REPO_GA_TAG" "$HELM_CHART_REPO_RC_TAG" "Helm Chart Updates"
 
 # Process Agent Repository
-process_repository "$AGENT_REPO" "$AGENT_REPO_GA_TAG" "$AGENT_REPO_LATEST_TAG" "Agent Updates (${AGENT_VERSION})"
+process_repository "$AGENT_REPO" "$AGENT_REPO_GA_TAG" "$AGENT_REPO_RC_TAG" "Agent Updates"
 
 # Create a pre-release on GitHub with the collected comments
 gh release create "$HELM_CHART_REPO_RC_TAG" --title "${HELM_CHART_REPO_RC_TAG}" --notes-file release_notes.txt --prerelease
