@@ -1,11 +1,3 @@
-# @ignored
-communications:
-  apiServerUrl: https://kubernetes.default.svc.cluster.local
-  serverHost: &serverHost https://app.komodor.com
-  wsHost: wss://app.komodor.com
-  tasksServerHost: *serverHost
-  telemetryServerHost: https://telemetry.komodor.com
-
 # apiKey -- (guid) **(*required*)** To be obtained from komodor app during onboarding
 apiKey:
 # apiKeySecret -- (string) Secret name containing Komodor agent api key
@@ -62,6 +54,8 @@ capabilities:
   metrics: true
   # capabilities.networkMapper -- (bool) Enable network mapping capabilities by the komodor agent
   networkMapper: true
+  # capabilities.nodeEnricher -- (bool) Enable node enricher capabilities by the komodor agent
+  nodeEnricher: false
   # capabilities.actions -- (bool) Allow users to perform actions on the cluster, granular access control is defined in the application<boolean>
   actions: true
   # capabilities.helm -- Enable helm capabilities by the komodor agent
@@ -169,9 +163,13 @@ components:
       resources: {}
 
   komodorDaemon:
+    # components.komodorDaemon.affinity -- Set node affinity for the komodor agent daemon
+    affinity: { }
     # components.komodorDaemon.annotations -- Adds custom annotations - Example: `--set podAnnotations."app\.komodor\.com/app"="komodor-agent"`
     annotations: {}
-    # components.komodorDaemon.tolerations -- Add tolerations to the komodor agent deployment
+    # components.komodorDaemon.nodeSelector -- Set node selectors for the komodor agent daemon
+    nodeSelector: { }
+    # components.komodorDaemon.tolerations -- Add tolerations to the komodor agent daemon
     tolerations: []
     # components.komodorDaemon.podAnnotations --  # Add annotations to the komodor agent watcher pod
     podAnnotations: {}
@@ -186,13 +184,7 @@ components:
         name: init-daemon-agent
         tag:
       # components.komodorDaemon.metricsInit.resources -- Set custom resources to the komodor agent metrics init container
-      resources:
-        limits:
-          cpu: 100m
-          memory: 128Mi
-        requests:
-          cpu: 100m
-          memory: 128Mi
+      resources: {}
       # components.komodorDaemon.metricsInit.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
       extraEnvVars: []
 
@@ -221,6 +213,18 @@ components:
         tag: v1.0.3
       # components.komodorDaemon.networkSniffer.resources -- Set custom resources to the komodor agent network sniffer container
       resources: {}
+
+    # components.komodorDaemon.nodeEnricher -- Configure the komodor daemon node enricher components
+    # @default -- See sub-values
+    nodeEnricher:
+      # components.komodorDaemon.nodeEnricher.image -- Override the komodor agent node enricher image name or tag.
+      image:
+        name: node_enricher
+        tag:
+      # components.komodorDaemon.nodeEnricher.resources -- Set custom resources to the komodor agent node enricher container
+      resources: {}
+      # components.komodorDaemon.nodeEnricher.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
+      extraEnvVars: []
 
 allowedResources:
   # allowedResources.event -- Enables watching `event`
@@ -256,7 +260,7 @@ allowedResources:
   # allowedResources.namespace -- Enables watching `namespaces`
   namespace: true
   # allowedResources.secret -- Enables watching `secrets`
-  secret: false
+  secret: true
   # allowedResources.configMap -- Enables watching `configmaps`
   configMap: true
   # allowedResources.ingress -- Enables watching `ingresses`
@@ -331,3 +335,11 @@ allowedResources:
   customReadAPIGroups: []
   # allowedResources.allowReadAll -- Allow reading all the resources in the cluster
   allowReadAll: true
+
+# @ignored
+communications:
+  apiServerUrl: https://kubernetes.default.svc.cluster.local
+  serverHost: &serverHost https://app.komodor.com
+  wsHost: wss://app.komodor.com
+  tasksServerHost: *serverHost
+  telemetryServerHost: https://telemetry.komodor.com

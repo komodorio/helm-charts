@@ -467,6 +467,11 @@ rules:
       - list
       - get
       - watch
+
+  # Allow to uninstall charts
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["delete", "list", "get"]
 {{- end}}
 
 {{- if .Values.allowedResources.allowReadAll }}

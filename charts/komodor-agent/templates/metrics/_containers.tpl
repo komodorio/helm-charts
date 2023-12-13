@@ -9,6 +9,7 @@
   - name: {{ include "metrics.daemon.config.name" . }}
     mountPath: /etc/telegraf/telegraf.conf
     subPath: telegraf.conf
+  {{- include "custom-ca.trusted-volumeMounts" . | indent 2 }}
   envFrom:
   - configMapRef:
       name:  "k8s-watcher-daemon-env-vars"

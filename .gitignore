@@ -2,3 +2,6 @@
 .vscode/
 .idea/
 charts/**/templates-test/
+__pycache__/
+.pytest_cache/
+release_notes.txt

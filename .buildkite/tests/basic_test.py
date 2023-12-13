@@ -4,7 +4,7 @@ from fixtures import setup_cluster, kube_client, cleanup_agent_from_cluster
 from helpers.utils import get_filename_as_cluster_name
 import helpers.kubernetes_helper as kubernetes_helper
 from helpers.komodor_helper import create_komodor_uid, query_backend
-from config import API_KEY, BE_BASE_URL, NAMESPACE
+from config import API_KEY, BE_BASE_URL, NAMESPACE, RELEASE_NAME
 from helpers.helm_helper import helm_agent_install
 
 CLUSTER_NAME = get_filename_as_cluster_name(__file__)
@@ -40,6 +40,10 @@ def test_helm_installation(setup_cluster, kube_client):
             time.sleep(10)
     else:
         assert False, f"Pods are not ready: {last_exception}"
+
+    deployment_name = f"{RELEASE_NAME}-komodor-agent"
+    pod_name = kubernetes_helper.find_pod_name_by_deployment(deployment_name, NAMESPACE)
+    kubernetes_helper.look_for_errors_in_pod_log(pod_name, "k8s-watcher")
 
 
 def test_get_configmap_from_resources_api(setup_cluster):

@@ -1,0 +1,57 @@
+steps:
+  - input: "RC Tag"
+    fields:
+      - select: "Stream"
+        key: "rc-tag"
+        required: true
+        hint: Select RC tag to check and release as GA
+        options: []
+
+  - input: "Job Mode"
+    fields:
+      - select: "Stream"
+        key: "job-mode"
+        required: true
+        default: "ga"
+        hint: "GA: Check the version before releasing as GA,\nHOTFIX: Skip stability checks and just release the version"
+        options:
+          - label: "GA"
+            value: "ga"
+          - label: "Hotfix"
+            value: "hotfix"
+
+  - wait
+
+  - label: ":console: Agent dashboard"
+    command: |
+      export start_time=$(date +'%s%3')
+      export end_time=$(($start_time + 7200000)) # +2 hours
+      buildkite-agent annotate '*[Monitoring dashboard](https://app.datadoghq.com/dashboard/j69-vt8-tfq/komodor-agent-troubleshooting-dashboard?refresh_mode=sliding&tpl_var_accountname%5B0%5D=helm-chart-test&tpl_var_clustername%5B0%5D=komodor-agent-%2A&from_ts=${start_time}&to_ts=${end_time})*' --style 'info' --context 'ctx-agent-dashboard'
+
+  - label: ":new: Setup cluster & run scenarios"
+    commands:
+      - cd .buildkite/release_checks
+      - komo ci docker-login
+      - echo $$SA_KEY > sa.json
+
+      - ./ci.sh
+    env:
+      RUN_TIMEOUT: 60m
+    retry:
+      manual:
+        permit_on_passed: true
+    agents:
+      builder: "heavy-dind-agent"
+    plugins:
+      - zacharymctague/aws-ssm#v1.0.0:
+          parameters:
+            SA_KEY: /app/ci/gcp/AGENT_RELEASE_SA_KEY
+            AGENT_API_KEY: /helm-chart-test/production/API_KEY
+
+  - wait
+
+  - label: Generate next step
+    commands:
+      - git pull --tags
+      - python3 .buildkite/release_checks/pipeline/generate.py phase2
+      - buildkite-agent pipeline upload < .buildkite/release_checks/pipeline/pipeline.yaml

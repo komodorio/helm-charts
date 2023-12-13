@@ -53,3 +53,6 @@ values_capabilities_test: setup-venv install-kind cleanup-kind
 
 values_components_test: setup-venv install-kind cleanup-kind
 	$(VENV_ACTIVATE) ; pytest values_components_test.py
+
+legacy_k8s_versions_test: setup-venv install-kind cleanup-kind
+	$(VENV_ACTIVATE) ; pytest legacy_k8s_versions_test.py

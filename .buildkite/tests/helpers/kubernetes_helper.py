@@ -1,4 +1,6 @@
 import time
+import json
+from helpers.utils import cmd
 from kubernetes import client
 from config import NAMESPACE
 
@@ -98,3 +100,42 @@ def find_pod_name_by_deployment(deployment_name, namespace):
     except client.exceptions.ApiException as e:
         print(f"An error occurred: {e}")
         return None
+
+
+def get_pod_logs(namespace, pod_name, container_name=None, tail_lines=100):
+    """
+    Retrieve the logs for a specific pod and container.
+    """
+    v1 = client.CoreV1Api()
+
+    return v1.read_namespaced_pod_log(
+        name=pod_name,
+        namespace=namespace,
+        container=container_name,  # None will get the first container
+        tail_lines=tail_lines
+    )
+
+
+def look_for_errors_in_pod_log(pod_name, container_name="k8s-watcher"):
+    assert pod_name, "Pod name is required"
+    logs = get_pod_logs(NAMESPACE, pod_name, container_name)
+    for line in logs.splitlines():
+        if not line.startswith("{"):
+            continue
+        json_log = json.loads(line)
+        if "level" in json_log and json_log["level"] == "error":
+            assert False, f"Found error in logs of {pod_name}\nLog: {json_log['msg']}"
+
+
+def rollout_restart_and_wait(deployment_name, namespace):
+    cmd(f'kubectl rollout restart deployment/{deployment_name} -n {namespace}')
+    output, exit_code = cmd(f'kubectl rollout status deployment/{deployment_name} -n {namespace}')
+    return exit_code == 0
+
+
+def read_file_from_pod(pod_name, namespace, file_path):
+    get_file_content_command = f"kubectl exec {pod_name} -n {namespace} -- cat {file_path}"
+
+    output, exit_code = cmd(get_file_content_command)
+    return output if exit_code == 0 else None
+

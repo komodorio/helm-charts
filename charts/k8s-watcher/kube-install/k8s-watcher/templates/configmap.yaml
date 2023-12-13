@@ -33,7 +33,7 @@ data:
     - election
     namespacesDenylist: []
     networkMapper:
-      enable: false
+      enable: true
     redact: []
     redactLogs: []
     resources:

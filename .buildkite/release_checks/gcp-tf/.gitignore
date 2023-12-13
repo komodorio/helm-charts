@@ -1,0 +1,8 @@
+sa.json
+# add terraform ignores
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+*.lock.*
+out
+kubeconfig.yaml

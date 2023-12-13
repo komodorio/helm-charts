@@ -6,6 +6,7 @@ data:
   komodor-k8s-watcher.yaml: |
     {{ toYaml .Values.communications | trim | nindent 4 }}
     clusterName: {{ .Values.clusterName | required "clusterName is a required value!" }}
+    chartVersion: {{ .Chart.Version | quote }}
     enableAgentTaskExecution: true
     enableAgentTaskExecutionV2: true
     allowReadingPodLogs: {{ .Values.capabilities.logs.enabled}}
@@ -33,8 +34,9 @@ data:
       enable: {{ .Values.capabilities.networkMapper }}
     resync:
       period: "0"
+
     resources:
-      {{ toYaml .Values.allowedResources | trim | nindent 6 }}
+      {{- toYaml .Values.allowedResources | trim | nindent 6 }}
 
   installed-values.yaml: |
-    {{ toYaml .Values | nindent 4 }}   
+    {{ toYaml .Values | nindent 4 }}

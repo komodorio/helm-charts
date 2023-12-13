@@ -7,8 +7,8 @@ var mapping = map[string]string{
 	"supervisor.enabled":   "capabilities.supervisor",
 	"enableRWCache":        "capabilities.events.enableRWCache",
 
-	"watcher.actions.basic":       "capabilities.actions.basic",
-	"watcher.actions.advanced":    "capabilities.actions.advanced",
+	"watcher.actions.basic":       "capabilities.actions",
+	"watcher.actions.advanced":    "",
 	"watcher.actions.podExec":     "",
 	"watcher.actions.portforward": "",
 	"watcher.allowReadingPodLogs": "capabilities.logs.enabled",
