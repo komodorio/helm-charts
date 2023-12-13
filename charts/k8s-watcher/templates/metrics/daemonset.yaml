@@ -1,7 +1,7 @@
 {{- define "metrics.daemonset.container" }}
 {{- if ne (.Values.metrics).enabled false }}
 - name: daemon
-  image: {{ ((.Values.daemon).image).repository | default "public.ecr.aws/komodor-public/telegraf:1.28" }} 
+  image: {{ ((.Values.daemon).image).repository | default "public.ecr.aws/komodor-public/telegraf:1.29" }} 
   imagePullPolicy: {{ ((.Values.daemon).image).pullPolicy | default "IfNotPresent" }}
   volumeMounts:
   - name: {{ include "k8s-watcher.name" . }}-daemon-config
