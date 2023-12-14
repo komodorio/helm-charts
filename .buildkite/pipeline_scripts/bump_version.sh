@@ -84,8 +84,13 @@ get_increment_type() {
 increment_version() {
   increment_type=$(get_increment_type)
   new_version=$(generate_next_version "$increment_type")
-  git tag "komodor-agent/$new_version"
   buildkite-agent meta-data set "$chart-version" "$new_version"
+
+  git commit -m "[skip ci] update Chart.yaml" || echo "Already up-to-date"
+  git push -f || echo "Nothing to push!"
+
+  git tag "komodor-agent/$new_version"
+  git push --tags || echo "No tags to push"
 }
 
 
@@ -94,11 +99,6 @@ update_readme() {
     git add charts/komodor-agent/README.md || echo "Nothing to add"
 }
 
-commit_and_push() {
-    git commit -m "[skip ci] update Chart.yaml" || echo "Already up-to-date"
-    git push -f || echo "Nothing to push!"
-    git push --tags || echo "No tags to push"
-}
 
 ##################
 # Main Execution #
@@ -111,8 +111,8 @@ main () {
   update_chart_app_version "$chart" "$app_version"
 
   update_readme
-  increment_version
-  commit_and_push
+  increment_version_commit_and_push
+
 }
 
 # This condition ensures main is only executed when the script is run, not sourced
