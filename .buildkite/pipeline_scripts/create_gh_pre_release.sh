@@ -10,32 +10,27 @@ HELM_CHART_REPO="helm-charts"
 CHART="komodor-agent"
 
 # Helm Chart Version Information
-HELM_CHART_REPO_TAG1="${CHART}/$(buildkite-agent meta-data get ${CHART}-ga-version)"
-HELM_CHART_REPO_TAG2="${CHART}/$(buildkite-agent meta-data get ${CHART}-version)"
+HELM_CHART_REPO_GA_TAG="${CHART}/$(buildkite-agent meta-data get ${CHART}-ga-version)"
+HELM_CHART_REPO_RC_TAG="${CHART}/$(buildkite-agent meta-data get ${CHART}-version)"
 AGENT_VERSION=$(buildkite-agent meta-data get "agent-version")
 
 # Agent Repository Configuration
 AGENT_REPO="komodor-agent"
 # Fetch the last two tags from the additional repository
-AGENT_REPO_TAGS=($(gh api repos/"$REPO_OWNER"/"$AGENT_REPO"/tags --jq '.[].name' | head -n 2))
-AGENT_REPO_TAG1=${AGENT_REPO_TAGS[1]} # Second last tag
-AGENT_REPO_TAG2=${AGENT_REPO_TAGS[0]} # Last tag
+AGENT_REPO_GA_TAG=$(git show "${HELM_CHART_REPO_GA_TAG}":charts/komodor-agent/Chart.yaml | grep appVersion | awk '{print $2}') # agent version in helm ga version
+AGENT_REPO_RC_TAG=$(git show "${HELM_CHART_REPO_RC_TAG}":charts/komodor-agent/Chart.yaml | grep appVersion | awk '{print $2}') # agent version in helm rc version
 
 
-collect_comments() {
+collect_pr_title() {
     local repo=$1
     local pr_number=$2
     echo "Processing PR #$pr_number from $repo"
 
-    local comments
-    comments=$(gh api repos/"$REPO_OWNER"/"$repo"/issues/"$pr_number"/comments | jq -r '.[] | select(.body | startswith("public: ")) | .body')
+    local pr_title
+    pr_title=$(gh pr view "$pr_number" --repo "$REPO_OWNER/$repo" --json title -q .title)
 
-    # Format and append each comment
-    echo "$comments" | while read -r comment; do
-        if [[ -n $comment ]]; then
-            echo "${comment#public: }" | sed 's/^/* /' >> release_notes.txt
-        fi
-    done
+    # Format and append the PR title with a link to the PR
+    echo "* [${pr_title}](https://github.com/${REPO_OWNER}/${repo}/pull/${pr_number})" >> release_notes.txt
 }
 
 process_repository() {
@@ -51,10 +46,10 @@ process_repository() {
     commit_messages=$(gh api repos/"$REPO_OWNER"/"$repo"/compare/"$tag1"..."$tag2" --jq '.commits[].commit.message')
 
     for msg in $commit_messages; do
-        # Extract PR number from commit message e.g. "(#123)"
-        if [[ $msg =~ \(\#([0-9]+)\) ]]; then
+        # Extract PR number from commit message e.g. "#123"
+        if [[ $msg =~ \#([0-9]+) ]]; then
             local pr_number=${BASH_REMATCH[1]}
-            collect_comments "$repo" "$pr_number"
+            collect_pr_title "$repo" "$pr_number"
         fi
     done
 }
@@ -65,13 +60,15 @@ process_repository() {
 
 # Initialize release notes file
 echo "## Helm Chart Updates" > release_notes.txt
-echo "\`${HELM_CHART_REPO_TAG1}\` -> \`${HELM_CHART_REPO_TAG2}\`" >> release_notes.txt
+echo "Chart versions: \`${HELM_CHART_REPO_GA_TAG}\` -> \`${HELM_CHART_REPO_RC_TAG}\`" >> release_notes.txt
+echo "Agent versions: \`${AGENT_REPO_GA_TAG}\` -> \`${AGENT_REPO_RC_TAG}\`" >> release_notes.txt
+
 
 # Process Helm Chart Repository
-process_repository "$HELM_CHART_REPO" "$HELM_CHART_REPO_TAG1" "$HELM_CHART_REPO_TAG2" "Helm Chart Updates"
+process_repository "$HELM_CHART_REPO" "$HELM_CHART_REPO_GA_TAG" "$HELM_CHART_REPO_RC_TAG" "Helm Chart Updates"
 
 # Process Agent Repository
-process_repository "$AGENT_REPO" "$AGENT_REPO_TAG1" "$AGENT_REPO_TAG2" "Agent Updates (${AGENT_VERSION})"
+process_repository "$AGENT_REPO" "$AGENT_REPO_GA_TAG" "$AGENT_REPO_RC_TAG" "Agent Updates"
 
 # Create a pre-release on GitHub with the collected comments
-gh release create "$HELM_CHART_REPO_TAG2" --title "${HELM_CHART_REPO_TAG2}" --notes-file release_notes.txt --prerelease
+gh release create "$HELM_CHART_REPO_RC_TAG" --title "${HELM_CHART_REPO_RC_TAG}" --notes-file release_notes.txt --prerelease
