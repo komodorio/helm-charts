@@ -71,7 +71,7 @@ daemon:
   tolerations:
   - operator: "Exists"
   image:
-    repository: public.ecr.aws/komodor-public/telegraf:1.29.1
+    repository: public.ecr.aws/komodor-public/telegraf:1.27
     pullPolicy: IfNotPresent
   init:
     image:
