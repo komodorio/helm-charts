@@ -71,4 +71,4 @@ process_repository "$HELM_CHART_REPO" "$HELM_CHART_REPO_GA_TAG" "$HELM_CHART_REP
 process_repository "$AGENT_REPO" "$AGENT_REPO_GA_TAG" "$AGENT_REPO_RC_TAG" "Agent Updates"
 
 # Create a pre-release on GitHub with the collected comments
-gh release create "$HELM_CHART_REPO_RC_TAG" --title "${HELM_CHART_REPO_RC_TAG}" --notes-file release_notes.txt --prerelease
+gh release create "$HELM_CHART_REPO_RC_TAG" --title "${HELM_CHART_REPO_RC_TAG}" --notes-file release_notes.txt --draft
