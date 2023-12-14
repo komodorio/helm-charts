@@ -34,8 +34,6 @@
         name: {{ include "komodorAgent.secret.name" . }}
         key: apiKey
         {{- end }}
-  - name: KOMOKW_CLUSTER_NAME
-    value: {{ .Values.clusterName }}
   {{- if not (empty .Values.tags) }}
   - name: KOMOKW_TAGS
     value: {{ .Values.tags | default "" | quote }}
