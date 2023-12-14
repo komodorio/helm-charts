@@ -36,7 +36,7 @@ data:
         
     [[inputs.kube_inventory]]
       ## URL for the Kubernetes API
-      url = "{{ .Values.communications.apiServerUrl | quote }}"
+      url = {{ .Values.communications.apiServerUrl | quote }}
       url_kubelet = "https://$NODE_IP:10250"
       namespace = ""
       bearer_token = "/run/secrets/kubernetes.io/serviceaccount/token"
