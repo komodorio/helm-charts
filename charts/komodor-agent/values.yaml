@@ -196,11 +196,11 @@ components:
       # components.komodorDaemon.metrics.resources -- Set custom resources to the komodor agent metrics container
       resources:
         limits:
-          cpu: 100m
-          memory: 128Mi
+          cpu: 1
+          memory: 1Gi
         requests:
-          cpu: 100m
-          memory: 128Mi
+          cpu: 0.1
+          memory: 384Mi
       # components.komodorDaemon.metrics.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
       extraEnvVars: []
 
