@@ -81,7 +81,7 @@ get_increment_type() {
     echo rc
 }
 
-increment_version() {
+increment_version_commit_and_push() {
   increment_type=$(get_increment_type)
   new_version=$(generate_next_version "$increment_type")
   buildkite-agent meta-data set "$chart-version" "$new_version"
