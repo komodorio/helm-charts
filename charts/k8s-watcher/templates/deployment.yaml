@@ -63,9 +63,8 @@ spec:
           volumeMounts:
             - name: agent-configuration
               mountPath: /etc/komodor
+          command: ["supervisor"]
           env:
-            - name: AGENT_ENTRY
-              value: "supervisor"
             - name: KOMOKW_API_KEY
               valueFrom:
                 secretKeyRef:
@@ -109,6 +108,7 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["watcher"]
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
@@ -130,8 +130,6 @@ spec:
 {{- end }}
 {{- include "custom-ca.trusted-volumeMounts" . | nindent 12 }}
           env:
-            - name: AGENT_ENTRY
-              value: "watcher"
             - name: KOMOKW_API_KEY
               valueFrom:
                 secretKeyRef:

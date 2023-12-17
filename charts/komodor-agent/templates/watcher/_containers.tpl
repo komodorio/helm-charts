@@ -3,6 +3,7 @@
 - name: "k8s-watcher"
   image: {{ .Values.imageRepo }}/{{ .Values.components.komodorAgent.watcher.image.name}}:{{ .Values.components.komodorAgent.watcher.image.tag | default .Chart.AppVersion }}
   imagePullPolicy: {{ .Values.pullPolicy }}
+  command: ["watcher"]
   resources:
     {{ toYaml .Values.components.komodorAgent.watcher.resources | trim | nindent 4 }}
   volumeMounts:
@@ -24,8 +25,6 @@
   {{- end }}
   {{- include "custom-ca.trusted-volumeMounts" .  |  nindent 2 }}
   env:
-  - name: AGENT_ENTRY
-    value: "watcher"
   - name: KOMOKW_API_KEY
     valueFrom:
       secretKeyRef:

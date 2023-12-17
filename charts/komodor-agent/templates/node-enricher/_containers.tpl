@@ -3,6 +3,7 @@
 - name: node-enricher
   image: {{ .Values.imageRepo }}/{{ .Values.components.komodorDaemon.nodeEnricher.image.name}}:{{ .Values.components.komodorDaemon.nodeEnricher.image.tag | default .Chart.AppVersion }}
   imagePullPolicy: {{ .Values.pullPolicy }}
+  command: ["node_enricher"]
   resources:
     {{ toYaml .Values.components.komodorDaemon.nodeEnricher.resources | trim | nindent 4 }}
   volumeMounts:
@@ -10,8 +11,6 @@
     mountPath: /etc/komodor
   env:
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
-  - name: AGENT_ENTRY
-    value: "node_enricher"
   - name: KOMOKW_API_KEY
     valueFrom:
       secretKeyRef:

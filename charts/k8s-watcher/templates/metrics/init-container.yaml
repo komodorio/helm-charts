@@ -27,8 +27,6 @@
   {{- toYaml .Values.daemon.init.resources | nindent 4 }}
   {{- end }}
   env:
-  - name: AGENT_ENTRY
-    value: "daemon"
   {{- if hasKey .Values "namespace" }}
   - name: NAMESPACE
     value: {{ .Values.namespace }}
