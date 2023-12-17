@@ -196,7 +196,7 @@ steps:
 
   - label: Create GitHub release
     commands:
-      - ./.buildkite/pipeline_scripts/create_gh_pre_release.sh
+      - ./.buildkite/pipeline_scripts/create_gh_draft_release.sh
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
