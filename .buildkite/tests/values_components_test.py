@@ -34,7 +34,8 @@ def test_override_deployment_tolerations():
     deployment_tolerations = get_yaml_from_helm_template("test=test", "Deployment", deployment_name,
                                                          "spec.template.spec.tolerations", values_file=values_file)
 
-    assert deployment_tolerations[0]["key"] == "gpu", f"Expected gpu in deployment tolerations {deployment_tolerations}"
+    assert deployment_tolerations[0][
+        "key"] == "gpu", f"Expected gpu in deployment tolerations {deployment_tolerations}"
 
 
 def test_override_deployment_node_selector():
@@ -87,9 +88,8 @@ def test_override_deployment_affinity():
 @pytest.mark.parametrize(
     "component, container_index",
     [
-        ("metrics", "0"),
-        ("watcher", "2"),
-        ("supervisor", "3"),
+        ("watcher", "1"),
+        ("supervisor", "2"),
     ]
 )
 def test_extra_env_vars(component, container_index):
@@ -107,4 +107,5 @@ def test_extra_env_vars(component, container_index):
                                                       f"spec.template.spec.containers.{container_index}.env",
                                                       values_file=values_file)
 
-    assert deployment_env_vars[-1]["name"] == "TEST_ENV_VAR", f"Expected TEST_ENV_VAR in deployment env vars {deployment_env_vars}"
+    assert deployment_env_vars[-1][
+        "name"] == "TEST_ENV_VAR", f"Expected TEST_ENV_VAR in deployment env vars {deployment_env_vars}"
