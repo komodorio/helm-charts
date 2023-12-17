@@ -79,12 +79,11 @@
   image: {{ .Values.imageRepo }}/{{ .Values.components.komodorAgent.supervisor.image.name}}:{{ .Values.components.komodorAgent.supervisor.image.tag | default .Chart.AppVersion }}
   imagePullPolicy: {{ .Values.pullPolicy }}
   resources: {{ toYaml .Values.components.komodorAgent.watcher.resources | trim | nindent 4 }}
+  command: ["supervisor"]
   volumeMounts:
     - name: agent-configuration
       mountPath: /etc/komodor
   env:
-    - name: AGENT_ENTRY
-      value: "supervisor"
     - name: KOMOKW_CLUSTER_NAME
       value: {{ .Values.clusterName }}
     - name: KOMOKW_API_KEY
