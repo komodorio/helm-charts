@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 # Script to generate release notes from PR comments for Helm Chart and Agent repositories
 
