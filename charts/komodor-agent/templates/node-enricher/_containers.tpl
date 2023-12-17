@@ -10,6 +10,8 @@
     mountPath: /etc/komodor
   env:
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
+  - name: AGENT_ENTRY
+    value: "node_enricher"
   - name: KOMOKW_API_KEY
     valueFrom:
       secretKeyRef:

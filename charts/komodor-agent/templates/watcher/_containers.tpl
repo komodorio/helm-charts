@@ -24,6 +24,8 @@
   {{- end }}
   {{- include "custom-ca.trusted-volumeMounts" .  |  nindent 2 }}
   env:
+  - name: AGENT_ENTRY
+    value: "watcher"
   - name: KOMOKW_API_KEY
     valueFrom:
       secretKeyRef:
@@ -82,6 +84,8 @@
     - name: agent-configuration
       mountPath: /etc/komodor
   env:
+    - name: AGENT_ENTRY
+      value: "supervisor"
     - name: KOMOKW_CLUSTER_NAME
       value: {{ .Values.clusterName }}
     - name: KOMOKW_API_KEY

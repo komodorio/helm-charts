@@ -44,6 +44,8 @@
     mountPath: /etc/komodor
   {{- include "custom-ca.volumeMounts" . | nindent 2 }}
   env:
+  - name: AGENT_ENTRY
+    value: daemon
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
   - name: KOMOKW_API_KEY

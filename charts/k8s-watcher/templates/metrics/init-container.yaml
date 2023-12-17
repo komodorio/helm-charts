@@ -1,7 +1,7 @@
 {{- define "metrics.init" }}
 {{- if ne (.Values.metrics).enabled false }}
 - name: init-daemon
-  image: '{{ (((.Values.daemon).init).image).repository | default "public.ecr.aws/komodor-public/init-daemon-agent" }}:{{ .Values.image.tag | default .Chart.AppVersion }}'
+  image: '{{ (((.Values.daemon).init).image).repository | default "public.ecr.aws/komodor-public/komodor-agent" }}:{{ .Values.image.tag | default .Chart.AppVersion }}'
   imagePullPolicy: {{ (((.Values.daemon).init).image).pullPolicy | default "IfNotPresent" }}
   {{- if ne (default false (.Values.customCa).enabled) false }}
   command:
@@ -27,6 +27,8 @@
   {{- toYaml .Values.daemon.init.resources | nindent 4 }}
   {{- end }}
   env:
+  - name: AGENT_ENTRY
+    value: "daemon"
   {{- if hasKey .Values "namespace" }}
   - name: NAMESPACE
     value: {{ .Values.namespace }}
