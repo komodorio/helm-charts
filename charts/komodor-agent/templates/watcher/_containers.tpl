@@ -3,6 +3,7 @@
 - name: "k8s-watcher"
   image: {{ .Values.imageRepo }}/{{ .Values.components.komodorAgent.watcher.image.name}}:{{ .Values.components.komodorAgent.watcher.image.tag | default .Chart.AppVersion }}
   imagePullPolicy: {{ .Values.pullPolicy }}
+  command: ["watcher"]
   resources:
     {{ toYaml .Values.components.komodorAgent.watcher.resources | trim | nindent 4 }}
   volumeMounts:
@@ -78,6 +79,7 @@
   image: {{ .Values.imageRepo }}/{{ .Values.components.komodorAgent.supervisor.image.name}}:{{ .Values.components.komodorAgent.supervisor.image.tag | default .Chart.AppVersion }}
   imagePullPolicy: {{ .Values.pullPolicy }}
   resources: {{ toYaml .Values.components.komodorAgent.watcher.resources | trim | nindent 4 }}
+  command: ["supervisor"]
   volumeMounts:
     - name: agent-configuration
       mountPath: /etc/komodor

@@ -36,6 +36,7 @@
 - name: init-daemon
   image: {{ .Values.imageRepo }}/{{ .Values.components.komodorDaemon.metricsInit.image.name}}:{{ .Values.components.komodorDaemon.metricsInit.image.tag | default .Chart.AppVersion }}
   imagePullPolicy: {{ .Values.pullPolicy }}
+  command: ["daemon"]
   resources:
     {{ toYaml .Values.components.komodorDaemon.metricsInit.resources | trim | nindent 4 }}
   {{ include "custom-ca.trusted-init-container.command" . | indent 2 }}

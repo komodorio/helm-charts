@@ -3,6 +3,7 @@
 - name: node-enricher
   image: {{ .Values.imageRepo }}/{{ .Values.components.komodorDaemon.nodeEnricher.image.name}}:{{ .Values.components.komodorDaemon.nodeEnricher.image.tag | default .Chart.AppVersion }}
   imagePullPolicy: {{ .Values.pullPolicy }}
+  command: ["node_enricher"]
   resources:
     {{ toYaml .Values.components.komodorDaemon.nodeEnricher.resources | trim | nindent 4 }}
   volumeMounts:
