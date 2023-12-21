@@ -16,6 +16,8 @@ AGENT_VERSION=$(buildkite-agent meta-data get "agent-version")
 
 # Agent Repository Configuration
 AGENT_REPO="komodor-agent"
+git pull --depth=50
+
 # Fetch the last two tags from the additional repository
 AGENT_REPO_GA_TAG=$(git show "${HELM_CHART_REPO_GA_TAG}":charts/komodor-agent/Chart.yaml | grep appVersion | awk '{print $2}') # agent version in helm ga version
 AGENT_REPO_RC_TAG=$(git show "${HELM_CHART_REPO_RC_TAG}":charts/komodor-agent/Chart.yaml | grep appVersion | awk '{print $2}') # agent version in helm rc version
