@@ -22,6 +22,7 @@ steps:
   - label: ":test_tube: Basic tests"
     commands:
       - cd .buildkite/tests
+      - ./ci/use-new-agent-version.sh
       - make basic_test
     agents:
       builder: "dind"
@@ -33,6 +34,7 @@ steps:
   - label: ":test_tube: values_base_test"
     commands:
       - cd .buildkite/tests
+      - ./ci/use-new-agent-version.sh
       - make values_base_test
     agents:
       builder: "dind"
@@ -44,6 +46,7 @@ steps:
   - label: ":test_tube: values_capabilities_events_test"
     commands:
       - cd .buildkite/tests
+      - ./ci/use-new-agent-version.sh
       - make values_capabilities_events_test
     agents:
       builder: "dind"
@@ -55,6 +58,7 @@ steps:
   - label: ":test_tube: values_capabilities_proxy_test"
     commands:
       - cd .buildkite/tests
+      - ./ci/use-new-agent-version.sh
       - make values_capabilities_proxy_test
     agents:
       builder: "dind"
@@ -66,6 +70,7 @@ steps:
   - label: ":test_tube: values_capabilities_test"
     commands:
       - cd .buildkite/tests
+      - ./ci/use-new-agent-version.sh
       - make values_capabilities_test
     agents:
       builder: "dind"
@@ -77,6 +82,7 @@ steps:
   - label: ":test_tube: values_components_test"
     commands:
       - cd .buildkite/tests
+      - ./ci/use-new-agent-version.sh
       - make values_components_test
     agents:
       builder: "dind"
@@ -88,6 +94,7 @@ steps:
   - label: ":test_tube: legacy_k8s_versions_test"
     commands:
       - cd .buildkite/tests
+      - ./ci/use-new-agent-version.sh
       - make legacy_k8s_versions_test
     agents:
       builder: "dind"
