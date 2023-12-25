@@ -65,6 +65,7 @@ supervisor:
   servers:
     healthCheck:
       port: 8089
+
 metrics:
   enabled: true
 daemon:
