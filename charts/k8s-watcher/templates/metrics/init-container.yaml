@@ -7,7 +7,7 @@
   - /bin/sh
   - -c
   - |
-    {{- if (.Values.customCa).enabled }}
+    {{- if ne (default false (.Values.customCa).enabled) false }}
     cp /certs/* /etc/ssl/certs/ &&
     update-ca-certificates --fresh &&
     {{- end }}
