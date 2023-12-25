@@ -4,7 +4,7 @@ metadata:
   name: k8s-watcher-daemon
   namespace: komodor
   labels:
-    helm.sh/chart: k8s-watcher-1.18.2
+    helm.sh/chart: k8s-watcher-1.18.3
     app.kubernetes.io/name: k8s-watcher-daemon
     app.kubernetes.io/instance: k8s-watcher-daemon
     app.kubernetes.io/version: "0.2.70"
@@ -26,6 +26,11 @@ spec:
         - name: init-daemon
           image: 'public.ecr.aws/komodor-public/komodor-agent:0.2.70'
           imagePullPolicy: IfNotPresent
+          command:
+          - /bin/sh
+          - -c
+          - |
+            daemon
           volumeMounts:
           - name: configuration
             mountPath: /etc/komodor
