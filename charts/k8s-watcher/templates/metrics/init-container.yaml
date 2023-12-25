@@ -3,14 +3,15 @@
 - name: init-daemon
   image: '{{ (((.Values.daemon).init).image).repository | default "public.ecr.aws/komodor-public/komodor-agent" }}:{{ .Values.image.tag | default .Chart.AppVersion }}'
   imagePullPolicy: {{ (((.Values.daemon).init).image).pullPolicy | default "IfNotPresent" }}
-  {{- if ne (default false (.Values.customCa).enabled) false }}
   command:
-    - /bin/sh
-    - -c
-    - cp /certs/* /etc/ssl/certs/ && 
-      update-ca-certificates --fresh &&
-      daemon
-  {{- end }}
+  - /bin/sh
+  - -c
+  - |
+    {{- if ne (default false (.Values.customCa).enabled) false }}
+    cp /certs/* /etc/ssl/certs/ &&
+    update-ca-certificates --fresh &&
+    {{- end }}
+    daemon
   volumeMounts:
   - name: configuration
     mountPath: /etc/komodor
