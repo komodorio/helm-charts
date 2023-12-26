@@ -115,7 +115,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | capabilities | object | See sub-values | Configure the agent capabilities |
 | capabilities.metrics | bool | `true` | Fetch workload metrics and send them to komodor backend |
 | capabilities.networkMapper | bool | `true` | Enable network mapping capabilities by the komodor agent |
-| capabilities.nodeEnricher | bool | `false` | Enable node enricher capabilities by the komodor agent |
+| capabilities.nodeEnricher | bool | `true` | Enable node enricher capabilities by the komodor agent |
 | capabilities.actions | bool | `true` | Allow users to perform actions on the cluster, granular access control is defined in the application<boolean> |
 | capabilities.helm | bool | `true` | Enable helm capabilities by the komodor agent |
 | capabilities.events | object | See sub-values | Configure the agent events capabilities |
