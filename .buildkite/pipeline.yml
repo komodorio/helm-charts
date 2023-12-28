@@ -11,6 +11,12 @@ steps:
       builder: "dind"
     if: build.message !~ /feat\(OSS.+\):/i
 
+  - label: ":memo: Validate bump version script"
+    command: docker run -it --rm -v $(pwd):/code bats/bats:latest /code/.buildkite/pipeline_scripts_tests/bump_version_test.bat
+    agents:
+      builder: "dind"
+    if: build.message !~ /feat\(OSS.+\):/i
+
   - label: ":book: Validate Readme is up to date"
     commands:
       - cd charts/komodor-agent

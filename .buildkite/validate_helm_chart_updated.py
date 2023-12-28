@@ -19,7 +19,7 @@ def get_current_version(chart, new_version, is_rc):
 def main(chart, new_version):
     run_cmd("helm repo add komodorio https://helm-charts.komodor.io")
 
-    is_rc = "+RC" in new_version.upper()
+    is_rc = "-RC" in new_version.upper()
     version_updated = False
 
     for _ in range(10):
