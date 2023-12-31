@@ -11,8 +11,8 @@ steps:
       builder: "dind"
     if: build.message !~ /feat\(OSS.+\):/i
 
-  - label: ":memo: Validate bump version script"
-    command: docker run -it --rm -v $(pwd):/code bats/bats:latest /code/.buildkite/pipeline_scripts_tests/bump_version_test.bat
+  - label: ":memo: Test bump version script"
+    command: bats .buildkite/pipeline_scripts_tests/bump_version_test.bat --print-output-on-failure
     agents:
       builder: "dind"
     if: build.message !~ /feat\(OSS.+\):/i
