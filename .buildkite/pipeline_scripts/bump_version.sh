@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+
 get_branch_to_release() {
     set +e
     branch_to_release=$(buildkite-agent meta-data get "rc-tag" --job ${PARENT_JOB_ID})
@@ -21,32 +22,72 @@ configure_git() {
     git checkout "${branch_to_checkout}"
 }
 
+extract_version_parts() {
+    local version=$1
+    local major=$(echo $version | awk -F'.' '{print $1}')
+    local minor=$(echo $version | awk -F'.' '{print $2}')
+    local patch=$(echo $version | awk -F'.' '{print $3}' | awk -F'-' '{print $1}')
+    echo $major $minor $patch
+}
+
+increment_version() {
+    local version=$1
+    local increment_type=$2
+    read major minor patch <<< $(extract_version_parts $version)
+
+    case $increment_type in
+        major)
+            echo "$((major + 1)).0.0"
+            ;;
+        minor)
+            echo "${major}.$((minor + 1)).0"
+            ;;
+        patch)
+            echo "${major}.${minor}.$((patch + 1))"
+            ;;
+        *)
+            echo "Unknown increment type: $increment_type" >&2
+            return 2
+            ;;
+    esac
+}
+
 generate_next_version() {
     local increment_type=$1
-    local tags=$(git tag -l 'komodor-agent/*' | awk -F'/' '{print $NF}')
-    local latest_tag=$(printf "%s\n" "${tags[@]}" | sort -V | tail -n 1 | tr '[:lower:]' '[:upper:]')
+    local tags
+    tags=$(git tag -l 'komodor-agent/*' | awk -F'/' '{print $NF}')
+    local latest_tag
+    latest_tag=$(printf "%s\n" "${tags[@]}" | sort -V | tail -n 1 | tr '[:lower:]' '[:upper:]')
 
-    local latest_ga_version=${latest_tag%+RC*}
+    if [[ -z $latest_tag ]]; then
+        echo "Failed to find latest tag" >&2
+        return 1
+    fi
+
+    local latest_ga_version=${latest_tag%-RC*}
     buildkite-agent meta-data set "komodor-agent-ga-version" "$latest_ga_version"
 
-    if [[ ${increment_type} == "rc" ]]; then
-        if [[ ${latest_tag} == *"+RC"* ]]; then
-            local rc_part=${latest_tag##*+RC}
-            local next_rc_number=$(( rc_part + 1 ))
-            echo "${latest_ga_version}+RC${next_rc_number}"
+    if [[ $increment_type == "rc" ]]; then
+        if [[ $latest_tag == *"-RC"* ]]; then
+            local rc_number=${latest_tag##*-RC}
+            local next_rc_number=$((rc_number + 1))
+            echo "${latest_ga_version}-RC${next_rc_number}"
         else
-            echo "${latest_tag}+RC1"
+            local new_patch_version
+            new_patch_version=$(increment_version "$latest_ga_version" patch)
+            echo "${new_patch_version}-RC1"
         fi
     else
-        local major=$(echo $latest_tag | awk -F'.' '{print $1}')
-        local minor=$(echo $latest_tag | awk -F'.' '{print $2}')
-        local patch=$(echo $latest_tag | awk -F'.' '{print $3}' | awk -F'+' '{print $1}')
-        if [[ ${increment_type} == "major" ]]; then
-            echo "$((major + 1)).0.0"
-        elif [[ ${increment_type} == "minor" ]]; then
-            echo "${major}.$((minor + 1)).0"
-        elif [[ ${increment_type} == "patch" ]]; then
-            echo "${major}.${minor}.$((patch + 1))"
+        if [[ $latest_tag == *"-RC"* && $increment_type == "patch" ]]; then
+            echo "$(extract_version_parts "$latest_ga_version")"
+        else
+            local new_version
+            new_version=$(increment_version "$latest_tag" "$increment_type")
+            local exit_code=$?
+            if [[ $exit_code -ne 0 ]]; then
+                return $exit_code
+            fi
+            echo "$new_version"
         fi
     fi
 }
