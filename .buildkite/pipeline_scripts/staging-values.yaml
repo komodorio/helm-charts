@@ -5,10 +5,12 @@ communications:
   tasksServerHost: https://staging.app.komodor.com
   wsHost: wss://staging.app.komodor.com
   telemetryServerHost: https://staging.telemetry.komodor.com
+  mgmtServerHost: https://staging.app.komodor.com
 
 capabilities:
   telemetry:
     enable: false
+    serverHost: https://staging.telemetry.komodor.com
   event:
     redact: "{.*KEY.*,.*key.*,.*BUGSNAG.*}"
 

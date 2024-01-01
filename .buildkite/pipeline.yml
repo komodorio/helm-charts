@@ -256,8 +256,8 @@ steps:
       - helm repo add komodorio https://helm-charts.komodor.io
       - helm repo update
       - helm get values komodor-agent-staging -n komodor-staging > staging-values.yaml
+      - helm upgrade --install komodor-agent-staging komodorio/komodor-agent -f staging-values.yaml --set clusterName=komodor-staging-eks --namespace=komodor-staging --set imagePullSecret=docker-cfg-komodorio --set communications.serverHost=https://staging.app.komodor.com --set communications.tasksServerHost=https://staging.app.komodor.com --set communications.wsHost=wss://staging.app.komodor.com --set communications.mgmtServerHost=https://staging.app.komodor.com --set capabilities.telemetry.enable=false --set communications.telemetryServerHost=https://staging.telemetry.komodor.com --set apiKey=$$KOMODOR_AGENT_STAGING_API_KEY --set allowedResources.secret=true --set capabilities.event.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}"
       - helm upgrade --install komodor-agent-staging komodorio/komodor-agent -n komodor-staging -f staging-values.yaml --dry-run
-      - helm upgrade --install komodor-agent-staging komodorio/komodor-agent -f staging-values.yaml --set clusterName=komodor-staging-eks --namespace=komodor-staging --set imagePullSecret=docker-cfg-komodorio --set communications.serverHost=https://staging.app.komodor.com --set communications.tasksServerHost=https://staging.app.komodor.com --set communications.wsHost=wss://staging.app.komodor.com --set capabilities.telemetry.enable=false --set communications.telemetryServerHost=https://staging.telemetry.komodor.com --set apiKey=$$KOMODOR_AGENT_STAGING_API_KEY --set allowedResources.secret=true --set capabilities.event.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}"
 
       - ./.buildkite/pipeline_scripts/update_agent.sh staging komodor-staging komodor-agent-production $$STAGING_PRODUCTION_API_KEY
     agents:
