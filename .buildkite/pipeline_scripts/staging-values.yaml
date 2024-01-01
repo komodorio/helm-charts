@@ -1,3 +1,4 @@
+clusterName: komodor-staging-eks
 imagePullSecret: docker-cfg-komodorio
 
 communications:
