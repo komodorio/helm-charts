@@ -256,8 +256,8 @@ steps:
       - helm repo add komodorio https://helm-charts.komodor.io
       - helm repo update
       - helm get values komodor-agent-staging -n komodor-staging > staging-values-to-reuse.yaml
+      - helm upgrade --install komodor-agent-staging komodorio/komodor-agent -n komodor-staging -f staging-values-to-reuse -f ./.buildkite/pipeline_scripts/staging-values.yaml --dry-run
       - helm upgrade --install komodor-agent-staging komodorio/komodor-agent -f staging-values-to-reuse.yaml -f ./.buildkite/pipeline_scripts/staging-values.yaml --namespace=komodor-staging --set apiKey=$$KOMODOR_AGENT_STAGING_API_KEY
-      - helm upgrade --install komodor-agent-staging komodorio/komodor-agent -n komodor-staging -f ./.buildkite/pipeline_scripts/staging-values.yaml --dry-run
 
       - ./.buildkite/pipeline_scripts/update_agent.sh staging komodor-staging komodor-agent-production $$STAGING_PRODUCTION_API_KEY
     agents:
