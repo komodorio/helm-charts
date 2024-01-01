@@ -12,7 +12,7 @@ steps:
     if: build.message !~ /feat\(OSS.+\):/i
 
   - label: ":memo: Test bump version script"
-    command: bats .buildkite/pipeline_scripts_tests/bump_version_test.bat --print-output-on-failure
+    command: bats .buildkite/pipeline_scripts_tests/*.bat
     agents:
       builder: "dind"
     if: build.message !~ /feat\(OSS.+\):/i
