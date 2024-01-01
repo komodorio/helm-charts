@@ -27,6 +27,7 @@ helm install "${CHART_NAME}" charts/k8s-watcher \
   --set communications.serverHost=https://staging.app.komodor.com \
   --set communications.tasksServerHost=https://staging.app.komodor.com \
   --set communications.wsHost=wss://staging.app.komodor.com \
+  --set communications.mgmtServerHost=https://staging.app.komodor.com \
   --set capabilities.telemetry.enable=false \
   --set communications.telemetryServerHost=https://staging.telemetry.komodor.com \
   --set allowedResources.secret=true \
@@ -43,6 +44,7 @@ helm upgrade --install "${CHART_NAME}" charts/k8s-watcher \
   --set watcher.serverHost=https://staging.app.komodor.com \
   --set watcher.tasksServerHost=https://staging.app.komodor.com \
   --set watcher.wsHost=wss://staging.app.komodor.com \
+  --set watcher.mgmtServerHost=https://staging.app.komodor.com \
   --set watcher.telemetry.enable=false \
   --set watcher.telemetry.serverHost=https://staging.telemetry.komodor.com \
   --set watcher.collectHistory=true \
