@@ -1,12 +1,12 @@
 import time
+
+import yaml
+
 from config import BE_BASE_URL, NAMESPACE, RELEASE_NAME
-from helpers.utils import get_filename_as_cluster_name
-from fixtures import setup_cluster, cleanup_agent_from_cluster
-from helpers.helm_helper import helm_agent_install, helm_agent_template, \
-    get_yaml_from_helm_template
+from helpers.helm_helper import helm_agent_install, get_yaml_from_helm_template
 from helpers.komodor_helper import query_backend, create_komodor_uid
 from helpers.kubernetes_helper import find_pod_name_by_deployment
-import yaml
+from helpers.utils import get_filename_as_cluster_name
 
 CLUSTER_NAME = get_filename_as_cluster_name(__file__)
 

@@ -1,19 +1,21 @@
-import pytest
 import time
+
+import pytest
+
 from config import NAMESPACE
-from fixtures import setup_cluster, kube_client, cleanup_agent_from_cluster
-from helpers.utils import cmd, get_filename_as_cluster_name
 from helpers.helm_helper import helm_agent_install
-from helpers.kubernetes_helper import create_namespace,wait_for_pod_ready, read_file_from_pod
+from helpers.kubernetes_helper import create_namespace, wait_for_pod_ready, read_file_from_pod
+from helpers.utils import cmd, get_filename_as_cluster_name
 
 CLUSTER_NAME = get_filename_as_cluster_name(__file__)
 PROXY_POD_NAME = "mitm"
 PROXY_NAMESPACE = "proxy"
 PROXY_URL = "http://mitm.proxy:8080"
 KOMODOR_SERVICE_URLS = [
+    "https://app.komodor.com/api/v1/agents"
     "https://app.komodor.com/k8s-events",
     "https://app.komodor.com/k8s-events/event",
-    "https://app.komodor.com/k8s-events/agent",
+    "https://app.komodor.com/k8s-events/agent/remote-config",
     "https://app.komodor.com/metrics-collector",
     "https://app.komodor.com/agent-task-manager",
 ]
@@ -64,10 +66,10 @@ def test_use_proxy_and_custom_ca(setup_cluster, kube_client):
 
     # install with proxy and custom ca
     output, exit_code = helm_agent_install(CLUSTER_NAME, additional_settings=f"--set proxy.enabled=true "
-                                                               f"--set proxy.http={PROXY_URL} "
-                                                               f"--set proxy.https={PROXY_URL} "
-                                                               f"--set customCa.enabled=true "
-                                                               f"--set customCa.secretName={secret_name} ")
+                                                                             f"--set proxy.http={PROXY_URL} "
+                                                                             f"--set proxy.https={PROXY_URL} "
+                                                                             f"--set customCa.enabled=true "
+                                                                             f"--set customCa.secretName={secret_name} ")
 
     assert exit_code == 0, f"Agent installation failed, output: {output}"
 
