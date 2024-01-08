@@ -3,6 +3,7 @@ import time
 import pytest
 
 from config import NAMESPACE
+from fixtures import setup_cluster, kube_client, cleanup_agent_from_cluster  # noqa # pylint: disable=unused-import
 from helpers.helm_helper import helm_agent_install
 from helpers.kubernetes_helper import create_namespace, wait_for_pod_ready, read_file_from_pod
 from helpers.utils import cmd, get_filename_as_cluster_name

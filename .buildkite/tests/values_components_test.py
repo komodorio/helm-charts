@@ -1,8 +1,8 @@
-import yaml
 import pytest
-from helpers.utils import get_filename_as_cluster_name
+
 from config import RELEASE_NAME
 from helpers.helm_helper import get_yaml_from_helm_template
+from helpers.utils import get_filename_as_cluster_name
 
 CLUSTER_NAME = get_filename_as_cluster_name(__file__)
 
@@ -35,7 +35,7 @@ def test_override_deployment_tolerations():
                                                          "spec.template.spec.tolerations", values_file=values_file)
 
     assert deployment_tolerations[0][
-        "key"] == "gpu", f"Expected gpu in deployment tolerations {deployment_tolerations}"
+               "key"] == "gpu", f"Expected gpu in deployment tolerations {deployment_tolerations}"
 
 
 def test_override_deployment_node_selector():
@@ -108,4 +108,4 @@ def test_extra_env_vars(component, container_index):
                                                       values_file=values_file)
 
     assert deployment_env_vars[-1][
-        "name"] == "TEST_ENV_VAR", f"Expected TEST_ENV_VAR in deployment env vars {deployment_env_vars}"
+               "name"] == "TEST_ENV_VAR", f"Expected TEST_ENV_VAR in deployment env vars {deployment_env_vars}"

@@ -3,6 +3,7 @@ import time
 import yaml
 
 from config import BE_BASE_URL, NAMESPACE, RELEASE_NAME
+from fixtures import setup_cluster, cleanup_agent_from_cluster  # noqa # pylint: disable=unused-import
 from helpers.helm_helper import helm_agent_install, get_yaml_from_helm_template
 from helpers.komodor_helper import query_backend, create_komodor_uid
 from helpers.kubernetes_helper import find_pod_name_by_deployment
