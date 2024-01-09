@@ -4318,7 +4318,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.1.0+RC16.tgz
-    version: 2.1.0+RC16
+    version: 2.2.0-RC16
   - apiVersion: v1
     appVersion: 0.2.67
     created: "2024-01-09T09:53:19.489189491Z"
@@ -4328,7 +4328,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.1.0+RC9.tgz
-    version: 2.1.0+RC9
+    version: 2.2.0-RC9
   - apiVersion: v1
     appVersion: 0.2.66
     created: "2024-01-09T09:53:19.488044238Z"
@@ -4338,7 +4338,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.1.0+RC8.tgz
-    version: 2.1.0+RC8
+    version: 2.2.0-RC8
   - apiVersion: v1
     appVersion: 0.2.66
     created: "2024-01-09T09:53:19.486864751Z"
@@ -4348,7 +4348,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.1.0+RC7.tgz
-    version: 2.1.0+RC7
+    version: 2.2.0-RC7
   - apiVersion: v1
     appVersion: 0.2.66
     created: "2024-01-09T09:53:19.485731717Z"
@@ -4358,7 +4358,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.1.0+RC6.tgz
-    version: 2.1.0+RC6
+    version: 2.2.0-RC6
   - apiVersion: v1
     appVersion: 0.2.65
     created: "2024-01-09T09:53:19.484602116Z"
@@ -4368,7 +4368,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.1.0+RC5.tgz
-    version: 2.1.0+RC5
+    version: 2.2.0-RC5
   - apiVersion: v1
     appVersion: 0.2.65
     created: "2024-01-09T09:53:19.483476649Z"
@@ -4378,7 +4378,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.1.0+RC4.tgz
-    version: 2.1.0+RC4
+    version: 2.2.0-RC4
   - apiVersion: v1
     appVersion: 0.2.65
     created: "2024-01-09T09:53:19.482304958Z"
@@ -4388,7 +4388,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.1.0+RC3.tgz
-    version: 2.1.0+RC3
+    version: 2.2.0-RC3
   - apiVersion: v1
     appVersion: 0.2.65
     created: "2024-01-09T09:53:19.480643304Z"
@@ -4398,7 +4398,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.1.0+RC2.tgz
-    version: 2.1.0+RC2
+    version: 2.2.0-RC2
   - apiVersion: v1
     appVersion: 0.2.70
     created: "2024-01-09T09:53:19.479511332Z"
@@ -4408,7 +4408,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.1.0+RC17.tgz
-    version: 2.1.0+RC17
+    version: 2.2.0-RC17
   - apiVersion: v1
     appVersion: 0.2.65
     created: "2024-01-09T09:53:19.469505211Z"
@@ -4418,7 +4418,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.1.0+RC1.tgz
-    version: 2.1.0+RC1
+    version: 2.2.0-RC1
   - apiVersion: v1
     appVersion: 0.2.67
     created: "2024-01-09T09:53:19.470732718Z"
@@ -4428,7 +4428,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.1.0+RC10.tgz
-    version: 2.1.0+RC10
+    version: 2.2.0-RC10
   - apiVersion: v1
     appVersion: 0.2.68
     created: "2024-01-09T09:53:19.471955098Z"
@@ -4438,7 +4438,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.1.0+RC11.tgz
-    version: 2.1.0+RC11
+    version: 2.2.0-RC11
   - apiVersion: v1
     appVersion: 0.2.68
     created: "2024-01-09T09:53:19.473639317Z"
@@ -4448,7 +4448,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.1.0+RC12.tgz
-    version: 2.1.0+RC12
+    version: 2.2.0-RC12
   - apiVersion: v1
     appVersion: 0.2.64
     created: "2024-01-09T09:53:19.490367734Z"
@@ -4468,7 +4468,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.1.0+RC14.tgz
-    version: 2.1.0+RC14
+    version: 2.2.0-RC14
   - apiVersion: v1
     appVersion: 0.2.70
     created: "2024-01-09T09:53:19.477164145Z"
@@ -4478,7 +4478,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.1.0+RC15.tgz
-    version: 2.1.0+RC15
+    version: 2.2.0-RC15
   - apiVersion: v1
     appVersion: 0.2.69
     created: "2024-01-09T09:53:19.474824408Z"
@@ -4488,7 +4488,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.1.0+RC13.tgz
-    version: 2.1.0+RC13
+    version: 2.2.0-RC13
   - apiVersion: v1
     appVersion: 0.2.63
     created: "2024-01-09T09:53:19.468370615Z"
@@ -4508,7 +4508,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.0.4+RC8.tgz
-    version: 2.0.4+RC8
+    version: 2.0.5-RC8
   - apiVersion: v1
     appVersion: 0.2.64
     created: "2024-01-09T09:53:19.466074157Z"
@@ -4518,7 +4518,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.0.4+RC7.tgz
-    version: 2.0.4+RC7
+    version: 2.0.5-RC7
   - apiVersion: v1
     appVersion: 0.2.63
     created: "2024-01-09T09:53:19.4648993Z"
@@ -4528,7 +4528,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.0.4+RC6.tgz
-    version: 2.0.4+RC6
+    version: 2.0.5-RC6
   - apiVersion: v1
     appVersion: 0.2.63
     created: "2024-01-09T09:53:19.463704265Z"
@@ -4538,7 +4538,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.0.4+RC5.tgz
-    version: 2.0.4+RC5
+    version: 2.0.5-RC5
   - apiVersion: v1
     appVersion: 0.2.63
     created: "2024-01-09T09:53:19.462004316Z"
@@ -4548,7 +4548,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.0.4+RC4.tgz
-    version: 2.0.4+RC4
+    version: 2.0.5-RC4
   - apiVersion: v1
     appVersion: 0.2.63
     created: "2024-01-09T09:53:19.460849333Z"
@@ -4558,7 +4558,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.0.4+RC1.tgz
-    version: 2.0.4+RC1
+    version: 2.0.5-RC1
   - apiVersion: v1
     appVersion: 0.2.61
     created: "2024-01-09T09:53:19.459714194Z"
@@ -4578,7 +4578,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.0.3+RC4.tgz
-    version: 2.0.3+RC4
+    version: 2.0.4-RC4
   - apiVersion: v1
     appVersion: 0.2.63
     created: "2024-01-09T09:53:19.457406387Z"
@@ -4588,7 +4588,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.0.3+RC3.tgz
-    version: 2.0.3+RC3
+    version: 2.0.4-RC3
   - apiVersion: v1
     appVersion: 0.2.63
     created: "2024-01-09T09:53:19.456298062Z"
@@ -4598,7 +4598,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.0.3+RC2.tgz
-    version: 2.0.3+RC2
+    version: 2.0.4-RC2
   - apiVersion: v1
     appVersion: 0.2.62
     created: "2024-01-09T09:53:19.455125659Z"
@@ -4608,7 +4608,7 @@ entries:
     name: komodor-agent
     urls:
     - komodor-agent/komodor-agent-2.0.3+RC1.tgz
-    version: 2.0.3+RC1
+    version: 2.0.4-RC1
   - apiVersion: v1
     appVersion: 0.2.60
     created: "2024-01-09T09:53:19.453723283Z"
