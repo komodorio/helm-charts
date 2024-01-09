@@ -26,7 +26,7 @@ if [ "$CHART_VERSION" == "latest" ]; then
   CHART_VERSION=""
 elif [ "$CHART_VERSION" == "rc" ]; then
   # Get latest RC version from the public repo
-  RC_VER=$(helm search repo komodorio/komodor-agent --versions --devel | grep '-RC' |  awk '{ print $2 }' | sort -V | tail -n 1)
+  RC_VER=$(helm search repo komodorio/komodor-agent --versions --devel | grep '\-RC' |  awk '{ print $2 }' | sort -V | tail -n 1)
   CHART_VERSION="--version $RC_VER"
 else
   CHART_VERSION="--version $CHART_VERSION"
