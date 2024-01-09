@@ -64,14 +64,16 @@ generate_next_version() {
         return 1
     fi
 
-    local latest_ga_version=${latest_tag%-RC*}
+    local latest_tag_version=${latest_tag%-RC*}
+    local latest_ga_version=$(git tag -l 'komodor-agent/*' | awk -F'/' '{print $NF}' | grep -v '\-RC' | sort -V | tail -n 1)
+
     buildkite-agent meta-data set "komodor-agent-ga-version" "$latest_ga_version"
 
     if [[ $increment_type == "rc" ]]; then
         if [[ $latest_tag == *"-RC"* ]]; then
             local rc_number=${latest_tag##*-RC}
             local next_rc_number=$((rc_number + 1))
-            echo "${latest_ga_version}-RC${next_rc_number}"
+            echo "${latest_tag_version}-RC${next_rc_number}"
         else
             local new_patch_version
             new_patch_version=$(increment_version "$latest_ga_version" patch)
