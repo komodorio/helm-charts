@@ -21,6 +21,7 @@ helm install "${CHART_NAME}" charts/k8s-watcher \
   --set watcher.wsHost=wss://staging.app.komodor.com \
   --set watcher.telemetry.enable=false \
   --set watcher.telemetry.serverHost=https://staging.telemetry.komodor.com \
+  --set watcher.mgmtServerHost=https://staging.app.komodor.com \
   --set apiKey="$STAGING_API_KEY" \
   --set watcher.collectHistory=true \
   --set watcher.nameDenylist="{leader,election}" \

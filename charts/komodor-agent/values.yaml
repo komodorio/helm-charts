@@ -343,3 +343,4 @@ communications:
   wsHost: wss://app.komodor.com
   tasksServerHost: *serverHost
   telemetryServerHost: https://telemetry.komodor.com
+  mgmtServerHost: *serverHost
