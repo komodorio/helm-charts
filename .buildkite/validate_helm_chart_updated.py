@@ -10,7 +10,7 @@ def run_cmd(command, expect_output=False):
 
 def get_current_version(chart, new_version, is_rc):
     if is_rc:
-        search_command = f"helm search repo komodorio/{chart} --versions | grep '{new_version}\s' | awk '{{ print $2 }}'"
+        search_command = f"helm search repo komodorio/{chart} --versions --devel | grep '{new_version}\s' | awk '{{ print $2 }}'"
     else:
         search_command = f"helm show chart komodorio/{chart} | grep 'version:' | cut -d ' ' -f 2"
     return run_cmd(search_command, expect_output=True)
