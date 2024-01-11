@@ -45,7 +45,7 @@ data:
       interval = "${INTERVAL_INVENTORY}"
       flush_interval = "${FLUSH_INTERVAL_INVENTORY}"
       node_name = "${NODE_NAME}"
-      fieldpass = ["resource_requests_millicpu_units","resource_limits_millicpu_units","resource_requests_memory_bytes","resource_limits_memory_bytes", "capacity_cpu_cores", "capacity_millicpu_cores", "capacity_memory_bytes"]
+      fieldpass = ["resource_requests_millicpu_units","resource_limits_millicpu_units","resource_requests_memory_bytes","resource_limits_memory_bytes", "capacity_cpu_cores", "capacity_millicpu_cores", "capacity_memory_bytes", "restarts_total"]
       [inputs.kube_inventory.tags]
         measure_type = "inventory"
 
