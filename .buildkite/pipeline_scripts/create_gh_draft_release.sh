@@ -56,6 +56,20 @@ process_repository() {
     done
 }
 
+add_images_to_release() {
+    images=$(cd "$(dirname "$0")/../../charts/komodor-agent" && \
+             helm template . --set apiKey=FAKEUUID-0000-1111-2222-333333333333 --set clusterName=fake | \
+             awk '/image:/ {print $2}' | sort | uniq)
+
+    {
+        echo -e "\n## Images"
+        for image in $images; do
+            [[ -z "$image" ]] && continue
+            echo "* $image"
+        done
+    } >> release_notes.txt
+}
+
 ########################
 # Main Execution Block #
 ########################
@@ -71,6 +85,8 @@ process_repository "$HELM_CHART_REPO" "$HELM_CHART_REPO_GA_TAG" "$HELM_CHART_REP
 
 # Process Agent Repository
 process_repository "$AGENT_REPO" "$AGENT_REPO_GA_TAG" "$AGENT_REPO_RC_TAG" "Agent Updates"
+
+add_images_to_release
 
 # Create a pre-release on GitHub with the collected comments
 gh release create "$HELM_CHART_REPO_RC_TAG" --title "${HELM_CHART_REPO_RC_TAG}" --notes-file release_notes.txt --draft
