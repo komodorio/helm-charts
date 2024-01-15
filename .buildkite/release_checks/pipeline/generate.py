@@ -28,18 +28,17 @@ def get_tags():
 
 def find_latest_ga_tag(tags):
     for tag in reversed(tags):
-        if '+rc' not in tag.lower():
+        if '-rc' not in tag.lower():
             return tag
     return None
 
 
 def find_rc_versions_after_last_ga(tags, last_ga):
     rc_versions = []
-    found_last_ga = False
-    for tag in tags:
+    for tag in reversed(tags):
         if tag == last_ga:
-            found_last_ga = True
-        elif found_last_ga and '+rc' in tag.lower():
+            break
+        elif '-rc' in tag.lower():
             rc_versions.append(tag)
     return rc_versions
 
