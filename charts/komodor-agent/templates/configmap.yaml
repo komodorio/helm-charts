@@ -15,12 +15,12 @@ data:
       enabled: {{ .Values.capabilities.metrics }}
     collectHistory: true
     watchNamespace: {{ .Values.capabilities.events.watchNamespace }}
-    namespacesDenylist: {{ .Values.capabilities.events.namespacesDenylist }}
-    logsNamespacesDenylist: {{ .Values.capabilities.logs.logsNamespacesDenylist }}
-    logsNamespacesAllowlist: {{ .Values.capabilities.logs.logsNamespacesAllowlist }}
-    nameDenylist: {{ .Values.capabilities.logs.nameDenylist }}
-    redact: {{ .Values.capabilities.events.redact }}
-    redactLogs: {{ .Values.capabilities.logs.redact }}
+    namespacesDenylist: {{ toYaml .Values.capabilities.events.namespacesDenylist | trim | nindent 6 }}
+    logsNamespacesDenylist: {{ toYaml .Values.capabilities.logs.logsNamespacesDenylist | trim | nindent 6  }}
+    logsNamespacesAllowlist: {{ toYaml .Values.capabilities.logs.logsNamespacesAllowlist | trim | nindent 6 }}
+    nameDenylist: {{ toYaml .Values.capabilities.logs.nameDenylist | trim | nindent 6 }}
+    redact: {{ toYaml .Values.capabilities.events.redact | trim | nindent 6 }}
+    redactLogs: {{ toYaml .Values.capabilities.logs.redact | trim | nindent 6 }}
     actions:
       basic: {{ .Values.capabilities.actions }}
       advanced: {{ .Values.capabilities.actions }}

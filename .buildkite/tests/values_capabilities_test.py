@@ -115,3 +115,30 @@ def test_disable_actions_capabilities():
         'podExec'], f"Expected actions.basic to be false, got: {agent_configuration_yaml['actions']['basic']}"
     assert not agent_configuration_yaml['actions'][
         'portforward'], f"Expected actions.basic to be false, got: {agent_configuration_yaml['actions']['basic']}"
+
+
+def test_log_redact_multiline():
+    values_file = '''
+  capabilities:
+    logs:
+      logsNamespacesDenylist: 
+        - 'kube-system'
+        - 'banana'
+      redact:
+        - "password"
+        - "session"
+    '''
+
+    configmap_name = "komodor-agent-config"
+    configmap_data = get_yaml_from_helm_template("test=test", "ConfigMap", configmap_name,
+                                                 ["data"], values_file=values_file)
+
+
+
+
+    agent_configuration_yaml = yaml.safe_load(configmap_data['komodor-k8s-watcher.yaml'])
+
+
+    assert len(agent_configuration_yaml['redactLogs']) == 2, f"Expected two items in the 'redactLogs', got: {agent_configuration_yaml['redactLogs']}"
+    assert len(agent_configuration_yaml['logsNamespacesDenylist']) == 2, f"Expected two items in the 'logsNamespacesDenylist', got: {agent_configuration_yaml['logsNamespacesDenylist']}"
+

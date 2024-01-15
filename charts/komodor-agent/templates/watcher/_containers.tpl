@@ -78,7 +78,7 @@
 - name: "supervisor"
   image: {{ .Values.imageRepo }}/{{ .Values.components.komodorAgent.supervisor.image.name}}:{{ .Values.components.komodorAgent.supervisor.image.tag | default .Chart.AppVersion }}
   imagePullPolicy: {{ .Values.pullPolicy }}
-  resources: {{ toYaml .Values.components.komodorAgent.watcher.resources | trim | nindent 4 }}
+  resources: {{ toYaml .Values.components.komodorAgent.supervisor.resources | trim | nindent 4 }}
   command: ["supervisor"]
   volumeMounts:
     - name: agent-configuration
