@@ -80,17 +80,13 @@ generate_next_version() {
             echo "${new_patch_version}-RC1"
         fi
     else
-        if [[ $latest_tag == *"-RC"* && $increment_type == "patch" ]]; then
-            echo "$(extract_version_parts "$latest_ga_version")"
-        else
-            local new_version
-            new_version=$(increment_version "$latest_tag" "$increment_type")
-            local exit_code=$?
-            if [[ $exit_code -ne 0 ]]; then
-                return $exit_code
-            fi
-            echo "$new_version"
+        local new_version
+        new_version=$(increment_version "$latest_ga_version" "$increment_type")
+        local exit_code=$?
+        if [[ $exit_code -ne 0 ]]; then
+            return $exit_code
         fi
+        echo "$new_version"
     fi
 }
 
