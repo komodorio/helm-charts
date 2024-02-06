@@ -25,6 +25,16 @@ setup() {
     }
 }
 
+@test "Latest RC tag is same version as GA - should increment patch" {
+  git() {
+        echo "komodor-agent/2.2.1"
+        echo "komodor-agent/2.2.1-RC1"
+    }
+    run generate_next_version rc
+    [ "$status" -eq 0 ]
+    [ "$output" = "2.2.2-RC1" ]
+}
+
 @test "Extract version" {
     run extract_version_parts "1.2.3"
     [ "$status" -eq 0 ]

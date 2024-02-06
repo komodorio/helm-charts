@@ -70,7 +70,7 @@ generate_next_version() {
     buildkite-agent meta-data set "komodor-agent-ga-version" "$latest_ga_version"
 
     if [[ $increment_type == "rc" ]]; then
-        if [[ $latest_tag == *"-RC"* ]]; then
+        if [[ $latest_tag == *"-RC"* ]] && [[ "$latest_tag_version" != "$latest_ga_version" ]] ; then
             local rc_number=${latest_tag##*-RC}
             local next_rc_number=$((rc_number + 1))
             echo "${latest_tag_version}-RC${next_rc_number}"
