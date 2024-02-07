@@ -45,6 +45,7 @@
     mountPath: /etc/komodor
   {{- include "custom-ca.volumeMounts" . | nindent 2 }}
   env:
+  {{- include "komodorAgent.proxy-conf" . | indent 2 }}
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
   - name: KOMOKW_API_KEY
