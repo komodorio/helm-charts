@@ -253,7 +253,7 @@ rules:
     - get
     - watch
     - list
-    - update
+    - patch
 {{- end }}
 {{- if .Values.allowedResources.certificateSigningRequest }}
   - apiGroups:
