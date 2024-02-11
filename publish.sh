@@ -1,78 +1,85 @@
 #!/bin/sh
-set -ex
+set -e
 
-WORKING_DIRECTORY="$PWD"
-
-[ "$GITHUB_PAGES_REPO" ] || {
-  echo "ERROR: Environment variable GITHUB_PAGES_REPO is required"
-  exit 1
-}
-[ -z "$GITHUB_PAGES_BRANCH" ] && GITHUB_PAGES_BRANCH=gh-pages
-[ -z "$HELM_CHARTS_SOURCE" ] && HELM_CHARTS_SOURCE="$WORKING_DIRECTORY/charts"
-[ -d "$HELM_CHARTS_SOURCE" ] || {
-  echo "ERROR: Could not find Helm charts in $HELM_CHARTS_SOURCE"
-  exit 1
-}
-[ "$BUILDKITE_BRANCH" ] || {
-  echo "ERROR: Environment variable CURRENT_BRANCH is required"
-  exit 1
+check_prerequisites() {
+    [ "$GITHUB_PAGES_REPO" ] || { echo "ERROR: GITHUB_PAGES_REPO is required"; exit 1; }
+    [ -d "$HELM_CHARTS_SOURCE" ] || { echo "ERROR: Helm charts not found in $HELM_CHARTS_SOURCE"; exit 1; }
+    [ "$BUILDKITE_BRANCH" ] || { echo "ERROR: BUILDKITE_BRANCH is required"; exit 1; }
 }
 
-S3_BUCKET="helm-charts"
-if [ "${BUILDKITE_PIPELINE_SLUG}" = "helm-charts-test" ]; then
-  S3_BUCKET="${S3_BUCKET}-test"
-fi
+setup_environment() {
+    GITHUB_PAGES_BRANCH=${GITHUB_PAGES_BRANCH:-gh-pages}
+    HELM_CHARTS_SOURCE=${HELM_CHARTS_SOURCE:-"$PWD/charts"}
+    S3_BUCKET="helm-charts${BUILDKITE_PIPELINE_SLUG:+-test}"
+}
 
-echo "GITHUB_PAGES_REPO=$GITHUB_PAGES_REPO"
-echo "GITHUB_PAGES_BRANCH=$GITHUB_PAGES_BRANCH"
-echo "HELM_CHARTS_SOURCE=$HELM_CHARTS_SOURCE"
-echo "BUILDKITE_BRANCH=$BUILDKITE_BRANCH"
+configure_ssh() {
+    mkdir -p "$HOME/.ssh"
+    ssh-keyscan -H github.com >> "$HOME/.ssh/known_hosts"
+}
 
-echo ">> Checking out $GITHUB_PAGES_BRANCH branch from $GITHUB_PAGES_REPO"
-rm -rf /tmp/helm/publish
-mkdir -p /tmp/helm/publish && cd /tmp/helm/publish
-mkdir -p "$HOME/.ssh"
-ssh-keyscan -H github.com >> "$HOME/.ssh/known_hosts"
-git clone -b "$GITHUB_PAGES_BRANCH" "git@github.com:$GITHUB_PAGES_REPO.git" .
+clone_repo() {
+    echo ">> Cloning $GITHUB_PAGES_BRANCH branch from $GITHUB_PAGES_REPO"
+    rm -rf /tmp/helm/publish
+    git clone -b "$GITHUB_PAGES_BRANCH" --depth 1 "git@github.com:$GITHUB_PAGES_REPO.git" /tmp/helm/publish
+    cd /tmp/helm/publish
+}
 
-echo '>> Building charts...'
-find "$HELM_CHARTS_SOURCE" -mindepth 1 -maxdepth 1 -type d | while read chart; do
-  chart_name="`basename "$chart"`"
-  echo ">>> fetching chart $chart_name version"
-  chart_version=$(cat $chart/Chart.yaml | grep "^version:\s" | awk '{print $2}')
-  echo ">>> checking if version is already published"
-  if [ -f "$chart_name/$chart_name-$chart_version.tgz" ]; then
-    echo ">>> VERSION $chart_version ALREADY EXISTS! Skipping..."
-    continue
-  else
-    echo ">>> chart version is valid, continuing..."
-  fi
-  echo ">>> helm lint $chart"
-  helm lint "$chart"
-  echo ">>> helm package -d $chart_name $chart"
-  mkdir -p "$chart_name"
-  helm package -d "$chart_name" "$chart"
-  echo '>>> Syncing chart binaries to S3'
-  aws s3 sync "$chart_name" s3://${S3_BUCKET}.komodor.com/"$chart_name"
-  aws s3 sync "$chart_name" s3://${S3_BUCKET}.komodor.io/"$chart_name"
-done
-echo '>>> helm repo index'
-helm repo index .
+build_and_sync_charts() {
+    echo '>> Building charts...'
+    find "$HELM_CHARTS_SOURCE" -mindepth 1 -maxdepth 1 -type d | while read -r chart; do
+        chart_name=$(basename "$chart")
+        echo ">>> Processing $chart_name"
+        process_chart "$chart" "$chart_name"
+    done
+}
 
-echo '>>> Syncing indexes to S3'
-aws s3 cp index.yaml s3://${S3_BUCKET}.komodor.com/index.yaml
-aws s3 cp index.yaml s3://${S3_BUCKET}.komodor.io/index.yaml
+process_chart() {
+    chart=$1
+    chart_name=$2
+    chart_version=$(grep "^version:" "$chart/Chart.yaml" | awk '{print $2}')
 
-if [ "$BUILDKITE_BRANCH" != "master" ]; then
-  echo "Current branch is not master and do not publish"
-  exit 0
-fi
+    [ -f "$chart_name/$chart_name-$chart_version.tgz" ] && { echo ">>> $chart_version exists, skipping"; return; }
 
-echo ">> Publishing to $GITHUB_PAGES_BRANCH branch of $GITHUB_PAGES_REPO"
-git config user.email "buildkite@users.noreply.github.com"
-git config user.name Buildkite
-git add .
-git status
-git commit -m "Published by Buildkite $BUILDKITE_BUILD_URL"
-git push origin "$GITHUB_PAGES_BRANCH"
+    helm lint "$chart"
+    mkdir -p "$chart_name"
+    helm package -d "$chart_name" "$chart"
+    push_chart_to_docker_hub "$chart_name/$chart_name-$chart_version.tgz"
+    sync_to_s3 "$chart_name"
+}
 
+push_chart_to_docker_hub() {
+    tgz_file=$1
+    echo ">> Pushing $tgz_file to Docker Hub"
+    helm registry login "registry-1.docker.io" -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+    helm push "$tgz_file" oci://registry-1.docker.io/komodorio
+}
+
+sync_to_s3() {
+    for domain in komodor.com komodor.io; do
+        aws s3 sync "$1" "s3://${S3_BUCKET}.${domain}/$1"
+    done
+}
+
+publish() {
+    [ "$BUILDKITE_BRANCH" != "master" ] && { echo "Not master, not publishing"; return; }
+    echo ">> Publishing to GitHub Pages"
+    git config user.email "buildkite@users.noreply.github.com"
+    git config user.name "Buildkite"
+    git add .
+    git commit -m "Published by Buildkite $BUILDKITE_BUILD_URL"
+    git push origin "$GITHUB_PAGES_BRANCH"
+}
+
+main() {
+    check_prerequisites
+    setup_environment
+    configure_ssh
+    clone_repo
+    build_and_sync_charts
+    helm repo index .
+    sync_to_s3 "."
+    publish
+}
+
+main "$@"
