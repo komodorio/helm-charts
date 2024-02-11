@@ -205,6 +205,11 @@ steps:
       - ./.buildkite/pipeline_scripts/publish_helm_charts.sh
     agents:
       builder: "dind"
+    plugins:
+      - zacharymctague/aws-ssm#v1.0.0:
+          parameters:
+            DOCKERHUB_USERNAME: /app/ci/default/dockerhub/username
+            DOCKERHUB_PASSWORD: /app/ci/default/dockerhub/password
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
 
   - label: Create GitHub release
