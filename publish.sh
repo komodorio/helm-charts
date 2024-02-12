@@ -1,9 +1,15 @@
 #!/bin/sh
-set -e
+set -ex
+
+WORKING_DIRECTORY="$PWD"
 
 check_prerequisites() {
     [ "$GITHUB_PAGES_REPO" ] || { echo "ERROR: GITHUB_PAGES_REPO is required"; exit 1; }
-    [ -d "$HELM_CHARTS_SOURCE" ] || { echo "ERROR: Helm charts not found in $HELM_CHARTS_SOURCE"; exit 1; }
+    [ -z "$HELM_CHARTS_SOURCE" ] && HELM_CHARTS_SOURCE="$WORKING_DIRECTORY/charts"
+    [ -d "$HELM_CHARTS_SOURCE" ] || {
+      echo "ERROR: Could not find Helm charts in $HELM_CHARTS_SOURCE"
+      exit 1
+    }
     [ "$BUILDKITE_BRANCH" ] || { echo "ERROR: BUILDKITE_BRANCH is required"; exit 1; }
 }
 
