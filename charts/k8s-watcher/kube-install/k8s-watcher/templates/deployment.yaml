@@ -201,4 +201,3 @@ spec:
         - name: kube-cache
           emptyDir:
             sizeLimit: 1Gi
----
