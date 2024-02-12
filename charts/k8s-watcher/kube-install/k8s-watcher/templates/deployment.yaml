@@ -4,10 +4,10 @@ metadata:
   name: k8s-watcher
   namespace: komodor
   labels:
-    helm.sh/chart: k8s-watcher-1.18.7
+    helm.sh/chart: k8s-watcher-1.18.8
     app.kubernetes.io/name: k8s-watcher
     app.kubernetes.io/instance: k8s-watcher
-    app.kubernetes.io/version: "0.2.73"
+    app.kubernetes.io/version: "0.2.74"
     app.kubernetes.io/managed-by: Helm
 spec:
   replicas: 1
@@ -70,7 +70,7 @@ spec:
               drop:
                 - "ALL"
         - name: "supervisor"
-          image: "public.ecr.aws/komodor-public/komodor-agent:0.2.73"
+          image: "public.ecr.aws/komodor-public/komodor-agent:0.2.74"
           imagePullPolicy: IfNotPresent
           resources:
             requests:
@@ -113,7 +113,7 @@ spec:
             failureThreshold: 3
             successThreshold: 1
         - name: k8s-watcher
-          image: "public.ecr.aws/komodor-public/komodor-agent:0.2.73"
+          image: "public.ecr.aws/komodor-public/komodor-agent:0.2.74"
           imagePullPolicy: IfNotPresent
           command: ["watcher"]
           resources:
