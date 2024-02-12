@@ -58,7 +58,7 @@ push_chart_to_docker_hub() {
     tgz_file=$1
     echo ">> Pushing $tgz_file to Docker Hub"
     export HELM_EXPERIMENTAL_OCI=1
-    helm registry login "registry-1.docker.io" -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+    helm registry login "registry-1.docker.io" -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
     helm push "$tgz_file" oci://registry-1.docker.io/komodorio
 }
 
