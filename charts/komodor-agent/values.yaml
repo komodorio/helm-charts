@@ -164,11 +164,11 @@ components:
 
   komodorDaemon:
     # components.komodorDaemon.affinity -- Set node affinity for the komodor agent daemon
-    affinity: { }
+    affinity: {}
     # components.komodorDaemon.annotations -- Adds custom annotations - Example: `--set podAnnotations."app\.komodor\.com/app"="komodor-agent"`
     annotations: {}
     # components.komodorDaemon.nodeSelector -- Set node selectors for the komodor agent daemon
-    nodeSelector: { }
+    nodeSelector: {}
     # components.komodorDaemon.tolerations -- Add tolerations to the komodor agent daemon
     tolerations: []
     # components.komodorDaemon.podAnnotations --  # Add annotations to the komodor agent watcher pod
@@ -222,7 +222,13 @@ components:
         name: komodor-agent
         tag:
       # components.komodorDaemon.nodeEnricher.resources -- Set custom resources to the komodor agent node enricher container
-      resources: {}
+      resources:
+        limits:
+          cpu: 10m
+          memory: 100Mi
+        requests:
+          cpu: 1m
+          memory: 10Mi
       # components.komodorDaemon.nodeEnricher.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
       extraEnvVars: []
 

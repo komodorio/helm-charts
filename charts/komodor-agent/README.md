@@ -169,7 +169,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemon.networkSniffer.resources | object | `{}` | Set custom resources to the komodor agent network sniffer container |
 | components.komodorDaemon.nodeEnricher | object | See sub-values | Configure the komodor daemon node enricher components |
 | components.komodorDaemon.nodeEnricher.image | object | `{"name":"komodor-agent","tag":null}` | Override the komodor agent node enricher image name or tag. |
-| components.komodorDaemon.nodeEnricher.resources | object | `{}` | Set custom resources to the komodor agent node enricher container |
+| components.komodorDaemon.nodeEnricher.resources | object | `{"limits":{"cpu":"10m","memory":"100Mi"},"requests":{"cpu":"1m","memory":"10Mi"}}` | Set custom resources to the komodor agent node enricher container |
 | components.komodorDaemon.nodeEnricher.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | allowedResources.event | bool | `true` | Enables watching `event` |
 | allowedResources.deployment | bool | `true` | Enables watching `deployments` |
