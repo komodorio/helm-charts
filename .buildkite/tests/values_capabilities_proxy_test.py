@@ -22,9 +22,9 @@ PROXY_NAMESPACE = "proxy"
 PROXY_URL = "http://mitm.proxy:8080"
 KOMODOR_SERVICE_URLS = [
     "https://app.komodor.com/api/v1/agents",
+    "https://app.komodor.com/api/v1/agents/remote-config",
     "https://app.komodor.com/k8s-events",
     "https://app.komodor.com/k8s-events/event",
-    "https://app.komodor.com/k8s-events/agent/remote-config",
     "https://app.komodor.com/metrics-collector",
     "https://app.komodor.com/agent-task-manager",
 ]
