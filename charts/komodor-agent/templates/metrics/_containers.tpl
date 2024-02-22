@@ -9,6 +9,9 @@
   - name: {{ include "metrics.daemon.config.name" . }}
     mountPath: /etc/telegraf/telegraf.conf
     subPath: telegraf.conf
+  - name: {{ include "metrics.daemon.config.name" . }}
+    mountPath: /etc/telegraf/plugin.conf
+    subPath: plugin.conf
   {{- include "custom-ca.trusted-volumeMounts" . | indent 2 }}
   envFrom:
   - configMapRef:
