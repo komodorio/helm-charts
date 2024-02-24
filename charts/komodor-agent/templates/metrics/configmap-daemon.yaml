@@ -5,11 +5,8 @@ metadata:
   name: {{ include "komodorAgent.name" . }}-daemon-config
 data:
   telegraf.conf: |
-    [global_tags]
-      account_id = "${ACCOUNT_ID}"
-      cluster_name = "${CLUSTER_NAME}"
-
     [agent]
+      precision = "${INTERVAL}" # should make us send a bit less data
       interval = "${INTERVAL}"
       flush_interval = "${FLUSH_INTERVAL}"
 
@@ -24,6 +21,7 @@ data:
       {{- end }}
       [outputs.http.headers]
         X-ACCOUNT-ID = "${ACCOUNT_ID}"
+        X-CLUSTER-NAME = "${CLUSTER_NAME}"
 
     [[inputs.execd]]
       command = ["custom_input", "-config", "/etc/telegraf/plugin.conf"]
