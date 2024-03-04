@@ -54,6 +54,11 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{ include "komodorAgent.commonLabels" . }}
 {{- end }}
 
+{{- define "komodorAgentDaemonWindows.labels" -}}
+{{ include "komodorAgentDaemonWindows.selectorLabels" . }}
+{{ include "komodorAgent.commonLabels" . }}
+{{- end }}
+
 {{/*
 Selector labels
 */}}
@@ -65,5 +70,10 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- define "komodorAgentDaemon.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "komodorAgent.name" . }}-daemon
 app.kubernetes.io/instance: {{ .Release.Name }}-daemon
+{{- end }}
+
+{{- define "komodorAgentDaemonWindows.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "komodorAgent.name" . }}-daemon-windows
+app.kubernetes.io/instance: {{ .Release.Name }}-daemon-windows
 {{- end }}
 
