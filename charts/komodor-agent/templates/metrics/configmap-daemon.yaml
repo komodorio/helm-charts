@@ -24,12 +24,12 @@ data:
       {{- end }}
       [outputs.http.headers]
         X-ACCOUNT-ID = "${ACCOUNT_ID}"
-        X-OS-TYPE = ${OS_TYPE}
+        X-OS-TYPE = "${OS_TYPE}"
 
     [[inputs.kubernetes]]
       url = "https://$NODE_IP:10250"
       insecure_skip_verify = true
-      fieldpass = ["memory_usage_bytes","cpu_usage_nanocores", "memory_working_set_bytes"]
+      fieldpass = ["memory_usage_bytes","cpu_usage_nanocores","memory_working_set_bytes"]
       namedrop = ["kubernetes_system_container"]
       [inputs.kubernetes.tags]
         measure_type = "usage"

@@ -34,13 +34,13 @@
 {{- define "metrics.daemonsetWindows.container" }}
 {{- if .Values.capabilities.metrics }}
 - name: metrics
-  image: {{ .Values.imageRepo }}/{{ .Values.components.komodorDaemon.metrics.image.name}}:{{ .Values.components.komodorDaemon.metrics.image.tag }}
+  image: {{ .Values.imageRepo }}/{{ .Values.components.komodorDaemonWindows.metrics.image.name}}:{{ .Values.components.komodorDaemonWindows.metrics.image.tag }}
   imagePullPolicy: {{ .Values.pullPolicy }}
   resources:
-    {{ toYaml .Values.components.komodorDaemon.metrics.resources | trim | nindent 4 }}
+    {{ toYaml .Values.components.komodorDaemonWindows.metrics.resources | trim | nindent 4 }}
   volumeMounts:
   - name: {{ include "metrics.daemon.config.name" . }}
-    mountPath: /etc/telegraf/telegraf.conf
+    mountPath: C:/telegraf/telegraf.conf
     subPath: telegraf.conf
   {{- include "custom-ca.trusted-volumeMounts" . | indent 2 }}
   envFrom:
