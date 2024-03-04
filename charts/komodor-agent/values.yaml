@@ -107,7 +107,7 @@ components:
     # components.komodorAgent.annotations -- Set annotations for the komodor agent deployment
     annotations: {}
     # components.komodorAgent.nodeSelector -- Set node selectors for the komodor agent deployment
-    nodeSelector: {}
+    nodeSelector: { "kubernetes.io/os": "linux" }
     # components.komodorAgent.tolerations -- Set tolerations for the komodor agent deployment
     tolerations: []
     # components.komodorAgent.podAnnotations -- Set pod annotations for the komodor agent deployment
@@ -168,7 +168,7 @@ components:
     # components.komodorDaemon.annotations -- Adds custom annotations - Example: `--set podAnnotations."app\.komodor\.com/app"="komodor-agent"`
     annotations: {}
     # components.komodorDaemon.nodeSelector -- Set node selectors for the komodor agent daemon
-    nodeSelector: {}
+    nodeSelector: { "kubernetes.io/os": "linux" }
     # components.komodorDaemon.tolerations -- Add tolerations to the komodor agent daemon
     tolerations: []
     # components.komodorDaemon.podAnnotations --  # Add annotations to the komodor agent watcher pod
