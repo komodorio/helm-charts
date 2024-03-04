@@ -15,6 +15,8 @@
       name:  "k8s-watcher-daemon-env-vars"
   env:
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
+  - name: OS_TYPE
+    value: linux
   - name: NODE_NAME
     valueFrom:
       fieldRef:
@@ -48,6 +50,8 @@
       name:  "k8s-watcher-daemon-env-vars"
   env:
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
+  - name: OS_TYPE
+    value: windows
   - name: NODE_NAME
     valueFrom:
       fieldRef:
