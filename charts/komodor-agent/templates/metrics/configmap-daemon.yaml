@@ -26,7 +26,7 @@ data:
     [[inputs.execd]]
       command = ["custom_input", "-config", "/etc/telegraf/plugin.conf"]
       namedrop = ["kubernetes_system_container"]
-      fieldpass = ["resource_requests_millicpu_units","resource_limits_millicpu_units","resource_requests_memory_bytes","resource_limits_memory_bytes", "capacity_cpu_cores", "capacity_millicpu_cores", "capacity_memory_bytes", "restarts_total", "memory_usage_bytes", "cpu_usage_nanocores"]
+      fieldinclude = ["resource_requests_millicpu_units","resource_limits_millicpu_units","resource_requests_memory_bytes","resource_limits_memory_bytes", "capacity_cpu_cores", "capacity_millicpu_cores", "capacity_memory_bytes", "restarts_total", "memory_usage_bytes", "cpu_usage_nanocores"]
       [inputs.execd.tags]
       measure_type = "consolidated" # TODO: remove
 
@@ -42,6 +42,7 @@ data:
       interval = "${INTERVAL_INVENTORY}"
       flush_interval = "${FLUSH_INTERVAL_INVENTORY}"
       inventory_cache_ttl = "${FLUSH_INTERVAL_INVENTORY}"
+      owner_cache_ttl = "${FLUSH_INTERVAL_INVENTORY}"
       node_name = "${NODE_NAME}"
 
 {{- end }}
