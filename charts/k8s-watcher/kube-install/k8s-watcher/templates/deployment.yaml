@@ -59,9 +59,6 @@ spec:
           env:
           - name: OTTERIZE_DEBUG
             value: "false"
-          
-          
-          
           - name: OTTERIZE_UPLOAD_INTERVAL_SECONDS
             value: "60"
           securityContext:

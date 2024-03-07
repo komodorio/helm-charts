@@ -24,12 +24,12 @@ data:
       {{- end }}
       [outputs.http.headers]
         X-ACCOUNT-ID = "${ACCOUNT_ID}"
+        X-OS-TYPE = "${OS_TYPE}"
 
     [[inputs.kubernetes]]
       url = "https://$NODE_IP:10250"
-      bearer_token = "/run/secrets/kubernetes.io/serviceaccount/token"
       insecure_skip_verify = true
-      fieldpass = ["memory_usage_bytes","cpu_usage_nanocores"]
+      fieldpass = ["memory_usage_bytes","cpu_usage_nanocores","memory_working_set_bytes"]
       namedrop = ["kubernetes_system_container"]
       [inputs.kubernetes.tags]
         measure_type = "usage"
@@ -39,7 +39,6 @@ data:
       url = {{ .Values.communications.apiServerUrl | quote }}
       url_kubelet = "https://$NODE_IP:10250"
       namespace = ""
-      bearer_token = "/run/secrets/kubernetes.io/serviceaccount/token"
       insecure_skip_verify = true
       resource_include = [ "pods", "nodes" ]
       interval = "${INTERVAL_INVENTORY}"
