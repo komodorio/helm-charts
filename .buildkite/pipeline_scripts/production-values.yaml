@@ -1,0 +1,14 @@
+imagePullSecret: docker-cfg-komodorio
+
+capabilities:
+  event:
+    redact: "{.*KEY.*,.*key.*,.*BUGSNAG.*}"
+
+allowedResources:
+  secret: true
+
+components:
+  komodorDaemonWindows:
+    tolerations:
+      - key: Windows
+        operator: Exists
