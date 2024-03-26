@@ -2,11 +2,14 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "komodorAgent.name" . }}-daemon-config
+  name: {{ include "komodorAgent.name" . }}-daemon-windows-config
 data:
   telegraf.conf: |
+    [global_tags]
+      account_id = "${ACCOUNT_ID}"
+      cluster_name = "${CLUSTER_NAME}"
+
     [agent]
-      precision = "${INTERVAL}"
       interval = "${INTERVAL}"
       flush_interval = "${FLUSH_INTERVAL}"
 
@@ -21,28 +24,28 @@ data:
       {{- end }}
       [outputs.http.headers]
         X-ACCOUNT-ID = "${ACCOUNT_ID}"
-        X-CLUSTER-NAME = "${CLUSTER_NAME}"
         X-OS-TYPE = "${OS_TYPE}"
 
-    [[inputs.execd]]
-      command = ["custom_input", "-config", "/etc/telegraf/plugin.conf"]
-      namedrop = ["kubernetes_system_container"]
-      fieldinclude = ["resource_requests_millicpu_units","resource_limits_millicpu_units","resource_requests_memory_bytes","resource_limits_memory_bytes", "capacity_cpu_cores", "capacity_millicpu_cores", "capacity_memory_bytes", "restarts_total", "memory_usage_bytes", "cpu_usage_nanocores", "memory_working_set_bytes"]
-      [inputs.execd.tags]
-      measure_type = "consolidated"
-
-  plugin.conf: |
-    [[inputs.kube_consolidated]]
+    [[inputs.kubernetes]]
+      url = "https://$NODE_IP:10250"
       insecure_skip_verify = true
+      fieldpass = ["memory_usage_bytes","cpu_usage_nanocores","memory_working_set_bytes"]
+      namedrop = ["kubernetes_system_container"]
+      [inputs.kubernetes.tags]
+        measure_type = "usage"
+
+    [[inputs.kube_inventory]]
+      ## URL for the Kubernetes API
       url = {{ .Values.communications.apiServerUrl | quote }}
       url_kubelet = "https://$NODE_IP:10250"
       namespace = ""
-
+      insecure_skip_verify = true
       resource_include = [ "pods", "nodes" ]
       interval = "${INTERVAL_INVENTORY}"
       flush_interval = "${FLUSH_INTERVAL_INVENTORY}"
-      inventory_cache_ttl = "${FLUSH_INTERVAL_INVENTORY}"
-      owner_cache_ttl = "${FLUSH_INTERVAL_INVENTORY}"
       node_name = "${NODE_NAME}"
+      fieldpass = ["resource_requests_millicpu_units","resource_limits_millicpu_units","resource_requests_memory_bytes","resource_limits_memory_bytes", "capacity_cpu_cores", "capacity_millicpu_cores", "capacity_memory_bytes", "restarts_total"]
+      [inputs.kube_inventory.tags]
+        measure_type = "inventory"
 
 {{- end }}

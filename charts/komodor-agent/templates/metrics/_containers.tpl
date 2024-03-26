@@ -44,7 +44,7 @@
   resources:
     {{ toYaml .Values.components.komodorDaemonWindows.metrics.resources | trim | nindent 4 }}
   volumeMounts:
-  - name: {{ include "metrics.daemon.config.name" . }}
+  - name: {{ include "metrics.daemon-windows.config.name" . }}
     mountPath: C:/telegraf/telegraf.conf
     subPath: telegraf.conf
   {{- include "custom-ca.trusted-volumeMounts" . | indent 2 }}
