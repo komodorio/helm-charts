@@ -1,0 +1,40 @@
+{{- if ne .Values.capabilities.metrics false }}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "komodorAgent.fullname" . }}-daemon-windows
+  labels:
+    {{- include "komodorAgentDaemonWindows.labels" . | nindent 4 }}
+  {{- if not (empty ((.Values.components).komodorDaemonWindows).annotations) }}
+  annotations: {{ toYaml ((.Values.components).komodorDaemonWindows).annotations | nindent 4 }}
+  {{- end }}
+spec:
+  selector:
+    matchLabels: {{- include "komodorAgentDaemonWindows.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if not (empty (((.Values.components).komodorDaemonWindows).podAnnotations)) }}
+        {{- toYaml .Values.components.komodorDaemonWindows.podAnnotations | trim | nindent 8 }}
+        {{- end }}
+      labels: {{- include "komodorAgentDaemonWindows.selectorLabels" . | nindent 8 }}
+    spec:
+      priorityClassName: {{ .Release.Name }}-daemon-high-priority
+      serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
+      affinity:
+        {{- toYaml .Values.components.komodorDaemonWindows.affinity | nindent 8 }}
+      nodeSelector:
+        kubernetes.io/os: windows
+        {{- if not (empty (((.Values.components).komodorDaemonWindows).nodeSelector)) }}
+        {{- toYaml .Values.components.komodorDaemonWindows.nodeSelector | nindent 8 }}
+        {{- end }}
+      tolerations:
+        {{- toYaml .Values.components.komodorDaemonWindows.tolerations | nindent 8}}
+      containers:
+        {{- include "metrics.daemonsetWindows.container" .        | nindent 8 }}
+      volumes:
+        {{- include "metrics.daemonset.volumes" .        | nindent 8 }}
+        {{- include "custom-ca.volume" .                 | nindent 8 }}
+        {{- include "custom-ca.trusted-volume" .         | nindent 8 }}
+{{- end }}

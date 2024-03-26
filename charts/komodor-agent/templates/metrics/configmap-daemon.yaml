@@ -6,7 +6,7 @@ metadata:
 data:
   telegraf.conf: |
     [agent]
-      precision = "${INTERVAL}" # should make us send a bit less data
+      precision = "${INTERVAL}"
       interval = "${INTERVAL}"
       flush_interval = "${FLUSH_INTERVAL}"
 
@@ -22,17 +22,17 @@ data:
       [outputs.http.headers]
         X-ACCOUNT-ID = "${ACCOUNT_ID}"
         X-CLUSTER-NAME = "${CLUSTER_NAME}"
+        X-OS-TYPE = "${OS_TYPE}"
 
     [[inputs.execd]]
-      command = ["custom_input", "-config", "/etc/telegraf/plugin.conf"]
+      command = ["custom_input", "-config", "/etc/telegraf/plugin.conf"] # TODO: handle windows path
       namedrop = ["kubernetes_system_container"]
-      fieldinclude = ["resource_requests_millicpu_units","resource_limits_millicpu_units","resource_requests_memory_bytes","resource_limits_memory_bytes", "capacity_cpu_cores", "capacity_millicpu_cores", "capacity_memory_bytes", "restarts_total", "memory_usage_bytes", "cpu_usage_nanocores"]
+      fieldinclude = ["resource_requests_millicpu_units","resource_limits_millicpu_units","resource_requests_memory_bytes","resource_limits_memory_bytes", "capacity_cpu_cores", "capacity_millicpu_cores", "capacity_memory_bytes", "restarts_total", "memory_usage_bytes", "cpu_usage_nanocores", "memory_working_set_bytes"]
       [inputs.execd.tags]
       measure_type = "consolidated" # TODO: remove
 
   plugin.conf: |
     [[inputs.kube_consolidated]]
-      bearer_token = "/run/secrets/kubernetes.io/serviceaccount/token"
       insecure_skip_verify = true
       url = {{ .Values.communications.apiServerUrl | quote }}
       url_kubelet = "https://$NODE_IP:10250"

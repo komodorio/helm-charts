@@ -162,6 +162,8 @@ components:
       # components.komodorAgent.networkMapper.resources -- Set custom resources to the komodor agent network mapper container
       resources: {}
 
+  # components.komodorDaemon -- Configure the komodor agent components
+  # @default -- See sub-values
   komodorDaemon:
     # components.komodorDaemon.affinity -- Set node affinity for the komodor agent daemon
     affinity: {}
@@ -231,6 +233,38 @@ components:
           memory: 10Mi
       # components.komodorDaemon.nodeEnricher.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
       extraEnvVars: []
+
+  # components.komodorDaemonWindows -- Configure the komodor agent components
+  # @default -- See sub-values
+  komodorDaemonWindows:
+    # components.komodorDaemonWindows.affinity -- Set node affinity for the komodor agent daemon
+    affinity: { }
+    # components.komodorDaemonWindows.annotations -- Adds custom annotations - Example: `--set podAnnotations."app\.komodor\.com/app"="komodor-agent"`
+    annotations: { }
+    # components.komodorDaemonWindows.nodeSelector -- Set node selectors for the komodor agent daemon
+    nodeSelector: { }
+    # components.komodorDaemonWindows.tolerations -- Add tolerations to the komodor agent daemon
+    tolerations: [ ]
+    # components.komodorDaemonWindows.podAnnotations --  # Add annotations to the komodor agent watcher pod
+    podAnnotations: { }
+
+    # components.komodorDaemonWindows.metrics -- Configure the komodor daemon metrics components
+    metrics:
+      # components.komodorDaemonWindows.metrics.image -- Override the komodor agent metrics image name or tag.
+      image:
+        name: telegraf-windows
+        tag: 1.29.4
+      # components.komodorDaemonWindows.metrics.resources -- Set custom resources to the komodor agent metrics container
+      resources:
+        limits:
+          cpu: 1
+          memory: 1Gi
+        requests:
+          cpu: 0.1
+          memory: 384Mi
+      # components.komodorDaemonWindows.metrics.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
+      extraEnvVars: []
+
 
 allowedResources:
   # allowedResources.event -- Enables watching `event`

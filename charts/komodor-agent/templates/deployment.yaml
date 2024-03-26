@@ -30,7 +30,10 @@ spec:
       affinity:
         {{- toYaml .Values.components.komodorAgent.affinity | nindent 8 }}
       nodeSelector:
+        "kubernetes.io/os": "linux"
+        {{- if not (empty (((.Values.components).komodorAgent).nodeSelector)) }}
         {{- toYaml .Values.components.komodorAgent.nodeSelector | nindent 8 }}
+        {{- end }}
       tolerations:
         {{- toYaml .Values.components.komodorAgent.tolerations | nindent 8 }}
 

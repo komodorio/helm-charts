@@ -16,6 +16,8 @@ AGENT_VERSION=$(buildkite-agent meta-data get "agent-version")
 
 # Agent Repository Configuration
 AGENT_REPO="komodor-agent"
+
+git config pull.rebase false
 git pull --depth=50
 
 # Fetch the last two tags from the additional repository
