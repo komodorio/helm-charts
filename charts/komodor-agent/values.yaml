@@ -194,7 +194,7 @@ components:
       # components.komodorDaemon.metrics.image -- Override the komodor agent metrics image name or tag.
       image:
         name: telegraf
-        tag: 1.29.1-alpine
+        tag: 1.29.4-alpine-cons
       # components.komodorDaemon.metrics.resources -- Set custom resources to the komodor agent metrics container
       resources:
         limits:
