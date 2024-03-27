@@ -7,7 +7,7 @@ deploy:
 	 --set watcher.resources.secret=false \
 	 --set watcher.actions.basic=false \
 	 --set watcher.actions.advanced=false
-
+ 
 generate-kube:
 	helm template k8s-watcher ./charts/k8s-watcher -f ./charts/k8s-watcher/values.yaml \
 	--set watcher.collectHistory=true \
