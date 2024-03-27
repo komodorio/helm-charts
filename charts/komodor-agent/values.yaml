@@ -193,8 +193,8 @@ components:
     metrics:
       # components.komodorDaemon.metrics.image -- Override the komodor agent metrics image name or tag.
       image:
-        name: komodor-telegraf
-        tag: unstable # FIXME proper tag version here
+        name: telegraf
+        tag: 1.29.4-alpine-cons
       # components.komodorDaemon.metrics.resources -- Set custom resources to the komodor agent metrics container
       resources:
         limits:
