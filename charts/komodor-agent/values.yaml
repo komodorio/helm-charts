@@ -253,7 +253,7 @@ components:
       # components.komodorDaemonWindows.metrics.image -- Override the komodor agent metrics image name or tag.
       image:
         name: telegraf-windows
-        tag: 1.29.4
+        tag: 1.29.4-plugin
       # components.komodorDaemonWindows.metrics.resources -- Set custom resources to the komodor agent metrics container
       resources:
         limits:

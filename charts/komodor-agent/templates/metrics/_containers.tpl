@@ -47,6 +47,9 @@
   - name: {{ include "metrics.daemon-windows.config.name" . }}
     mountPath: C:/telegraf/telegraf.conf
     subPath: telegraf.conf
+  - name: {{ include "metrics.daemon-windows.config.name" . }}
+    mountPath: C:/telegraf/plugin.conf
+    subPath: plugin.conf
   {{- include "custom-ca.trusted-volumeMounts" . | indent 2 }}
   envFrom:
   - configMapRef:
