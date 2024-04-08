@@ -60,6 +60,8 @@ capabilities:
   actions: true
   # capabilities.helm -- Enable helm capabilities by the komodor agent
   helm: true
+  # capabilities.rbac -- (bool) Allow komodor to create and manage serviceaccounts, roles and bindings in cluster
+  rbac: true
 
   # capabilities.events -- Configure the agent events capabilities
   # @default -- See sub-values

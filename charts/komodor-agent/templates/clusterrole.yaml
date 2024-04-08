@@ -122,7 +122,7 @@ rules:
     resources:
 {{- if .Values.allowedResources.ingress }}
     - ingresses
-{{- end }}  
+{{- end }}
 {{- if .Values.allowedResources.ingressClass }}
     - ingressclasses
 {{- end }}
@@ -430,7 +430,7 @@ rules:
     - get
     - watch
     - list
-  
+
   # apiserver metrics
   - nonResourceURLs:
     - "/metrics"
@@ -485,6 +485,25 @@ rules:
   - apiGroups: {{ .Values.allowedResources.customReadAPIGroups }}
     resources: ["*"]
     verbs:     ["get", "watch", "list"]
+{{- end }}
+
+{{- if .Values.capabilities.rbac }}
+  - apiGroups:
+      - ""
+    resources:
+      - serviceaccounts
+      - secrets
+    verbs:
+      - "*"
+  - apiGroups:
+      - "rbac.authorization.k8s.io"
+    resources:
+      - clusterroles
+      - clusterrolebindings
+      - roles
+      - rolebindings
+    verbs:
+      - "*"
 {{- end }}
 
 ---

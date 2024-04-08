@@ -118,6 +118,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | capabilities.nodeEnricher | bool | `true` | Enable node enricher capabilities by the komodor agent |
 | capabilities.actions | bool | `true` | Allow users to perform actions on the cluster, granular access control is defined in the application<boolean> |
 | capabilities.helm | bool | `true` | Enable helm capabilities by the komodor agent |
+| capabilities.rbac | bool | `true` | Allow komodor to create and manage serviceaccounts, roles and bindings in cluster |
 | capabilities.events | object | See sub-values | Configure the agent events capabilities |
 | capabilities.events.watchNamespace | string | all | Watch a specific namespace, or all namespaces ("", "all") |
 | capabilities.events.namespacesDenylist | array of strings | `[]` | Do not watch events from these namespaces. eg. `["kube-system", "kube-public"]` |
