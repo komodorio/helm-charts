@@ -38,6 +38,7 @@ data:
       url = {{ .Values.communications.apiServerUrl | quote }}
       url_kubelet = "https://$NODE_IP:10250"
       namespace = ""
+      poll_interval = "${INTERVAL}"
 
       resource_include = [ "pods", "nodes" ]
       interval = "${INTERVAL_INVENTORY}"
