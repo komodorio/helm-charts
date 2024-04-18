@@ -88,8 +88,8 @@ def test_override_deployment_affinity():
 @pytest.mark.parametrize(
     "component, container_index",
     [
-        ("watcher", "1"),
-        ("supervisor", "2"),
+        ("watcher", "0"),
+        ("supervisor", "1"),
     ]
 )
 def test_extra_env_vars(component, container_index):
