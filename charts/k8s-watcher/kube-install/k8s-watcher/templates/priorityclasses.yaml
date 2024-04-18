@@ -13,3 +13,4 @@ metadata:
 value: 10000000
 globalDefault: false
 description: "This priority class should be used for Komodor agent pods only."
+---

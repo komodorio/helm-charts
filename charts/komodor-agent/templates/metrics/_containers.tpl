@@ -9,12 +9,17 @@
   - name: {{ include "metrics.daemon.config.name" . }}
     mountPath: /etc/telegraf/telegraf.conf
     subPath: telegraf.conf
+  - name: {{ include "metrics.daemon.config.name" . }}
+    mountPath: /etc/telegraf/plugin.conf
+    subPath: plugin.conf
   {{- include "custom-ca.trusted-volumeMounts" . | indent 2 }}
   envFrom:
   - configMapRef:
       name:  "k8s-watcher-daemon-env-vars"
   env:
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
+  - name: OS_TYPE
+    value: linux
   - name: NODE_NAME
     valueFrom:
       fieldRef:
@@ -27,6 +32,44 @@
     value: {{ .Values.clusterName }}
   {{- if gt (len .Values.components.komodorDaemon.metrics.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorDaemon.metrics.extraEnvVars | nindent 2 }}
+  {{- end }}
+{{- end }}
+{{- end }}
+
+{{- define "metrics.daemonsetWindows.container" }}
+{{- if .Values.capabilities.metrics }}
+- name: metrics
+  image: {{ .Values.imageRepo }}/{{ .Values.components.komodorDaemonWindows.metrics.image.name}}:{{ .Values.components.komodorDaemonWindows.metrics.image.tag }}
+  imagePullPolicy: {{ .Values.pullPolicy }}
+  resources:
+    {{ toYaml .Values.components.komodorDaemonWindows.metrics.resources | trim | nindent 4 }}
+  volumeMounts:
+  - name: {{ include "metrics.daemon-windows.config.name" . }}
+    mountPath: C:/telegraf/telegraf.conf
+    subPath: telegraf.conf
+  - name: {{ include "metrics.daemon-windows.config.name" . }}
+    mountPath: C:/telegraf/plugin.conf
+    subPath: plugin.conf
+  {{- include "custom-ca.trusted-volumeMounts" . | indent 2 }}
+  envFrom:
+  - configMapRef:
+      name:  "k8s-watcher-daemon-env-vars"
+  env:
+  {{- include "komodorAgent.proxy-conf" . | indent 2 }}
+  - name: OS_TYPE
+    value: windows
+  - name: NODE_NAME
+    valueFrom:
+      fieldRef:
+        fieldPath: spec.nodeName
+  - name: NODE_IP
+    valueFrom:
+      fieldRef:
+        fieldPath: status.hostIP
+  - name: CLUSTER_NAME
+    value: {{ .Values.clusterName }}
+  {{- if gt (len .Values.components.komodorDaemonWindows.metrics.extraEnvVars) 0 }}
+  {{ toYaml .Values.components.komodorDaemonWindows.metrics.extraEnvVars | nindent 2 }}
   {{- end }}
 {{- end }}
 {{- end }}
@@ -45,6 +88,7 @@
     mountPath: /etc/komodor
   {{- include "custom-ca.volumeMounts" . | nindent 2 }}
   env:
+  {{- include "komodorAgent.proxy-conf" . | indent 2 }}
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
   - name: KOMOKW_API_KEY

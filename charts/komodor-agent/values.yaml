@@ -60,6 +60,8 @@ capabilities:
   actions: true
   # capabilities.helm -- Enable helm capabilities by the komodor agent
   helm: true
+  # capabilities.rbac -- (bool) Allow komodor to create and manage serviceaccounts, roles and bindings in cluster
+  rbac: true
 
   # capabilities.events -- Configure the agent events capabilities
   # @default -- See sub-values
@@ -162,13 +164,15 @@ components:
       # components.komodorAgent.networkMapper.resources -- Set custom resources to the komodor agent network mapper container
       resources: {}
 
+  # components.komodorDaemon -- Configure the komodor agent components
+  # @default -- See sub-values
   komodorDaemon:
     # components.komodorDaemon.affinity -- Set node affinity for the komodor agent daemon
-    affinity: { }
+    affinity: {}
     # components.komodorDaemon.annotations -- Adds custom annotations - Example: `--set podAnnotations."app\.komodor\.com/app"="komodor-agent"`
     annotations: {}
     # components.komodorDaemon.nodeSelector -- Set node selectors for the komodor agent daemon
-    nodeSelector: { }
+    nodeSelector: {}
     # components.komodorDaemon.tolerations -- Add tolerations to the komodor agent daemon
     tolerations: []
     # components.komodorDaemon.podAnnotations --  # Add annotations to the komodor agent watcher pod
@@ -192,7 +196,7 @@ components:
       # components.komodorDaemon.metrics.image -- Override the komodor agent metrics image name or tag.
       image:
         name: telegraf
-        tag: 1.29.1-alpine
+        tag: 1.29.4-alpine-v2
       # components.komodorDaemon.metrics.resources -- Set custom resources to the komodor agent metrics container
       resources:
         limits:
@@ -222,9 +226,47 @@ components:
         name: komodor-agent
         tag:
       # components.komodorDaemon.nodeEnricher.resources -- Set custom resources to the komodor agent node enricher container
-      resources: {}
+      resources:
+        limits:
+          cpu: 10m
+          memory: 100Mi
+        requests:
+          cpu: 1m
+          memory: 10Mi
       # components.komodorDaemon.nodeEnricher.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
       extraEnvVars: []
+
+  # components.komodorDaemonWindows -- Configure the komodor agent components
+  # @default -- See sub-values
+  komodorDaemonWindows:
+    # components.komodorDaemonWindows.affinity -- Set node affinity for the komodor agent daemon
+    affinity: { }
+    # components.komodorDaemonWindows.annotations -- Adds custom annotations - Example: `--set podAnnotations."app\.komodor\.com/app"="komodor-agent"`
+    annotations: { }
+    # components.komodorDaemonWindows.nodeSelector -- Set node selectors for the komodor agent daemon
+    nodeSelector: { }
+    # components.komodorDaemonWindows.tolerations -- Add tolerations to the komodor agent daemon
+    tolerations: [ ]
+    # components.komodorDaemonWindows.podAnnotations --  # Add annotations to the komodor agent watcher pod
+    podAnnotations: { }
+
+    # components.komodorDaemonWindows.metrics -- Configure the komodor daemon metrics components
+    metrics:
+      # components.komodorDaemonWindows.metrics.image -- Override the komodor agent metrics image name or tag.
+      image:
+        name: telegraf-windows
+        tag: 1.29.4-alpine-v2
+      # components.komodorDaemonWindows.metrics.resources -- Set custom resources to the komodor agent metrics container
+      resources:
+        limits:
+          cpu: 1
+          memory: 1Gi
+        requests:
+          cpu: 0.1
+          memory: 384Mi
+      # components.komodorDaemonWindows.metrics.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
+      extraEnvVars: []
+
 
 allowedResources:
   # allowedResources.event -- Enables watching `event`

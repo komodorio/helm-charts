@@ -205,6 +205,11 @@ steps:
       - ./.buildkite/pipeline_scripts/publish_helm_charts.sh
     agents:
       builder: "dind"
+    plugins:
+      - zacharymctague/aws-ssm#v1.0.0:
+          parameters:
+            DOCKERHUB_USERNAME: /app/ci/default/dockerhub/username
+            DOCKERHUB_PASSWORD: /app/ci/default/dockerhub/password
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
 
   - label: Create GitHub release
@@ -291,7 +296,7 @@ steps:
 
   - label: ":magic_wand: Install new watcher version on komodor ci :kubernetes: cluster"
     commands:
-      - ./.buildkite/pipeline_scripts/update_agent.sh ci buildkite-cluster komodor-agent
+      - ./.buildkite/pipeline_scripts/update_agent.sh ci ci komodor-agent
     agents:
       builder: "dind"
     plugins:

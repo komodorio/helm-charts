@@ -2,7 +2,7 @@
 
 Watches and sends kubernetes resource-related events
 
-![AppVersion: 0.2.73](https://img.shields.io/badge/AppVersion-0.2.73-informational?style=flat-square)
+![AppVersion: 0.2.78](https://img.shields.io/badge/AppVersion-0.2.78-informational?style=flat-square)
 
 ## TL;DR;
 
@@ -16,7 +16,7 @@ helm upgrade --install komodor-agent komodorio/komodor-agent \
   --timeout=90s
 ```
 
-In case of error try contact us for assistance via intercom at: https://app.komodor.com
+In case of error try contact us for assistance via the Komodor Help Center at: https://help.komodor.com
 Or run:
 
 1. Logs of komodor-agent
@@ -118,6 +118,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | capabilities.nodeEnricher | bool | `true` | Enable node enricher capabilities by the komodor agent |
 | capabilities.actions | bool | `true` | Allow users to perform actions on the cluster, granular access control is defined in the application<boolean> |
 | capabilities.helm | bool | `true` | Enable helm capabilities by the komodor agent |
+| capabilities.rbac | bool | `true` | Allow komodor to create and manage serviceaccounts, roles and bindings in cluster |
 | capabilities.events | object | See sub-values | Configure the agent events capabilities |
 | capabilities.events.watchNamespace | string | all | Watch a specific namespace, or all namespaces ("", "all") |
 | capabilities.events.namespacesDenylist | array of strings | `[]` | Do not watch events from these namespaces. eg. `["kube-system", "kube-public"]` |
@@ -151,6 +152,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorAgent.supervisor.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorAgent.networkMapper.image | object | `{"name":"network-mapper","tag":"v1.0.3"}` | Override the komodor agent network mapper image name or tag. |
 | components.komodorAgent.networkMapper.resources | object | `{}` | Set custom resources to the komodor agent network mapper container |
+| components.komodorDaemon | object | See sub-values | Configure the komodor agent components |
 | components.komodorDaemon.affinity | object | `{}` | Set node affinity for the komodor agent daemon |
 | components.komodorDaemon.annotations | object | `{}` | Adds custom annotations - Example: `--set podAnnotations."app\.komodor\.com/app"="komodor-agent"` |
 | components.komodorDaemon.nodeSelector | object | `{}` | Set node selectors for the komodor agent daemon |
@@ -160,8 +162,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemon.metricsInit.image | object | `{ "name": "init-daemon-agent", "tag": .Chart.AppVersion }` | Override the komodor agent metrics init image name or tag. |
 | components.komodorDaemon.metricsInit.resources | object | `{}` | Set custom resources to the komodor agent metrics init container |
 | components.komodorDaemon.metricsInit.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
-| components.komodorDaemon.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf","tag":"1.29.1-alpine"},"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}}` | Configure the komodor daemon metrics components |
-| components.komodorDaemon.metrics.image | object | `{"name":"telegraf","tag":"1.29.1-alpine"}` | Override the komodor agent metrics image name or tag. |
+| components.komodorDaemon.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf","tag":"1.29.4-alpine-v2"},"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}}` | Configure the komodor daemon metrics components |
+| components.komodorDaemon.metrics.image | object | `{"name":"telegraf","tag":"1.29.4-alpine-v2"}` | Override the komodor agent metrics image name or tag. |
 | components.komodorDaemon.metrics.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
 | components.komodorDaemon.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemon.networkSniffer | object | See sub-values | Configure the komodor daemon network sniffer components |
@@ -169,8 +171,18 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemon.networkSniffer.resources | object | `{}` | Set custom resources to the komodor agent network sniffer container |
 | components.komodorDaemon.nodeEnricher | object | See sub-values | Configure the komodor daemon node enricher components |
 | components.komodorDaemon.nodeEnricher.image | object | `{"name":"komodor-agent","tag":null}` | Override the komodor agent node enricher image name or tag. |
-| components.komodorDaemon.nodeEnricher.resources | object | `{}` | Set custom resources to the komodor agent node enricher container |
+| components.komodorDaemon.nodeEnricher.resources | object | `{"limits":{"cpu":"10m","memory":"100Mi"},"requests":{"cpu":"1m","memory":"10Mi"}}` | Set custom resources to the komodor agent node enricher container |
 | components.komodorDaemon.nodeEnricher.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
+| components.komodorDaemonWindows | object | See sub-values | Configure the komodor agent components |
+| components.komodorDaemonWindows.affinity | object | `{}` | Set node affinity for the komodor agent daemon |
+| components.komodorDaemonWindows.annotations | object | `{}` | Adds custom annotations - Example: `--set podAnnotations."app\.komodor\.com/app"="komodor-agent"` |
+| components.komodorDaemonWindows.nodeSelector | object | `{}` | Set node selectors for the komodor agent daemon |
+| components.komodorDaemonWindows.tolerations | list | `[]` | Add tolerations to the komodor agent daemon |
+| components.komodorDaemonWindows.podAnnotations | object | `{}` | # Add annotations to the komodor agent watcher pod |
+| components.komodorDaemonWindows.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf-windows","tag":"1.29.4-alpine-v2"},"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}}` | Configure the komodor daemon metrics components |
+| components.komodorDaemonWindows.metrics.image | object | `{"name":"telegraf-windows","tag":"1.29.4-alpine-v2"}` | Override the komodor agent metrics image name or tag. |
+| components.komodorDaemonWindows.metrics.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
+| components.komodorDaemonWindows.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | allowedResources.event | bool | `true` | Enables watching `event` |
 | allowedResources.deployment | bool | `true` | Enables watching `deployments` |
 | allowedResources.replicationController | bool | `true` | Enables watching `replicationControllers` |

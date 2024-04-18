@@ -27,7 +27,10 @@ spec:
       affinity:
         {{- toYaml .Values.components.komodorDaemon.affinity | nindent 8 }}
       nodeSelector:
+        kubernetes.io/os: linux
+        {{- if not (empty (((.Values.components).komodorDaemon).nodeSelector)) }}
         {{- toYaml .Values.components.komodorDaemon.nodeSelector | nindent 8 }}
+        {{- end }}
       tolerations:
         {{- toYaml .Values.components.komodorDaemon.tolerations | nindent 8}}
       containers:

@@ -70,7 +70,7 @@ generate_next_version() {
     buildkite-agent meta-data set "komodor-agent-ga-version" "$latest_ga_version"
 
     if [[ $increment_type == "rc" ]]; then
-        if [[ $latest_tag == *"-RC"* ]]; then
+        if [[ $latest_tag == *"-RC"* ]] && [[ "$latest_tag_version" != "$latest_ga_version" ]] ; then
             local rc_number=${latest_tag##*-RC}
             local next_rc_number=$((rc_number + 1))
             echo "${latest_tag_version}-RC${next_rc_number}"
@@ -80,17 +80,13 @@ generate_next_version() {
             echo "${new_patch_version}-RC1"
         fi
     else
-        if [[ $latest_tag == *"-RC"* && $increment_type == "patch" ]]; then
-            echo "$(extract_version_parts "$latest_ga_version")"
-        else
-            local new_version
-            new_version=$(increment_version "$latest_tag" "$increment_type")
-            local exit_code=$?
-            if [[ $exit_code -ne 0 ]]; then
-                return $exit_code
-            fi
-            echo "$new_version"
+        local new_version
+        new_version=$(increment_version "$latest_ga_version" "$increment_type")
+        local exit_code=$?
+        if [[ $exit_code -ne 0 ]]; then
+            return $exit_code
         fi
+        echo "$new_version"
     fi
 }
 

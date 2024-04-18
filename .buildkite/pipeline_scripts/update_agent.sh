@@ -38,7 +38,5 @@ helm upgrade --install "${RELEASE_NAME}"  komodorio/komodor-agent \
   --namespace="${NAMESPACE}" --create-namespace \
   --set clusterName="${CLUSTER_NAME}" \
   --set apiKey="$KOMODOR_AGENT_API_KEY" \
-  --set imagePullSecret=docker-cfg-komodorio \
-  --set allowedResources.secret=true \
-  --set capabilities.event.redact="{.*KEY.*,.*key.*,.*BUGSNAG.*}" \
-  --set tags="env:${environment}" $CHART_VERSION
+  --set tags="env:${environment}" $CHART_VERSION \
+  -f ./.buildkite/pipeline_scripts/production-values.yaml

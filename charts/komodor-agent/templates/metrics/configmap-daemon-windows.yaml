@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "komodorAgent.name" . }}-daemon-config
+  name: {{ include "komodorAgent.name" . }}-daemon-windows-config
 data:
   telegraf.conf: |
     [agent]
@@ -25,7 +25,7 @@ data:
         X-OS-TYPE = "${OS_TYPE}"
 
     [[inputs.execd]]
-      command = ["custom_input", "-config", "/etc/telegraf/plugin.conf"]
+      command = ["C:/telegraf/custom_input.exe", "-config", "C:/telegraf/plugin.conf"]
       namedrop = ["kubernetes_system_container"]
       fieldinclude = ["resource_requests_millicpu_units","resource_limits_millicpu_units","resource_requests_memory_bytes","resource_limits_memory_bytes", "capacity_cpu_cores", "capacity_millicpu_cores", "capacity_memory_bytes", "restarts_total", "memory_usage_bytes", "cpu_usage_nanocores", "memory_working_set_bytes"]
       [inputs.execd.tags]
@@ -33,7 +33,7 @@ data:
 
   plugin.conf: |
     [[inputs.kube_consolidated]]
-      bearer_token = "/run/secrets/kubernetes.io/serviceaccount/token"
+      bearer_token = "C:/var/run/secrets/kubernetes.io/serviceaccount/token"
       insecure_skip_verify = true
       url = {{ .Values.communications.apiServerUrl | quote }}
       url_kubelet = "https://$NODE_IP:10250"
