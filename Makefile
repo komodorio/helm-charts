@@ -22,6 +22,3 @@ generate-kube:
 	cat generated.yaml | ./charts/k8s-watcher/helm-fan-out.sh charts/k8s-watcher/kube-install
 	rm generated.yaml
 	sed -i "s/WU9VUl9BUElLRVlfQVNfQkFTRV82NA==/YOUR_APIKEY_AS_BASE_64/g" charts/k8s-watcher/kube-install/k8s-watcher/templates/secret-credentials.yaml
-
-docker-generate-kube:
-	docker run -v $(PWD):/app --workdir /app --entrypoint sh  -it alpine/helm "-c" "/app/docker-generate-kube.sh"
