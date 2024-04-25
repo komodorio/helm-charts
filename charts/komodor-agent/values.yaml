@@ -53,7 +53,7 @@ capabilities:
   # capabilities.metrics -- (bool) Fetch workload metrics and send them to komodor backend
   metrics: true
   # capabilities.networkMapper -- (bool) Enable network mapping capabilities by the komodor agent
-  networkMapper: true
+  networkMapper: false
   # capabilities.nodeEnricher -- (bool) Enable node enricher capabilities by the komodor agent
   nodeEnricher: true
   # capabilities.actions -- (bool) Allow users to perform actions on the cluster, granular access control is defined in the application<boolean>

@@ -2,7 +2,7 @@ import time
 
 import yaml
 
-from config import BE_BASE_URL, NAMESPACE, RELEASE_NAME
+from config import BE_BASE_URL, NAMESPACE, RELEASE_NAME, API_KEY
 from fixtures import setup_cluster, cleanup_agent_from_cluster  # noqa # pylint: disable=unused-import
 from helpers.helm_helper import helm_agent_install, get_yaml_from_helm_template
 from helpers.komodor_helper import query_backend, create_komodor_uid
@@ -59,7 +59,7 @@ def test_network_mapper(setup_cluster):
     start_time = int(time.time() * 1000)
     end_time = int(time.time() * 1000) + 180_000  # three minutes from now
 
-    output, exit_code = helm_agent_install(CLUSTER_NAME)
+    output, exit_code = helm_agent_install(CLUSTER_NAME, f'--set apiKey={API_KEY} --set clusterName={CLUSTER_NAME} --create-namespace --set capabilities.networkMapper=true')
     assert exit_code == 0, "Agent installation failed, output: {}".format(output)
 
     kuid = create_komodor_uid("Deployment", deployment_name, namespace, CLUSTER_NAME)
