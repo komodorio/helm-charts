@@ -27,7 +27,7 @@ data:
     [[inputs.execd]]
       command = ["custom_input", "-config", "/etc/telegraf/plugin.conf"]
       namedrop = ["kubernetes_system_container"]
-      fieldinclude = ["resource_requests_millicpu_units","resource_limits_millicpu_units","resource_requests_memory_bytes","resource_limits_memory_bytes", "capacity_cpu_cores", "capacity_millicpu_cores", "capacity_memory_bytes", "restarts_total", "memory_usage_bytes", "cpu_usage_nanocores", "memory_working_set_bytes"]
+      fieldinclude = ["resource_requests_millicpu_units","resource_limits_millicpu_units","resource_requests_memory_bytes","resource_limits_memory_bytes", "capacity_cpu_cores", "capacity_millicpu_cores", "capacity_memory_bytes", "restarts_total", "memory_usage_bytes", "cpu_usage_nanocores", "memory_working_set_bytes", "allocatable_millicpu_cores"]
       [inputs.execd.tags]
       measure_type = "consolidated"
 
