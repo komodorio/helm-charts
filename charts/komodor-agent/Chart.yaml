@@ -3,4 +3,4 @@ name: komodor-agent
 description: Watches and sends kubernetes resource-related events
 icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/k8s-watcher.svg
 version: 0.0.0
-appVersion: 0.2.83
+appVersion: 0.2.84
