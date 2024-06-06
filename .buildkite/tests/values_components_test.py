@@ -25,7 +25,6 @@ def run_label_test(set_path, value, deployment_name, resource_type):
     assert results == value, f"Expected {value} in pod labels {results}"
 
 
-# Parameterized test function
 @pytest.mark.parametrize("set_path, value, deployment_name, resource_type", [
     ("components.komodorAgent.labels.test", "test_value", f"{RELEASE_NAME}-komodor-agent", "Deployment"),
     ("components.komodorDaemon.labels.test", "test_value", f"{RELEASE_NAME}-komodor-agent-daemon", "DaemonSet"),
