@@ -19,6 +19,22 @@ def test_override_deployment_pod_annotations():
     assert pod_annotations == value, f"Expected {value} in pod annotations {pod_annotations}"
 
 
+def run_label_test(set_path, value, deployment_name, resource_type):
+    set_command = f"{set_path}={value}"
+    results = get_yaml_from_helm_template(set_command, resource_type, deployment_name, "spec.template.metadata.labels.test")
+    assert results == value, f"Expected {value} in pod labels {results}"
+
+
+# Parameterized test function
+@pytest.mark.parametrize("set_path, value, deployment_name, resource_type", [
+    ("components.komodorAgent.labels.test", "test_value", f"{RELEASE_NAME}-komodor-agent", "Deployment"),
+    ("components.komodorDaemon.labels.test", "test_value", f"{RELEASE_NAME}-komodor-agent-daemon", "DaemonSet"),
+    ("components.komodorDaemonWindows.labels.test", "test_value", f"{RELEASE_NAME}-komodor-agent-daemon-windows", "DaemonSet"),
+])
+def test_user_labels(set_path, value, deployment_name, resource_type):
+    run_label_test(set_path, value, deployment_name, resource_type)
+
+
 def test_override_deployment_tolerations():
     values_file = """
     components:
