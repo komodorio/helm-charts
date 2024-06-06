@@ -5,6 +5,7 @@ metadata:
   name: {{ include "komodorAgent.fullname" . }}-daemon-windows
   labels:
     {{- include "komodorAgentDaemonWindows.labels" . | nindent 4 }}
+    {{- include "komodorDaemonWindows.user.labels" . | nindent 4 }}
   {{- if not (empty ((.Values.components).komodorDaemonWindows).annotations) }}
   annotations: {{ toYaml ((.Values.components).komodorDaemonWindows).annotations | nindent 4 }}
   {{- end }}
@@ -18,7 +19,9 @@ spec:
         {{- if not (empty (((.Values.components).komodorDaemonWindows).podAnnotations)) }}
         {{- toYaml .Values.components.komodorDaemonWindows.podAnnotations | trim | nindent 8 }}
         {{- end }}
-      labels: {{- include "komodorAgentDaemonWindows.selectorLabels" . | nindent 8 }}
+      labels:
+        {{- include "komodorAgentDaemonWindows.selectorLabels" . | nindent 8 }}
+        {{- include "komodorDaemonWindows.user.labels" . | nindent 8 }}
     spec:
       terminationGracePeriodSeconds: 0
       priorityClassName: {{ .Release.Name }}-daemon-high-priority

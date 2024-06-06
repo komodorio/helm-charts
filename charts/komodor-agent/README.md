@@ -137,6 +137,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorAgent | object | See sub-values | Configure the komodor agent components |
 | components.komodorAgent.affinity | object | `{}` | Set node affinity for the komodor agent deployment |
 | components.komodorAgent.annotations | object | `{}` | Set annotations for the komodor agent deployment |
+| components.komodorAgent.labels | object | `{}` | Set custom labels |
 | components.komodorAgent.nodeSelector | object | `{}` | Set node selectors for the komodor agent deployment |
 | components.komodorAgent.tolerations | list | `[]` | Set tolerations for the komodor agent deployment |
 | components.komodorAgent.podAnnotations | object | `{}` | Set pod annotations for the komodor agent deployment |
@@ -154,7 +155,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorAgent.networkMapper.resources | object | `{}` | Set custom resources to the komodor agent network mapper container |
 | components.komodorDaemon | object | See sub-values | Configure the komodor agent components |
 | components.komodorDaemon.affinity | object | `{}` | Set node affinity for the komodor agent daemon |
-| components.komodorDaemon.annotations | object | `{}` | Adds custom annotations - Example: `--set podAnnotations."app\.komodor\.com/app"="komodor-agent"` |
+| components.komodorDaemon.annotations | object | `{}` | Adds custom annotations - Example: `--set annotations."app\.komodor\.com/app"="komodor-agent"` |
+| components.komodorDaemon.labels | object | `{}` | Adds custom labels |
 | components.komodorDaemon.nodeSelector | object | `{}` | Set node selectors for the komodor agent daemon |
 | components.komodorDaemon.tolerations | list | `[]` | Add tolerations to the komodor agent daemon |
 | components.komodorDaemon.podAnnotations | object | `{}` | # Add annotations to the komodor agent watcher pod |
@@ -175,7 +177,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemon.nodeEnricher.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemonWindows | object | See sub-values | Configure the komodor agent components |
 | components.komodorDaemonWindows.affinity | object | `{}` | Set node affinity for the komodor agent daemon |
-| components.komodorDaemonWindows.annotations | object | `{}` | Adds custom annotations - Example: `--set podAnnotations."app\.komodor\.com/app"="komodor-agent"` |
+| components.komodorDaemonWindows.annotations | object | `{}` | Adds custom annotations - Example: `--set annotations."app\.komodor\.com/app"="komodor-agent"` |
+| components.komodorDaemonWindows.labels | object | `{}` | Adds custom labels |
 | components.komodorDaemonWindows.nodeSelector | object | `{}` | Set node selectors for the komodor agent daemon |
 | components.komodorDaemonWindows.tolerations | list | `[]` | Add tolerations to the komodor agent daemon |
 | components.komodorDaemonWindows.podAnnotations | object | `{}` | # Add annotations to the komodor agent watcher pod |

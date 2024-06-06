@@ -108,6 +108,8 @@ components:
     affinity: {}
     # components.komodorAgent.annotations -- Set annotations for the komodor agent deployment
     annotations: {}
+    # components.komodorAgent.labels -- Set custom labels
+    labels: {}
     # components.komodorAgent.nodeSelector -- Set node selectors for the komodor agent deployment
     nodeSelector: {}
     # components.komodorAgent.tolerations -- Set tolerations for the komodor agent deployment
@@ -169,8 +171,10 @@ components:
   komodorDaemon:
     # components.komodorDaemon.affinity -- Set node affinity for the komodor agent daemon
     affinity: {}
-    # components.komodorDaemon.annotations -- Adds custom annotations - Example: `--set podAnnotations."app\.komodor\.com/app"="komodor-agent"`
+    # components.komodorDaemon.annotations -- Adds custom annotations - Example: `--set annotations."app\.komodor\.com/app"="komodor-agent"`
     annotations: {}
+    # components.komodorDaemon.labels -- Adds custom labels
+    labels: {}
     # components.komodorDaemon.nodeSelector -- Set node selectors for the komodor agent daemon
     nodeSelector: {}
     # components.komodorDaemon.tolerations -- Add tolerations to the komodor agent daemon
@@ -241,8 +245,10 @@ components:
   komodorDaemonWindows:
     # components.komodorDaemonWindows.affinity -- Set node affinity for the komodor agent daemon
     affinity: { }
-    # components.komodorDaemonWindows.annotations -- Adds custom annotations - Example: `--set podAnnotations."app\.komodor\.com/app"="komodor-agent"`
+    # components.komodorDaemonWindows.annotations -- Adds custom annotations - Example: `--set annotations."app\.komodor\.com/app"="komodor-agent"`
     annotations: { }
+    # components.komodorDaemonWindows.labels -- Adds custom labels
+    labels: { }
     # components.komodorDaemonWindows.nodeSelector -- Set node selectors for the komodor agent daemon
     nodeSelector: { }
     # components.komodorDaemonWindows.tolerations -- Add tolerations to the komodor agent daemon

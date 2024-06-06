@@ -5,6 +5,8 @@ metadata:
   name: {{ include "komodorAgent.fullname" . }}-daemon
   labels:
     {{- include "komodorAgentDaemon.labels" . | nindent 4 }}
+    {{- include "KomodorDaemon.user.labels" . | nindent 4 }}
+
   {{- if not (empty ((.Values.components).komodorDaemon).annotations) }}
   annotations: {{ toYaml ((.Values.components).komodorDaemon).annotations | nindent 4 }}
   {{- end }}
@@ -18,7 +20,9 @@ spec:
         {{- if not (empty (((.Values.components).komodorDaemon).podAnnotations)) }}
         {{- toYaml .Values.components.komodorDaemon.podAnnotations | trim | nindent 8 }}
         {{- end }}
-      labels: {{- include "komodorAgentDaemon.selectorLabels" . | nindent 8 }}
+      labels:
+        {{- include "komodorAgentDaemon.selectorLabels" . | nindent 8 }}
+        {{- include "KomodorDaemon.user.labels" . | nindent 8 }}
     spec:
       {{- include "network_mapper.daemonset.network" .   | nindent 6 }}
 

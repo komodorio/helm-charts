@@ -77,3 +77,20 @@ app.kubernetes.io/name: {{ include "komodorAgent.name" . }}-daemon-windows
 app.kubernetes.io/instance: {{ .Release.Name }}-daemon-windows
 {{- end }}
 
+{{- define "KomodorDaemon.user.labels" -}}
+{{- if not (empty (((.Values.components).komodorDaemon).labels)) }}
+{{ toYaml .Values.components.komodorDaemon.labels }}
+{{- end }}
+{{- end}}
+
+{{- define "komodorAgent.user.labels" -}}
+{{- if not (empty (((.Values.components).komodorAgent).labels)) }}
+{{ toYaml .Values.components.komodorAgent.labels }}
+{{- end }}
+{{- end}}
+
+{{- define "komodorDaemonWindows.user.labels" -}}
+{{- if not (empty (((.Values.components).komodorDaemonWindows).labels)) }}
+{{ toYaml .Values.components.komodorDaemonWindows.labels }}
+{{- end }}
+{{- end}}
