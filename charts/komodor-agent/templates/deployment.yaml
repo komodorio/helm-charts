@@ -4,6 +4,7 @@ metadata:
   name: {{ include "komodorAgent.fullname" . }}
   labels:
     {{- include "komodorAgent.labels" . | nindent 4 }}
+    {{- include "komodorAgent.user.labels" . | nindent 4 }}
   annotations:
     {{ toYaml .Values.components.komodorAgent.annotations | nindent 4 }}
 spec:
@@ -24,6 +25,7 @@ spec:
         {{- end }}
       labels:
         {{- include "komodorAgent.selectorLabels" . | nindent 8 }}
+        {{- include "komodorAgent.user.labels" . | nindent 8 }}
     spec:
       priorityClassName: {{ .Release.Name }}-agent-high-priority
       serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
