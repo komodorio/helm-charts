@@ -12,3 +12,18 @@ components:
     tolerations:
       - key: Windows
         operator: Exists
+  komodorAgent:
+    watcher:
+      extraEnvVars:
+        # DD_VERSION + DD_SERVICE is set in the agent already
+        - name: "ENABLE_DD_PROFILER"
+          value: "true"
+        - name: "DD_ENV"
+          value: "production"
+        - name: "DD_AGENT_HOST"
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+
+
+
