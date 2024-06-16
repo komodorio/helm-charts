@@ -13,6 +13,10 @@ components:
       - key: Windows
         operator: Exists
   komodorAgent:
+    podAnnotations:
+      karpenter.sh/do-not-disrupt: "true"
+    nodeSelector:
+      eks.amazonaws.com/capacityType: ON_DEMAND
     watcher:
       extraEnvVars:
         # DD_VERSION + DD_SERVICE is set in the agent already
