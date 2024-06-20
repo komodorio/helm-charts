@@ -200,7 +200,7 @@ components:
       # components.komodorDaemon.metrics.image -- Override the komodor agent metrics image name or tag.
       image:
         name: telegraf
-        tag: 1.29.4-alpine-v5
+        tag: 1.31.0-alpine-v1
       # components.komodorDaemon.metrics.resources -- Set custom resources to the komodor agent metrics container
       resources:
         limits:
@@ -261,7 +261,7 @@ components:
       # components.komodorDaemonWindows.metrics.image -- Override the komodor agent metrics image name or tag.
       image:
         name: telegraf-windows
-        tag: 1.29.4-v5
+        tag: 1.31.0-v1
       # components.komodorDaemonWindows.metrics.resources -- Set custom resources to the komodor agent metrics container
       resources:
         limits:
