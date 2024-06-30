@@ -9,7 +9,7 @@ from fixtures import setup_cluster, kube_client, cleanup_agent_from_cluster
 CLUSTER_NAME = get_filename_as_cluster_name(__file__)
 
 
-@pytest.mark.parametrize("setup_cluster", ["1.25.11", "1.23.17"], indirect=True)
+@pytest.mark.parametrize("setup_cluster", ["1.25.11", "1.27.13"], indirect=True)
 def test_agent_on_legacy_k8s_versions(setup_cluster, kube_client):
     output, exit_code = helm_agent_install(CLUSTER_NAME)
     assert exit_code == 0, "helm install failed, output: {}".format(output)
