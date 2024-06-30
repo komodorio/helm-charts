@@ -14,7 +14,7 @@
     items:
       - path: "mem_limit"
         resourceFieldRef:
-          containerName: {{ .Chart.Name }}
+          containerName: {{ include "watcher.container.name" . }}
           resource: limits.memory
           divisor: 1Mi
 - name: helm-data
