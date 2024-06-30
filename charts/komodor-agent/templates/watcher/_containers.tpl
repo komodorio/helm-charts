@@ -1,6 +1,6 @@
 
 {{- define "watcher.container" -}}
-- name: "k8s-watcher"
+- name: {{ include "watcher.container.name" .}}
   image: {{ .Values.imageRepo }}/{{ .Values.components.komodorAgent.watcher.image.name}}:{{ .Values.components.komodorAgent.watcher.image.tag | default .Chart.AppVersion }}
   imagePullPolicy: {{ .Values.pullPolicy }}
   command: ["watcher"]
@@ -15,7 +15,7 @@
   - name: podinfo
     mountPath: /etc/podinfo
   {{- end }}
-  {{- if ((.Values.capabilities).events).helm }}
+  {{- if (.Values.capabilities).helm }}
   - name: helm-data
     mountPath: /opt/watcher/helm
   {{- end }}
