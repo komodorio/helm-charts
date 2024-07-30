@@ -94,3 +94,21 @@ app.kubernetes.io/instance: {{ .Release.Name }}-daemon-windows
 {{ toYaml .Values.components.komodorDaemonWindows.labels }}
 {{- end }}
 {{- end}}
+
+
+# Metrics definitions
+{{- define "komodorMetrics.labels" -}}
+{{ include "komodorMetrics.selectorLabels" .}}
+{{ include "komodorAgent.commonLabels" . }}
+{{- end }}
+
+{{- define "komodorMetrics.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "komodorAgent.name" . }}-metrics
+app.kubernetes.io/instance: {{ .Release.Name }}-metrics
+{{- end }}
+
+{{- define "KomodorMetrics.user.labels" -}}
+{{- if not (empty (((.Values.components).komodorMetrics).labels)) }}
+{{ toYaml .Values.components.komodorMetrics.labels }}
+{{- end }}
+{{- end}}

@@ -89,6 +89,8 @@
   {{- include "custom-ca.volumeMounts" . | nindent 2 }}
   env:
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
+  - name: COMPONENT
+    value: {{ include "komodorAgent.fullname" . }}-daemon
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
   - name: KOMOKW_API_KEY
