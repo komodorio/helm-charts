@@ -42,7 +42,7 @@
   {{- include "custom-ca.volumeMounts" . | nindent 2 }}
   env:
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
-  - name: COMPONENT
+  - name: KOMOKW_COMPONENT
     value: {{ include "komodorAgent.fullname" . }}-metrics
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
