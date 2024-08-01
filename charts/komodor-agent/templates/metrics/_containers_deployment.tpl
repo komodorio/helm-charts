@@ -6,13 +6,14 @@
     {{ toYaml .Values.components.komodorMetrics.metrics.resources | trim | nindent 4 }}
   volumeMounts:
   - name: {{ include "metrics.shared.volume.name" . }}
-    mountPath: /etc/telegraf/telegraf.conf
-    subPath: telegraf.conf
+    mountPath: /etc/telegraf
   {{- include "custom-ca.trusted-volumeMounts" . | indent 2 }}
   env:
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
   - name: OS_TYPE
     value: linux
+  - name: KOMODOR_SERVER_URL
+    value: {{ .Values.communications.apiServerUrl | quote }}
   - name: NODE_NAME
     valueFrom:
       fieldRef:
@@ -43,7 +44,7 @@
   env:
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
   - name: KOMOKW_COMPONENT
-    value: {{ include "komodorAgent.fullname" . }}-metrics
+    value: {{ .Chart.Name  }}-metrics
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
   - name: KOMOKW_API_KEY
