@@ -97,6 +97,9 @@ The command removes all the Kubernetes components associated with the chart and 
 | createNamespace | bool | `true` | Creates the namespace |
 | tags | dict | `""` | Tags the agent in order to identify it based on `key:value` properties separated by semicolon (`;`) example: `--set tags="env:staging;team:product-a"` --- Can also be set in the values under `tags` as a dictionary of key:value strings |
 | clusterName | string | `nil` | **(*required*)** Name to be displayed in the Komodor web application |
+| telegrafImageVersion | string | `"1.31.0-alpine-v1"` | Telegraf version to be used |
+| telegrafWindowsImageVersion | string | `"1.31.0-v1"` | Telegraf version to be used for windows |
+| networkMapperImageVersion | string | `"v1.0.3"` | Network mapper version to be used |
 | serviceAccount | object | See sub-values | Configure service account for the agent |
 | serviceAccount.create | bool | `true` | Creates a service account for the agent |
 | serviceAccount.name | string | `nil` | Name of the service account, Required if `serviceAccount.create` is false |
@@ -153,6 +156,19 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorAgent.supervisor.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorAgent.networkMapper.image | object | `{"name":"network-mapper","tag":"v1.0.3"}` | Override the komodor agent network mapper image name or tag. |
 | components.komodorAgent.networkMapper.resources | object | `{}` | Set custom resources to the komodor agent network mapper container |
+| components.komodorMetrics.affinity | object | `{}` | Set node affinity for the komodor metrics agent deployment |
+| components.komodorMetrics.annotations | object | `{}` | Set annotations for the komodor metrics agent deployment |
+| components.komodorMetrics.labels | object | `{}` | Set custom labels |
+| components.komodorMetrics.nodeSelector | object | `{}` | Set node selectors for the komodor metrics agent deployment |
+| components.komodorMetrics.tolerations | list | `[]` | Set tolerations for the komodor metrics agent deployment |
+| components.komodorMetrics.podAnnotations | object | `{}` | Set pod annotations for the komodor metrics agent deployment |
+| components.komodorMetrics.metricsInit | object | See sub-values | Configure the komodor metrics init container |
+| components.komodorMetrics.metricsInit.image | object | `{ "name": "komodor-agent", "tag": .Chart.AppVersion }` | Override the komodor agent metrics init image name or tag. |
+| components.komodorMetrics.metricsInit.resources | object | `{}` | Set custom resources to the komodor agent metrics init container |
+| components.komodorMetrics.metricsInit.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
+| components.komodorMetrics.metrics.image | object | `{"name":"telegraf","tag":"1.31.0-alpine-v1"}` | Override the komodor agent metrics image name or tag. |
+| components.komodorMetrics.metrics.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
+| components.komodorMetrics.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemon | object | See sub-values | Configure the komodor agent components |
 | components.komodorDaemon.affinity | object | `{}` | Set node affinity for the komodor agent daemon |
 | components.komodorDaemon.annotations | object | `{}` | Adds custom annotations - Example: `--set annotations."app\.komodor\.com/app"="komodor-agent"` |

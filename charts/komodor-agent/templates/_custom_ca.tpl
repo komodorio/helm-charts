@@ -48,3 +48,14 @@ command:
     daemon
 {{- end }}
 {{- end -}}
+
+{{- define "custom-ca.trusted-telegraf-init-container.command" -}}
+{{- if (.Values.customCa).enabled  }}
+command:
+  - /bin/sh
+  - -c
+  - cp /certs/* /etc/ssl/certs/ &&
+    update-ca-certificates --fresh &&
+    telegraf_init
+{{- end }}
+{{- end -}}

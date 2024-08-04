@@ -9,3 +9,7 @@
 {{- define "metrics.daemon-windows.config.name" -}}
 {{ include "komodorAgent.name" . }}-daemon-windows-config
 {{- end -}}
+
+{{- define "metrics.shared.volume.name" -}}
+shared-data
+{{- end -}}

@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "komodorAgent.fullname" . }}-metrics
+  labels:
+    {{- include "komodorMetrics.labels" . | nindent 4 }}
+    {{- include "KomodorMetrics.user.labels" . | nindent 4 }}
+
+  {{- if not (empty ((.Values.components).komodorMetrics).annotations) }}
+  annotations: {{ toYaml ((.Values.components).komodorMetrics).annotations | nindent 4 }}
+  {{- end }}
+spec:
+  selector:
+    matchLabels: {{- include "komodorMetrics.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- if not (empty (((.Values.components).komodorMetrics).podAnnotations)) }}
+        {{- toYaml .Values.components.komodorMetrics.podAnnotations | trim | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "komodorMetrics.selectorLabels" . | nindent 8 }}
+        {{- include "KomodorMetrics.user.labels" . | nindent 8 }}
+    spec:
+      priorityClassName: {{ .Release.Name }}-agent-high-priority
+      serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
+      affinity:
+        {{- toYaml .Values.components.komodorMetrics.affinity | nindent 8 }}
+      nodeSelector:
+        kubernetes.io/os: linux
+        {{- if not (empty (((.Values.components).komodorMetrics).nodeSelector)) }}
+        {{- toYaml .Values.components.komodorMetrics.nodeSelector | nindent 8 }}
+        {{- end }}
+      tolerations:
+        {{- toYaml .Values.components.komodorMetrics.tolerations | nindent 8}}
+      containers:
+        {{- include "metrics.deployment.container" .      | nindent 8 }}
+      volumes:
+        {{- include "metrics.shared.volume" .             | nindent 8 }}
+        {{- include "custom-ca.volume" .                  | nindent 8 }}
+        {{- include "custom-ca.trusted-volume" .          | nindent 8 }}
+      initContainers:
+        {{- include "metrics.deployment.init.container" . | nindent 8 }}
+        {{- include "ca-init.container" .                 | nindent 8 }}

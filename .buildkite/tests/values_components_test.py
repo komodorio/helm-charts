@@ -7,12 +7,15 @@ from helpers.utils import get_filename_as_cluster_name
 CLUSTER_NAME = get_filename_as_cluster_name(__file__)
 
 
-def test_override_deployment_pod_annotations():
-    set_path = "components.komodorAgent.podAnnotations.test"
+@pytest.mark.parametrize("component_name, deployment_name_suffix", [
+    ("komodorAgent", ""),
+    ("komodorMetrics", "-metrics")])
+def test_override_deployment_pod_annotations(component_name, deployment_name_suffix):
+    set_path = f"components.{component_name}.podAnnotations.test"
     value = "test_value"
     set_command = f"{set_path}={value}"
 
-    deployment_name = f"{RELEASE_NAME}-komodor-agent"
+    deployment_name = f"{RELEASE_NAME}-komodor-agent{deployment_name_suffix}"
     pod_annotations = get_yaml_from_helm_template(set_command, "Deployment", deployment_name,
                                                   "spec.template.metadata.annotations.test")
 
@@ -29,15 +32,19 @@ def run_label_test(set_path, value, deployment_name, resource_type):
     ("components.komodorAgent.labels.test", "test_value", f"{RELEASE_NAME}-komodor-agent", "Deployment"),
     ("components.komodorDaemon.labels.test", "test_value", f"{RELEASE_NAME}-komodor-agent-daemon", "DaemonSet"),
     ("components.komodorDaemonWindows.labels.test", "test_value", f"{RELEASE_NAME}-komodor-agent-daemon-windows", "DaemonSet"),
+    ("components.komodorMetrics.labels.test", "test_value", f"{RELEASE_NAME}-komodor-agent-metrics", "Deployment")
 ])
 def test_user_labels(set_path, value, deployment_name, resource_type):
     run_label_test(set_path, value, deployment_name, resource_type)
 
 
-def test_override_deployment_tolerations():
-    values_file = """
+@pytest.mark.parametrize("component_name, deployment_name_suffix", [
+    ("komodorAgent", ""),
+    ("komodorMetrics", "-metrics")])
+def test_override_deployment_tolerations(component_name, deployment_name_suffix):
+    values_file = f"""
     components:
-        komodorAgent:
+        {component_name}:
           tolerations:
           - key: "gpu"
             operator: "Equal"
@@ -45,7 +52,7 @@ def test_override_deployment_tolerations():
             effect: "NoSchedule"
     """
 
-    deployment_name = f"{RELEASE_NAME}-komodor-agent"
+    deployment_name = f"{RELEASE_NAME}-komodor-agent{deployment_name_suffix}"
     deployment_tolerations = get_yaml_from_helm_template("test=test", "Deployment", deployment_name,
                                                          "spec.template.spec.tolerations", values_file=values_file)
 
@@ -53,34 +60,43 @@ def test_override_deployment_tolerations():
                "key"] == "gpu", f"Expected gpu in deployment tolerations {deployment_tolerations}"
 
 
-def test_override_deployment_node_selector():
-    set_path = "components.komodorAgent.nodeSelector.test_node_selector"
+@pytest.mark.parametrize("component_name, deployment_name_suffix", [
+    ("komodorAgent", ""),
+    ("komodorMetrics", "-metrics")])
+def test_override_deployment_node_selector(component_name, deployment_name_suffix):
+    set_path = f"components.{component_name}.nodeSelector.test_node_selector"
     value = "test_node_selector"
     set_command = f"{set_path}={value}"
 
-    deployment_name = f"{RELEASE_NAME}-komodor-agent"
+    deployment_name = f"{RELEASE_NAME}-komodor-agent{deployment_name_suffix}"
     pod_annotations = get_yaml_from_helm_template(set_command, "Deployment", deployment_name,
                                                   "spec.template.spec.nodeSelector.test_node_selector")
 
     assert pod_annotations == value, f"Expected {value} in pod annotations {pod_annotations}"
 
 
-def test_override_deployment_annotations():
-    set_path = "components.komodorAgent.annotations.test"
+@pytest.mark.parametrize("component_name, deployment_name_suffix", [
+    ("komodorAgent", ""),
+    ("komodorMetrics", "-metrics")])
+def test_override_deployment_annotations(component_name, deployment_name_suffix):
+    set_path = f"components.{component_name}.annotations.test"
     value = "test"
     set_command = f"{set_path}={value}"
 
-    deployment_name = f"{RELEASE_NAME}-komodor-agent"
+    deployment_name = f"{RELEASE_NAME}-komodor-agent{deployment_name_suffix}"
     deployment_annotations = get_yaml_from_helm_template(set_command, "Deployment", deployment_name,
                                                          "metadata.annotations.test")
 
     assert deployment_annotations == value, f"Expected {value} in pod annotations {deployment_annotations}"
 
 
-def test_override_deployment_affinity():
-    values_file = """
+@pytest.mark.parametrize("component_name, deployment_name_suffix", [
+    ("komodorAgent", ""),
+    ("komodorMetrics", "-metrics")])
+def test_override_deployment_affinity(component_name, deployment_name_suffix):
+    values_file = f"""
     components:
-        komodorAgent:
+        {component_name}:
           affinity:
             nodeAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
@@ -93,7 +109,7 @@ def test_override_deployment_affinity():
                     - e2e-az2
     """
 
-    deployment_name = f"{RELEASE_NAME}-komodor-agent"
+    deployment_name = f"{RELEASE_NAME}-komodor-agent{deployment_name_suffix}"
     deployment_affinity = get_yaml_from_helm_template("test=test", "Deployment", deployment_name,
                                                       "spec.template.spec.affinity", values_file=values_file)
 
@@ -101,25 +117,27 @@ def test_override_deployment_affinity():
 
 
 @pytest.mark.parametrize(
-    "component, container_index",
+    "component, location, container, container_index, deployment_name_suffix",
     [
-        ("watcher", "0"),
-        ("supervisor", "1"),
+        ("komodorAgent", "containers", "watcher", "0", ""),
+        ("komodorAgent", "containers", "supervisor", "1", ""),
+        ("komodorMetrics", "containers", "metrics", "0", "-metrics"),
+        ("komodorMetrics", "initContainers", "metricsInit", "0", "-metrics")
     ]
 )
-def test_extra_env_vars(component, container_index):
+def test_extra_env_vars(component, location, container, container_index, deployment_name_suffix):
     values_file = f"""
     components:
-      komodorAgent:
-        {component}:
+      {component}:
+        {container}:
           extraEnvVars:
             - name: "TEST_ENV_VAR"
               value: "test"
     """
 
-    deployment_name = f"{RELEASE_NAME}-komodor-agent"
+    deployment_name = f"{RELEASE_NAME}-komodor-agent{deployment_name_suffix}"
     deployment_env_vars = get_yaml_from_helm_template("test=test", "Deployment", deployment_name,
-                                                      f"spec.template.spec.containers.{container_index}.env",
+                                                      f"spec.template.spec.{location}.{container_index}.env",
                                                       values_file=values_file)
 
     assert deployment_env_vars[-1][
