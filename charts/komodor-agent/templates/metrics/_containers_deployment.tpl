@@ -13,7 +13,7 @@
   - name: OS_TYPE
     value: linux
   - name: KOMODOR_SERVER_URL
-    value: {{ .Values.communications.apiServerUrl | quote }}
+    value: {{ .Values.communications.serverHost | quote }}
   - name: NODE_NAME
     valueFrom:
       fieldRef:
