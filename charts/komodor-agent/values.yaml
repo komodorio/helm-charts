@@ -11,7 +11,7 @@ tags: ""
 clusterName:
 
 # telegrafImageVersion -- (string) Telegraf version to be used
-telegrafImageVersion: &telegrafVersion 1.31.0-alpine-v1
+telegrafImageVersion: &telegrafVersion 1.31.3-alpine-v1
 # telegrafWindowsImageVersion -- (string) Telegraf version to be used for windows
 telegrafWindowsImageVersion: &telegrafWindowsVersion 1.31.0-v1
 # networkMapperImageVersion -- (string) Network mapper version to be used
