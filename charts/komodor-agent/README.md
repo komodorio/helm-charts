@@ -133,6 +133,9 @@ The command removes all the Kubernetes components associated with the chart and 
 | capabilities.logs.logsNamespacesAllowlist | list | `[]` | Only fetch logs from these namespaces. eg. `["kube-system", "kube-public"]` |
 | capabilities.logs.nameDenylist | list | `[]` | Do not fetch logs from these workloads. eg. `["supersecret-workload", "password-manager"]` |
 | capabilities.logs.redact | list | `[]` | Redact logs from the komodor logs. eg. `["password", "token"]` |
+| capabilities.redaction | object | See sub-values | Configure the agent data redaction capabilities |
+| capabilities.redaction.secret | object | `{"enable":true}` | Configuration for the "Secret" resource type |
+| capabilities.redaction.secret.enable | bool | `true` | Enable redaction for the "Secret" resource type |
 | capabilities.telemetry | object | See sub-values | Configure the agent telemetry capabilities |
 | capabilities.telemetry.enabled | bool | `true` | Enable telemetry capabilities by the komodor agent |
 | capabilities.telemetry.collectApiServerMetrics | bool | `false` | Collect metrics from the api server (Should only be used for debugging purposes) |
