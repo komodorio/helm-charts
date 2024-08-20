@@ -97,6 +97,14 @@ capabilities:
     # capabilities.logs.redact -- (list) Redact logs from the komodor logs. eg. `["password", "token"]`
     redact: []
 
+  # capabilities.redaction -- Configure the agent data redaction capabilities
+  # @default -- See sub-values
+  redaction:
+    # capabilities.redaction.secret -- Configuration for the "Secret" resource type
+    secret:
+      # capabilities.redaction.secret.enable -- (bool) Enable redaction for the "Secret" resource type
+      enable: true
+
   # capabilities.telemetry -- Configure the agent telemetry capabilities
   # @default -- See sub-values
   telemetry:
