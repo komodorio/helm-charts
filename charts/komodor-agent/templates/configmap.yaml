@@ -21,6 +21,7 @@ data:
     nameDenylist: {{ toYaml .Values.capabilities.logs.nameDenylist | trim | nindent 6 }}
     redact: {{ toYaml .Values.capabilities.events.redact | trim | nindent 6 }}
     redactLogs: {{ toYaml .Values.capabilities.logs.redact | trim | nindent 6 }}
+    redaction: {{ toYaml .Values.capabilities.redaction | trim | nindent 6 }}
     actions:
       basic: {{ .Values.capabilities.actions }}
       advanced: {{ .Values.capabilities.actions }}
