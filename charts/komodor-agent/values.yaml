@@ -119,6 +119,8 @@ components:
   # components.komodorAgent -- Configure the komodor agent components
   # @default -- See sub-values
   komodorAgent:
+    # components.komodorAgent.PriorityClassValue -- Set the priority class value for the komodor agent deployment
+    PriorityClassValue: 10000000
     # components.komodorAgent.affinity -- Set node affinity for the komodor agent deployment
     affinity: {}
     # components.komodorAgent.annotations -- Set annotations for the komodor agent deployment
@@ -182,6 +184,8 @@ components:
       resources: {}
 
   komodorMetrics:
+    # components.komodorMetrics.PriorityClassValue -- Set the priority class value for the komodor metrics agent deployment
+    PriorityClassValue: 10000000
     # components.komodorMetrics.affinity -- Set node affinity for the komodor metrics agent deployment
     affinity: { }
     # components.komodorMetrics.annotations -- Set annotations for the komodor metrics agent deployment
@@ -227,6 +231,8 @@ components:
   # components.komodorDaemon -- Configure the komodor agent components
   # @default -- See sub-values
   komodorDaemon:
+    # components.komodorDaemon.PriorityClassValue -- Set the priority class value for the komodor daemon deployment
+    PriorityClassValue: 10000000
     # components.komodorDaemon.affinity -- Set node affinity for the komodor agent daemon
     affinity: {}
     # components.komodorDaemon.annotations -- Adds custom annotations - Example: `--set annotations."app\.komodor\.com/app"="komodor-agent"`

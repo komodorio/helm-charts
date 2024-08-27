@@ -141,6 +141,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | capabilities.telemetry.collectApiServerMetrics | bool | `false` | Collect metrics from the api server (Should only be used for debugging purposes) |
 | components | object | See sub-values | Configure the agent components |
 | components.komodorAgent | object | See sub-values | Configure the komodor agent components |
+| components.komodorAgent.PriorityClassValue | int | `10000000` | Set the priority class value for the komodor agent deployment |
 | components.komodorAgent.affinity | object | `{}` | Set node affinity for the komodor agent deployment |
 | components.komodorAgent.annotations | object | `{}` | Set annotations for the komodor agent deployment |
 | components.komodorAgent.labels | object | `{}` | Set custom labels |
@@ -159,6 +160,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorAgent.supervisor.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorAgent.networkMapper.image | object | `{"name":"network-mapper","tag":"v1.0.3"}` | Override the komodor agent network mapper image name or tag. |
 | components.komodorAgent.networkMapper.resources | object | `{}` | Set custom resources to the komodor agent network mapper container |
+| components.komodorMetrics.PriorityClassValue | int | `10000000` | Set the priority class value for the komodor metrics agent deployment |
 | components.komodorMetrics.affinity | object | `{}` | Set node affinity for the komodor metrics agent deployment |
 | components.komodorMetrics.annotations | object | `{}` | Set annotations for the komodor metrics agent deployment |
 | components.komodorMetrics.labels | object | `{}` | Set custom labels |
@@ -173,6 +175,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorMetrics.metrics.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
 | components.komodorMetrics.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemon | object | See sub-values | Configure the komodor agent components |
+| components.komodorDaemon.PriorityClassValue | int | `10000000` | Set the priority class value for the komodor daemon deployment |
 | components.komodorDaemon.affinity | object | `{}` | Set node affinity for the komodor agent daemon |
 | components.komodorDaemon.annotations | object | `{}` | Adds custom annotations - Example: `--set annotations."app\.komodor\.com/app"="komodor-agent"` |
 | components.komodorDaemon.labels | object | `{}` | Adds custom labels |
