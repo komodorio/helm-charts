@@ -22,7 +22,7 @@ spec:
         {{- include "komodorMetrics.selectorLabels" . | nindent 8 }}
         {{- include "KomodorMetrics.user.labels" . | nindent 8 }}
     spec:
-      priorityClassName: {{ .Release.Name }}-agent-high-priority
+      priorityClassName: {{ .Release.Name }}-metrics-high-priority
       serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
       affinity:
         {{- toYaml .Values.components.komodorMetrics.affinity | nindent 8 }}
