@@ -39,5 +39,21 @@ data:
     resources:
       {{- toYaml .Values.allowedResources | trim | nindent 6 }}
 
+    {{- if .Values.tags }}
+    {{- if and .Values.tags (kindIs "map" .Values.tags) }}
+    tags: {{ .Values.tags | nindent 6 }}
+    {{- else if and .Values.tags (kindIs "string" .Values.tags) }}
+    {{ $tags := .Values.tags | splitList ";" }}
+    {{ $tagMap := dict }}
+    {{ range $tags }}
+      {{ $pair := splitList ":" . }}
+      {{ $key := index $pair 0 }}
+      {{ $value := index $pair 1 }}
+      {{ $_ := set $tagMap $key $value }}
+    {{ end }}
+    tags: {{ $tagMap | toYaml | nindent 6 }}
+    {{- end }}
+    {{- end }}
+
   installed-values.yaml: |
     {{ toYaml .Values | nindent 4 }}
