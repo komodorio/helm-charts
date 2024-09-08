@@ -37,10 +37,6 @@
         {{- end }}
   - name: KOMOKW_CLUSTER_NAME
     value: {{ .Values.clusterName }}
-  {{- if not (empty .Values.tags) }}
-  - name: KOMOKW_TAGS
-    value: {{ .Values.tags | default "" | quote }}
-  {{- end }}
   - name: HELM_CACHE_HOME
     value: /opt/watcher/helm/cache
   - name: HELM_CONFIG_HOME

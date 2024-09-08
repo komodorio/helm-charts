@@ -5,8 +5,8 @@ apiKeySecret:
 # createNamespace -- Creates the namespace
 createNamespace: true
 # tags -- (dict) Tags the agent in order to identify it based on `key:value` properties separated by semicolon (`;`)
-# example: `--set tags="env:staging;team:product-a"` --- Can also be set in the values under `tags` as a dictionary of key:value strings
-tags: ""
+# example: `--set tags.env=staging,tags.team=payments` --- Can also be set in the values under `tags` as a dictionary of key:value strings
+tags: {}
 # clusterName -- **(*required*)** Name to be displayed in the Komodor web application
 clusterName:
 
