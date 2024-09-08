@@ -41,7 +41,7 @@ data:
 
     {{- if .Values.tags }}
     {{- if and .Values.tags (kindIs "map" .Values.tags) }}
-    tags: {{ .Values.tags | nindent 6 }}
+    tags: {{ .Values.tags | toYaml | nindent 6 }}
     {{- else if and .Values.tags (kindIs "string" .Values.tags) }}
     {{ $tags := .Values.tags | splitList ";" }}
     {{ $tagMap := dict }}
