@@ -47,13 +47,16 @@ data:
     {{ $tagMap := dict }}
     {{ range $tags }}
       {{ $pair := splitList ":" . }}
-      {{ $key := index $pair 0 }}
-      {{ $value := index $pair 1 }}
-      {{ $_ := set $tagMap $key $value }}
+      {{ if eq (len $pair) 2 }}
+        {{ $key := index $pair 0 }}
+        {{ $value := index $pair 1 }}
+        {{ $_ := set $tagMap $key $value }}
+      {{ end }}
     {{ end }}
     tags: {{ $tagMap | toYaml | nindent 6 }}
+    {{- else }}
+      {{ fail "Invalid type for .Values.tags. Expected map or string." }}
     {{- end }}
     {{- end }}
-
   installed-values.yaml: |
     {{ toYaml .Values | nindent 4 }}
