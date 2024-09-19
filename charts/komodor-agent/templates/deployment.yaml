@@ -51,4 +51,3 @@ spec:
         {{- include "agent.deploy.volumes" .                | trim | nindent 8 }}
         {{- include "custom-ca.volume" .                    | trim | nindent 8 }}
         {{- include "custom-ca.trusted-volume" .            | trim | nindent 8 }}
-      {{- include "komodorAgent.securityContext" . | nindent 6}}
