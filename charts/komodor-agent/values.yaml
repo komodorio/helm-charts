@@ -46,8 +46,8 @@ customCa:
   enabled: false
   # customCa.secretName -- (string) Name of the secret containing the CA
   secretName:
-  # customCa.caInitResources -- (dict) Resources for the CA init container
-  caInitResources:
+  # customCa.resources -- (dict) Set custom resources to the custom CA container
+  resources:
     limits:
       cpu: 10m
       memory: 100Mi

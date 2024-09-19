@@ -135,6 +135,6 @@
     {{- include "custom-ca.trusted-volumeMounts-init" .    | nindent 4 }}
     {{- include "custom-ca.volumeMounts" .                 | nindent 4 }}
 resources:
-    {{ toYaml .Values.customCa.caInitResources | trim | nindent 4 }}
+    {{ toYaml .Values.customCa.resources | trim | nindent 4 }}
 {{- end }}
 {{- end -}}
