@@ -27,9 +27,6 @@ spec:
         {{- include "komodorAgent.selectorLabels" . | nindent 8 }}
         {{- include "komodorAgent.user.labels" . | nindent 8 }}
     spec:
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 3000
       priorityClassName: {{ .Release.Name }}-agent-high-priority
       serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
       affinity:
