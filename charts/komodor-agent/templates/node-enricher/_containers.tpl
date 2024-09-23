@@ -12,7 +12,7 @@
   livenessProbe:
     httpGet:
       path: /healthz
-      port: http-healthz
+      port: 8090
     periodSeconds: 60
     initialDelaySeconds: 15
     failureThreshold: 10
@@ -20,7 +20,7 @@
   readinessProbe:
     httpGet:
       path: /healthz
-      port: http-healthz
+      port: 8090
     initialDelaySeconds: 5
     periodSeconds: 5
     failureThreshold: 3
