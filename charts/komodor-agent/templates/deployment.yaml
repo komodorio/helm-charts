@@ -27,7 +27,7 @@ spec:
         {{- include "komodorAgent.selectorLabels" . | nindent 8 }}
         {{- include "komodorAgent.user.labels" . | nindent 8 }}
     spec:
-    {{- if not .Values.capabilities.networkMapper.enabled }}
+    {{- if (.Values.capabilities).networkMapper -}}
       securityContext:
         runAsUser: 0
         runAsGroup: 0
