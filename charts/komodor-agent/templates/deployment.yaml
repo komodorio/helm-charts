@@ -28,8 +28,8 @@ spec:
         {{- include "komodorAgent.user.labels" . | nindent 8 }}
     spec:
       securityContext:
-        runAsUser: 1
-        runAsGroup: 1
+        runAsUser: 0
+        runAsGroup: 0
       priorityClassName: {{ .Release.Name }}-agent-high-priority
       serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
       affinity:
