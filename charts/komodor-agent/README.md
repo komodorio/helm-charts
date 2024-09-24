@@ -112,6 +112,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | customCa | object | See sub-values | Configure custom CA for the agent |
 | customCa.enabled | bool | `false` | Enable custom CA certificate for the agent |
 | customCa.secretName | string | `nil` | Name of the secret containing the CA |
+| customCa.resources | dict | `{"limits":{"cpu":"10m","memory":"100Mi"},"requests":{"cpu":"1m","memory":"10Mi"}}` | Set custom resources to the custom CA container |
 | imageRepo | string | `"public.ecr.aws/komodor-public"` | Override the komodor agent image repository. |
 | pullPolicy | string | `"IfNotPresent"` | Default Image pull policy for the komodor agent image exceptable values <ifNotPresent\Always\Never>. |
 | imagePullSecret | string | `nil` | Set the image pull secret for the komodor agent |
@@ -184,7 +185,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemon.podAnnotations | object | `{}` | # Add annotations to the komodor agent watcher pod |
 | components.komodorDaemon.metricsInit | object | See sub-values | Configure the komodor daemon metrics init container |
 | components.komodorDaemon.metricsInit.image | object | `{ "name": "init-daemon-agent", "tag": .Chart.AppVersion }` | Override the komodor agent metrics init image name or tag. |
-| components.komodorDaemon.metricsInit.resources | object | `{}` | Set custom resources to the komodor agent metrics init container |
+| components.komodorDaemon.metricsInit.resources | object | `{"limits":{"cpu":1,"memory":"100Mi"},"requests":{"cpu":0.1,"memory":"50Mi"}}` | Set custom resources to the komodor agent metrics init container |
 | components.komodorDaemon.metricsInit.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemon.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf","tag":"1.31.3-alpine-v1"},"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}}` | Configure the komodor daemon metrics components |
 | components.komodorDaemon.metrics.image | object | `{"name":"telegraf","tag":"1.31.3-alpine-v1"}` | Override the komodor agent metrics image name or tag. |

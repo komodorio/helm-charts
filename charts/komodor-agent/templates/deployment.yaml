@@ -27,6 +27,11 @@ spec:
         {{- include "komodorAgent.selectorLabels" . | nindent 8 }}
         {{- include "komodorAgent.user.labels" . | nindent 8 }}
     spec:
+      {{- if not (.Values.capabilities.networkMapper) }}
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+      {{- end }}
       priorityClassName: {{ .Release.Name }}-agent-high-priority
       serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
       affinity:

@@ -9,6 +9,22 @@
   volumeMounts:
   - name: configuration
     mountPath: /etc/komodor
+  livenessProbe:
+    httpGet:
+      path: /healthz
+      port: 8090
+    periodSeconds: 60
+    initialDelaySeconds: 15
+    failureThreshold: 10
+    successThreshold: 1
+  readinessProbe:
+    httpGet:
+      path: /healthz
+      port: 8090
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    failureThreshold: 3
+    successThreshold: 1
   env:
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
   - name: KOMOKW_API_KEY
