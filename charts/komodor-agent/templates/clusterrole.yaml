@@ -1,4 +1,4 @@
----
+{{- if .Values.createRbac -}}
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -519,3 +519,4 @@ subjects:
   - kind: ServiceAccount
     name: {{ include "komodorAgent.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
+{{- end -}}
