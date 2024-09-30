@@ -9,6 +9,8 @@ createNamespace: true
 tags: { }
 # clusterName -- **(*required*)** Name to be displayed in the Komodor web application
 clusterName:
+# createRbac -- Creates the necessary RBAC resources for the agent - use with caution!
+createRbac: true
 
 # telegrafImageVersion -- (string) Telegraf version to be used
 telegrafImageVersion: &telegrafVersion 1.31.3-alpine-v1
