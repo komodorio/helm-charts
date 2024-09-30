@@ -114,6 +114,8 @@ capabilities:
     secret:
       # capabilities.redaction.secret.enable -- (bool) Enable redaction for the "Secret" resource type
       enable: true
+      # capabilities.redaction.secret.keepOnlyHelmReleases -- (bool) Determine if only helm releases should be collected, if true - wipe and redact all other secrets data
+      keepOnlyHelmReleases: false
 
   # capabilities.telemetry -- Configure the agent telemetry capabilities
   # @default -- See sub-values
