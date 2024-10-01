@@ -24,7 +24,7 @@ spec:
         {{- include "komodorDaemonWindows.user.labels" . | nindent 8 }}
     spec:
       terminationGracePeriodSeconds: 0
-      priorityClassName: {{ .Release.Name }}-daemon-high-priority
+      priorityClassName: {{ include "komodor.truncatedReleaseName"  . }}-daemon-high-priority
       serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
       affinity:
         {{- toYaml .Values.components.komodorDaemonWindows.affinity | nindent 8 }}

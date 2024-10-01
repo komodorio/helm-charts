@@ -2,7 +2,7 @@
 apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
 metadata:
-  name: {{ .Release.Name }}-daemon-high-priority
+  name: {{ include "komodor.truncatedReleaseName"  . }}-daemon-high-priority
 value: {{ .Values.components.komodorDaemon.PriorityClassValue }}
 globalDefault: false
 description: "This priority class should be used for Komodor daemonset pods only."
@@ -11,7 +11,7 @@ description: "This priority class should be used for Komodor daemonset pods only
 apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
 metadata:
-  name: {{ .Release.Name }}-agent-high-priority
+  name: {{ include "komodor.truncatedReleaseName"  . }}-agent-high-priority
 value: {{ .Values.components.komodorAgent.PriorityClassValue }}
 globalDefault: false
 description: "This priority class should be used for Komodor agent pods only."
@@ -19,7 +19,7 @@ description: "This priority class should be used for Komodor agent pods only."
 apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
 metadata:
-  name: {{ .Release.Name }}-metrics-high-priority
+  name: {{ include "komodor.truncatedReleaseName"  . }}-metrics-high-priority
 value: {{ .Values.components.komodorMetrics.PriorityClassValue }}
 globalDefault: false
 description: "This priority class should be used for Komodor  pods only."
