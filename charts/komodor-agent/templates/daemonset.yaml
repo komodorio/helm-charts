@@ -26,7 +26,7 @@ spec:
     spec:
       {{- include "network_mapper.daemonset.network" .   | nindent 6 }}
 
-      priorityClassName: {{ .Release.Name }}-daemon-high-priority
+      priorityClassName: {{ include "komodor.truncatedReleaseName"  . }}-daemon-high-priority
       serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
       affinity:
         {{- toYaml .Values.components.komodorDaemon.affinity | nindent 8 }}

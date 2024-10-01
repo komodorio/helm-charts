@@ -32,7 +32,7 @@ spec:
         runAsUser: 0
         runAsGroup: 0
       {{- end }}
-      priorityClassName: {{ .Release.Name }}-agent-high-priority
+      priorityClassName: {{ include "komodor.truncatedReleaseName"  . }}-agent-high-priority
       serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
       affinity:
         {{- toYaml .Values.components.komodorAgent.affinity | nindent 8 }}
