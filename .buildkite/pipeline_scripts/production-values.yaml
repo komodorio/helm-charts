@@ -12,6 +12,18 @@ components:
     tolerations:
       - key: Windows
         operator: Exists
+  komodorDaemon:
+    tolerations:
+      - key: "komodor.io/sensitive"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
+  komodorMetrics:
+    tolerations:
+      - key: "komodor.io/sensitive"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
   komodorAgent:
     podAnnotations:
       karpenter.sh/do-not-disrupt: "true"

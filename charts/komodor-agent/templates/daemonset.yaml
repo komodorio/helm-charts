@@ -28,6 +28,7 @@ spec:
 
       priorityClassName: {{ include "komodor.truncatedReleaseName"  . }}-daemon-high-priority
       serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
+      {{ include "metrics.komodorDeamon.securityContext" . | nindent 6 }}
       affinity:
         {{- toYaml .Values.components.komodorDaemon.affinity | nindent 8 }}
       nodeSelector:

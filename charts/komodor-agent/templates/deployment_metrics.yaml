@@ -31,6 +31,7 @@ spec:
         {{- if not (empty (((.Values.components).komodorMetrics).nodeSelector)) }}
         {{- toYaml .Values.components.komodorMetrics.nodeSelector | nindent 8 }}
         {{- end }}
+      {{ include "metrics.komodorMetrics.securityContext" . | nindent 6 }}
       tolerations:
         {{- toYaml .Values.components.komodorMetrics.tolerations | nindent 8}}
       containers:
