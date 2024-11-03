@@ -154,13 +154,13 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorAgent.securityContext | object | `{}` | Set custom securityContext to the komodor agent deployment (use with caution) |
 | components.komodorAgent.watcher.image | object | `{ "name": "k8s-watcher", "tag": .Chart.AppVersion }` | Override the komodor agent watcher image name or tag. |
 | components.komodorAgent.watcher.resources | object | `{"limits":{"cpu":2,"memory":"8Gi"},"requests":{"cpu":0.25,"memory":"256Mi"}}` | Set custom resources to the komodor agent watcher container |
-| components.komodorAgent.watcher.securityContext | object | `{"allowPrivilegeEscalation":false,"readOnlyRootFilesystem":true,"runAsGroup":1000,"runAsUser":1000}` | Set security context for the komodor agent watcher container |
+| components.komodorAgent.watcher.securityContext | object | `{}` | Set security context for the komodor agent watcher container |
 | components.komodorAgent.watcher.ports | object | `{"healthCheck":8090}` | Override the komodor agent watcher ports configuration |
 | components.komodorAgent.watcher.ports.healthCheck | int | `8090` | Override the health check port of the komodor agent watcher |
 | components.komodorAgent.watcher.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorAgent.supervisor.image | object | `{ "name": "supervisor", "tag": .Chart.AppVersion }` | Override the komodor agent supervisor image name or tag. |
 | components.komodorAgent.supervisor.resources | object | `{"requests":{"cpu":0.1,"memory":"256Mi"}}` | Set custom resources to the komodor agent supervisor container |
-| components.komodorAgent.supervisor.securityContext | object | `{"allowPrivilegeEscalation":false,"readOnlyRootFilesystem":true,"runAsGroup":1000,"runAsUser":1000}` | Set security context for the komodor agent watcher container |
+| components.komodorAgent.supervisor.securityContext | object | `{}` | Set security context for the komodor agent watcher container |
 | components.komodorAgent.supervisor.ports | object | `{"healthCheck":8089}` | Override the komodor agent supervisor ports configuration |
 | components.komodorAgent.supervisor.ports.healthCheck | int | `8089` | Override the health check port of the komodor agent supervisor |
 | components.komodorAgent.supervisor.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
