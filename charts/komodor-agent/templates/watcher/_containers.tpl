@@ -48,7 +48,7 @@
   {{- end }}
 
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
-  {{- include "komodorAgent.securityContext" . | nindent 2}}
+  {{- include "komodorAgent.container.securityContext" . | nindent 2}}
   ports:
     - name: http-healthz
       containerPort: {{ .Values.components.komodorAgent.watcher.ports.healthCheck  }}
@@ -99,7 +99,7 @@
     {{- end }}
 
   {{- include "komodorAgent.proxy-conf" . | indent 4 }}
-  {{- include "komodorAgent.securityContext" . | nindent 2}}
+  {{- include "komodorAgent.container.securityContext" . | nindent 2}}
   ports:
     - name: http-healthz
       containerPort: {{ .Values.components.komodorAgent.supervisor.ports.healthCheck }}

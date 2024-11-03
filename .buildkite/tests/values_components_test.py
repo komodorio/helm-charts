@@ -142,3 +142,24 @@ def test_extra_env_vars(component, location, container, container_index, deploym
 
     assert deployment_env_vars[-1][
                "name"] == "TEST_ENV_VAR", f"Expected TEST_ENV_VAR in deployment env vars {deployment_env_vars}"
+
+
+@pytest.mark.parametrize("component_name, deployment_name_suffix", [
+    ("komodorAgent", ""),
+    ("komodorMetrics", "-metrics"),
+    ("komodorDaemon", "")])
+def test_override_security_context(component_name, deployment_name_suffix):
+    values_file = f"""
+    components:
+      {component_name}:
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 3000
+          fsGroup: 2000
+    """
+
+    deployment_name = f"{RELEASE_NAME}-komodor-agent{deployment_name_suffix}"
+    deployment_affinity = get_yaml_from_helm_template("test=test", "Deployment", deployment_name,
+                                                      "spec.template.spec.securityContext", values_file=values_file)
+
+    assert deployment_affinity is not None, f"Expected securityContext in deployment {deployment_affinity}"

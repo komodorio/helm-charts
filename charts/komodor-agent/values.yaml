@@ -145,6 +145,8 @@ components:
     tolerations: [ ]
     # components.komodorAgent.podAnnotations -- Set pod annotations for the komodor agent deployment
     podAnnotations: { }
+    # components.komodorAgent.securityContext -- Set custom securityContext to the komodor agent deployment (use with caution)
+    securityContext: { }
 
     watcher:
       # components.komodorAgent.watcher.image -- Override the komodor agent watcher image name or tag.
@@ -160,6 +162,8 @@ components:
         requests:
           cpu: 0.25
           memory: 256Mi
+      # components.komodorAgent.watcher.securityContext -- Set security context for the komodor agent watcher container
+      securityContext: { }
       # components.komodorAgent.watcher.ports -- Override the komodor agent watcher ports configuration
       ports:
         # components.komodorAgent.watcher.ports.healthCheck -- Override the health check port of the komodor agent watcher
@@ -180,6 +184,8 @@ components:
         requests:
           cpu: 0.1
           memory: 256Mi
+      # components.komodorAgent.supervisor.securityContext -- Set security context for the komodor agent watcher container
+      securityContext: { }
       # components.komodorAgent.supervisor.ports -- Override the komodor agent supervisor ports configuration
       ports:
         # components.komodorAgent.supervisor.ports.healthCheck -- Override the health check port of the komodor agent supervisor
@@ -210,6 +216,8 @@ components:
     tolerations: [ ]
     # components.komodorMetrics.podAnnotations -- Set pod annotations for the komodor metrics agent deployment
     podAnnotations: { }
+    # components.komodorMetrics.securityContext -- Set custom securityContext to the komodor metrics agent deployment (use with caution)
+    securityContext: { }
 
     # components.komodorMetrics.metricsInit -- Configure the komodor metrics init container
     # @default -- See sub-values
@@ -257,6 +265,9 @@ components:
     tolerations: [ ]
     # components.komodorDaemon.podAnnotations --  # Add annotations to the komodor agent watcher pod
     podAnnotations: { }
+    # components.komodorDaemon.securityContext -- Set custom securityContext to the komodor agent daemon (use with caution)
+    securityContext: { }
+
     # components.komodorDaemon.metrics -- Configure the komodor daemon metrics components
 
     # components.komodorDaemon.metricsInit -- Configure the komodor daemon metrics init container
