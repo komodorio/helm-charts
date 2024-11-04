@@ -262,7 +262,8 @@ components:
     # components.komodorDaemon.nodeSelector -- Set node selectors for the komodor agent daemon
     nodeSelector: { }
     # components.komodorDaemon.tolerations -- Add tolerations to the komodor agent daemon
-    tolerations: [ ]
+    tolerations:
+      - operator: "Exists"
     # components.komodorDaemon.podAnnotations --  # Add annotations to the komodor agent watcher pod
     podAnnotations: { }
     # components.komodorDaemon.securityContext -- Set custom securityContext to the komodor agent daemon (use with caution)
