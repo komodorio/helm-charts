@@ -346,7 +346,8 @@ components:
     # components.komodorDaemonWindows.nodeSelector -- Set node selectors for the komodor agent daemon
     nodeSelector: { }
     # components.komodorDaemonWindows.tolerations -- Add tolerations to the komodor agent daemon
-    tolerations: [ ]
+    tolerations:
+      - operator: "Exists"
     # components.komodorDaemonWindows.podAnnotations --  # Add annotations to the komodor agent watcher pod
     podAnnotations: { }
 
