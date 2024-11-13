@@ -76,7 +76,11 @@ capabilities:
   # capabilities.actions -- (bool) Allow users to perform actions on the cluster, granular access control is defined in the application<boolean>
   actions: true
   # capabilities.helm -- Enable helm capabilities by the komodor agent
-  helm: true
+  helm:
+    # capabilities.helm.enabled -- (bool) Enable helm capabilities by the komodor agent
+    enabled: true
+    # capabilities.helm.readonly -- (bool) Allow komodor to read helm resources only (remove create/update/delete permissions from secrets)
+    readonly: false
   # capabilities.rbac -- (bool) Allow komodor to create and manage serviceaccounts, roles and bindings in cluster
   rbac: true
 

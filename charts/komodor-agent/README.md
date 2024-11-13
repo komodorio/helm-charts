@@ -122,7 +122,9 @@ The command removes all the Kubernetes components associated with the chart and 
 | capabilities.networkMapper | bool | `false` | Enable network mapping capabilities by the komodor agent |
 | capabilities.nodeEnricher | bool | `true` | Enable node enricher capabilities by the komodor agent |
 | capabilities.actions | bool | `true` | Allow users to perform actions on the cluster, granular access control is defined in the application<boolean> |
-| capabilities.helm | bool | `true` | Enable helm capabilities by the komodor agent |
+| capabilities.helm | object | `{"enabled":true,"readonly":false}` | Enable helm capabilities by the komodor agent |
+| capabilities.helm.enabled | bool | `true` | Enable helm capabilities by the komodor agent |
+| capabilities.helm.readonly | bool | `false` | Allow komodor to read helm resources only (remove create/update/delete permissions from secrets) |
 | capabilities.rbac | bool | `true` | Allow komodor to create and manage serviceaccounts, roles and bindings in cluster |
 | capabilities.events | object | See sub-values | Configure the agent events capabilities |
 | capabilities.events.watchNamespace | string | all | Watch a specific namespace, or all namespaces ("", "all") |

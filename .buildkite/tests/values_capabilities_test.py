@@ -85,7 +85,7 @@ def test_network_mapper(setup_cluster):
 
 
 def test_disable_helm_capabilities():
-    set_path = "capabilities.helm"
+    set_path = "capabilities.helm.enabled"
     value = "false"
     set_command = f"{set_path}={value}"
 

@@ -1,4 +1,5 @@
 {{- if .Values.createRbac -}}
+{{- include "migrateHelmValues" . -}}
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -455,8 +456,18 @@ rules:
     - create
 {{- end}}
 
+{{- if .Values.capabilities.helm.enabled }}
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - list
+      - get
+      - watch
+  {{- end }}
 
-{{- if .Values.capabilities.helm }}
+  {{- if and .Values.capabilities.helm.enabled (not .Values.capabilities.helm.readonly) }}
   - apiGroups:
       - ""
     resources:
@@ -465,9 +476,6 @@ rules:
       - create
       - update
       - delete
-      - list
-      - get
-      - watch
 
   # Allow to uninstall charts
   - apiGroups: ["*"]

@@ -1,4 +1,4 @@
-
+{{- include "migrateHelmValues" . -}}
 {{- define "watcher.container" -}}
 - name: {{ include "watcher.container.name" .}}
   image: {{ .Values.imageRepo }}/{{ .Values.components.komodorAgent.watcher.image.name}}:{{ .Values.components.komodorAgent.watcher.image.tag | default .Chart.AppVersion }}
@@ -15,7 +15,7 @@
   - name: podinfo
     mountPath: /etc/podinfo
   {{- end }}
-  {{- if (.Values.capabilities).helm }}
+  {{- if (.Values.capabilities).helm.enabled }}
   - name: helm-data
     mountPath: /opt/watcher/helm
   {{- end }}
