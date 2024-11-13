@@ -1,3 +1,4 @@
+{{- include "migrateHelmValues" . -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,7 +11,7 @@ data:
     enableAgentTaskExecution: true
     enableAgentTaskExecutionV2: true
     allowReadingPodLogs: {{ .Values.capabilities.logs.enabled}}
-    enableHelm: {{ .Values.capabilities.helm }}
+    enableHelm: {{ .Values.capabilities.helm.enabled }}
     daemon:
       enabled: {{ .Values.capabilities.metrics }}
     collectHistory: true
