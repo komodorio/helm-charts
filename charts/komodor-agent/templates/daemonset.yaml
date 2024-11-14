@@ -11,6 +11,10 @@ metadata:
   annotations: {{ toYaml ((.Values.components).komodorDaemon).annotations | nindent 4 }}
   {{- end }}
 spec:
+  {{- if not (empty .Values.components.komodorDaemon.updateStrategy) }}
+  updateStrategy:
+    {{- toYaml .Values.components.komodorDaemon.updateStrategy | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels: {{- include "komodorAgentDaemon.selectorLabels" . | nindent 6 }}
   template:

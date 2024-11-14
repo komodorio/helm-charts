@@ -154,6 +154,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorAgent.tolerations | list | `[]` | Set tolerations for the komodor agent deployment |
 | components.komodorAgent.podAnnotations | object | `{}` | Set pod annotations for the komodor agent deployment |
 | components.komodorAgent.securityContext | object | `{}` | Set custom securityContext to the komodor agent deployment (use with caution) |
+| components.komodorAgent.strategy | object | `{}` | Set the rolling update strategy for the komodor agent deployment |
 | components.komodorAgent.watcher.image | object | `{ "name": "k8s-watcher", "tag": .Chart.AppVersion }` | Override the komodor agent watcher image name or tag. |
 | components.komodorAgent.watcher.resources | object | `{"limits":{"cpu":2,"memory":"8Gi"},"requests":{"cpu":0.25,"memory":"256Mi"}}` | Set custom resources to the komodor agent watcher container |
 | components.komodorAgent.watcher.securityContext | object | `{}` | Set security context for the komodor agent watcher container (use with caution) |
@@ -176,6 +177,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorMetrics.tolerations | list | `[]` | Set tolerations for the komodor metrics agent deployment |
 | components.komodorMetrics.podAnnotations | object | `{}` | Set pod annotations for the komodor metrics agent deployment |
 | components.komodorMetrics.securityContext | object | `{}` | Set custom securityContext to the komodor metrics agent deployment (use with caution) |
+| components.komodorMetrics.strategy | object | `{}` | Set the rolling update strategy for the komodor metrics agent deployment |
 | components.komodorMetrics.metricsInit | object | See sub-values | Configure the komodor metrics init container |
 | components.komodorMetrics.metricsInit.image | object | `{ "name": "komodor-agent", "tag": .Chart.AppVersion }` | Override the komodor agent metrics init image name or tag. |
 | components.komodorMetrics.metricsInit.resources | object | `{}` | Set custom resources to the komodor agent metrics init container |
@@ -192,6 +194,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemon.tolerations | list | `[{"operator":"Exists"}]` | Add tolerations to the komodor agent daemon |
 | components.komodorDaemon.podAnnotations | object | `{}` | # Add annotations to the komodor agent watcher pod |
 | components.komodorDaemon.securityContext | object | `{}` | Set custom securityContext to the komodor agent daemon (use with caution) |
+| components.komodorDaemon.updateStrategy | object | `{}` | Set the rolling update strategy for the komodor agent daemon deployment |
 | components.komodorDaemon.metricsInit | object | See sub-values | Configure the komodor daemon metrics init container |
 | components.komodorDaemon.metricsInit.image | object | `{ "name": "init-daemon-agent", "tag": .Chart.AppVersion }` | Override the komodor agent metrics init image name or tag. |
 | components.komodorDaemon.metricsInit.resources | object | `{"limits":{"cpu":1,"memory":"100Mi"},"requests":{"cpu":0.1,"memory":"50Mi"}}` | Set custom resources to the komodor agent metrics init container |
@@ -214,6 +217,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemonWindows.nodeSelector | object | `{}` | Set node selectors for the komodor agent daemon |
 | components.komodorDaemonWindows.tolerations | list | `[{"operator":"Exists"}]` | Add tolerations to the komodor agent daemon |
 | components.komodorDaemonWindows.podAnnotations | object | `{}` | # Add annotations to the komodor agent watcher pod |
+| components.komodorDaemonWindows.updateStrategy | object | `{}` | Set the rolling update strategy for the komodor agent daemon deployment |
 | components.komodorDaemonWindows.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf-windows","tag":"1.31.0-v1"},"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}}` | Configure the komodor daemon metrics components |
 | components.komodorDaemonWindows.metrics.image | object | `{"name":"telegraf-windows","tag":"1.31.0-v1"}` | Override the komodor agent metrics image name or tag. |
 | components.komodorDaemonWindows.metrics.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |

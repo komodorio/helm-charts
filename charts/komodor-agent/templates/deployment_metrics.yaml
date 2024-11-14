@@ -10,6 +10,10 @@ metadata:
   annotations: {{ toYaml ((.Values.components).komodorMetrics).annotations | nindent 4 }}
   {{- end }}
 spec:
+  {{- if not (empty .Values.components.komodorMetrics.strategy) }}
+  strategy:
+    {{- toYaml .Values.components.komodorMetrics.strategy | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels: {{- include "komodorMetrics.selectorLabels" . | nindent 6 }}
   template:

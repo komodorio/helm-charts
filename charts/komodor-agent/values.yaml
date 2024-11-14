@@ -151,6 +151,8 @@ components:
     podAnnotations: { }
     # components.komodorAgent.securityContext -- Set custom securityContext to the komodor agent deployment (use with caution)
     securityContext: { }
+    # components.komodorAgent.strategy -- Set the rolling update strategy for the komodor agent deployment
+    strategy: { }
 
     watcher:
       # components.komodorAgent.watcher.image -- Override the komodor agent watcher image name or tag.
@@ -222,6 +224,8 @@ components:
     podAnnotations: { }
     # components.komodorMetrics.securityContext -- Set custom securityContext to the komodor metrics agent deployment (use with caution)
     securityContext: { }
+    # components.komodorMetrics.strategy -- Set the rolling update strategy for the komodor metrics agent deployment
+    strategy: { }
 
     # components.komodorMetrics.metricsInit -- Configure the komodor metrics init container
     # @default -- See sub-values
@@ -272,6 +276,8 @@ components:
     podAnnotations: { }
     # components.komodorDaemon.securityContext -- Set custom securityContext to the komodor agent daemon (use with caution)
     securityContext: { }
+    # components.komodorDaemon.updateStrategy -- Set the rolling update strategy for the komodor agent daemon deployment
+    updateStrategy: { }
 
     # components.komodorDaemon.metrics -- Configure the komodor daemon metrics components
 
@@ -354,6 +360,8 @@ components:
       - operator: "Exists"
     # components.komodorDaemonWindows.podAnnotations --  # Add annotations to the komodor agent watcher pod
     podAnnotations: { }
+    # components.komodorDaemonWindows.updateStrategy -- Set the rolling update strategy for the komodor agent daemon deployment
+    updateStrategy: { }
 
     # components.komodorDaemonWindows.metrics -- Configure the komodor daemon metrics components
     metrics:

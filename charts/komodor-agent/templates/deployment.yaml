@@ -10,9 +10,14 @@ metadata:
 spec:
   replicas: 1
   strategy:
+  {{- if not (empty .Values.components.komodorAgent.strategy) }}
+    {{- toYaml .Values.components.komodorAgent.strategy | nindent 4 }}
+  {{ else }}
+    type: RollingUpdate
     rollingUpdate:
       maxUnavailable: 0
       maxSurge: 1
+  {{- end }}
   selector:
     matchLabels:
       {{- include "komodorAgent.selectorLabels" . | nindent 6 }}
