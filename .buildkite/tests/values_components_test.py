@@ -24,14 +24,16 @@ def test_override_deployment_pod_annotations(component_name, deployment_name_suf
 
 def run_label_test(set_path, value, deployment_name, resource_type):
     set_command = f"{set_path}={value}"
-    results = get_yaml_from_helm_template(set_command, resource_type, deployment_name, "spec.template.metadata.labels.test")
+    results = get_yaml_from_helm_template(set_command, resource_type, deployment_name,
+                                          "spec.template.metadata.labels.test")
     assert results == value, f"Expected {value} in pod labels {results}"
 
 
 @pytest.mark.parametrize("set_path, value, deployment_name, resource_type", [
     ("components.komodorAgent.labels.test", "test_value", f"{RELEASE_NAME}-komodor-agent", "Deployment"),
     ("components.komodorDaemon.labels.test", "test_value", f"{RELEASE_NAME}-komodor-agent-daemon", "DaemonSet"),
-    ("components.komodorDaemonWindows.labels.test", "test_value", f"{RELEASE_NAME}-komodor-agent-daemon-windows", "DaemonSet"),
+    ("components.komodorDaemonWindows.labels.test", "test_value", f"{RELEASE_NAME}-komodor-agent-daemon-windows",
+     "DaemonSet"),
     ("components.komodorMetrics.labels.test", "test_value", f"{RELEASE_NAME}-komodor-agent-metrics", "Deployment")
 ])
 def test_user_labels(set_path, value, deployment_name, resource_type):
@@ -163,3 +165,27 @@ def test_override_security_context(component_name, deployment_name_suffix):
                                                       "spec.template.spec.securityContext", values_file=values_file)
 
     assert deployment_affinity is not None, f"Expected securityContext in deployment {deployment_affinity}"
+
+
+@pytest.mark.parametrize("component_name, deployment_name_suffix, strategy_key, resource_kind", [
+    ("komodorAgent", "", "strategy", "Deployment"),
+    ("komodorMetrics", "-metrics", "strategy", "Deployment"),
+    ("komodorDaemon", "-daemon", "updateStrategy", "DaemonSet"),
+    ("komodorDaemonWindows", "-daemon-windows", "updateStrategy", "DaemonSet")])
+def test_override_update_strategy(component_name, deployment_name_suffix, strategy_key, resource_kind):
+    values_file = f"""
+    components:
+        {component_name}:
+          {strategy_key}:
+            type: RollingUpdate
+            rollingUpdate:
+              maxUnavailable: 10
+              maxSurge: 10
+
+    """
+
+    deployment_name = f"{RELEASE_NAME}-komodor-agent{deployment_name_suffix}"
+    deployment_strategy = get_yaml_from_helm_template("test=test", resource_kind, deployment_name,
+                                                      f"spec.{strategy_key}", values_file=values_file)
+
+    assert deployment_strategy["type"] == "RollingUpdate", f"Expected rollingUpdate in deployment tolerations {deployment_strategy}"
