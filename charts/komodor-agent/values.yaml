@@ -13,9 +13,9 @@ clusterName:
 createRbac: true
 
 # telegrafImageVersion -- (string) Telegraf version to be used
-telegrafImageVersion: &telegrafVersion 1.32.2-alpine-v1
+telegrafImageVersion: &telegrafVersion v1.32.3-alpine
 # telegrafWindowsImageVersion -- (string) Telegraf version to be used for windows
-telegrafWindowsImageVersion: &telegrafWindowsVersion 1.31.0-v1
+telegrafWindowsImageVersion: &telegrafWindowsVersion v1.32.3-windows
 # networkMapperImageVersion -- (string) Network mapper version to be used
 networkMapperImageVersion: &networkMapperVersion v1.0.3
 
