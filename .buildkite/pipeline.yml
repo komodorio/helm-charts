@@ -30,6 +30,7 @@ steps:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
             API_KEY: /helm-chart-test/production/API_KEY
+            PUBLIC_API_KEY: /helm-chart-test/production/PUBLIC_API_KEY
 
   - label: ":test_tube: values_base_test"
     commands:
@@ -42,6 +43,7 @@ steps:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
             API_KEY: /helm-chart-test/production/API_KEY
+            PUBLIC_API_KEY: /helm-chart-test/production/PUBLIC_API_KEY
 
   - label: ":test_tube: values_capabilities_events_test"
     commands:
@@ -54,6 +56,7 @@ steps:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
             API_KEY: /helm-chart-test/production/API_KEY
+            PUBLIC_API_KEY: /helm-chart-test/production/PUBLIC_API_KEY
 
   - label: ":test_tube: values_capabilities_proxy_test"
     commands:
@@ -66,6 +69,7 @@ steps:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
             API_KEY: /helm-chart-test/production/API_KEY
+            PUBLIC_API_KEY: /helm-chart-test/production/PUBLIC_API_KEY
 
   - label: ":test_tube: values_capabilities_test"
     commands:
@@ -91,6 +95,7 @@ steps:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
             API_KEY: /helm-chart-test/production/API_KEY
+            PUBLIC_API_KEY: /helm-chart-test/production/PUBLIC_API_KEY
 
   - label: ":test_tube: legacy_k8s_versions_test"
     commands:
@@ -103,6 +108,7 @@ steps:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
             API_KEY: /helm-chart-test/production/API_KEY
+            PUBLIC_API_KEY: /helm-chart-test/production/PUBLIC_API_KEY
 
   - wait
 
