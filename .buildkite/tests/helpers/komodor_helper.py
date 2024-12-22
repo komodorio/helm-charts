@@ -1,18 +1,22 @@
 import requests
 import time
-from config import API_KEY
+from config import API_KEY, PUBLIC_API_KEY
 
 
 def create_komodor_uid(kind, name, namespace, cluster_name):
     return f"{kind}|{cluster_name}|{namespace}|{name}"
 
 
-def query_backend(url):
+def query_backend(url, agent_api_key=False):
     payload={}
     headers = {
         'Accept': 'application/json',
-        'x-api-key': API_KEY
     }
+    if agent_api_key:
+        headers['x-api-key'] = API_KEY
+    else:
+        headers['x-api-key'] = PUBLIC_API_KEY
+        headers['x-app-key'] = 'API'
 
     response = requests.request("GET", url, headers=headers, data=payload)
     return response

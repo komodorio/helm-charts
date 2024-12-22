@@ -20,7 +20,7 @@ def wait_for_metrics(container_name, pod_name):
                f"clusterName={CLUSTER_NAME}&namespace={NAMESPACE}&podName={pod_name}&"
                f"fromEpoch={start_time}&pageSize=1&timeWindow=1d&endTime={end_time}&"
                f"aggregationTypes=p96&aggregationTypes=p99")
-        response = query_backend(url)
+        response = query_backend(url, agent_api_key=False)
         if response.json().get('request'):
             return response
         time.sleep(1)
