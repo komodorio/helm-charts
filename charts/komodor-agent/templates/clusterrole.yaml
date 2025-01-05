@@ -188,6 +188,7 @@ rules:
     - get
     - watch
     - list
+    - patch
 {{- end }}
 {{- if or (((.Values.allowedResources.argoWorkflows)).workflows) (((.Values.allowedResources.argoWorkflows)).cronWorkflows) }}
   - apiGroups:
