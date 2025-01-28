@@ -99,7 +99,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | clusterName | string | `nil` | **(*required*)** Name to be displayed in the Komodor web application |
 | createRbac | bool | `true` | Creates the necessary RBAC resources for the agent - use with caution! |
 | telegrafImageVersion | string | `"v1.32.3-alpine"` | Telegraf version to be used |
-| telegrafWindowsImageVersion | string | `"1.31.0-v1"` | Telegraf version to be used for windows |
+| telegrafWindowsImageVersion | string | `"v1.32.3-2-windows"` | Telegraf version to be used for windows |
 | networkMapperImageVersion | string | `"v1.0.3"` | Network mapper version to be used |
 | serviceAccount | object | See sub-values | Configure service account for the agent |
 | serviceAccount.create | bool | `true` | Creates a service account for the agent |
@@ -218,8 +218,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemonWindows.tolerations | list | `[{"operator":"Exists"}]` | Add tolerations to the komodor agent daemon |
 | components.komodorDaemonWindows.podAnnotations | object | `{}` | # Add annotations to the komodor agent watcher pod |
 | components.komodorDaemonWindows.updateStrategy | object | `{}` | Set the rolling update strategy for the komodor agent daemon deployment |
-| components.komodorDaemonWindows.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf-windows","tag":"1.31.0-v1"},"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}}` | Configure the komodor daemon metrics components |
-| components.komodorDaemonWindows.metrics.image | object | `{"name":"telegraf-windows","tag":"1.31.0-v1"}` | Override the komodor agent metrics image name or tag. |
+| components.komodorDaemonWindows.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf-windows","tag":"v1.32.3-2-windows"},"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}}` | Configure the komodor daemon metrics components |
+| components.komodorDaemonWindows.metrics.image | object | `{"name":"telegraf-windows","tag":"v1.32.3-2-windows"}` | Override the komodor agent metrics image name or tag. |
 | components.komodorDaemonWindows.metrics.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
 | components.komodorDaemonWindows.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | allowedResources.event | bool | `true` | Enables watching `event` |
