@@ -14,7 +14,7 @@ securityContext:
 {{- if gt (len .Values.components.komodorAgent.securityContext) 0 }}
 securityContext:
   {{- toYaml .Values.components.komodorAgent.securityContext | nindent 2 }}
-{{- else if not (.Values.capabilities.networkMapper) }}
+{{- else }}
 securityContext:
   runAsUser: 0
   runAsGroup: 0

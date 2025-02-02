@@ -16,8 +16,6 @@ createRbac: true
 telegrafImageVersion: &telegrafVersion v1.32.3-alpine
 # telegrafWindowsImageVersion -- (string) Telegraf version to be used for windows
 telegrafWindowsImageVersion: &telegrafWindowsVersion v1.32.3-2-windows
-# networkMapperImageVersion -- (string) Network mapper version to be used
-networkMapperImageVersion: &networkMapperVersion v1.0.3
 
 # serviceAccount -- Configure service account for the agent
 # @default -- See sub-values
@@ -69,8 +67,6 @@ imagePullSecret:
 capabilities:
   # capabilities.metrics -- (bool) Fetch workload metrics and send them to komodor backend
   metrics: true
-  # capabilities.networkMapper -- (bool) Enable network mapping capabilities by the komodor agent
-  networkMapper: false
   # capabilities.nodeEnricher -- (bool) Enable node enricher capabilities by the komodor agent
   nodeEnricher: true
   # capabilities.actions -- (bool) Allow users to perform actions on the cluster, granular access control is defined in the application<boolean>
@@ -199,14 +195,6 @@ components:
       # components.komodorAgent.supervisor.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
       extraEnvVars: [ ]
 
-    networkMapper:
-      # components.komodorAgent.networkMapper.image -- Override the komodor agent network mapper image name or tag.
-      image:
-        name: network-mapper
-        tag: *networkMapperVersion
-      # components.komodorAgent.networkMapper.resources -- Set custom resources to the komodor agent network mapper container
-      resources: { }
-
   komodorMetrics:
     # components.komodorMetrics.PriorityClassValue -- Set the priority class value for the komodor metrics agent deployment
     PriorityClassValue: 10000000
@@ -315,16 +303,6 @@ components:
           memory: 384Mi
       # components.komodorDaemon.metrics.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
       extraEnvVars: [ ]
-
-    # components.komodorDaemon.networkSniffer -- Configure the komodor daemon network sniffer components
-    # @default -- See sub-values
-    networkSniffer:
-      # components.komodorDaemon.networkSniffer.image -- Override the komodor agent network sniffer image name or tag.
-      image:
-        name: network-mapper-sniffer
-        tag: *networkMapperVersion
-      # components.komodorDaemon.networkSniffer.resources -- Set custom resources to the komodor agent network sniffer container
-      resources: { }
 
     # components.komodorDaemon.nodeEnricher -- Configure the komodor daemon node enricher components
     # @default -- See sub-values

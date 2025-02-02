@@ -100,7 +100,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | createRbac | bool | `true` | Creates the necessary RBAC resources for the agent - use with caution! |
 | telegrafImageVersion | string | `"v1.32.3-alpine"` | Telegraf version to be used |
 | telegrafWindowsImageVersion | string | `"v1.32.3-2-windows"` | Telegraf version to be used for windows |
-| networkMapperImageVersion | string | `"v1.0.3"` | Network mapper version to be used |
 | serviceAccount | object | See sub-values | Configure service account for the agent |
 | serviceAccount.create | bool | `true` | Creates a service account for the agent |
 | serviceAccount.name | string | `nil` | Name of the service account, Required if `serviceAccount.create` is false |
@@ -119,7 +118,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | imagePullSecret | string | `nil` | Set the image pull secret for the komodor agent |
 | capabilities | object | See sub-values | Configure the agent capabilities |
 | capabilities.metrics | bool | `true` | Fetch workload metrics and send them to komodor backend |
-| capabilities.networkMapper | bool | `false` | Enable network mapping capabilities by the komodor agent |
 | capabilities.nodeEnricher | bool | `true` | Enable node enricher capabilities by the komodor agent |
 | capabilities.actions | bool | `true` | Allow users to perform actions on the cluster, granular access control is defined in the application<boolean> |
 | capabilities.helm | object | `{"enabled":true,"readonly":false}` | Enable helm capabilities by the komodor agent |
@@ -167,8 +165,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorAgent.supervisor.ports | object | `{"healthCheck":8089}` | Override the komodor agent supervisor ports configuration |
 | components.komodorAgent.supervisor.ports.healthCheck | int | `8089` | Override the health check port of the komodor agent supervisor |
 | components.komodorAgent.supervisor.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
-| components.komodorAgent.networkMapper.image | object | `{"name":"network-mapper","tag":"v1.0.3"}` | Override the komodor agent network mapper image name or tag. |
-| components.komodorAgent.networkMapper.resources | object | `{}` | Set custom resources to the komodor agent network mapper container |
 | components.komodorMetrics.PriorityClassValue | int | `10000000` | Set the priority class value for the komodor metrics agent deployment |
 | components.komodorMetrics.affinity | object | `{}` | Set node affinity for the komodor metrics agent deployment |
 | components.komodorMetrics.annotations | object | `{}` | Set annotations for the komodor metrics agent deployment |
@@ -203,9 +199,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemon.metrics.image | object | `{"name":"telegraf","tag":"v1.32.3-alpine"}` | Override the komodor agent metrics image name or tag. |
 | components.komodorDaemon.metrics.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
 | components.komodorDaemon.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
-| components.komodorDaemon.networkSniffer | object | See sub-values | Configure the komodor daemon network sniffer components |
-| components.komodorDaemon.networkSniffer.image | object | `{"name":"network-mapper-sniffer","tag":"v1.0.3"}` | Override the komodor agent network sniffer image name or tag. |
-| components.komodorDaemon.networkSniffer.resources | object | `{}` | Set custom resources to the komodor agent network sniffer container |
 | components.komodorDaemon.nodeEnricher | object | See sub-values | Configure the komodor daemon node enricher components |
 | components.komodorDaemon.nodeEnricher.image | object | `{"name":"komodor-agent","tag":null}` | Override the komodor agent node enricher image name or tag. |
 | components.komodorDaemon.nodeEnricher.resources | object | `{"limits":{"cpu":"10m","memory":"100Mi"},"requests":{"cpu":"1m","memory":"10Mi"}}` | Set custom resources to the komodor agent node enricher container |
