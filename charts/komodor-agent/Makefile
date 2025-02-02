@@ -9,12 +9,13 @@ HELM_DOCS_ARGS := -s file \
                   -y="proxy" \
                   -y="components.komodorAgent.watcher" \
                   -y="components.komodorAgent.supervisor" \
-                  -y="components.komodorAgent.networkMapper" \
                   -y="components.komodorMetrics" \
                   -y="components.komodorMetrics.metrics" \
                   -y="components.komodorDaemon.metrics" \
                   -y="components.komodorDaemon" \
-                  -y="allowedResources"
+                  -y="allowedResources" \
+                  -z ".*securityContext.*" \
+				  -z ".tolerations.*" \
 
 # Determine OS and Arch for downloading helm-docs
 OS := $(shell uname -s)

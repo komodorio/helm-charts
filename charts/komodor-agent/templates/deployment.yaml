@@ -10,9 +10,14 @@ metadata:
 spec:
   replicas: 1
   strategy:
+  {{- if not (empty .Values.components.komodorAgent.strategy) }}
+    {{- toYaml .Values.components.komodorAgent.strategy | nindent 4 }}
+  {{ else }}
+    type: RollingUpdate
     rollingUpdate:
       maxUnavailable: 0
       maxSurge: 1
+  {{- end }}
   selector:
     matchLabels:
       {{- include "komodorAgent.selectorLabels" . | nindent 6 }}
@@ -27,12 +32,8 @@ spec:
         {{- include "komodorAgent.selectorLabels" . | nindent 8 }}
         {{- include "komodorAgent.user.labels" . | nindent 8 }}
     spec:
-      {{- if not (.Values.capabilities.networkMapper) }}
-      securityContext:
-        runAsUser: 0
-        runAsGroup: 0
-      {{- end }}
-      priorityClassName: {{ .Release.Name }}-agent-high-priority
+      {{ include "komodorAgent.pod.securityContext" . | nindent 6 }}
+      priorityClassName: {{ include "komodor.truncatedReleaseName"  . }}-agent-high-priority
       serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
       affinity:
         {{- toYaml .Values.components.komodorAgent.affinity | nindent 8 }}
@@ -48,7 +49,6 @@ spec:
         {{- include "ca-init.container" .                   | trim | nindent 8 }}
 
       containers:
-        {{- include "network_mapper.container" .            | trim | nindent 8 }}
         {{- include "watcher.container" .                   | trim | nindent 8 }}
         {{- include "supervisor.container" .                | trim | nindent 8 }}
 

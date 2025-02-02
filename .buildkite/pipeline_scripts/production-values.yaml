@@ -12,11 +12,19 @@ components:
     tolerations:
       - key: Windows
         operator: Exists
+  komodorDaemon:
+    tolerations:
+      - key: "komodor.io/sensitive"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
+  komodorMetrics:
+    tolerations:
+      - key: "komodor.io/sensitive"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
   komodorAgent:
-    podAnnotations:
-      karpenter.sh/do-not-disrupt: "true"
-    nodeSelector:
-      eks.amazonaws.com/capacityType: ON_DEMAND
     watcher:
       extraEnvVars:
         # DD_VERSION + DD_SERVICE is set in the agent already

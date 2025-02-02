@@ -64,17 +64,17 @@ Selector labels
 */}}
 {{- define "komodorAgent.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "komodorAgent.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/instance: {{ include "komodor.truncatedReleaseName"  . }}
 {{- end }}
 
 {{- define "komodorAgentDaemon.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "komodorAgent.name" . }}-daemon
-app.kubernetes.io/instance: {{ .Release.Name }}-daemon
+app.kubernetes.io/instance: {{ include "komodor.truncatedReleaseName"  . }}-daemon
 {{- end }}
 
 {{- define "komodorAgentDaemonWindows.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "komodorAgent.name" . }}-daemon-windows
-app.kubernetes.io/instance: {{ .Release.Name }}-daemon-windows
+app.kubernetes.io/instance: {{ include "komodor.truncatedReleaseName"  . }}-daemon-windows
 {{- end }}
 
 {{- define "KomodorDaemon.user.labels" -}}
@@ -104,7 +104,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}-daemon-windows
 
 {{- define "komodorMetrics.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "komodorAgent.name" . }}-metrics
-app.kubernetes.io/instance: {{ .Release.Name }}-metrics
+app.kubernetes.io/instance: {{ include "komodor.truncatedReleaseName"  . }}-metrics
 {{- end }}
 
 {{- define "KomodorMetrics.user.labels" -}}
@@ -112,3 +112,8 @@ app.kubernetes.io/instance: {{ .Release.Name }}-metrics
 {{ toYaml .Values.components.komodorMetrics.labels }}
 {{- end }}
 {{- end}}
+
+
+{{- define "komodor.truncatedReleaseName" -}}
+{{- trunc 40 .Release.Name -}}
+{{- end -}}

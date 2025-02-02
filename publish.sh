@@ -50,7 +50,7 @@ process_chart() {
     helm lint "$chart"
     mkdir -p "$chart_name"
     helm package -d "$chart_name" "$chart"
-    push_chart_to_docker_hub "$chart_name/$chart_name-$chart_version.tgz"
+    [ "$chart_name" = "komodor-agent" ] && push_chart_to_docker_hub "$chart_name/$chart_name-$chart_version.tgz"
     sync_to_s3 "$chart_name"
 }
 

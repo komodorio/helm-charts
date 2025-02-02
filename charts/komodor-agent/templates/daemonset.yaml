@@ -1,4 +1,4 @@
-{{- if (or (ne .Values.capabilities.metrics false) (ne .Values.capabilities.networkMapper false)) }}
+{{- if (ne .Values.capabilities.metrics false) }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -11,6 +11,10 @@ metadata:
   annotations: {{ toYaml ((.Values.components).komodorDaemon).annotations | nindent 4 }}
   {{- end }}
 spec:
+  {{- if not (empty .Values.components.komodorDaemon.updateStrategy) }}
+  updateStrategy:
+    {{- toYaml .Values.components.komodorDaemon.updateStrategy | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels: {{- include "komodorAgentDaemon.selectorLabels" . | nindent 6 }}
   template:
@@ -24,10 +28,9 @@ spec:
         {{- include "komodorAgentDaemon.selectorLabels" . | nindent 8 }}
         {{- include "KomodorDaemon.user.labels" . | nindent 8 }}
     spec:
-      {{- include "network_mapper.daemonset.network" .   | nindent 6 }}
-
-      priorityClassName: {{ .Release.Name }}-daemon-high-priority
+      priorityClassName: {{ include "komodor.truncatedReleaseName"  . }}-daemon-high-priority
       serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
+      {{ include "metrics.komodorDeamon.securityContext" . | nindent 6 }}
       affinity:
         {{- toYaml .Values.components.komodorDaemon.affinity | nindent 8 }}
       nodeSelector:
@@ -39,16 +42,13 @@ spec:
         {{- toYaml .Values.components.komodorDaemon.tolerations | nindent 8}}
       containers:
         {{- include "metrics.daemonset.container" .        | nindent 8 }}
-        {{- include "network_mapper.daemonset.container" . | nindent 8 }}
         {{- include "node_enricher.daemonset.container"  . | nindent 8 }}
       volumes:
         {{- include "metrics.daemonset.volumes" .        | nindent 8 }}
-        {{- include "network_mapper.daemonset.volumes" . | nindent 8 }}
         {{- include "custom-ca.volume" .                 | nindent 8 }}
         {{- include "custom-ca.trusted-volume" .         | nindent 8 }}
       initContainers:
         {{- include "metrics.daemonset.init.container" . | nindent 8 }}
         {{- include "ca-init.container" .                | nindent 8 }}
-
 
 {{- end }}

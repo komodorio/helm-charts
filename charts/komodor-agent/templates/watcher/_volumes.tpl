@@ -6,6 +6,8 @@
     items:
       - key: komodor-k8s-watcher.yaml
         path: komodor-k8s-watcher.yaml
+      - key: installed-values.yaml
+        path: installed-values.yaml
 - name: tmp
   emptyDir:
     sizeLimit: 100Mi

@@ -10,6 +10,10 @@ metadata:
   annotations: {{ toYaml ((.Values.components).komodorDaemonWindows).annotations | nindent 4 }}
   {{- end }}
 spec:
+  {{- if not (empty .Values.components.komodorDaemonWindows.updateStrategy) }}
+  updateStrategy:
+    {{- toYaml .Values.components.komodorDaemonWindows.updateStrategy | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels: {{- include "komodorAgentDaemonWindows.selectorLabels" . | nindent 6 }}
   template:
@@ -24,7 +28,7 @@ spec:
         {{- include "komodorDaemonWindows.user.labels" . | nindent 8 }}
     spec:
       terminationGracePeriodSeconds: 0
-      priorityClassName: {{ .Release.Name }}-daemon-high-priority
+      priorityClassName: {{ include "komodor.truncatedReleaseName"  . }}-daemon-high-priority
       serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
       affinity:
         {{- toYaml .Values.components.komodorDaemonWindows.affinity | nindent 8 }}

@@ -10,6 +10,10 @@ metadata:
   annotations: {{ toYaml ((.Values.components).komodorMetrics).annotations | nindent 4 }}
   {{- end }}
 spec:
+  {{- if not (empty .Values.components.komodorMetrics.strategy) }}
+  strategy:
+    {{- toYaml .Values.components.komodorMetrics.strategy | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels: {{- include "komodorMetrics.selectorLabels" . | nindent 6 }}
   template:
@@ -22,7 +26,7 @@ spec:
         {{- include "komodorMetrics.selectorLabels" . | nindent 8 }}
         {{- include "KomodorMetrics.user.labels" . | nindent 8 }}
     spec:
-      priorityClassName: {{ .Release.Name }}-metrics-high-priority
+      priorityClassName: {{ include "komodor.truncatedReleaseName"  . }}-metrics-high-priority
       serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
       affinity:
         {{- toYaml .Values.components.komodorMetrics.affinity | nindent 8 }}
@@ -31,6 +35,7 @@ spec:
         {{- if not (empty (((.Values.components).komodorMetrics).nodeSelector)) }}
         {{- toYaml .Values.components.komodorMetrics.nodeSelector | nindent 8 }}
         {{- end }}
+      {{ include "metrics.komodorMetrics.securityContext" . | nindent 6 }}
       tolerations:
         {{- toYaml .Values.components.komodorMetrics.tolerations | nindent 8}}
       containers:

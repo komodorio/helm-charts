@@ -13,11 +13,9 @@ clusterName:
 createRbac: true
 
 # telegrafImageVersion -- (string) Telegraf version to be used
-telegrafImageVersion: &telegrafVersion 1.33.1-alpine-v1
+telegrafImageVersion: &telegrafVersion 1.33.1-alpine
 # telegrafWindowsImageVersion -- (string) Telegraf version to be used for windows
-telegrafWindowsImageVersion: &telegrafWindowsVersion 1.31.0-v1
-# networkMapperImageVersion -- (string) Network mapper version to be used
-networkMapperImageVersion: &networkMapperVersion v1.0.3
+telegrafWindowsImageVersion: &telegrafWindowsVersion v1.32.3-2-windows
 
 # serviceAccount -- Configure service account for the agent
 # @default -- See sub-values
@@ -58,7 +56,7 @@ customCa:
       memory: 10Mi
 
 # imageRepo -- (string) Override the komodor agent image repository.
-imageRepo: komodorio
+imageRepo: public.ecr.aws/komodor-public
 # pullPolicy -- (string) Default Image pull policy for the komodor agent image exceptable values <ifNotPresent\Always\Never>.
 pullPolicy: IfNotPresent
 # imagePullSecret -- (string) Set the image pull secret for the komodor agent
