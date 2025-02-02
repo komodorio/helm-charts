@@ -32,8 +32,6 @@ data:
       enable: {{ .Values.capabilities.telemetry.enabled }}
       collectApiServerMetrics: {{ .Values.capabilities.telemetry.collectApiServerMetrics }}
       serverHost: {{ .Values.communications.telemetryServerHost }}
-    networkMapper:
-      enable: {{ .Values.capabilities.networkMapper }}
     resync:
       period: "0"
 

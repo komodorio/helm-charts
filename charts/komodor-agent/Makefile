@@ -9,7 +9,6 @@ HELM_DOCS_ARGS := -s file \
                   -y="proxy" \
                   -y="components.komodorAgent.watcher" \
                   -y="components.komodorAgent.supervisor" \
-                  -y="components.komodorAgent.networkMapper" \
                   -y="components.komodorMetrics" \
                   -y="components.komodorMetrics.metrics" \
                   -y="components.komodorDaemon.metrics" \

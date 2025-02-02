@@ -49,7 +49,6 @@ spec:
         {{- include "ca-init.container" .                   | trim | nindent 8 }}
 
       containers:
-        {{- include "network_mapper.container" .            | trim | nindent 8 }}
         {{- include "watcher.container" .                   | trim | nindent 8 }}
         {{- include "supervisor.container" .                | trim | nindent 8 }}
 

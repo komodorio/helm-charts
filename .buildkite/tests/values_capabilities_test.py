@@ -48,42 +48,6 @@ def test_get_metrics(setup_cluster):
     verify_metrics_response(response)
 
 
-##################
-# Network-Mapper #
-##################
-
-
-def test_network_mapper(setup_cluster):
-    namespace = "client-namespace"
-    deployment_name = "nc-client"
-    start_time = int(time.time() * 1000)
-    end_time = int(time.time() * 1000) + 180_000  # three minutes from now
-
-    output, exit_code = helm_agent_install(CLUSTER_NAME, f'--set apiKey={API_KEY} --set clusterName={CLUSTER_NAME} --create-namespace --set capabilities.networkMapper=true')
-    assert exit_code == 0, "Agent installation failed, output: {}".format(output)
-
-    kuid = create_komodor_uid("Deployment", deployment_name, namespace, CLUSTER_NAME)
-    url = (f"{BE_BASE_URL}/resources/api/v1/network-maps/graph"
-           f"?fromEpoch={start_time}"
-           f"&toEpoch={end_time}"
-           f"&clusterNames={CLUSTER_NAME}"
-           f"&namespaces={namespace}"
-           f"&komodorUids={kuid}")
-
-    for i in range(180):  # ~3 minutes
-        response = query_backend(url)
-        if response.status_code == 200 and len(response.json()['nodes']) != 0:
-            break
-        time.sleep(1)
-    else:
-        assert False, f"Failed to get network map from resources api, response: {response.json()}"
-
-    assert response.status_code == 200, f"Failed to get configmap from resources api, response: {response}"
-    assert len(response.json()['nodes']) == 2, f"Expected two items in the 'nodes', response: {response}"
-    assert len(response.json()['edges']) == 1, f"Expected one item in the 'edges', response: {response}"
-    assert kuid in response.json()['nodes'], f"Expected to find {kuid} in the 'nodes', response: {response}"
-
-
 def test_disable_helm_capabilities():
     set_path = "capabilities.helm.enabled"
     value = "false"
