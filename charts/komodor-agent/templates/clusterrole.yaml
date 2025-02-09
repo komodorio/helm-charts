@@ -401,7 +401,7 @@ rules:
     - patch
     - update
     - create
-   - apiGroups:
+  - apiGroups:
     - autoscaling
     resources:
     - horizontalpodautoscalers
