@@ -31,6 +31,18 @@ data:
       [inputs.execd.tags]
       measure_type = "consolidated"
 
+    [[aggregators.basicstats]]
+      period = "${AGGREGATED_INTERVAL}"
+      drop_original = true
+      stats = ["count","min","max","mean"]
+
+    [[processors.regex]]
+      [[processors.regex.field_rename]]
+        ## Regular expression to match on the field name
+        pattern = "^(?P<fieldName>.*)_mean$"
+        ## Replacement expression defining the name of the new field
+        replacement = "${fieldName}"
+
   plugin.conf: |
     [[inputs.kube_consolidated]]
       bearer_token = "/run/secrets/kubernetes.io/serviceaccount/token"
@@ -41,8 +53,6 @@ data:
       poll_interval = "${INTERVAL}"
 
       resource_include = [ "pods", "nodes" ]
-      interval = "${INTERVAL_INVENTORY}"
-      flush_interval = "${FLUSH_INTERVAL_INVENTORY}"
       inventory_cache_ttl = "${FLUSH_INTERVAL_INVENTORY}"
       owner_cache_ttl = "${FLUSH_INTERVAL_INVENTORY}"
       node_name = "${NODE_NAME}"
