@@ -28,6 +28,8 @@ spec:
         {{- include "komodorAgentDaemon.selectorLabels" . | nindent 8 }}
         {{- include "KomodorDaemon.user.labels" . | nindent 8 }}
     spec:
+      hostNetwork: {{ .Values.components.komodorDaemon.hostNetwork }}
+      dnsPolicy: {{ .Values.components.komodorDaemon.dnsPolicy }}
       priorityClassName: {{ include "komodor.truncatedReleaseName"  . }}-daemon-high-priority
       serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
       {{ include "metrics.komodorDeamon.securityContext" . | nindent 6 }}
