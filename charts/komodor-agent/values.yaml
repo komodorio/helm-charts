@@ -247,6 +247,10 @@ components:
   # components.komodorDaemon -- Configure the komodor agent components
   # @default -- See sub-values
   komodorDaemon:
+    # components.komodorDaemon.hostNetwork -- Set host network for the komodor agent daemon
+    hostNetwork: false
+    # components.komodorDaemon.dnsPolicy -- Set dns policy for the komodor agent daemon
+    dnsPolicy: ClusterFirst
     # components.komodorDaemon.PriorityClassValue -- Set the priority class value for the komodor daemon deployment
     PriorityClassValue: 10000000
     # components.komodorDaemon.affinity -- Set node affinity for the komodor agent daemon
@@ -325,6 +329,10 @@ components:
   # components.komodorDaemonWindows -- Configure the komodor agent components
   # @default -- See sub-values
   komodorDaemonWindows:
+    # components.komodorDaemonWindows.hostNetwork -- Set host network for the komodor agent daemon
+    hostNetwork: false
+    # components.komodorDaemonWindows.dnsPolicy -- Set dns policy for the komodor agent daemon
+    dnsPolicy: ClusterFirst
     # components.komodorDaemonWindows.affinity -- Set node affinity for the komodor agent daemon
     affinity: { }
     # components.komodorDaemonWindows.annotations -- Adds custom annotations - Example: `--set annotations."app\.komodor\.com/app"="komodor-agent"`
