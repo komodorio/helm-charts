@@ -253,6 +253,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | allowedResources.networkPolicy | bool | `true` | Enables watching `networkPolicy` |
 | allowedResources.runtimeClass | bool | `true` | Enables watching `runtimeClass` |
 | allowedResources.policyResources | bool | `true` | Enables watching `policyResources` |
+| allowedResources.policyResourcespodSecurityPolicies | bool | `true` | Enables watching `podSecurityPolicies` |
 | allowedResources.clusterRoleBinding | bool | `true` | Enables watching `clusterRoleBinding` |
 | allowedResources.roleBinding | bool | `true` | Enables watching `roleBinding` |
 | allowedResources.role | bool | `true` | Enables watching `role` |
