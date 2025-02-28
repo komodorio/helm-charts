@@ -52,10 +52,10 @@
       secretKeyRef:
         {{- if .Values.apiKeySecret }}
         name: {{ .Values.apiKeySecret | required "Existing secret name required!" }}
-        key: apiKey
+        key: {{ .Values.secretKey }} 
         {{- else }}
         name: {{ include "komodorAgent.secret.name" . }}
-        key: apiKey
+        key: {{ .Values.secretKey }} 
         {{- end }}
   {{- if gt (len .Values.components.komodorMetrics.metricsInit.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorMetrics.metricsInit.extraEnvVars | nindent 2 }}

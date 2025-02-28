@@ -32,10 +32,10 @@
       secretKeyRef:
         {{- if .Values.apiKeySecret }}
         name: {{ .Values.apiKeySecret | required "Existing secret name required!" }}
-        key: apiKey
+        key: {{ .Values.secretKey }} 
         {{- else }}
         name: {{ include "komodorAgent.secret.name" . }}
-        key: apiKey
+        key: {{ .Values.secretKey }} 
         {{- end }}
   - name: NODE_NAME
     valueFrom:
