@@ -31,10 +31,13 @@
 - name: telegraf-init
   image: {{ .Values.imageRepo }}/{{ .Values.components.komodorMetrics.metricsInit.image.name}}:{{ .Values.components.komodorMetrics.metricsInit.image.tag | default .Chart.AppVersion }}
   imagePullPolicy: {{ .Values.pullPolicy }}
-  command: ["telegraf_init"]
   resources:
     {{ toYaml .Values.components.komodorMetrics.metricsInit.resources | trim | nindent 4 }}
+  {{- if .Values.capabilities.customCa }}
   {{ include "custom-ca.trusted-telegraf-init-container.command" . | indent 2 }}
+  {{- else }}
+  command: ["telegraf_init"]
+  {{- end }}
   volumeMounts:
   - name: configuration
     mountPath: /etc/komodor
