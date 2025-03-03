@@ -1,0 +1,41 @@
+
+{{- if .Values.agentPermissionToEditSelfResources }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: komodor-agent-self-permissions-role
+  namespace: {{ .Release.Namespace }}
+rules:
+  - apiGroups: [""]
+    resources: ["secrets", "configmaps"]
+    resourceNames:
+      - {{ include "komodorAgent.secret.name" . }}
+      - {{ include "komodorAgent.name" . }}-config
+    verbs: ["*"]
+
+  - apiGroups: [ "" ]
+    resources: [ "pods" ]
+    verbs: [ "*" ]
+
+  - apiGroups: ["apps"]
+    resources: ["deployments", "daemonsets", "replicasets"]
+    resourceNames:
+      - {{ include "komodorAgent.fullname" . }}
+      - {{ include "komodorAgent.fullname" . }}-daemon
+      - {{ include "komodorAgent.fullname" . }}-daemon-windows
+    verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: komodor-agent-self-permissions-role-binding
+  namespace: {{ .Release.Namespace }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "komodorAgent.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: Role
+  name: komodor-agent-self-permissions-role
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}

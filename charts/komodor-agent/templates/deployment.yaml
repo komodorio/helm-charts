@@ -32,6 +32,8 @@ spec:
         {{- include "komodorAgent.selectorLabels" . | nindent 8 }}
         {{- include "komodorAgent.user.labels" . | nindent 8 }}
     spec:
+      hostNetwork: {{ .Values.components.komodorAgent.hostNetwork }}
+      dnsPolicy: {{ .Values.components.komodorAgent.dnsPolicy }}
       {{ include "komodorAgent.pod.securityContext" . | nindent 6 }}
       priorityClassName: {{ include "komodor.truncatedReleaseName"  . }}-agent-high-priority
       serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}

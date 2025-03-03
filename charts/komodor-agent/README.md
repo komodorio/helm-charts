@@ -98,6 +98,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | tags | dict | `{}` | Tags the agent in order to identify it based on `key:value` properties separated by semicolon (`;`) example: `--set tags.env=staging,tags.team=payments` --- Can also be set in the values under `tags` as a dictionary of key:value strings |
 | clusterName | string | `nil` | **(*required*)** Name to be displayed in the Komodor web application |
 | createRbac | bool | `true` | Creates the necessary RBAC resources for the agent - use with caution! |
+| agentPermissionToEditSelfResources | bool | `true` | Allow the agent to edit its own resources |
 | telegrafImageVersion | string | `"v1.33.3-build5-alpine"` | Telegraf version to be used |
 | telegrafWindowsImageVersion | string | `"v1.33.3-build5-windows"` | Telegraf version to be used for windows |
 | serviceAccount | object | See sub-values | Configure service account for the agent |
@@ -153,6 +154,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorAgent.podAnnotations | object | `{}` | Set pod annotations for the komodor agent deployment |
 | components.komodorAgent.securityContext | object | `{}` | Set custom securityContext to the komodor agent deployment (use with caution) |
 | components.komodorAgent.strategy | object | `{}` | Set the rolling update strategy for the komodor agent deployment |
+| components.komodorAgent.hostNetwork | bool | `false` | Set host network for the komodor agent |
+| components.komodorAgent.dnsPolicy | string | `"ClusterFirst"` | Set dns policy for the komodor agent |
 | components.komodorAgent.watcher.image | object | `{ "name": "k8s-watcher", "tag": .Chart.AppVersion }` | Override the komodor agent watcher image name or tag. |
 | components.komodorAgent.watcher.resources | object | `{"limits":{"cpu":2,"memory":"8Gi"},"requests":{"cpu":0.25,"memory":"256Mi"}}` | Set custom resources to the komodor agent watcher container |
 | components.komodorAgent.watcher.securityContext | object | `{}` | Set security context for the komodor agent watcher container (use with caution) |
@@ -197,9 +200,11 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemon.metricsInit.image | object | `{ "name": "init-daemon-agent", "tag": .Chart.AppVersion }` | Override the komodor agent metrics init image name or tag. |
 | components.komodorDaemon.metricsInit.resources | object | `{"limits":{"cpu":1,"memory":"100Mi"},"requests":{"cpu":0.1,"memory":"50Mi"}}` | Set custom resources to the komodor agent metrics init container |
 | components.komodorDaemon.metricsInit.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
-| components.komodorDaemon.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf","tag":"v1.33.3-build5-alpine"},"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}}` | Configure the komodor daemon metrics components |
+| components.komodorDaemon.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf","tag":"v1.33.3-build5-alpine"},"ports":{"healthCheck":8090},"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}}` | Configure the komodor daemon metrics components |
 | components.komodorDaemon.metrics.image | object | `{"name":"telegraf","tag":"v1.33.3-build5-alpine"}` | Override the komodor agent metrics image name or tag. |
 | components.komodorDaemon.metrics.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
+| components.komodorDaemon.metrics.ports | object | `{"healthCheck":8090}` | Override the komodor agent metrics ports configuration |
+| components.komodorDaemon.metrics.ports.healthCheck | int | `8090` | Override the health check port of the komodor agent metrics |
 | components.komodorDaemon.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemon.nodeEnricher | object | See sub-values | Configure the komodor daemon node enricher components |
 | components.komodorDaemon.nodeEnricher.image | object | `{"name":"komodor-agent","tag":null}` | Override the komodor agent node enricher image name or tag. |

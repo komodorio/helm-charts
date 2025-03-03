@@ -9,8 +9,10 @@ createNamespace: true
 tags: { }
 # clusterName -- **(*required*)** Name to be displayed in the Komodor web application
 clusterName:
-# createRbac -- Creates the necessary RBAC resources for the agent - use with caution!
+# createRbac -- (bool) Creates the necessary RBAC resources for the agent - use with caution!
 createRbac: true
+# agentPermissionToEditSelfResources -- (bool) Allow the agent to edit its own resources
+agentPermissionToEditSelfResources: true
 
 # telegrafImageVersion -- (string) Telegraf version to be used
 telegrafImageVersion: &telegrafVersion v1.33.3-build5-alpine
@@ -149,6 +151,10 @@ components:
     securityContext: { }
     # components.komodorAgent.strategy -- Set the rolling update strategy for the komodor agent deployment
     strategy: { }
+    # components.komodorAgent.hostNetwork -- Set host network for the komodor agent
+    hostNetwork: false
+    # components.komodorAgent.dnsPolicy -- Set dns policy for the komodor agent
+    dnsPolicy: ClusterFirst
 
     watcher:
       # components.komodorAgent.watcher.image -- Override the komodor agent watcher image name or tag.
@@ -305,6 +311,10 @@ components:
         requests:
           cpu: 0.1
           memory: 384Mi
+      # components.komodorDaemon.metrics.ports -- Override the komodor agent metrics ports configuration
+      ports:
+        # components.komodorDaemon.metrics.ports.healthCheck -- Override the health check port of the komodor agent metrics
+        healthCheck: 8090
       # components.komodorDaemon.metrics.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
       extraEnvVars: [ ]
 
