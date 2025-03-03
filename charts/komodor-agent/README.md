@@ -94,6 +94,7 @@ The command removes all the Kubernetes components associated with the chart and 
 |-----|------|---------|-------------|
 | apiKey | guid | `nil` | **(*required*)** To be obtained from komodor app during onboarding |
 | apiKeySecret | string | `nil` | Secret name containing Komodor agent api key |
+| secretKey | string | `apiKey` | Secret key used in the provided secret |
 | createNamespace | bool | `true` | Creates the namespace |
 | tags | dict | `{}` | Tags the agent in order to identify it based on `key:value` properties separated by semicolon (`;`) example: `--set tags.env=staging,tags.team=payments` --- Can also be set in the values under `tags` as a dictionary of key:value strings |
 | clusterName | string | `nil` | **(*required*)** Name to be displayed in the Komodor web application |
