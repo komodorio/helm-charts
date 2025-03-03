@@ -45,5 +45,5 @@ spec:
         {{- include "custom-ca.volume" .                  | nindent 8 }}
         {{- include "custom-ca.trusted-volume" .          | nindent 8 }}
       initContainers:
-        {{- include "metrics.deployment.init.container" . | nindent 8 }}
         {{- include "ca-init.container" .                 | nindent 8 }}
+        {{- include "metrics.deployment.init.container" . | nindent 8 }}
