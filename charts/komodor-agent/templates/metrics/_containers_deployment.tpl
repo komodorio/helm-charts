@@ -33,7 +33,7 @@
   imagePullPolicy: {{ .Values.pullPolicy }}
   resources:
     {{ toYaml .Values.components.komodorMetrics.metricsInit.resources | trim | nindent 4 }}
-  {{- if .Values.capabilities.customCa }}
+  {{- if .Values.customCa }}
   {{ include "custom-ca.trusted-telegraf-init-container.command" . | indent 2 }}
   {{- else }}
   command: ["telegraf_init"]
