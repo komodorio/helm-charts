@@ -30,10 +30,10 @@
       secretKeyRef:
         {{- if .Values.apiKeySecret }}
         name: {{ .Values.apiKeySecret | required "Existing secret name required!" }}
-        key: apiKey
+        key: {{ .Values.secretKey }}
         {{- else }}
         name: {{ include "komodorAgent.secret.name" . }}
-        key: apiKey
+        key: {{ .Values.secretKey }}
         {{- end }}
   - name: KOMOKW_CLUSTER_NAME
     value: {{ .Values.clusterName }}
@@ -66,7 +66,7 @@
       port: http-healthz
     initialDelaySeconds: 5
     periodSeconds: 5
-    failureThreshold: 3
+    failureThreshold: 3git 
     successThreshold: 1
 {{- end -}}
 
@@ -87,10 +87,10 @@
         secretKeyRef:
           {{- if .Values.apiKeySecret }}
           name: {{ .Values.apiKeySecret }}
-          key: apiKey
+          key: {{ .Values.secretKey }} 
           {{- else }}
           name: {{ include "komodorAgent.secret.name" . }}
-          key: apiKey
+          key: {{ .Values.secretKey }} 
           {{- end }}
     - name: KOMOKW_SERVERS_HEALTHCHECK_PORT
       value: {{ .Values.components.komodorAgent.supervisor.ports.healthCheck | quote }}
