@@ -499,7 +499,8 @@ rules:
 {{- end}}
 
 {{- if and .Values.allowedResources.customReadAPIGroups (gt (len .Values.allowedResources.customReadAPIGroups) 0) }}
-  - apiGroups: {{ .Values.allowedResources.customReadAPIGroups }}
+  - apiGroups:
+    {{- toYaml .Values.allowedResources.customReadAPIGroups | nindent 6 }}
     resources: ["*"]
     verbs:     ["get", "watch", "list"]
 {{- end }}
