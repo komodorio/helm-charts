@@ -16,6 +16,9 @@
   envFrom:
   - configMapRef:
       name:  "k8s-watcher-daemon-env-vars"
+  ports:
+    - name: http-healthz
+      containerPort: {{ .Values.components.komodorDaemon.metrics.ports.healthCheck  }}
   env:
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
   - name: OS_TYPE
@@ -35,6 +38,7 @@
   {{- end }}
 {{- end }}
 {{- end }}
+
 
 {{- define "metrics.daemonsetWindows.container" }}
 {{- if .Values.capabilities.metrics }}
