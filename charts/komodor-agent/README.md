@@ -128,7 +128,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | capabilities.rbacClusterSyncParams.enabled | bool | `false` | Enable cluster sync configuration from helm chart |
 | capabilities.rbacClusterSyncParams.clusterURL | string | `nil` | URL of the cluster to sync with |
 | capabilities.rbacClusterSyncParams.ingressCertConfiguration | dict | See sub-values | Configuration for the ingress certificate |
-| capabilities.rbacClusterSyncParams.ingressCertConfiguration.namespace | string | `nil` | Namespace of the secret containing the certificate |
+| capabilities.rbacClusterSyncParams.ingressCertConfiguration.namespace | string | `nil` | Namespace of the resource containing the certificate |
 | capabilities.rbacClusterSyncParams.ingressCertConfiguration.kind | string | `nil` | Kind of the resource containing the certificate (Secret/ConfigMap) |
 | capabilities.rbacClusterSyncParams.ingressCertConfiguration.name | string | `nil` | Name of the resource containing the certificate |
 | capabilities.rbacClusterSyncParams.ingressCertConfiguration.dataPath | string | `nil` | Path to the certificate data in the resource (crt.ca) |
