@@ -124,6 +124,14 @@ The command removes all the Kubernetes components associated with the chart and 
 | capabilities.helm.enabled | bool | `true` | Enable helm capabilities by the komodor agent |
 | capabilities.helm.readonly | bool | `false` | Allow komodor to read helm resources only (remove create/update/delete permissions from secrets) |
 | capabilities.rbac | bool | `true` | Allow komodor to create and manage serviceaccounts, roles and bindings in cluster |
+| capabilities.rbacClusterSyncParams | object | See sub-values | Configure the agent cluster sync capabilities |
+| capabilities.rbacClusterSyncParams.enabled | bool | `false` | Enable cluster sync configuration from helm chart |
+| capabilities.rbacClusterSyncParams.clusterURL | string | `nil` | URL of the cluster to sync with |
+| capabilities.rbacClusterSyncParams.ingressCertConfiguration | dict | See sub-values | Configuration for the ingress certificate |
+| capabilities.rbacClusterSyncParams.ingressCertConfiguration.namespace | string | `nil` | Namespace of the resource containing the certificate |
+| capabilities.rbacClusterSyncParams.ingressCertConfiguration.kind | string | `nil` | Kind of the resource containing the certificate (Secret/ConfigMap) |
+| capabilities.rbacClusterSyncParams.ingressCertConfiguration.name | string | `nil` | Name of the resource containing the certificate |
+| capabilities.rbacClusterSyncParams.ingressCertConfiguration.dataPath | string | `nil` | Path to the certificate data in the resource (crt.ca) |
 | capabilities.events | object | See sub-values | Configure the agent events capabilities |
 | capabilities.events.watchNamespace | string | all | Watch a specific namespace, or all namespaces ("", "all") |
 | capabilities.events.namespacesDenylist | array of strings | `[]` | Do not watch events from these namespaces. eg. `["kube-system", "kube-public"]` |

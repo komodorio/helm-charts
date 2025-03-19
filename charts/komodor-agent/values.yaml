@@ -79,6 +79,24 @@ capabilities:
     readonly: false
   # capabilities.rbac -- (bool) Allow komodor to create and manage serviceaccounts, roles and bindings in cluster
   rbac: true
+  # capabilities.rbacClusterSyncParams -- Configure the agent cluster sync capabilities
+  # @default -- See sub-values
+  rbacClusterSyncParams:
+    # capabilities.rbacClusterSyncParams.enabled -- (bool) Enable cluster sync configuration from helm chart
+    enabled: false
+    # capabilities.rbacClusterSyncParams.clusterURL -- (string) URL of the cluster to sync with
+    clusterURL:
+    # capabilities.rbacClusterSyncParams.ingressCertConfiguration -- (dict) Configuration for the ingress certificate
+    # @default -- See sub-values
+    ingressCertConfiguration:
+      # capabilities.rbacClusterSyncParams.ingressCertConfiguration.namespace -- (string) Namespace of the resource containing the certificate
+      namespace:
+      # capabilities.rbacClusterSyncParams.ingressCertConfiguration.kind -- (string) Kind of the resource containing the certificate (Secret/ConfigMap)
+      kind:
+      # capabilities.rbacClusterSyncParams.ingressCertConfiguration.name -- (string) Name of the resource containing the certificate
+      name:
+      # capabilities.rbacClusterSyncParams.ingressCertConfiguration.dataPath -- (string) Path to the certificate data in the resource (crt.ca)
+      dataPath:
 
   # capabilities.events -- Configure the agent events capabilities
   # @default -- See sub-values
