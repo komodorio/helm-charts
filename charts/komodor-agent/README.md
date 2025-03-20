@@ -214,7 +214,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemon.nodeEnricher.resources | object | `{"limits":{"cpu":"10m","memory":"100Mi"},"requests":{"cpu":"1m","memory":"10Mi"}}` | Set custom resources to the komodor agent node enricher container |
 | components.komodorDaemon.nodeEnricher.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemonWindows | object | See sub-values | Configure the komodor agent components |
-| components.komodorDaemonWindows.hostNetwork | bool | `false` | Set host network for the komodor agent daemon |
 | components.komodorDaemonWindows.dnsPolicy | string | `"ClusterFirst"` | Set dns policy for the komodor agent daemon |
 | components.komodorDaemonWindows.affinity | object | `{}` | Set node affinity for the komodor agent daemon |
 | components.komodorDaemonWindows.annotations | object | `{}` | Adds custom annotations - Example: `--set annotations."app\.komodor\.com/app"="komodor-agent"` |
