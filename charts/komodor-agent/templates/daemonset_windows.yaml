@@ -27,7 +27,6 @@ spec:
         {{- include "komodorAgentDaemonWindows.selectorLabels" . | nindent 8 }}
         {{- include "komodorDaemonWindows.user.labels" . | nindent 8 }}
     spec:
-      hostNetwork: {{ .Values.components.komodorDaemonWindows.hostNetwork }}
       dnsPolicy: {{ .Values.components.komodorDaemonWindows.dnsPolicy }}
       terminationGracePeriodSeconds: 0
       priorityClassName: {{ include "komodor.truncatedReleaseName"  . }}-daemon-high-priority
