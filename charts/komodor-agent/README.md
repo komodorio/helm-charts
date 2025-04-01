@@ -189,6 +189,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorMetrics.metrics.image | object | `{"name":"telegraf","tag":"v1.34.1-build1-alpine"}` | Override the komodor agent metrics image name or tag. |
 | components.komodorMetrics.metrics.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
 | components.komodorMetrics.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
+| components.komodorMetrics.metrics.quiet | bool | `false` | Set the quiet mode for the komodor agent metrics |
 | components.komodorDaemon | object | See sub-values | Configure the komodor agent components |
 | components.komodorDaemon.hostNetwork | bool | `false` | Set host network for the komodor agent daemon |
 | components.komodorDaemon.dnsPolicy | string | `"ClusterFirst"` | Set dns policy for the komodor agent daemon |
@@ -205,10 +206,11 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemon.metricsInit.image | object | `{ "name": "init-daemon-agent", "tag": .Chart.AppVersion }` | Override the komodor agent metrics init image name or tag. |
 | components.komodorDaemon.metricsInit.resources | object | `{"limits":{"cpu":1,"memory":"100Mi"},"requests":{"cpu":0.1,"memory":"50Mi"}}` | Set custom resources to the komodor agent metrics init container |
 | components.komodorDaemon.metricsInit.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
-| components.komodorDaemon.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf","tag":"v1.34.1-build1-alpine"},"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}}` | Configure the komodor daemon metrics components |
+| components.komodorDaemon.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf","tag":"v1.34.1-build1-alpine"},"quiet":false,"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}}` | Configure the komodor daemon metrics components |
 | components.komodorDaemon.metrics.image | object | `{"name":"telegraf","tag":"v1.34.1-build1-alpine"}` | Override the komodor agent metrics image name or tag. |
 | components.komodorDaemon.metrics.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
 | components.komodorDaemon.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
+| components.komodorDaemon.metrics.quiet | bool | `false` | Set the quiet mode for the komodor agent metrics |
 | components.komodorDaemon.nodeEnricher | object | See sub-values | Configure the komodor daemon node enricher components |
 | components.komodorDaemon.nodeEnricher.image | object | `{"name":"komodor-agent","tag":null}` | Override the komodor agent node enricher image name or tag. |
 | components.komodorDaemon.nodeEnricher.resources | object | `{"limits":{"cpu":"10m","memory":"100Mi"},"requests":{"cpu":"1m","memory":"10Mi"}}` | Set custom resources to the komodor agent node enricher container |
@@ -222,10 +224,11 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemonWindows.tolerations | list | `[{"operator":"Exists"}]` | Add tolerations to the komodor agent daemon |
 | components.komodorDaemonWindows.podAnnotations | object | `{}` | # Add annotations to the komodor agent watcher pod |
 | components.komodorDaemonWindows.updateStrategy | object | `{}` | Set the rolling update strategy for the komodor agent daemon deployment |
-| components.komodorDaemonWindows.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf-windows","tag":"v1.34.1-build1-windows"},"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}}` | Configure the komodor daemon metrics components |
+| components.komodorDaemonWindows.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf-windows","tag":"v1.34.1-build1-windows"},"quiet":false,"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}}` | Configure the komodor daemon metrics components |
 | components.komodorDaemonWindows.metrics.image | object | `{"name":"telegraf-windows","tag":"v1.34.1-build1-windows"}` | Override the komodor agent metrics image name or tag. |
 | components.komodorDaemonWindows.metrics.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
 | components.komodorDaemonWindows.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
+| components.komodorDaemonWindows.metrics.quiet | bool | `false` | Set the quiet mode for the komodor agent metrics |
 | allowedResources.event | bool | `true` | Enables watching `event` |
 | allowedResources.deployment | bool | `true` | Enables watching `deployments` |
 | allowedResources.replicationController | bool | `true` | Enables watching `replicationControllers` |
