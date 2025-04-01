@@ -10,6 +10,7 @@ data:
       interval = "${INTERVAL}"
       flush_interval = "${FLUSH_INTERVAL}"
       skip_processors_after_aggregators = false
+      quiet = false
 
     [[outputs.http]]
       url = {{ include "metrics.collector.endpoint" . | quote}}
