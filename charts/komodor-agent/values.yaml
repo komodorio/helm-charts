@@ -261,8 +261,6 @@ components:
           memory: 384Mi
       # components.komodorMetrics.metrics.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
       extraEnvVars: [ ]
-      # components.komodorMetrics.metrics.quiet -- Set the quiet mode for the komodor agent metrics
-      quiet: false
 
   # components.komodorDaemon -- Configure the komodor agent components
   # @default -- See sub-values

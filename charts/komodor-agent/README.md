@@ -189,7 +189,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorMetrics.metrics.image | object | `{"name":"telegraf","tag":"v1.34.1-build1-alpine"}` | Override the komodor agent metrics image name or tag. |
 | components.komodorMetrics.metrics.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
 | components.komodorMetrics.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
-| components.komodorMetrics.metrics.quiet | bool | `false` | Set the quiet mode for the komodor agent metrics |
 | components.komodorDaemon | object | See sub-values | Configure the komodor agent components |
 | components.komodorDaemon.hostNetwork | bool | `false` | Set host network for the komodor agent daemon |
 | components.komodorDaemon.dnsPolicy | string | `"ClusterFirst"` | Set dns policy for the komodor agent daemon |
