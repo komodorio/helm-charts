@@ -325,6 +325,8 @@ components:
           memory: 384Mi
       # components.komodorDaemon.metrics.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
       extraEnvVars: [ ]
+      # components.komodorDaemon.metrics.quiet -- Set the quiet mode for the komodor agent metrics
+      quiet: false
 
     # components.komodorDaemon.nodeEnricher -- Configure the komodor daemon node enricher components
     # @default -- See sub-values
@@ -381,6 +383,8 @@ components:
           memory: 384Mi
       # components.komodorDaemonWindows.metrics.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
       extraEnvVars: [ ]
+      # components.komodorDaemonWindows.metrics.quiet -- Set the quiet mode for the komodor agent metrics
+      quiet: false
 
 
 allowedResources:

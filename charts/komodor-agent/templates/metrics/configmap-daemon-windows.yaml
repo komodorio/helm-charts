@@ -10,6 +10,7 @@ data:
       interval = "${INTERVAL}"
       flush_interval = "${FLUSH_INTERVAL}"
       skip_processors_after_aggregators = false
+      quiet = {{ .Values.components.komodorDaemonWindows.metrics.quiet }}
 
     [[outputs.http]]
       url = {{ include "metrics.collector.endpoint" . | quote}}
