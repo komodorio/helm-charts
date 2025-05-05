@@ -13,9 +13,9 @@ clusterName:
 createRbac: true
 
 # telegrafImageVersion -- (string) Telegraf version to be used
-telegrafImageVersion: &telegrafVersion v1.34.1-build1-alpine
+telegrafImageVersion: &telegrafVersion v1.34.1-build2-alpine
 # telegrafWindowsImageVersion -- (string) Telegraf version to be used for windows
-telegrafWindowsImageVersion: &telegrafWindowsVersion v1.34.1-build1-windows
+telegrafWindowsImageVersion: &telegrafWindowsVersion v1.34.1-build2-windows
 
 # serviceAccount -- Configure service account for the agent
 # @default -- See sub-values
@@ -327,6 +327,8 @@ components:
       extraEnvVars: [ ]
       # components.komodorDaemon.metrics.quiet -- Set the quiet mode for the komodor agent metrics
       quiet: false
+      # components.komodorDaemon.metrics.dcgm -- Enable collecting NVIDIA GPU metrics via DCGM
+      dcgm: false
 
     # components.komodorDaemon.nodeEnricher -- Configure the komodor daemon node enricher components
     # @default -- See sub-values
