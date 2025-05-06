@@ -13,9 +13,9 @@ clusterName:
 createRbac: true
 
 # telegrafImageVersion -- (string) Telegraf version to be used
-telegrafImageVersion: &telegrafVersion v1.34.1-build2-alpine
+telegrafImageVersion: &telegrafVersion v1.34.3-alpine
 # telegrafWindowsImageVersion -- (string) Telegraf version to be used for windows
-telegrafWindowsImageVersion: &telegrafWindowsVersion v1.34.1-build2-windows
+telegrafWindowsImageVersion: &telegrafWindowsVersion v1.34.3-windows
 
 # serviceAccount -- Configure service account for the agent
 # @default -- See sub-values
@@ -105,9 +105,9 @@ capabilities:
     # @default -- all
     watchNamespace: all
     # capabilities.events.namespacesDenylist -- (array of strings) Do not watch events from these namespaces. eg. `["kube-system", "kube-public"]`
-    namespacesDenylist: [ ]
+    namespacesDenylist: []
     # capabilities.events.redact -- (list) Redact workload names from the komodor events. eg. `["password", "token"]`
-    redact: [ ]
+    redact: []
     # capabilities.events.enableRWCache -- (bool) Mounts a ReadWrite cache volume for the kubernetes api cache
     enableRWCache: true
 
@@ -117,13 +117,13 @@ capabilities:
     # capabilities.logs.enabled -- (bool) Fetch pod logs from komodor backend
     enabled: true
     # capabilities.logs.logsNamespacesDenylist -- (list) Do not fetch logs from these namespaces. eg. `["kube-system", "kube-public"]`
-    logsNamespacesDenylist: [ ]
+    logsNamespacesDenylist: []
     # capabilities.logs.logsNamespacesAllowlist -- (list) Only fetch logs from these namespaces. eg. `["kube-system", "kube-public"]`
-    logsNamespacesAllowlist: [ ]
+    logsNamespacesAllowlist: []
     # capabilities.logs.nameDenylist -- (list) Do not fetch logs from these workloads. eg. `["supersecret-workload", "password-manager"]`
-    nameDenylist: [ ]
+    nameDenylist: []
     # capabilities.logs.redact -- (list) Redact logs from the komodor logs. eg. `["password", "token"]`
-    redact: [ ]
+    redact: []
 
   # capabilities.redaction -- Configure the agent data redaction capabilities
   # @default -- See sub-values
@@ -152,21 +152,21 @@ components:
     # components.komodorAgent.PriorityClassValue -- Set the priority class value for the komodor agent deployment
     PriorityClassValue: 10000000
     # components.komodorAgent.affinity -- Set node affinity for the komodor agent deployment
-    affinity: { }
+    affinity: {}
     # components.komodorAgent.annotations -- Set annotations for the komodor agent deployment
-    annotations: { }
+    annotations: {}
     # components.komodorAgent.labels -- Set custom labels
-    labels: { }
+    labels: {}
     # components.komodorAgent.nodeSelector -- Set node selectors for the komodor agent deployment
-    nodeSelector: { }
+    nodeSelector: {}
     # components.komodorAgent.tolerations -- Set tolerations for the komodor agent deployment
-    tolerations: [ ]
+    tolerations: []
     # components.komodorAgent.podAnnotations -- Set pod annotations for the komodor agent deployment
-    podAnnotations: { }
+    podAnnotations: {}
     # components.komodorAgent.securityContext -- Set custom securityContext to the komodor agent deployment (use with caution)
-    securityContext: { }
+    securityContext: {}
     # components.komodorAgent.strategy -- Set the rolling update strategy for the komodor agent deployment
-    strategy: { }
+    strategy: {}
 
     watcher:
       # components.komodorAgent.watcher.image -- Override the komodor agent watcher image name or tag.
@@ -183,13 +183,13 @@ components:
           cpu: 0.25
           memory: 256Mi
       # components.komodorAgent.watcher.securityContext -- Set security context for the komodor agent watcher container (use with caution)
-      securityContext: { }
+      securityContext: {}
       # components.komodorAgent.watcher.ports -- Override the komodor agent watcher ports configuration
       ports:
         # components.komodorAgent.watcher.ports.healthCheck -- Override the health check port of the komodor agent watcher
         healthCheck: 8090
       # components.komodorAgent.watcher.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
-      extraEnvVars: [ ]
+      extraEnvVars: []
 
     supervisor:
       # components.komodorAgent.supervisor.image -- Override the komodor agent supervisor image name or tag.
@@ -205,33 +205,33 @@ components:
           cpu: 0.1
           memory: 256Mi
       # components.komodorAgent.supervisor.securityContext -- Set security context for the komodor agent supervisor container (use with caution)
-      securityContext: { }
+      securityContext: {}
       # components.komodorAgent.supervisor.ports -- Override the komodor agent supervisor ports configuration
       ports:
         # components.komodorAgent.supervisor.ports.healthCheck -- Override the health check port of the komodor agent supervisor
         healthCheck: 8089
       # components.komodorAgent.supervisor.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
-      extraEnvVars: [ ]
+      extraEnvVars: []
 
   komodorMetrics:
     # components.komodorMetrics.PriorityClassValue -- Set the priority class value for the komodor metrics agent deployment
     PriorityClassValue: 10000000
     # components.komodorMetrics.affinity -- Set node affinity for the komodor metrics agent deployment
-    affinity: { }
+    affinity: {}
     # components.komodorMetrics.annotations -- Set annotations for the komodor metrics agent deployment
-    annotations: { }
+    annotations: {}
     # components.komodorMetrics.labels -- Set custom labels
-    labels: { }
+    labels: {}
     # components.komodorMetrics.nodeSelector -- Set node selectors for the komodor metrics agent deployment
-    nodeSelector: { }
+    nodeSelector: {}
     # components.komodorMetrics.tolerations -- Set tolerations for the komodor metrics agent deployment
-    tolerations: [ ]
+    tolerations: []
     # components.komodorMetrics.podAnnotations -- Set pod annotations for the komodor metrics agent deployment
-    podAnnotations: { }
+    podAnnotations: {}
     # components.komodorMetrics.securityContext -- Set custom securityContext to the komodor metrics agent deployment (use with caution)
-    securityContext: { }
+    securityContext: {}
     # components.komodorMetrics.strategy -- Set the rolling update strategy for the komodor metrics agent deployment
-    strategy: { }
+    strategy: {}
 
     # components.komodorMetrics.metricsInit -- Configure the komodor metrics init container
     # @default -- See sub-values
@@ -242,9 +242,9 @@ components:
         name: komodor-agent
         tag:
       # components.komodorMetrics.metricsInit.resources -- Set custom resources to the komodor agent metrics init container
-      resources: { }
+      resources: {}
       # components.komodorMetrics.metricsInit.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
-      extraEnvVars: [ ]
+      extraEnvVars: []
 
     metrics:
       # components.komodorMetrics.metrics.image -- Override the komodor agent metrics image name or tag.
@@ -260,7 +260,7 @@ components:
           cpu: 0.1
           memory: 384Mi
       # components.komodorMetrics.metrics.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
-      extraEnvVars: [ ]
+      extraEnvVars: []
 
   # components.komodorDaemon -- Configure the komodor agent components
   # @default -- See sub-values
@@ -272,22 +272,22 @@ components:
     # components.komodorDaemon.PriorityClassValue -- Set the priority class value for the komodor daemon deployment
     PriorityClassValue: 10000000
     # components.komodorDaemon.affinity -- Set node affinity for the komodor agent daemon
-    affinity: { }
+    affinity: {}
     # components.komodorDaemon.annotations -- Adds custom annotations - Example: `--set annotations."app\.komodor\.com/app"="komodor-agent"`
-    annotations: { }
+    annotations: {}
     # components.komodorDaemon.labels -- Adds custom labels
-    labels: { }
+    labels: {}
     # components.komodorDaemon.nodeSelector -- Set node selectors for the komodor agent daemon
-    nodeSelector: { }
+    nodeSelector: {}
     # components.komodorDaemon.tolerations -- Add tolerations to the komodor agent daemon
     tolerations:
       - operator: "Exists"
     # components.komodorDaemon.podAnnotations --  # Add annotations to the komodor agent watcher pod
-    podAnnotations: { }
+    podAnnotations: {}
     # components.komodorDaemon.securityContext -- Set custom securityContext to the komodor agent daemon (use with caution)
-    securityContext: { }
+    securityContext: {}
     # components.komodorDaemon.updateStrategy -- Set the rolling update strategy for the komodor agent daemon deployment
-    updateStrategy: { }
+    updateStrategy: {}
 
     # components.komodorDaemon.metrics -- Configure the komodor daemon metrics components
 
@@ -308,7 +308,7 @@ components:
           cpu: 0.1
           memory: 50Mi
       # components.komodorDaemon.metricsInit.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
-      extraEnvVars: [ ]
+      extraEnvVars: []
 
     metrics:
       # components.komodorDaemon.metrics.image -- Override the komodor agent metrics image name or tag.
@@ -324,7 +324,7 @@ components:
           cpu: 0.1
           memory: 384Mi
       # components.komodorDaemon.metrics.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
-      extraEnvVars: [ ]
+      extraEnvVars: []
       # components.komodorDaemon.metrics.quiet -- Set the quiet mode for the komodor agent metrics
       quiet: false
       # components.komodorDaemon.metrics.dcgm -- Enable collecting NVIDIA GPU metrics via DCGM
@@ -346,7 +346,7 @@ components:
           cpu: 1m
           memory: 10Mi
       # components.komodorDaemon.nodeEnricher.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
-      extraEnvVars: [ ]
+      extraEnvVars: []
 
   # components.komodorDaemonWindows -- Configure the komodor agent components
   # @default -- See sub-values
@@ -354,20 +354,20 @@ components:
     # components.komodorDaemonWindows.dnsPolicy -- Set dns policy for the komodor agent daemon
     dnsPolicy: ClusterFirst
     # components.komodorDaemonWindows.affinity -- Set node affinity for the komodor agent daemon
-    affinity: { }
+    affinity: {}
     # components.komodorDaemonWindows.annotations -- Adds custom annotations - Example: `--set annotations."app\.komodor\.com/app"="komodor-agent"`
-    annotations: { }
+    annotations: {}
     # components.komodorDaemonWindows.labels -- Adds custom labels
-    labels: { }
+    labels: {}
     # components.komodorDaemonWindows.nodeSelector -- Set node selectors for the komodor agent daemon
-    nodeSelector: { }
+    nodeSelector: {}
     # components.komodorDaemonWindows.tolerations -- Add tolerations to the komodor agent daemon
     tolerations:
       - operator: "Exists"
     # components.komodorDaemonWindows.podAnnotations --  # Add annotations to the komodor agent watcher pod
-    podAnnotations: { }
+    podAnnotations: {}
     # components.komodorDaemonWindows.updateStrategy -- Set the rolling update strategy for the komodor agent daemon deployment
-    updateStrategy: { }
+    updateStrategy: {}
 
     # components.komodorDaemonWindows.metrics -- Configure the komodor daemon metrics components
     metrics:
@@ -384,10 +384,9 @@ components:
           cpu: 0.1
           memory: 384Mi
       # components.komodorDaemonWindows.metrics.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
-      extraEnvVars: [ ]
+      extraEnvVars: []
       # components.komodorDaemonWindows.metrics.quiet -- Set the quiet mode for the komodor agent metrics
       quiet: false
-
 
 allowedResources:
   # allowedResources.event -- Enables watching `event`
@@ -495,7 +494,7 @@ allowedResources:
     # allowedResources.argoWorkflows.cronWorkflows -- Enables watching Argo `cronWorkflows`
     cronWorkflows: true
   # allowedResources.customReadAPIGroups -- A list of custom API groups to allow read access to - each array element should be a string which represents the group name
-  customReadAPIGroups: [ ]
+  customReadAPIGroups: []
   # allowedResources.allowReadAll -- Allow reading all the resources in the cluster
   allowReadAll: true
 
