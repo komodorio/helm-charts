@@ -35,6 +35,7 @@ var mapping = map[string]string{
 	"watcher.monitoringFQDN":                    "",
 	"watcher.tasksServerHost":                   "communications.tasksServerHost",
 	"watcher.serverHost":                        "communications.serverHost",
+	"watcher.tasksV1ServerHost":                 "communications.tasksV1ServerHost",
 	"watcher.wsHost":                            "communications.wsHost",
 
 	"watcher.telemetry.collectApiServerMetrics": "capabilities.debug.collectApiServerMetrics",
