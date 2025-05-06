@@ -14,7 +14,7 @@ data:
 
     [[outputs.http]]
       url = {{ include "metrics.collector.endpoint" . | quote}}
-      fieldinclude = ["resource_requests_millicpu_units","resource_limits_millicpu_units","resource_requests_memory_bytes","resource_limits_memory_bytes", "capacity_cpu_cores", "capacity_millicpu_cores", "capacity_memory_bytes", "restarts_total", "memory_usage_bytes*", "cpu_usage_nanocores*", "memory_working_set_bytes*", "allocatable_millicpu_cores", "allocatable_memory_bytes"]
+      fieldinclude = ["resource_requests_millicpu_units","resource_limits_millicpu_units","resource_requests_memory_bytes","resource_limits_memory_bytes", "capacity_cpu_cores", "capacity_millicpu_cores", "capacity_memory_bytes", "restarts_total", "memory_usage_bytes*", "cpu_usage_nanocores*", "memory_working_set_bytes*", "allocatable_millicpu_cores", "allocatable_memory_bytes", "DCGM_FI_DEV_GPU_UTIL", "DCGM_FI_DEV_MEM_COPY_UTIL", "DCGM_FI_DEV_MEMORY_TEMP", "DCGM_FI_DEV_GPU_TEMP","DCGM_FI_DEV_FB_USED", "DCGM_FI_DEV_FB_TOTAL"]
       timeout = "${OUTPUT_TIMEOUT}"
       content_encoding = "gzip"
       {{- if .Values.proxy.https }}
@@ -32,6 +32,11 @@ data:
       namedrop = ["kubernetes_system_container"]
       [inputs.execd.tags]
       measure_type = "consolidated"
+
+    {{- if .Values.components.komodorDaemon.metrics.dcgm }}
+    [[inputs.execd]]
+      command = ["nvidia_dcgm", "-poll_interval", "${INTERVAL}", "-config", "/etc/telegraf/dcgm.conf"]
+    {{- end }}
 
     [[aggregators.basicstats]]
       period = "${AGGREGATED_INTERVAL}"
@@ -68,5 +73,12 @@ data:
       inventory_cache_ttl = "${FLUSH_INTERVAL_INVENTORY}"
       owner_cache_ttl = "${FLUSH_INTERVAL_INVENTORY}"
       node_name = "${NODE_NAME}"
+
+  {{- if .Values.components.komodorDaemon.metrics.dcgm }}
+  dcgm.conf: |
+    [[inputs.nvidia_dcgm]]
+      node_name = "${NODE_NAME}"
+  {{- end }}
+
 
 {{- end }}

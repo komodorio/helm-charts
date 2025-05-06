@@ -12,6 +12,11 @@
   - name: {{ include "metrics.daemon.config.name" . }}
     mountPath: /etc/telegraf/plugin.conf
     subPath: plugin.conf
+  {{- if .Values.components.komodorDaemon.metrics.dcgm }}
+  - name: {{ include "metrics.daemon.config.name" . }}
+    mountPath: /etc/telegraf/dcgm.conf
+    subPath: dcgm.conf
+  {{- end }}
   {{- include "custom-ca.trusted-volumeMounts" . | indent 2 }}
   envFrom:
   - configMapRef:
