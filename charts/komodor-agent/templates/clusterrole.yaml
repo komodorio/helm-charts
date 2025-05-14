@@ -464,7 +464,17 @@ rules:
     verbs:
     - create
 {{- end}}
-
+{{- if .Values.capabilities.events.create }}
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - list
+      - get
+      - watch
+      - create
+{{- end }}
 {{- if .Values.capabilities.helm.enabled }}
   - apiGroups:
       - ""

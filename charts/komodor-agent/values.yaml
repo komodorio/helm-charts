@@ -110,6 +110,8 @@ capabilities:
     redact: []
     # capabilities.events.enableRWCache -- (bool) Mounts a ReadWrite cache volume for the kubernetes api cache
     enableRWCache: true
+    # capabilities.events.create -- (bool) allow create kubernetes events for enrichment
+    create: true
 
   # capabilities.logs -- Configure the agent logs capabilities
   # @default -- See sub-values
