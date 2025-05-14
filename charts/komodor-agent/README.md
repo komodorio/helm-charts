@@ -137,6 +137,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | capabilities.events.namespacesDenylist | array of strings | `[]` | Do not watch events from these namespaces. eg. `["kube-system", "kube-public"]` |
 | capabilities.events.redact | list | `[]` | Redact workload names from the komodor events. eg. `["password", "token"]` |
 | capabilities.events.enableRWCache | bool | `true` | Mounts a ReadWrite cache volume for the kubernetes api cache |
+| capabilities.events.create | bool | `true` | allow create kubernetes events for enrichment |
 | capabilities.logs | object | See sub-values | Configure the agent logs capabilities |
 | capabilities.logs.enabled | bool | `true` | Fetch pod logs from komodor backend |
 | capabilities.logs.logsNamespacesDenylist | list | `[]` | Do not fetch logs from these namespaces. eg. `["kube-system", "kube-public"]` |
