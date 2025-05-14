@@ -474,6 +474,8 @@ rules:
       - get
       - watch
       - create
+      - update
+      - patch
 {{- end }}
 {{- if .Values.capabilities.helm.enabled }}
   - apiGroups:
