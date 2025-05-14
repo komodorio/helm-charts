@@ -65,7 +65,7 @@ data:
 
       resource_include = [ "pods", "nodes" ]
       inventory_cache_ttl = "${FLUSH_INTERVAL_INVENTORY}"
-      owner_cache_ttl = "${FLUSH_INTERVAL_INVENTORY}"
+      owner_cache_ttl = "${SERVICE_MAPPING_CACHE_INTERVAL}"
       node_name = "${NODE_NAME}"
 
 {{- end }}
