@@ -318,6 +318,11 @@ rules:
     - watch
     - list
 {{- end }}
+{{- if .Values.capabilities.komodorCRD }}
+  - apiGroups: ["app.komodor.com"]
+    resources: ["*"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+{{- end }}
 {{- if .Values.allowedResources.priorityClass }}
   - apiGroups:
     - scheduling.k8s.io

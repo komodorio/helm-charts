@@ -1,0 +1,60 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: klaudia.app.komodor.com
+spec:
+  group: app.komodor.com
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          required: ["spec"]
+          properties:
+            spec:
+              type: object
+              required: ["flowType", "target"]
+              properties:
+                flowType:
+                  type: string
+                  description: "Type of analysis to perform (e.g., RCA, diagnostics)"
+                target:
+                  type: object
+                  required: ["kind", "namespace", "name"]
+                  properties:
+                    kind:
+                      type: string
+                      description: "Kubernetes kind of the target (e.g., Pod, Deployment)"
+                    namespace:
+                      type: string
+                      description: "Namespace of the target resource"
+                    name:
+                      type: string
+                      description: "Name of the target resource"
+            status:
+              type: object
+              properties:
+                state:
+                  type: string
+                  description: "Execution state (Pending, Running, Completed, Failed)"
+                result:
+                  type: string
+                  description: "Final result summary of the flow"
+                messages:
+                  type: array
+                  description: "Progress log or diagnostic messages"
+                  items:
+                    type: string
+                lastUpdated:
+                  type: string
+                  format: date-time
+                  description: "Last time the status was updated"
+  scope: Namespaced
+  names:
+    plural: klaudia
+    singular: klaudia
+    kind: Klaudia
+    shortNames:
+      - klaudia
