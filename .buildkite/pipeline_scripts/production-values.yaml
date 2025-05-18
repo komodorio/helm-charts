@@ -1,8 +1,10 @@
 imagePullSecret: docker-cfg-komodorio
 
 capabilities:
-  event:
+  events:
     redact: "{.*KEY.*,.*key.*,.*BUGSNAG.*}"
+    create: true
+
 
 allowedResources:
   secret: true

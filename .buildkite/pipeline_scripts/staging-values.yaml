@@ -13,8 +13,9 @@ capabilities:
   telemetry:
     enable: false
     serverHost: https://staging.telemetry.komodor.com
-  event:
+  events:
     redact: "{.*KEY.*,.*key.*,.*BUGSNAG.*}"
+    create: true
 
 allowedResources:
   secret: true
