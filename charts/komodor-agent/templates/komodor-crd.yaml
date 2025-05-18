@@ -27,9 +27,6 @@ spec:
                     kind:
                       type: string
                       description: "Kubernetes kind of the target (e.g., Pod, Deployment)"
-                    namespace:
-                      type: string
-                      description: "Namespace of the target resource"
                     name:
                       type: string
                       description: "Name of the target resource"
