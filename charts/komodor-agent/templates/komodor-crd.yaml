@@ -22,7 +22,7 @@ spec:
                   description: "Type of analysis to perform (e.g., RCA, diagnostics)"
                 target:
                   type: object
-                  required: ["kind", "namespace", "name"]
+                  required: ["kind", "name"]
                   properties:
                     kind:
                       type: string
