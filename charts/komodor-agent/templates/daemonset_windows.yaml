@@ -43,7 +43,9 @@ spec:
       containers:
         {{- include "metrics.daemonsetWindows.container" .        | nindent 8 }}
       volumes:
-        {{- include "metrics.daemonsetWindows.volumes" .        | nindent 8 }}
+        {{- include "metrics.shared.volume" .             | nindent 8 }}
         {{- include "custom-ca.volume" .                 | nindent 8 }}
         {{- include "custom-ca.trusted-volume" .         | nindent 8 }}
+      initContainers:
+        {{- include "metrics.daemonset.init.container" . | nindent 8 }}
 {{- end }}
