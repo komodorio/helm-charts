@@ -117,6 +117,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | pullPolicy | string | `"IfNotPresent"` | Default Image pull policy for the komodor agent image exceptable values <ifNotPresent\Always\Never>. |
 | imagePullSecret | string | `nil` | Set the image pull secret for the komodor agent |
 | capabilities | object | See sub-values | Configure the agent capabilities |
+| capabilities.komodorCRD | bool | `true` | Native komodor custom resources |
 | capabilities.metrics | bool | `true` | Fetch workload metrics and send them to komodor backend |
 | capabilities.nodeEnricher | bool | `true` | Enable node enricher capabilities by the komodor agent |
 | capabilities.actions | bool | `true` | Allow users to perform actions on the cluster, granular access control is defined in the application<boolean> |

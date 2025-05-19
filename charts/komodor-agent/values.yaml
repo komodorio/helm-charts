@@ -65,6 +65,8 @@ imagePullSecret:
 # capabilities -- Configure the agent capabilities
 # @default -- See sub-values
 capabilities:
+  # capabilities.komodorCRD -- (bool) Native komodor custom resources
+  komodorCRD: true
   # capabilities.metrics -- (bool) Fetch workload metrics and send them to komodor backend
   metrics: true
   # capabilities.nodeEnricher -- (bool) Enable node enricher capabilities by the komodor agent
