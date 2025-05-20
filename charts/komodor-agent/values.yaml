@@ -332,7 +332,7 @@ components:
       # components.komodorDaemon.metrics.quiet -- Set the quiet mode for the komodor agent metrics
       quiet: false
       # components.komodorDaemon.metrics.dcgm -- Enable collecting NVIDIA GPU metrics via DCGM
-      dcgm: false
+      dcgm: true
 
     # components.komodorDaemon.nodeEnricher -- Configure the komodor daemon node enricher components
     # @default -- See sub-values
