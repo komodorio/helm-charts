@@ -6,25 +6,15 @@
   resources:
     {{ toYaml .Values.components.komodorDaemon.metrics.resources | trim | nindent 4 }}
   volumeMounts:
-  - name: {{ include "metrics.daemon.config.name" . }}
-    mountPath: /etc/telegraf/telegraf.conf
-    subPath: telegraf.conf
-  - name: {{ include "metrics.daemon.config.name" . }}
-    mountPath: /etc/telegraf/plugin.conf
-    subPath: plugin.conf
-  {{- if .Values.components.komodorDaemon.metrics.dcgm }}
-  - name: {{ include "metrics.daemon.config.name" . }}
-    mountPath: /etc/telegraf/dcgm.conf
-    subPath: dcgm.conf
-  {{- end }}
+  - name: {{ include "metrics.shared.volume.name" . }}
+    mountPath: /etc/telegraf
   {{- include "custom-ca.trusted-volumeMounts" . | indent 2 }}
-  envFrom:
-  - configMapRef:
-      name:  "k8s-watcher-daemon-env-vars"
   env:
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
   - name: OS_TYPE
     value: linux
+  - name: KOMODOR_SERVER_URL
+    value: {{ .Values.communications.serverHost | quote }}
   - name: NODE_NAME
     valueFrom:
       fieldRef:
@@ -33,8 +23,6 @@
     valueFrom:
       fieldRef:
         fieldPath: status.hostIP
-  - name: CLUSTER_NAME
-    value: {{ .Values.clusterName }}
   {{- if gt (len .Values.components.komodorDaemon.metrics.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorDaemon.metrics.extraEnvVars | nindent 2 }}
   {{- end }}
@@ -49,20 +37,15 @@
   resources:
     {{ toYaml .Values.components.komodorDaemonWindows.metrics.resources | trim | nindent 4 }}
   volumeMounts:
-  - name: {{ include "metrics.daemon-windows.config.name" . }}
-    mountPath: C:/telegraf/telegraf.conf
-    subPath: telegraf.conf
-  - name: {{ include "metrics.daemon-windows.config.name" . }}
-    mountPath: C:/telegraf/plugin.conf
-    subPath: plugin.conf
+  - name: {{ include "metrics.shared.volume.name" . }}
+    mountPath: /etc/telegraf
   {{- include "custom-ca.trusted-volumeMounts" . | indent 2 }}
-  envFrom:
-  - configMapRef:
-      name:  "k8s-watcher-daemon-env-vars"
   env:
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
   - name: OS_TYPE
     value: windows
+  - name: KOMODOR_SERVER_URL
+    value: {{ .Values.communications.serverHost | quote }}
   - name: NODE_NAME
     valueFrom:
       fieldRef:
@@ -71,8 +54,6 @@
     valueFrom:
       fieldRef:
         fieldPath: status.hostIP
-  - name: CLUSTER_NAME
-    value: {{ .Values.clusterName }}
   {{- if gt (len .Values.components.komodorDaemonWindows.metrics.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorDaemonWindows.metrics.extraEnvVars | nindent 2 }}
   {{- end }}
@@ -80,25 +61,26 @@
 {{- end }}
 
 {{- define "metrics.daemonset.init.container" }}
-{{- if .Values.capabilities.metrics }}
-- name: init-daemon
-  image: {{ .Values.imageRepo }}/{{ .Values.components.komodorDaemon.metricsInit.image.name}}:{{ .Values.components.komodorDaemon.metricsInit.image.tag | default .Chart.AppVersion }}
+- name: telegraf-init
+  image: {{ .Values.imageRepo }}/{{ .Values.components.komodorMetrics.metricsInit.image.name}}:{{ .Values.components.komodorMetrics.metricsInit.image.tag | default .Chart.AppVersion }}
   imagePullPolicy: {{ .Values.pullPolicy }}
   resources:
-    {{ toYaml .Values.components.komodorDaemon.metricsInit.resources | trim | nindent 4 }}
+    {{ toYaml .Values.components.komodorMetrics.metricsInit.resources | trim | nindent 4 }}
   {{- if .Values.customCa.enabled }}
-  {{ include "custom-ca.trusted-init-container.command" . | indent 2 }}
+  {{ include "custom-ca.trusted-telegraf-init-container.command" . | indent 2 }}
   {{- else }}
-  command: ["daemon"]
+  command: ["telegraf_init"]
   {{- end }}
   volumeMounts:
   - name: configuration
     mountPath: /etc/komodor
+  - name: {{ include "metrics.shared.volume.name" . }}
+    mountPath: /etc/telegraf
   {{- include "custom-ca.volumeMounts" . | nindent 2 }}
   env:
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
-  - name: COMPONENT
-    value: {{ include "komodorAgent.fullname" . }}-daemon
+  - name: KOMOKW_COMPONENT
+    value: {{ .Chart.Name  }}-daemon
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
   - name: KOMOKW_API_KEY
@@ -111,8 +93,7 @@
         name: {{ include "komodorAgent.secret.name" . }}
         key: apiKey
         {{- end }}
-  {{- if gt (len .Values.components.komodorDaemon.metricsInit.extraEnvVars) 0 }}
-  {{ toYaml .Values.components.komodorDaemon.metricsInit.extraEnvVars | nindent 2 }}
+  {{- if gt (len .Values.components.komodorMetrics.metricsInit.extraEnvVars) 0 }}
+  {{ toYaml .Values.components.komodorMetrics.metricsInit.extraEnvVars | nindent 2 }}
   {{- end }}
-{{- end }}
 {{- end }}
