@@ -113,6 +113,23 @@ app.kubernetes.io/instance: {{ include "komodor.truncatedReleaseName"  . }}-metr
 {{- end }}
 {{- end}}
 
+# Proxy definitions
+{{- define "komodorProxy.labels" -}}
+{{ include "komodorProxy.selectorLabels" .}}
+{{ include "komodorAgent.commonLabels" . }}
+{{- end }}
+
+{{- define "komodorProxy.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "komodorAgent.name" . }}-proxy
+app.kubernetes.io/instance: {{ include "komodor.truncatedReleaseName"  . }}-proxy
+{{- end }}
+
+{{- define "komodorProxy.user.labels" -}}
+{{- if not (empty (((.Values.components).komodorKubectlProxy).labels)) }}
+{{ toYaml .Values.components.komodorKubectlProxy.labels }}
+{{- end }}
+{{- end}}
+
 
 {{- define "komodor.truncatedReleaseName" -}}
 {{- trunc 40 .Release.Name -}}

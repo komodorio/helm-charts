@@ -1,0 +1,17 @@
+{{- if .Values.capabilities.kubectlProxy.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: komodor-proxy-service
+  labels:
+    {{- include "komodorProxy.labels" . | nindent 6 }}
+spec:
+  ports:
+  - port: 443
+    protocol: TCP
+    targetPort: 443
+  selector:
+    {{- include "komodorProxy.selectorLabels" . | nindent 6 }}
+  sessionAffinity: None
+  type: ClusterIP
+{{- end }}
