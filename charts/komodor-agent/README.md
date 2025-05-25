@@ -105,10 +105,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | serviceAccount.name | string | `nil` | Name of the service account, Required if `serviceAccount.create` is false |
 | serviceAccount.annotations | object | `{}` | Add annotations to the service account |
 | proxy.enabled | bool | `false` | Enable proxy for the agent |
-| proxy.komodorOnly | bool | `true` | Configure proxy to be applied only on communication to Komodor servers (comms. to K8S API remains without proxy) |
 | proxy.http | string | `nil` | Configure Proxy setting (HTTP_PROXY) `eg. http://proxy.com:8080` |
 | proxy.https | string | `nil` | Configure Proxy setting (HTTPS_PROXY) `eg. https://proxy.com:8080` |
-| proxy.no_proxy | string | `nil` | Specify specific domains to ignore proxy for. eg. `komodor.com,google.com` |
 | customCa | object | See sub-values | Configure custom CA for the agent |
 | customCa.enabled | bool | `false` | Enable custom CA certificate for the agent |
 | customCa.secretName | string | `nil` | Name of the secret containing the CA |
