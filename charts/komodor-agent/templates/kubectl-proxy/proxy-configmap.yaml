@@ -15,6 +15,9 @@ data:
 
         ssl_certificate     /etc/nginx/ssl/tls.crt;
         ssl_certificate_key /etc/nginx/ssl/tls.key;
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_ciphers 'ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384';
+        ssl_prefer_server_ciphers on;
 
         location / {
           proxy_pass https://kubernetes.default.svc.cluster.local;
@@ -45,5 +48,8 @@ data:
           proxy_read_timeout 3600;
         }
       }
+
+      # Rate limiting zone
+      limit_req_zone $binary_remote_addr zone=api_limit:10m rate=10r/s;
     }
 {{- end }}

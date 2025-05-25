@@ -2,87 +2,96 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  {{- if not (empty .Values.components.komodorKubectlProxy.annotations) }}
-  annotations: {{ toYaml .Values.components.komodorKubectlProxy.annotations | nindent 4 }}
+  name: {{ include "komodorAgent.fullname" . }}-proxy
+  {{- with .Values.components.komodorKubectlProxy.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
   {{- end }}
   labels:
     {{- include "komodorProxy.labels" . | nindent 4 }}
     {{- include "komodorProxy.user.labels" . | nindent 4 }}
-  name: {{ include "komodorAgent.fullname" . }}-proxy
-  
 spec:
   progressDeadlineSeconds: 600
   replicas: 1
   revisionHistoryLimit: 10
   selector:
-    matchLabels: {{- include "komodorProxy.selectorLabels" . | nindent 6 }}
+    matchLabels:
+      {{- include "komodorProxy.selectorLabels" . | nindent 6 }}
   strategy:
-  {{- if not (empty .Values.components.komodorKubectlProxy.strategy) }}
-    {{- toYaml .Values.components.komodorKubectlProxy.strategy | nindent 4 }}
-  {{ else }}
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 0
-      maxSurge: 1
-  {{- end }}
+    {{- if not (empty .Values.components.komodorKubectlProxy.strategy) }}
+      {{- toYaml .Values.components.komodorKubectlProxy.strategy | nindent 4 }}
+    {{- else }}
+      type: RollingUpdate
+      rollingUpdate:
+        maxUnavailable: 0
+        maxSurge: 1
+    {{- end }}
   template:
     metadata:
-      annotations:
-        {{- if not (empty (((.Values.components).komodorKubectlProxy).podAnnotations)) }}
-        {{- toYaml .Values.components.komodorKubectlProxy.podAnnotations | trim | nindent 8 }}
-        {{- end }}
       labels:
         {{- include "komodorProxy.selectorLabels" . | nindent 8 }}
         {{- include "komodorProxy.user.labels"    . | nindent 8 }}
+      {{- with .Values.components.komodorKubectlProxy.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     spec:
+      {{- with .Values.components.komodorKubectlProxy.affinity }}
       affinity:
-        {{- toYaml .Values.components.komodorKubectlProxy.affinity | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.components.komodorKubectlProxy.nodeSelector }}
       nodeSelector:
-        {{- if not (empty (((.Values.components).komodorKubectlProxy).nodeSelector)) }}
-        {{- toYaml .Values.components.komodorKubectlProxy.nodeSelector | nindent 8 }}
-        {{- end }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.components.komodorKubectlProxy.tolerations }}
       tolerations:
-        {{- toYaml .Values.components.komodorKubectlProxy.tolerations | nindent 8}}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
-      - image: {{ .Values.imageRepo }}/{{ .Values.components.komodorKubectlProxy.image.name}}:{{ .Values.components.komodorKubectlProxy.image.tag | default "1.27.5" }}
-        imagePullPolicy: {{ .Values.pullPolicy }}
-        name: komodor-kubectl-proxy
-        command:
-          - sh
-          - -c
-          - |
-            mkdir -p /etc/nginx/ssl && \
-            if [ ! -f /etc/nginx/ssl/tls.crt ]; then
-              echo "Generating self-signed cert..."
-              openssl req -x509 -nodes -days 365 \
-                -subj "/CN=komodor-kubectl-proxy" \
-                -addext "subjectAltName=DNS:komodor-kubectl-proxy" \
-                -newkey rsa:2048 \
-                -keyout /etc/nginx/ssl/tls.key \
-                -out /etc/nginx/ssl/tls.crt 
-            fi && \
-            echo "Starting nginx..." && \
-            nginx -g 'daemon off;'
-        ports:
-        - containerPort: 443
-          protocol: TCP
-        resources:
-          {{ toYaml .Values.components.komodorKubectlProxy.resources | trim | nindent 10 }}
-        terminationMessagePath: /dev/termination-log
-        terminationMessagePolicy: File
-        volumeMounts:
-        - mountPath: /etc/nginx/nginx.conf
-          name: komodor-kubectl-proxy-config
-          subPath: nginx.conf
+        - name: komodor-kubectl-proxy
+          image: {{ .Values.imageRepo }}/{{ .Values.components.komodorKubectlProxy.image.name}}:{{ .Values.components.komodorKubectlProxy.image.tag | default "1.27.5" }}
+          imagePullPolicy: {{ .Values.pullPolicy }}
+          command:
+            - sh
+            - -c
+            - |
+              mkdir -p /etc/nginx/ssl && \
+              if [ ! -f /etc/nginx/ssl/tls.crt ]; then
+                echo "Generating self-signed cert..."
+                openssl req -x509 -nodes -days 365 \
+                  -subj "/CN=komodor-kubectl-proxy" \
+                  -addext "subjectAltName=DNS:komodor-kubectl-proxy" \
+                  -newkey rsa:2048 \
+                  -keyout /etc/nginx/ssl/tls.key \
+                  -out /etc/nginx/ssl/tls.crt 
+              fi && \
+              echo "Starting nginx..." && \
+              nginx -g 'daemon off;'
+          ports:
+            - containerPort: 443
+              protocol: TCP
+          {{- with .Values.components.komodorKubectlProxy.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /etc/nginx/nginx.conf
+              name: komodor-kubectl-proxy-config
+              subPath: nginx.conf
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
+      {{- with .Values.components.komodorKubectlProxy.securityContext }}
       securityContext:
-      {{- toYaml .Values.components.komodorKubectlProxy.securityContext | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       terminationGracePeriodSeconds: 30
       volumes:
-      - configMap:
-          defaultMode: 420
-          name: nginx-conf
-        name: komodor-kubectl-proxy-config
+        - name: komodor-kubectl-proxy-config
+          configMap:
+            name: nginx-conf
+            defaultMode: 420
 {{- end }}
