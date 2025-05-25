@@ -142,7 +142,7 @@ def test_extra_env_vars(component, location, container, container_index, deploym
                                                       f"spec.template.spec.{location}.{container_index}.env",
                                                       values_file=values_file)
 
-    assert deployment_env_vars[-1][
+    assert deployment_env_vars[-2][
                "name"] == "TEST_ENV_VAR", f"Expected TEST_ENV_VAR in deployment env vars {deployment_env_vars}"
 
 
