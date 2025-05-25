@@ -51,6 +51,6 @@ spec:
         {{- include "custom-ca.trusted-volume" .         | nindent 8 }}
       initContainers:
         {{- include "ca-init.container" .                | nindent 8 }}
-        {{- include "metrics.daemonset.init.container" . | nindent 8 }}
+        {{- include "metrics.init.container" . | nindent 8 }}
 
 {{- end }}

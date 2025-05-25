@@ -27,7 +27,7 @@
   {{- end }}
 {{- end }}
 
-{{- define "metrics.deployment.init.container" }}
+{{- define "metrics.init.container" }}
 - name: telegraf-init
   image: {{ .Values.imageRepo }}/{{ .Values.components.komodorMetrics.metricsInit.image.name}}:{{ .Values.components.komodorMetrics.metricsInit.image.tag | default .Chart.AppVersion }}
   imagePullPolicy: {{ .Values.pullPolicy }}
