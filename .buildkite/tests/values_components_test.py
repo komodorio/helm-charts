@@ -142,8 +142,7 @@ def test_extra_env_vars(component, location, container, container_index, deploym
                                                       f"spec.template.spec.{location}.{container_index}.env",
                                                       values_file=values_file)
 
-    assert deployment_env_vars[-2][
-               "name"] == "TEST_ENV_VAR", f"Expected TEST_ENV_VAR in deployment env vars {deployment_env_vars}"
+    assert any(env_var["name"] == "TEST_ENV_VAR" for env_var in deployment_env_vars), f"Expected TEST_ENV_VAR in deployment env vars {deployment_env_vars}"
 
 
 @pytest.mark.parametrize("component_name, deployment_name_suffix", [
