@@ -152,6 +152,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | capabilities.telemetry | object | See sub-values | Configure the agent telemetry capabilities |
 | capabilities.telemetry.enabled | bool | `true` | Enable telemetry capabilities by the komodor agent |
 | capabilities.telemetry.collectApiServerMetrics | bool | `false` | Collect metrics from the api server (Should only be used for debugging purposes) |
+| capabilities.kubectlProxy | object | See sub-values | Configure the komodor kubectl proxy capabilities |
+| capabilities.kubectlProxy.enabled | bool | `false` | Enable the komodor kubectl proxy |
 | components | object | See sub-values | Configure the agent components |
 | components.komodorAgent | object | See sub-values | Configure the komodor agent components |
 | components.komodorAgent.PriorityClassValue | int | `10000000` | Set the priority class value for the komodor agent deployment |
@@ -175,6 +177,17 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorAgent.supervisor.ports | object | `{"healthCheck":8089}` | Override the komodor agent supervisor ports configuration |
 | components.komodorAgent.supervisor.ports.healthCheck | int | `8089` | Override the health check port of the komodor agent supervisor |
 | components.komodorAgent.supervisor.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
+| components.komodorKubectlProxy | object | See sub-values | Configure the komodor kubectl proxy components |
+| components.komodorKubectlProxy.image | object | see sub-values | Override the komodor kubectl proxy image name or tag. |
+| components.komodorKubectlProxy.resources | object | `{}` | Set custom resources to the komodor kubectl proxy container |
+| components.komodorKubectlProxy.affinity | object | `{}` | Set node affinity for the komodor kubectl proxy deployment |
+| components.komodorKubectlProxy.annotations | object | `{}` | Set annotations for the komodor kubectl proxy deployment |
+| components.komodorKubectlProxy.podAnnotations | object | `{}` | Set pod annotations for the komodor kubectl proxy deployment |
+| components.komodorKubectlProxy.labels | object | `{}` | Set custom labels |
+| components.komodorKubectlProxy.nodeSelector | object | `{}` | Set node selectors for the komodor kubectl proxy deployment |
+| components.komodorKubectlProxy.tolerations | list | `[]` | Set tolerations for the komodor kubectl proxy deployment |
+| components.komodorKubectlProxy.securityContext | object | `{}` | Set custom securityContext to the komodor kubectl proxy deployment (use with caution) |
+| components.komodorKubectlProxy.strategy | object | `{}` | Set the rolling update strategy for the komodor kubectl proxy deployment |
 | components.komodorMetrics.PriorityClassValue | int | `10000000` | Set the priority class value for the komodor metrics agent deployment |
 | components.komodorMetrics.affinity | object | `{}` | Set node affinity for the komodor metrics agent deployment |
 | components.komodorMetrics.annotations | object | `{}` | Set annotations for the komodor metrics agent deployment |
