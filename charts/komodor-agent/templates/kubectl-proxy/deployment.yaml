@@ -52,22 +52,7 @@ spec:
         - name: komodor-kubectl-proxy
           image: {{ .Values.imageRepo }}/{{ .Values.components.komodorKubectlProxy.image.name}}:{{ .Values.components.komodorKubectlProxy.image.tag | default "1.27.5" }}
           imagePullPolicy: {{ .Values.pullPolicy }}
-          command:
-            - sh
-            - -c
-            - |
-              mkdir -p /etc/nginx/ssl && \
-              if [ ! -f /etc/nginx/ssl/tls.crt ]; then
-                echo "Generating self-signed cert..."
-                openssl req -x509 -nodes -days 365 \
-                  -subj "/CN=komodor-kubectl-proxy" \
-                  -addext "subjectAltName=DNS:komodor-kubectl-proxy" \
-                  -newkey rsa:2048 \
-                  -keyout /etc/nginx/ssl/tls.key \
-                  -out /etc/nginx/ssl/tls.crt 
-              fi && \
-              echo "Starting nginx..." && \
-              nginx -g 'daemon off;'
+          command: ["/init.sh"]
           ports:
             - containerPort: 443
               protocol: TCP
@@ -81,6 +66,10 @@ spec:
             - mountPath: /etc/nginx/nginx.conf
               name: komodor-kubectl-proxy-config
               subPath: nginx.conf
+            - mountPath: /init.sh
+              name: komodor-kubectl-proxy-init-script
+              subPath: init.sh
+              readOnly: true
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
@@ -94,4 +83,8 @@ spec:
           configMap:
             name: nginx-conf
             defaultMode: 420
+        - name: komodor-kubectl-proxy-init-script
+          configMap:
+            name: kubectl-proxy-init-script
+            defaultMode: 493
 {{- end }}
