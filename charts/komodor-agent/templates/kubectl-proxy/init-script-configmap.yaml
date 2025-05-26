@@ -1,0 +1,25 @@
+{{- if .Values.capabilities.kubectlProxy.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kubectl-proxy-init-script
+  labels:
+    app.kubernetes.io/name: kubectl-proxy-init-script
+    {{- include "komodorProxy.labels" . | nindent 4 }}
+data:
+  init.sh: |-
+    #!/bin/sh
+    set -e
+    mkdir -p /etc/nginx/ssl
+    if [ ! -f /etc/nginx/ssl/tls.crt ]; then
+      echo "Generating self-signed cert..."
+      openssl req -x509 -nodes -days 365 \
+        -subj "/CN=komodor-kubectl-proxy" \
+        -addext "subjectAltName=DNS:komodor-kubectl-proxy" \
+        -newkey rsa:2048 \
+        -keyout /etc/nginx/ssl/tls.key \
+        -out /etc/nginx/ssl/tls.crt
+    fi
+    echo "Starting nginx..."
+    nginx -g 'daemon off;'
+{{- end }}

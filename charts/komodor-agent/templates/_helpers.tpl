@@ -113,7 +113,6 @@ app.kubernetes.io/instance: {{ include "komodor.truncatedReleaseName"  . }}-metr
 {{- end }}
 {{- end}}
 
-
 {{- define "komodor.truncatedReleaseName" -}}
 {{- trunc 40 .Release.Name -}}
 {{- end -}}
