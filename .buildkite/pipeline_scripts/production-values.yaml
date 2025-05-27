@@ -3,6 +3,8 @@ imagePullSecret: docker-cfg-komodorio
 capabilities:
   event:
     redact: "{.*KEY.*,.*key.*,.*BUGSNAG.*}"
+  kubectlProxy:
+    enabled: true
 
 allowedResources:
   secret: true
