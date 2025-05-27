@@ -81,7 +81,7 @@ spec:
       volumes:
         - name: komodor-kubectl-proxy-config
           configMap:
-            name: nginx-conf
+            name: komodor-kubectl-proxy-config
             defaultMode: 420
         - name: komodor-kubectl-proxy-init-script
           configMap:
