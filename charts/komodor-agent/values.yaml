@@ -13,9 +13,9 @@ clusterName:
 createRbac: true
 
 # telegrafImageVersion -- (string) Telegraf version to be used
-telegrafImageVersion: &telegrafVersion v1.34.3-alpine
+telegrafImageVersion: &telegrafVersion v1.34.3-build1-alpine
 # telegrafWindowsImageVersion -- (string) Telegraf version to be used for windows
-telegrafWindowsImageVersion: &telegrafWindowsVersion v1.34.3-windows
+telegrafWindowsImageVersion: &telegrafWindowsVersion v1.34.3-build1-windows
 
 # serviceAccount -- Configure service account for the agent
 # @default -- See sub-values
@@ -65,6 +65,8 @@ imagePullSecret:
 # capabilities -- Configure the agent capabilities
 # @default -- See sub-values
 capabilities:
+  # capabilities.komodorCRD -- (bool) Native komodor custom resources
+  komodorCRD: true
   # capabilities.metrics -- (bool) Fetch workload metrics and send them to komodor backend
   metrics: true
   # capabilities.nodeEnricher -- (bool) Enable node enricher capabilities by the komodor agent
@@ -110,6 +112,8 @@ capabilities:
     redact: []
     # capabilities.events.enableRWCache -- (bool) Mounts a ReadWrite cache volume for the kubernetes api cache
     enableRWCache: true
+    # capabilities.events.create -- (bool) allow create kubernetes events for enrichment
+    create: true
 
   # capabilities.logs -- Configure the agent logs capabilities
   # @default -- See sub-values
@@ -142,6 +146,12 @@ capabilities:
     enabled: true
     # capabilities.telemetry.collectApiServerMetrics -- Collect metrics from the api server (Should only be used for debugging purposes)
     collectApiServerMetrics: false
+
+  # capabilities.kubectlProxy -- Configure the komodor kubectl proxy capabilities
+  # @default -- See sub-values
+  kubectlProxy:
+    # capabilities.kubectlProxy.enabled -- (bool) Enable the komodor kubectl proxy
+    enabled: false
 
 # components -- Configure the agent components
 # @default -- See sub-values
@@ -212,6 +222,34 @@ components:
         healthCheck: 8089
       # components.komodorAgent.supervisor.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
       extraEnvVars: []
+
+  # components.komodorKubectlProxy -- Configure the komodor kubectl proxy components
+  # @default -- See sub-values
+  komodorKubectlProxy:
+    # components.komodorKubectlProxy.image -- Override the komodor kubectl proxy image name or tag.
+    # @default -- see sub-values
+    image:
+      name: nginx
+      tag: 1.27.5
+    # components.komodorKubectlProxy.resources -- Set custom resources to the komodor kubectl proxy container
+    resources: {}
+    # components.komodorKubectlProxy.affinity -- Set node affinity for the komodor kubectl proxy deployment
+    affinity: {}
+    # components.komodorKubectlProxy.annotations -- Set annotations for the komodor kubectl proxy deployment
+    annotations: {}
+    # components.komodorKubectlProxy.podAnnotations -- Set pod annotations for the komodor kubectl proxy deployment
+    podAnnotations: {}
+    # components.komodorKubectlProxy.labels -- Set custom labels
+    labels: {}
+    # components.komodorKubectlProxy.nodeSelector -- Set node selectors for the komodor kubectl proxy deployment
+    nodeSelector: {}
+    # components.komodorKubectlProxy.tolerations -- Set tolerations for the komodor kubectl proxy deployment
+    tolerations: []
+    # components.komodorKubectlProxy.securityContext -- Set custom securityContext to the komodor kubectl proxy deployment (use with caution)
+    securityContext: {}
+    # components.komodorKubectlProxy.strategy -- Set the rolling update strategy for the komodor kubectl proxy deployment
+    strategy: {}
+    
 
   komodorMetrics:
     # components.komodorMetrics.PriorityClassValue -- Set the priority class value for the komodor metrics agent deployment
@@ -328,7 +366,7 @@ components:
       # components.komodorDaemon.metrics.quiet -- Set the quiet mode for the komodor agent metrics
       quiet: false
       # components.komodorDaemon.metrics.dcgm -- Enable collecting NVIDIA GPU metrics via DCGM
-      dcgm: false
+      dcgm: true
 
     gpuAccessContainer:
       # components.gpuAccessContainer.enabled -- (bool) Enable creating privileged CUDA container with host mounts to access GPU info

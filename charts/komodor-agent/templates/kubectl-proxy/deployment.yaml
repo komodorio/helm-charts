@@ -1,0 +1,90 @@
+{{- if .Values.capabilities.kubectlProxy.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "komodorAgent.fullname" . }}-proxy
+  {{- with .Values.components.komodorKubectlProxy.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "komodorProxy.labels" . | nindent 4 }}
+    {{- include "komodorProxy.user.labels" . | nindent 4 }}
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      {{- include "komodorProxy.selectorLabels" . | nindent 6 }}
+  strategy:
+    {{- if not (empty .Values.components.komodorKubectlProxy.strategy) }}
+      {{- toYaml .Values.components.komodorKubectlProxy.strategy | nindent 4 }}
+    {{- else }}
+      type: RollingUpdate
+      rollingUpdate:
+        maxUnavailable: 0
+        maxSurge: 1
+    {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- include "komodorProxy.selectorLabels" . | nindent 8 }}
+        {{- include "komodorProxy.user.labels"    . | nindent 8 }}
+      {{- with .Values.components.komodorKubectlProxy.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.components.komodorKubectlProxy.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.components.komodorKubectlProxy.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.components.komodorKubectlProxy.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: komodor-kubectl-proxy
+          image: {{ .Values.imageRepo }}/{{ .Values.components.komodorKubectlProxy.image.name}}:{{ .Values.components.komodorKubectlProxy.image.tag | default "1.27.5" }}
+          imagePullPolicy: {{ .Values.pullPolicy }}
+          command: ["/init.sh"]
+          ports:
+            - containerPort: 443
+              protocol: TCP
+          {{- with .Values.components.komodorKubectlProxy.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /etc/nginx/nginx.conf
+              name: komodor-kubectl-proxy-config
+              subPath: nginx.conf
+            - mountPath: /init.sh
+              name: komodor-kubectl-proxy-init-script
+              subPath: init.sh
+              readOnly: true
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      {{- with .Values.components.komodorKubectlProxy.securityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: komodor-kubectl-proxy-config
+          configMap:
+            name: komodor-kubectl-proxy-config
+            defaultMode: 420
+        - name: komodor-kubectl-proxy-init-script
+          configMap:
+            name: kubectl-proxy-init-script
+            defaultMode: 493
+{{- end }}
