@@ -5,7 +5,7 @@ securityContext:
 {{- end }}
 {{- end }}
 
-{{- define "metrics.komodorDeamon.securityContext" }}
+{{- define "metrics.komodorDaemon.securityContext" }}
 {{- if gt (len .Values.components.komodorDaemon.securityContext) 0 }}
 securityContext:
   {{ toYaml .Values.components.komodorDaemon.securityContext | nindent 2 }}

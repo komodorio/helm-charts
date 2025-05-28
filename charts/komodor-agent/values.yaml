@@ -330,6 +330,20 @@ components:
       # components.komodorDaemon.metrics.dcgm -- Enable collecting NVIDIA GPU metrics via DCGM
       dcgm: false
 
+    gpuAccessContainer:
+      # components.gpuAccessContainer.enabled -- (bool) Enable creating privileged CUDA container with host mounts to access GPU info
+      enabled: false
+      # components.gpuAccessContainer.image -- CUDA image to be used for GPU access container
+      image: nvidia/cuda:12.2.2-cudnn8-devel-ubuntu22.04
+      pullPolicy: IfNotPresent
+      resources:
+        limits:
+          cpu: 250m
+          memory: 100Mi
+        requests:
+          cpu: 100m
+          memory: 50Mi
+
     # components.komodorDaemon.nodeEnricher -- Configure the komodor daemon node enricher components
     # @default -- See sub-values
     nodeEnricher:

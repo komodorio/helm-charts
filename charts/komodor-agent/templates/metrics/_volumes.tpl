@@ -31,4 +31,9 @@
   emptyDir: {}
 {{- end }}
 
+{{- define "metrics.gpuAccess.volumes" }}
+- name: host-root
+  hostPath:
+    path: /
+{{- end }}
 
