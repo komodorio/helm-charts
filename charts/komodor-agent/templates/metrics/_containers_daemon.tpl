@@ -128,7 +128,7 @@
   securityContext:
     privileged: true
   volumeMounts:
-    - name: root
+    - name: host-root
       mountPath: /host
       readOnly: true
 {{- end }}

@@ -32,8 +32,10 @@
 {{- end }}
 
 {{- define "metrics.gpuAccess.volumes" }}
+{{- if .Values.components.komodorDaemon.gpuAccessContainer.enabled }}
 - name: host-root
   hostPath:
     path: /
+{{- end }}
 {{- end }}
 
