@@ -12,6 +12,16 @@
   {{- include "komodorMetrics.proxy-conf" . | indent 2 }}
   - name: OS_TYPE
     value: linux
+  - name: KOMOKW_API_KEY
+    valueFrom:
+      secretKeyRef:
+        {{- if .Values.apiKeySecret }}
+        name: {{ .Values.apiKeySecret | required "Existing secret name required!" }}
+        key: apiKey
+        {{- else }}
+        name: {{ include "komodorAgent.secret.name" . }}
+        key: apiKey
+        {{- end }}
   - name: KOMODOR_SERVER_URL
     value: {{ .Values.communications.serverHost | quote }}
   - name: NODE_NAME
