@@ -64,3 +64,40 @@
   {{ toYaml .Values.components.komodorMetrics.metricsInit.extraEnvVars | nindent 2 }}
   {{- end }}
 {{- end }}
+{{- define "metrics.init.windows.container" }}
+- name: telegraf-init
+  image: {{ .Values.imageRepo }}/{{ .Values.components.komodorMetrics.metricsInitWindows.image.name}}:{{ .Values.components.komodorMetrics.metricsInitWindows.image.tag | default .Chart.AppVersion }}
+  imagePullPolicy: {{ .Values.pullPolicy }}
+  resources:
+    {{ toYaml .Values.components.komodorMetrics.metricsInitWindows.resources | trim | nindent 4 }}
+  {{- if .Values.customCa.enabled }}
+  {{ include "custom-ca.trusted-telegraf-init-container.command" . | indent 2 }}
+  {{- else }}
+  command: ["telegraf_init"]
+  {{- end }}
+  volumeMounts:
+  - name: configuration
+    mountPath: /etc/komodor
+  - name: {{ include "metrics.shared.volume.name" . }}
+    mountPath: /etc/telegraf
+  {{- include "custom-ca.volumeMounts" . | nindent 2 }}
+  env:
+  {{- include "komodorAgent.proxy-conf" . | indent 2 }}
+  - name: KOMOKW_COMPONENT
+    value: {{ .Chart.Name  }}-metrics
+  - name: NAMESPACE
+    value: {{ .Release.Namespace }}
+  - name: KOMOKW_API_KEY
+    valueFrom:
+      secretKeyRef:
+        {{- if .Values.apiKeySecret }}
+        name: {{ .Values.apiKeySecret | required "Existing secret name required!" }}
+        key: apiKey
+        {{- else }}
+        name: {{ include "komodorAgent.secret.name" . }}
+        key: apiKey
+        {{- end }}
+  {{- if gt (len .Values.components.komodorMetrics.metricsInitWindows.extraEnvVars) 0 }}
+  {{ toYaml .Values.components.komodorMetrics.metricsInitWindows.extraEnvVars | nindent 2 }}
+  {{- end }}
+{{- end }}
