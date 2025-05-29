@@ -21,8 +21,8 @@
     valueFrom:
       fieldRef:
         fieldPath: status.hostIP
-  - name: CLUSTER_NAME
-    value: {{ .Values.clusterName }}
+  - name: KOMODOR_SERVER_URL
+    value: {{ .Values.communications.serverHost | quote }}
   {{- if gt (len .Values.components.komodorDaemon.metrics.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorDaemon.metrics.extraEnvVars | nindent 2 }}
   {{- end }}
