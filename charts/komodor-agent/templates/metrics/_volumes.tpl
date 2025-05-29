@@ -9,19 +9,15 @@
 
 {{- define "metrics.daemonset.volumes" }}
 {{- if .Values.capabilities.metrics }}
-- name: {{ include "metrics.daemon.config.name" . }}
-  configMap:
-    name: {{ include "metrics.daemon.config.name" . }}
-{{ include "metrics.agent.configuration" . }}
+- name: {{ include "metrics.shared.volume.name" . }}
+  emptyDir: {}
 {{- end }}
 {{- end }}
 
 {{- define "metrics.daemonsetWindows.volumes" }}
 {{- if .Values.capabilities.metrics }}
-- name: {{ include "metrics.daemon-windows.config.name" . }}
-  configMap:
-    name: {{ include "metrics.daemon-windows.config.name" . }}
-{{ include "metrics.agent.configuration" . }}
+- name: {{ include "metrics.shared.volume.name" . }}
+  emptyDir: {}
 {{- end }}
 {{- end }}
 
