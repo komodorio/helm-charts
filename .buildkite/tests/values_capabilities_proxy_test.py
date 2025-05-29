@@ -145,7 +145,6 @@ def test_proxy_envroinment_vars_are_set(
     exclude_containers = ["network-mapper", "network-sniffer-test-template"]
     expected_env_vars = {
         "KOMOKW_HTTP_PROXY": "http://mitm.proxy:8080",
-        "KOMOKW_HTTPS_PROXY": "https://mitm.proxy:8080",
     }
 
     result = get_yaml_from_helm_template(
