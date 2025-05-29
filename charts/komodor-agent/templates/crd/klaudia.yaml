@@ -1,4 +1,4 @@
-{{- if .Values.capabilities.events.create }}
+{{- if and .Values.capabilities.events.create (not (lookup "apiextensions.k8s.io/v1" "CustomResourceDefinition" "" "klaudia.app.komodor.com")) }}
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
