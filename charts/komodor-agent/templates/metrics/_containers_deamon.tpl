@@ -6,17 +6,8 @@
   resources:
     {{ toYaml .Values.components.komodorDaemon.metrics.resources | trim | nindent 4 }}
   volumeMounts:
-  - name: {{ include "metrics.daemon.config.name" . }}
-    mountPath: /etc/telegraf/telegraf.conf
-    subPath: telegraf.conf
-  - name: {{ include "metrics.daemon.config.name" . }}
-    mountPath: /etc/telegraf/plugin.conf
-    subPath: plugin.conf
-  {{- if .Values.components.komodorDaemon.metrics.dcgm }}
-  - name: {{ include "metrics.daemon.config.name" . }}
-    mountPath: /etc/telegraf/dcgm.conf
-    subPath: dcgm.conf
-  {{- end }}
+  - name: {{ include "metrics.shared.volume.name" . }}
+    mountPath: /etc/telegraf
   {{- include "custom-ca.trusted-volumeMounts" . | indent 2 }}
   envFrom:
   - configMapRef:
