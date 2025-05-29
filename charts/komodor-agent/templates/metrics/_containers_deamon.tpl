@@ -9,9 +9,6 @@
   - name: {{ include "metrics.shared.volume.name" . }}
     mountPath: /etc/telegraf
   {{- include "custom-ca.trusted-volumeMounts" . | indent 2 }}
-  envFrom:
-  - configMapRef:
-      name:  "k8s-watcher-daemon-env-vars"
   env:
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
   - name: OS_TYPE
