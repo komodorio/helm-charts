@@ -57,7 +57,7 @@ customCa:
 
 # imageRepo -- (string) Override the komodor agent image repository.
 imageRepo: public.ecr.aws/komodor-public
-# pullPolicy -- (string) Default Image pull policy for the komodor agent image exceptable values <ifNotPresent\Always\Never>.
+# pullPolicy -- (string) Default Image pull policy for the komodor agent image acceptable values <ifNotPresent\Always\Never>.
 pullPolicy: IfNotPresent
 # imagePullSecret -- (string) Set the image pull secret for the komodor agent
 imagePullSecret:
@@ -368,12 +368,15 @@ components:
       # components.komodorDaemon.metrics.dcgm -- Enable collecting NVIDIA GPU metrics via DCGM
       dcgm: true
 
+    # components.komodorDaemon.gpuAccessContainer -- settings for GPU host diagnostics accessor container
     gpuAccessContainer:
-      # components.gpuAccessContainer.enabled -- (bool) Enable creating privileged CUDA container with host mounts to access GPU info
+      # components.komodorDaemon.gpuAccessContainer.enabled -- (bool) Enable creating privileged CUDA container with host mounts to access GPU info
       enabled: false
-      # components.gpuAccessContainer.image -- CUDA image to be used for GPU access container
+      # components.komodorDaemon.gpuAccessContainer.image -- CUDA image to be used for GPU access container
       image: nvidia/cuda:12.2.2-cudnn8-devel-ubuntu22.04
+      # components.komodorDaemon.gpuAccessContainer.pullPolicy -- (string) Default Image pull policy for the GPU accessor image acceptable values <ifNotPresent\Always\Never>.
       pullPolicy: IfNotPresent
+      # components.komodorDaemon.gpuAccessContainer.resources -- Set custom resources to the GPU accessor container
       resources:
         limits:
           cpu: 250m
