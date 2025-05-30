@@ -226,9 +226,9 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemon.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemon.metrics.quiet | bool | `false` | Set the quiet mode for the komodor agent metrics |
 | components.komodorDaemon.metrics.dcgm | bool | `true` | Enable collecting NVIDIA GPU metrics via DCGM |
-| components.komodorDaemon.gpuAccessContainer | object | `{"enabled":false,"image":"nvidia/cuda:12.2.2-cudnn8-devel-ubuntu22.04","pullPolicy":"IfNotPresent","resources":{"limits":{"cpu":"250m","memory":"100Mi"},"requests":{"cpu":"100m","memory":"50Mi"}}}` | settings for GPU host diagnostics accessor container |
+| components.komodorDaemon.gpuAccessContainer | object | `{"enabled":false,"image":"alpine:latest","pullPolicy":"IfNotPresent","resources":{"limits":{"cpu":"250m","memory":"100Mi"},"requests":{"cpu":"100m","memory":"50Mi"}}}` | settings for GPU host diagnostics accessor container |
 | components.komodorDaemon.gpuAccessContainer.enabled | bool | `false` | Enable creating privileged CUDA container with host mounts to access GPU info |
-| components.komodorDaemon.gpuAccessContainer.image | string | `"nvidia/cuda:12.2.2-cudnn8-devel-ubuntu22.04"` | CUDA image to be used for GPU access container |
+| components.komodorDaemon.gpuAccessContainer.image | string | `"alpine:latest"` | CUDA image to be used for GPU access container |
 | components.komodorDaemon.gpuAccessContainer.pullPolicy | string | `"IfNotPresent"` | Default Image pull policy for the GPU accessor image acceptable values <ifNotPresent\Always\Never>. |
 | components.komodorDaemon.gpuAccessContainer.resources | object | `{"limits":{"cpu":"250m","memory":"100Mi"},"requests":{"cpu":"100m","memory":"50Mi"}}` | Set custom resources to the GPU accessor container |
 | components.komodorDaemon.nodeEnricher | object | See sub-values | Configure the komodor daemon node enricher components |
