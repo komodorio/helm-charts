@@ -1,0 +1,26 @@
+{{- if and .Values.capabilities.admissionController.enabled (not .Values.capabilities.admissionController.mutatingWebhook.selfManage) }}
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: {{ include "komodorAgent.admissionController.webhookName" . }}
+webhooks:
+  - name: binpacking.komodor.com
+    clientConfig:
+      service:
+        name: {{ include "komodorAgent.admissionController.serviceName" . }}
+        namespace: {{ .Release.Namespace }}
+        path: {{ .Values.capabilities.admissionController.mutatingWebhook.podBinpackingWebhookPath | default "/webhook/binpacking/pod" }}
+        port: {{ include "komodorAgent.admissionController.servicePort" . }}
+      caBundle: {{ .Values.capabilities.admissionController.webhookServer.caBundle | default (include "komodorAgent.admissionController.caBundle" .) }}
+    rules:
+      - operations: [ "CREATE" ]
+        apiGroups: [ "" ]
+        apiVersions: [ "v1" ]
+        resources: [ "pods" ]
+        scope: "Namespaced"
+    failurePolicy: Ignore
+    admissionReviewVersions:
+      - "v1"
+    sideEffects: None
+    timeoutSeconds: {{ .Values.capabilities.admissionController.mutatingWebhook.timeoutSeconds | default 5 }}
+{{- end }} 

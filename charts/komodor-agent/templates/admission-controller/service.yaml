@@ -1,0 +1,18 @@
+{{- if .Values.capabilities.admissionController.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "komodorAgent.admissionController.serviceName" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "komodorAgent.admissionController.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ include "komodorAgent.admissionController.servicePort" . }}
+      targetPort: {{ include "komodorAgent.admissionController.servicePort" . }}
+      protocol: TCP
+      name: https
+  selector:
+    {{- include "komodorAgent.admissionController.selectorLabels" . | nindent 4 }}
+{{- end }} 
