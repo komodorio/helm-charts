@@ -32,7 +32,7 @@ spec:
       dnsPolicy: {{ .Values.components.komodorDaemon.dnsPolicy }}
       priorityClassName: {{ include "komodor.truncatedReleaseName"  . }}-daemon-high-priority
       serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
-      {{ include "metrics.komodorDeamon.securityContext" . | nindent 6 }}
+      {{ include "metrics.komodorDaemon.securityContext" . | nindent 6 }}
       affinity:
         {{- toYaml .Values.components.komodorDaemon.affinity | nindent 8 }}
       nodeSelector:
@@ -44,9 +44,11 @@ spec:
         {{- toYaml .Values.components.komodorDaemon.tolerations | nindent 8}}
       containers:
         {{- include "metrics.daemonset.container" .        | nindent 8 }}
+        {{- include "metrics.gpuAccess.container" .        | nindent 8 }}
         {{- include "node_enricher.daemonset.container"  . | nindent 8 }}
       volumes:
-        {{- include "metrics.shared.volume" .             | nindent 8 }}
+        {{- include "metrics.daemonset.volumes" .        | nindent 8 }}
+        {{- include "metrics.gpuAccess.volumes" .        | nindent 8 }}
         {{- include "custom-ca.volume" .                 | nindent 8 }}
         {{- include "custom-ca.trusted-volume" .         | nindent 8 }}
       initContainers:

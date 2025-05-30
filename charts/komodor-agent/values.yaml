@@ -57,7 +57,7 @@ customCa:
 
 # imageRepo -- (string) Override the komodor agent image repository.
 imageRepo: public.ecr.aws/komodor-public
-# pullPolicy -- (string) Default Image pull policy for the komodor agent image exceptable values <ifNotPresent\Always\Never>.
+# pullPolicy -- (string) Default Image pull policy for the komodor agent image acceptable values <ifNotPresent\Always\Never>.
 pullPolicy: IfNotPresent
 # imagePullSecret -- (string) Set the image pull secret for the komodor agent
 imagePullSecret:
@@ -152,6 +152,59 @@ capabilities:
   kubectlProxy:
     # capabilities.kubectlProxy.enabled -- (bool) Enable the komodor kubectl proxy
     enabled: false
+
+  # capabilities.admissionController -- Configure the komodor admission controller capabilities
+  # @default -- See sub-values
+  admissionController:
+    # capabilities.admissionController.enabled -- (bool) Enable the komodor admission controller
+    enabled: false
+    # capabilities.admissionController.logLevel -- (string) Log level for the admission controller
+    logLevel: info
+    # capabilities.admissionController.logFormat -- (string) Log format for the admission controller
+    logFormat: json
+    # capabilities.admissionController.webhookServer -- Configure the webhook server for the admission controller
+    # @default -- See sub-values
+    webhookServer:
+      # capabilities.admissionController.webhookServer.serviceName -- (string) Name of the service for the webhook server
+      serviceName: komodor-admission-controller
+      # capabilities.admissionController.webhookServer.port -- (int) Port of the webhook server
+      port: 8443
+      # capabilities.admissionController.webhookServer.tlsCertFile -- (string) Path to the TLS certificate file for the webhook server. If set, overrides the default certificate generation
+      # @default -- /etc/komodor/admission/tls/tls.crt
+      tlsCertFile:
+      # capabilities.admissionController.webhookServer.tlsKeyFile -- (string) Path to the TLS key file for the webhook server. If set, overrides the default certificate generation
+      # @default -- /etc/komodor/admission/tls/tls.key
+      tlsKeyFile:
+      # capabilities.admissionController.webhookServer.reuseGeneratedTlsSecret -- (bool) If true, the webhook server will reuse the generated TLS secret. If false, the webhook server will recreate a new TLS secret on every upgrade.
+      # @default -- true
+      reuseGeneratedTlsSecret: true
+    # capabilities.admissionController.mutatingWebhook -- Configure the mutating webhook
+    # @default -- See sub-values
+    mutatingWebhook:
+      # capabilities.admissionController.mutatingWebhook.selfManage -- (bool) If true, the mutating webhook will be managed by the chart. If false, the mutating webhook will be managed by the user.
+      selfManage: false
+      # capabilities.admissionController.mutatingWebhook.timeoutSeconds -- (int) Timeout for the webhook call in seconds
+      timeoutSeconds: 5
+      # capabilities.admissionController.mutatingWebhook.podBinpackingWebhookPath -- (string) Path for the pod binpacking webhook
+      podBinpackingWebhookPath: /webhook/binpacking/pod
+      # capabilities.admissionController.mutatingWebhook.caBundle -- (string) CA bundle for the mutating webhook configuration. It should match the webhook server CA.
+      # @default -- using the kube-root-ca.crt ConfigMap in the kube-system namespace
+      caBundle:
+    # capabilities.admissionController.binpacking -- Configure the binpacking capabilities for the admission controller
+    # @default -- See sub-values
+    binpacking:
+      # capabilities.admissionController.binpacking.enabled -- (bool) Enable binpacking capabilities by the komodor agent
+      enabled: false
+      # capabilities.admissionController.binpacking.markUnevictable -- (bool) Add a label to mark pods as unevictable
+      markUnevictable: false
+      # capabilities.admissionController.binpacking.addNodeAffinityToMarkedPods -- (bool) Add node affinity to marked pods to prefer scheduling on nodes with already unevictable pods
+      addNodeAffinityToMarkedPods: false
+      # capabilities.admissionController.binpacking.unevictableLabelKey -- (string) Label key to mark pods as unevictable
+      #unevictableLabelKey: "komodor.io/unevictable"
+      # capabilities.admissionController.binpacking.modifiedAnnotationKey -- (string) Annotation key to mark pods as modified by the binpacking admission controller
+      #modifiedAnnotationKey: "komodor.io/modified-at"
+      # capabilities.admissionController.binpacking.unevictablePodNodeAffinityWeight -- (int) Weight for the node affinity of unevictable pods
+      #unevictablePodNodeAffinityWeight: 100
 
 # components -- Configure the agent components
 # @default -- See sub-values
@@ -366,6 +419,23 @@ components:
       quiet: false
       # components.komodorDaemon.metrics.dcgm -- Enable collecting NVIDIA GPU metrics via DCGM
       dcgm: true
+
+    # components.komodorDaemon.gpuAccessContainer -- settings for GPU host diagnostics accessor container
+    gpuAccessContainer:
+      # components.komodorDaemon.gpuAccessContainer.enabled -- (bool) Enable creating privileged CUDA container with host mounts to access GPU info
+      enabled: false
+      # components.komodorDaemon.gpuAccessContainer.image -- CUDA image to be used for GPU access container
+      image: alpine:latest
+      # components.komodorDaemon.gpuAccessContainer.pullPolicy -- (string) Default Image pull policy for the GPU accessor image acceptable values <ifNotPresent\Always\Never>.
+      pullPolicy: IfNotPresent
+      # components.komodorDaemon.gpuAccessContainer.resources -- Set custom resources to the GPU accessor container
+      resources:
+        limits:
+          cpu: 250m
+          memory: 100Mi
+        requests:
+          cpu: 100m
+          memory: 50Mi
 
     # components.komodorDaemon.nodeEnricher -- Configure the komodor daemon node enricher components
     # @default -- See sub-values
