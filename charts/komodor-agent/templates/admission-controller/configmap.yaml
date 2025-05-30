@@ -1,0 +1,31 @@
+{{- if .Values.capabilities.admissionController.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "komodorAgent.admissionController.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "komodorAgent.admissionController.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+    admissionServer:
+      port: {{ .Values.capabilities.admissionController.webhookServer.port }}
+      tlsCertFile: {{ .Values.capabilities.admissionController.webhookServer.tlsCertFile | default "/etc/komodor/admission/tls/tls.crt" }}
+      tlsKeyFile: {{ .Values.capabilities.admissionController.webhookServer.tlsKeyFile | default "/etc/komodor/admission/tls/tls.key" }}
+    logger:
+      logLevel: {{ .Values.capabilities.admissionController.logLevel }}
+      format: {{ .Values.capabilities.admissionController.logFormat }}
+    binpacking:
+      enabled: {{ .Values.capabilities.admissionController.binpacking.enabled }}
+      markUnevictable: {{ .Values.capabilities.admissionController.binpacking.markUnevictable }}
+      addNodeAffinityToMarkedPods: {{ .Values.capabilities.admissionController.binpacking.addNodeAffinityToMarkedPods }}
+      {{- if .Values.capabilities.admissionController.binpacking.unevictableLabelKey }}
+      unevictableLabelKey: {{ .Values.capabilities.admissionController.binpacking.unevictableLabelKey }}
+      {{- end }}
+      {{- if .Values.capabilities.admissionController.binpacking.modifiedAnnotationKey }}
+      modifiedAnnotationKey: {{ .Values.capabilities.admissionController.binpacking.modifiedAnnotationKey }}
+      {{- end }}
+      {{- if .Values.capabilities.admissionController.binpacking.unevictablePodNodeAffinityWeight }}
+      unevictablePodNodeAffinityWeight: {{ .Values.capabilities.admissionController.binpacking.unevictablePodNodeAffinityWeight }}
+      {{- end }}
+{{- end }}

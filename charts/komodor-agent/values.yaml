@@ -153,6 +153,51 @@ capabilities:
     # capabilities.kubectlProxy.enabled -- (bool) Enable the komodor kubectl proxy
     enabled: false
 
+  # capabilities.admissionController -- Configure the komodor admission controller capabilities
+  # @default -- See sub-values
+  admissionController:
+    # capabilities.admissionController.enabled -- (bool) Enable the komodor admission controller
+    enabled: false
+    # capabilities.admissionController.logLevel -- (string) Log level for the admission controller
+    logLevel: info
+    # capabilities.admissionController.logFormat -- (string) Log format for the admission controller
+    logFormat: json
+    # capabilities.admissionController.webhookServer -- Configure the webhook server for the admission controller
+    webhookServer:
+      # capabilities.admissionController.webhookServer.serviceName -- (string) Name of the service for the webhook server
+      serviceName: komodor-admission-controller
+      # capabilities.admissionController.webhookServer.port -- (int) Port of the webhook server
+      port: 8443
+      # capabilities.admissionController.webhookServer.tlsCertFile -- (string) Path to the TLS certificate file for the webhook server. If set, overrides the default certificate generation
+      # @default -- /etc/komodor/admission/tls/tls.crt
+      #tlsCertFile: /etc/komodor/admission/tls/tls.crt
+      # capabilities.admissionController.webhookServer.tlsKeyFile -- (string) Path to the TLS key file for the webhook server. If set, overrides the default certificate generation
+      # @default -- /etc/komodor/admission/tls/tls.key
+      #tlsKeyFile: /etc/komodor/admission/tls/tls.key
+    # capabilities.admissionController.mutatingWebhook -- Configure the mutating webhook
+    mutatingWebhook:
+      # capabilities.admissionController.mutatingWebhook.selfManage -- (bool) If true, the mutating webhook will be managed by the chart. If false, the mutating webhook will be managed by the user.
+      selfManage: false
+      # capabilities.admissionController.mutatingWebhook.timeoutSeconds -- (int) Timeout for the webhook call in seconds
+      timeoutSeconds: 5
+      # capabilities.admissionController.mutatingWebhook.podBinpackingWebhookPath -- (string) Path for the pod binpacking webhook
+      podBinpackingWebhookPath: /webhook/binpacking/pod
+    # capabilities.admissionController.binpacking -- Configure the binpacking capabilities for the admission controller
+    binpacking:
+      # capabilities.admissionController.binpacking.enabled -- (bool) Enable binpacking capabilities by the komodor agent
+      enabled: false
+      # capabilities.admissionController.binpacking.markUnevictable -- (bool) Add a label to mark pods as unevictable
+      markUnevictable: false
+      # capabilities.admissionController.binpacking.addNodeAffinityToMarkedPods -- (bool) Add node affinity to marked pods to prefer scheduling on nodes with already unevictable pods
+      addNodeAffinityToMarkedPods: false
+      # capabilities.admissionController.binpacking.unevictableLabelKey -- (string) Label key to mark pods as unevictable
+      #unevictableLabelKey: "komodor.io/unevictable"
+      # capabilities.admissionController.binpacking.modifiedAnnotationKey -- (string) Annotation key to mark pods as modified by the binpacking admission controller
+      #modifiedAnnotationKey: "komodor.io/modified-at"
+      # capabilities.admissionController.binpacking.unevictablePodNodeAffinityWeight -- (int) Weight for the node affinity of unevictable pods
+      #unevictablePodNodeAffinityWeight: 100
+
+
 # components -- Configure the agent components
 # @default -- See sub-values
 components:
@@ -250,6 +295,44 @@ components:
     # components.komodorKubectlProxy.strategy -- Set the rolling update strategy for the komodor kubectl proxy deployment
     strategy: {}
     
+  # components.admissionController -- Configure the komodor admission controller component
+  # @default -- See sub-values
+  admissionController:
+    # components.admissionController.image -- Override the komodor admission controller image name or tag.
+    # @default -- see sub-values
+    image:
+      name: admission-controller
+      tag: 0.0.1
+    # components.admissionController.resources -- Set custom resources to the komodor admission controller container
+    resources: {}
+    # components.admissionController.affinity -- Set node affinity for the komodor admission controller deployment
+    affinity: {}
+    # components.admissionController.annotations -- Set annotations for the komodor admission controller deployment
+    annotations: {}
+    # components.admissionController.podAnnotations -- Set pod annotations for the komodor admission controller deployment
+    podAnnotations: {}
+    # components.admissionController.labels -- Set custom labels
+    labels: {}
+    # components.admissionController.nodeSelector -- Set node selectors for the komodor admission controller deployment
+    nodeSelector: {}
+    # components.admissionController.tolerations -- Set tolerations for the komodor admission controller deployment
+    tolerations: []
+    # components.admissionController.securityContext -- Set custom securityContext to the komodor admission controller deployment (use with caution)
+    securityContext: {}
+    # components.admissionController.strategy -- Set the rolling update strategy for the komodor admission controller
+    strategy: {}
+    # components.admissionController.extraVolumes -- List of additional volumes to mount in the komodor admission controller deployment/pod
+    #      extraVolumes:
+    #        - volume:
+    #            name: webhook-tls
+    #            secret:
+    #              secretName: komodor-admission-controller-tls
+    #          volumeMount:
+    #            name: webhook-tls
+    #            mountPath: /etc/komodor/admission/tls
+    #            readOnly: true
+    extraVolumes: []
+
 
   komodorMetrics:
     # components.komodorMetrics.PriorityClassValue -- Set the priority class value for the komodor metrics agent deployment
