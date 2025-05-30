@@ -116,3 +116,20 @@
   {{- end }}
 {{- end }}
 {{- end }}
+
+{{- define "metrics.gpuAccess.container" }}
+{{- if .Values.components.komodorDaemon.gpuAccessContainer.enabled }}
+- name: gpu-access
+  image: {{ .Values.components.komodorDaemon.gpuAccessContainer.image }}
+  imagePullPolicy: {{ .Values.components.komodorDaemon.gpuAccessContainer.pullPolicy }}
+  resources:
+    {{ toYaml .Values.components.komodorDaemon.gpuAccessContainer.resources | trim | nindent 4 }}
+  command: ["sleep", "infinity"]
+  securityContext:
+    privileged: true
+  volumeMounts:
+    - name: host-root
+      mountPath: /host
+      readOnly: true
+{{- end }}
+{{- end }}
