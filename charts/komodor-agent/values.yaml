@@ -306,8 +306,14 @@ components:
     image:
       name: admission-controller
       tag: 0.0.1
-    # components.admissionController.resources -- Set custom resources to the komodor admission controller container
-    resources: {}
+    # components.admissionController.resources -- Set custom resources to the komodor admission controller container - Memory utilization is relative to the amount of: [pods, nodes, pvcs, pvs, pdbs] resources you have in the cluster.
+    resources:
+      limits:
+          cpu: 1
+          memory: 4Gi
+      requests:
+          cpu: 500m
+          memory: 1Gi
     # components.admissionController.affinity -- Set node affinity for the komodor admission controller deployment
     affinity: {}
     # components.admissionController.annotations -- Set annotations for the komodor admission controller deployment
