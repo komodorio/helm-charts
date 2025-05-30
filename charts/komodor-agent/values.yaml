@@ -373,7 +373,7 @@ components:
       # components.komodorDaemon.gpuAccessContainer.enabled -- (bool) Enable creating privileged CUDA container with host mounts to access GPU info
       enabled: false
       # components.komodorDaemon.gpuAccessContainer.image -- CUDA image to be used for GPU access container
-      image: nvidia/cuda:12.2.2-cudnn8-devel-ubuntu22.04
+      image: alpine:latest
       # components.komodorDaemon.gpuAccessContainer.pullPolicy -- (string) Default Image pull policy for the GPU accessor image acceptable values <ifNotPresent\Always\Never>.
       pullPolicy: IfNotPresent
       # components.komodorDaemon.gpuAccessContainer.resources -- Set custom resources to the GPU accessor container
