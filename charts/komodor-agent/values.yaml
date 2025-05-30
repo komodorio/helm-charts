@@ -163,6 +163,7 @@ capabilities:
     # capabilities.admissionController.logFormat -- (string) Log format for the admission controller
     logFormat: json
     # capabilities.admissionController.webhookServer -- Configure the webhook server for the admission controller
+    # @default -- See sub-values
     webhookServer:
       # capabilities.admissionController.webhookServer.serviceName -- (string) Name of the service for the webhook server
       serviceName: komodor-admission-controller
@@ -170,11 +171,12 @@ capabilities:
       port: 8443
       # capabilities.admissionController.webhookServer.tlsCertFile -- (string) Path to the TLS certificate file for the webhook server. If set, overrides the default certificate generation
       # @default -- /etc/komodor/admission/tls/tls.crt
-      #tlsCertFile: /etc/komodor/admission/tls/tls.crt
+      tlsCertFile:
       # capabilities.admissionController.webhookServer.tlsKeyFile -- (string) Path to the TLS key file for the webhook server. If set, overrides the default certificate generation
       # @default -- /etc/komodor/admission/tls/tls.key
-      #tlsKeyFile: /etc/komodor/admission/tls/tls.key
+      tlsKeyFile:
     # capabilities.admissionController.mutatingWebhook -- Configure the mutating webhook
+    # @default -- See sub-values
     mutatingWebhook:
       # capabilities.admissionController.mutatingWebhook.selfManage -- (bool) If true, the mutating webhook will be managed by the chart. If false, the mutating webhook will be managed by the user.
       selfManage: false
@@ -183,6 +185,7 @@ capabilities:
       # capabilities.admissionController.mutatingWebhook.podBinpackingWebhookPath -- (string) Path for the pod binpacking webhook
       podBinpackingWebhookPath: /webhook/binpacking/pod
     # capabilities.admissionController.binpacking -- Configure the binpacking capabilities for the admission controller
+    # @default -- See sub-values
     binpacking:
       # capabilities.admissionController.binpacking.enabled -- (bool) Enable binpacking capabilities by the komodor agent
       enabled: false
