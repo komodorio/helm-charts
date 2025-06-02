@@ -59,45 +59,8 @@ Admission Controller webhook configuration name
 {{- end }}
 
 {{/*
-Admission Controller certificates
-*/}}
-{{- define "komodorAgent.admissionController.certificates" -}}
-{{- $ca := genCA "komodor-admission-controller-ca" 3650 -}}
-{{- $altNames := list (printf "%s.%s.svc" (include "komodorAgent.admissionController.serviceName" .) .Release.Namespace) (printf "%s.%s.svc.cluster.local" (include "komodorAgent.admissionController.serviceName" .) .Release.Namespace) -}}
-{{- $cert := genSignedCert (include "komodorAgent.admissionController.serviceName" .) nil $altNames 3650 $ca -}}
-ca: {{ $ca.Cert | b64enc }}
-cert: {{ $cert.Cert | b64enc }}
-key: {{ $cert.Key | b64enc }}
-{{- end -}}
-
-{{/*
-Admission Controller CA certificate
-*/}}
-{{- define "komodorAgent.admissionController.ca" -}}
-{{- $certificates := include "komodorAgent.admissionController.certificates" . | fromYaml -}}
-{{- $certificates.ca -}}
-{{- end -}}
-
-{{/*
-Admission Controller certificate
-*/}}
-{{- define "komodorAgent.admissionController.cert" -}}
-{{- $certificates := include "komodorAgent.admissionController.certificates" . | fromYaml -}}
-{{- $certificates.cert -}}
-{{- end -}}
-
-{{/*
-Admission Controller certificate key
-*/}}
-{{- define "komodorAgent.admissionController.key" -}}
-{{- $certificates := include "komodorAgent.admissionController.certificates" . | fromYaml -}}
-{{- $certificates.key -}}
-{{- end -}}
-
-{{/*
 Admission Controller CA bundle for webhook configuration
 */}}
 {{- define "komodorAgent.admissionController.caBundle" -}}
-{{- $certificates := include "komodorAgent.admissionController.certificates" . | fromYaml -}}
-{{- $certificates.ca -}}
+{{- index (lookup "v1" "ConfigMap" "kube-system" "kube-root-ca.crt").data "ca.crt" | b64enc -}}
 {{- end -}}
