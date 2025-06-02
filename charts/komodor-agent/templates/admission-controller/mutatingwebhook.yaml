@@ -11,7 +11,7 @@ webhooks:
         namespace: {{ .Release.Namespace }}
         path: {{ .Values.capabilities.admissionController.mutatingWebhook.podBinpackingWebhookPath | default "/webhook/binpacking/pod" }}
         port: {{ include "komodorAgent.admissionController.servicePort" . }}
-      caBundle: {{ .Values.capabilities.admissionController.webhookServer.caBundle | default (include "komodorAgent.admissionController.caBundle" .) }}
+      caBundle: {{ .Values.capabilities.admissionController.mutatingWebhook.caBundle | default (include "komodorAgent.admissionController.caBundle" .) }}
     rules:
       - operations: [ "CREATE" ]
         apiGroups: [ "" ]
