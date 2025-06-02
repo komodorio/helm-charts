@@ -53,10 +53,17 @@ spec:
             - name: webhook-tls
               mountPath: /etc/komodor/admission/tls
               readOnly: true
+            - name: configuration
+              mountPath: /etc/komodor
+              readOnly: true
       volumes:
         - name: webhook-tls
           secret:
             secretName: {{ include "komodorAgent.admissionController.fullname" . }}-tls
+        - name: configuration
+          configMap:
+            name: {{ include "komodorAgent.admissionController.fullname" . }}
+            defaultMode: 420
       {{- with .Values.components.admissionController.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
