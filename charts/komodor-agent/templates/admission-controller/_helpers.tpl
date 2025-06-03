@@ -76,9 +76,9 @@ In a SPECIFIC ORDER. TLS.CRT is first, then TLS.KEY, and finally CA.CRT.
     {{- $caSecret := lookup "v1" "Secret" .Release.Namespace $caSecretName -}}
 
     {{- if and .Values.capabilities.admissionController.webhookServer.reuseGeneratedTlsSecret (and (not (empty $tlsSecret)) (not (empty $caSecret))) -}}
-        {{- printf "%s$%s$%s" (index $tlsSecret.data "tls.crt") (index $tlsSecret.data "tls.key") (index $caSecret.data "ca.crt") -}}
+        {{- printf "%s$%s$%s" (index $tlsSecret.data "tls.crt") (index $tlsSecret.data "tls.key") (index $caSecret.data "tls.crt") -}}
     {{- else -}}
-        {{- $ca := genCA (printf "*.%s.svc" .Release.Namespace .) 3650 -}}
+        {{- $ca := genCA (printf "*.%s.svc" .Release.Namespace) 3650 -}}
         {{- $cn := printf "%s.%s.svc" (include "komodorAgent.admissionController.fullname" .) .Release.Namespace -}}
         {{- $san := list $cn (printf "%s.%s.svc.cluster.local" (include "komodorAgent.admissionController.serviceName" .) .Release.Namespace) -}}
         {{- $cert := genSignedCert $cn nil $san 3650 $ca -}}
