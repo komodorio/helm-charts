@@ -116,3 +116,18 @@ app.kubernetes.io/instance: {{ include "komodor.truncatedReleaseName"  . }}-metr
 {{- define "komodor.truncatedReleaseName" -}}
 {{- trunc 40 .Release.Name -}}
 {{- end -}}
+
+{{/*
+API Key secret reference - returns the entire valueFrom block
+*/}}
+{{- define "komodorAgent.apiKeySecretRef" -}}
+valueFrom:
+  secretKeyRef:
+    {{- if .Values.apiKeySecret }}
+    name: {{ .Values.apiKeySecret | required "Existing secret name required!" }}
+    key: apiKey
+    {{- else }}
+    name: {{ include "komodorAgent.secret.name" . }}
+    key: apiKey
+    {{- end }}
+{{- end }}

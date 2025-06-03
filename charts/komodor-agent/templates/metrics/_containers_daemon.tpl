@@ -63,6 +63,8 @@
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
   - name: OS_TYPE
     value: windows
+  - name: KOMOKW_API_KEY
+    {{ include "komodorAgent.apiKeySecretRef" . | nindent 4 }}
   - name: NODE_NAME
     valueFrom:
       fieldRef:
@@ -102,15 +104,7 @@
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
   - name: KOMOKW_API_KEY
-    valueFrom:
-      secretKeyRef:
-        {{- if .Values.apiKeySecret }}
-        name: {{ .Values.apiKeySecret | required "Existing secret name required!" }}
-        key: apiKey
-        {{- else }}
-        name: {{ include "komodorAgent.secret.name" . }}
-        key: apiKey
-        {{- end }}
+    {{ include "komodorAgent.apiKeySecretRef" . | nindent 4 }}
   {{- if gt (len .Values.components.komodorDaemon.metricsInit.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorDaemon.metricsInit.extraEnvVars | nindent 2 }}
   {{- end }}

@@ -12,6 +12,8 @@
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
   - name: OS_TYPE
     value: linux
+  - name: KOMOKW_API_KEY
+    {{ include "komodorAgent.apiKeySecretRef" . | nindent 4 }}
   - name: KOMODOR_SERVER_URL
     value: {{ .Values.communications.serverHost | quote }}
   - name: NODE_NAME
@@ -51,15 +53,7 @@
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
   - name: KOMOKW_API_KEY
-    valueFrom:
-      secretKeyRef:
-        {{- if .Values.apiKeySecret }}
-        name: {{ .Values.apiKeySecret | required "Existing secret name required!" }}
-        key: apiKey
-        {{- else }}
-        name: {{ include "komodorAgent.secret.name" . }}
-        key: apiKey
-        {{- end }}
+    {{ include "komodorAgent.apiKeySecretRef" . | nindent 4 }}
   {{- if gt (len .Values.components.komodorMetrics.metricsInit.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorMetrics.metricsInit.extraEnvVars | nindent 2 }}
   {{- end }}
