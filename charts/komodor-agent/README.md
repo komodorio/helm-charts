@@ -163,6 +163,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | capabilities.admissionController.webhookServer.port | int | `8443` | Port of the webhook server |
 | capabilities.admissionController.webhookServer.tlsCertFile | string | /etc/komodor/admission/tls/tls.crt | Path to the TLS certificate file for the webhook server. If set, overrides the default certificate generation |
 | capabilities.admissionController.webhookServer.tlsKeyFile | string | /etc/komodor/admission/tls/tls.key | Path to the TLS key file for the webhook server. If set, overrides the default certificate generation |
+| capabilities.admissionController.webhookServer.reuseGeneratedTlsSecret | bool | true | If true, the webhook server will reuse the generated TLS secret. If false, the webhook server will recreate a new TLS secret on every upgrade. |
 | capabilities.admissionController.mutatingWebhook | object | See sub-values | Configure the mutating webhook |
 | capabilities.admissionController.mutatingWebhook.selfManage | bool | `false` | If true, the mutating webhook will be managed by the chart. If false, the mutating webhook will be managed by the user. |
 | capabilities.admissionController.mutatingWebhook.timeoutSeconds | int | `5` | Timeout for the webhook call in seconds |

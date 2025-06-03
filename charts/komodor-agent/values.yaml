@@ -175,6 +175,9 @@ capabilities:
       # capabilities.admissionController.webhookServer.tlsKeyFile -- (string) Path to the TLS key file for the webhook server. If set, overrides the default certificate generation
       # @default -- /etc/komodor/admission/tls/tls.key
       tlsKeyFile:
+      # capabilities.admissionController.webhookServer.reuseGeneratedTlsSecret -- (bool) If true, the webhook server will reuse the generated TLS secret. If false, the webhook server will recreate a new TLS secret on every upgrade.
+      # @default -- true
+      reuseGeneratedTlsSecret: true
     # capabilities.admissionController.mutatingWebhook -- Configure the mutating webhook
     # @default -- See sub-values
     mutatingWebhook:

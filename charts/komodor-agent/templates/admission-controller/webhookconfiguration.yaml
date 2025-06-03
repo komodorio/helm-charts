@@ -1,0 +1,68 @@
+{{/*
+We need to put all resources that need certificate or CA Bundle together,
+so the template is executed just once and all the certs match.
+In a SPECIFIC ORDER. TLS.CRT is first (0), then TLS.KEY (1), and finally CA.CRT (2).
+ */}}
+{{- $certString := include "komodorAgent.admissionController.generatedSelfSignedCerts" . -}}
+{{- $certList := split "$" $certString -}}
+
+{{- if and .Values.capabilities.admissionController.enabled (not (and .Values.capabilities.admissionController.webhookServer.tlsCertFile .Values.capabilities.admissionController.webhookServer.tlsKeyFile)) }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "komodorAgent.admissionController.fullname" . }}-tls
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "komodorAgent.admissionController.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/hook: pre-install
+    helm.sh/delete-policy: before-hook-creation
+type: kubernetes.io/tls
+data:
+  tls.crt: {{ $certList._0 }}
+  tls.key: {{ $certList._1 }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "komodorAgent.admissionController.fullname" . }}-ca
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "komodorAgent.admissionController.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/hook: pre-install
+    helm.sh/delete-policy: before-hook-creation
+type: kubernetes.io/tls
+data:
+  tls.crt: {{ $certList._2 }}
+  tls.key: ""
+{{- end }}
+
+{{- if and .Values.capabilities.admissionController.enabled (not .Values.capabilities.admissionController.mutatingWebhook.selfManage) }}
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: {{ include "komodorAgent.admissionController.webhookName" . }}
+webhooks:
+  - name: binpacking.komodor.com
+    clientConfig:
+      service:
+        name: {{ include "komodorAgent.admissionController.serviceName" . }}
+        namespace: {{ .Release.Namespace }}
+        path: {{ .Values.capabilities.admissionController.mutatingWebhook.podBinpackingWebhookPath | default "/webhook/binpacking/pod" }}
+        port: {{ include "komodorAgent.admissionController.servicePort" . }}
+      caBundle: {{ .Values.capabilities.admissionController.mutatingWebhook.caBundle | default $certList._2 }}
+    rules:
+      - operations: [ "CREATE" ]
+        apiGroups: [ "" ]
+        apiVersions: [ "v1" ]
+        resources: [ "pods" ]
+        scope: "Namespaced"
+    failurePolicy: Ignore
+    admissionReviewVersions:
+      - "v1"
+    sideEffects: None
+    timeoutSeconds: {{ .Values.capabilities.admissionController.mutatingWebhook.timeoutSeconds | default 5 }}
+{{- end }}

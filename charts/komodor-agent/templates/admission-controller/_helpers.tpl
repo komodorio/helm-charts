@@ -58,9 +58,30 @@ Admission Controller webhook configuration name
 {{- printf "binpacking-pod-discovery" }}
 {{- end }}
 
+
 {{/*
-Admission Controller CA bundle for webhook configuration
+Generate certificates for aggregated api server
+
+We need to put all resources that need certificate or CA Bundle together,
+so the template is executed just once. Otherwise the private/public/CA keys will NOT MATCH since every time we use 'include' it is executed in a new context.
+
+Because a template can only represent a string, we append them using a delimiter: `$`.
+In a SPECIFIC ORDER. TLS.CRT is first, then TLS.KEY, and finally CA.CRT.
 */}}
-{{- define "komodorAgent.admissionController.caBundle" -}}
-{{- index (lookup "v1" "ConfigMap" "kube-system" "kube-root-ca.crt").data "ca.crt" | b64enc -}}
+
+{{- define "komodorAgent.admissionController.generatedSelfSignedCerts" -}}
+    {{- $tlsSecretName := printf "%s-tls" (include "komodorAgent.admissionController.fullname" .) -}}
+    {{- $caSecretName := printf "%s-ca" (include "komodorAgent.admissionController.fullname" .) -}}
+    {{- $tlsSecret := lookup "v1" "Secret" .Release.Namespace $tlsSecretName -}}
+    {{- $caSecret := lookup "v1" "Secret" .Release.Namespace $caSecretName -}}
+
+    {{- if and .Values.capabilities.admissionController.webhookServer.reuseGeneratedTlsSecret (and (not (empty $tlsSecret)) (not (empty $caSecret))) -}}
+        {{- printf "%s$%s$%s" (index $tlsSecret.data "tls.crt") (index $tlsSecret.data "tls.key") (index $caSecret.data "ca.crt") -}}
+    {{- else -}}
+        {{- $ca := genCA (printf "*.%s.svc" .Release.Namespace .) 3650 -}}
+        {{- $cn := printf "%s.%s.svc" (include "komodorAgent.admissionController.fullname" .) .Release.Namespace -}}
+        {{- $san := list $cn (printf "%s.%s.svc.cluster.local" (include "komodorAgent.admissionController.serviceName" .) .Release.Namespace) -}}
+        {{- $cert := genSignedCert $cn nil $san 3650 $ca -}}
+        {{- printf "%s$%s$%s" ($cert.Cert | b64enc) ($cert.Key | b64enc) ($ca.Cert | b64enc) -}}
+    {{- end -}}
 {{- end -}}
