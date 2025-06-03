@@ -64,7 +64,7 @@
   - name: OS_TYPE
     value: windows
   - name: KOMOKW_API_KEY
-    {{ include "komodorAgent.apiKeySecretRef" . | indent 4 }}
+    {{ include "komodorAgent.apiKeySecretRef" . | nindent 4 }}
   - name: NODE_NAME
     valueFrom:
       fieldRef:
@@ -104,7 +104,7 @@
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
   - name: KOMOKW_API_KEY
-    {{ include "komodorAgent.apiKeySecretRef" . | indent 4 }}
+    {{ include "komodorAgent.apiKeySecretRef" . | nindent 4 }}
   {{- if gt (len .Values.components.komodorDaemon.metricsInit.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorDaemon.metricsInit.extraEnvVars | nindent 2 }}
   {{- end }}

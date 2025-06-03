@@ -28,7 +28,7 @@
   env:
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
   - name: KOMOKW_API_KEY
-    {{ include "komodorAgent.apiKeySecretRef" . | indent 4 }}
+    {{ include "komodorAgent.apiKeySecretRef" . | nindent 4 }}
   - name: NODE_NAME
     valueFrom:
       fieldRef:

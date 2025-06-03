@@ -118,7 +118,7 @@ app.kubernetes.io/instance: {{ include "komodor.truncatedReleaseName"  . }}-metr
 {{- end -}}
 
 {{/*
-API Key secret reference
+API Key secret reference - returns the entire valueFrom block
 */}}
 {{- define "komodorAgent.apiKeySecretRef" -}}
 valueFrom:

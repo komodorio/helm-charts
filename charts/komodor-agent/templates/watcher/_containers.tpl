@@ -26,7 +26,7 @@
   {{- include "custom-ca.trusted-volumeMounts" .  |  nindent 2 }}
   env:
   - name: KOMOKW_API_KEY
-    {{ include "komodorAgent.apiKeySecretRef" . | indent 4 }}
+    {{ include "komodorAgent.apiKeySecretRef" . | nindent 4 }}
   - name: KOMOKW_CLUSTER_NAME
     value: {{ .Values.clusterName }}
   - name: HELM_CACHE_HOME
@@ -75,7 +75,7 @@
     - name: KOMOKW_CLUSTER_NAME
       value: {{ .Values.clusterName }}
     - name: KOMOKW_API_KEY
-      {{ include "komodorAgent.apiKeySecretRef" . | indent 4 }}
+      {{ include "komodorAgent.apiKeySecretRef" . | nindent 6 }}
     - name: KOMOKW_SERVERS_HEALTHCHECK_PORT
       value: {{ .Values.components.komodorAgent.supervisor.ports.healthCheck | quote }}
     {{- if gt (len .Values.components.komodorAgent.supervisor.extraEnvVars) 0 }}
