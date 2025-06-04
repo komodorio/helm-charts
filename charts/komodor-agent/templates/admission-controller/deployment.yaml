@@ -59,7 +59,7 @@ spec:
       volumes:
         - name: webhook-tls
           secret:
-            secretName: {{ include "komodorAgent.admissionController.fullname" . }}-tls
+            secretName: {{ include "komodorAgent.admissionController.serviceName" . }}-tls
         - name: configuration
           configMap:
             name: {{ include "komodorAgent.admissionController.fullname" . }}

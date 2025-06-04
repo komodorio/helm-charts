@@ -70,17 +70,17 @@ In a SPECIFIC ORDER. TLS.CRT is first, then TLS.KEY, and finally CA.CRT.
 */}}
 
 {{- define "komodorAgent.admissionController.generatedSelfSignedCerts" -}}
-    {{- $tlsSecretName := printf "%s-tls" (include "komodorAgent.admissionController.fullname" .) -}}
-    {{- $caSecretName := printf "%s-ca" (include "komodorAgent.admissionController.fullname" .) -}}
+    {{- $tlsSecretName := printf "%s-tls" (include "komodorAgent.admissionController.serviceName" .) -}}
+    {{- $caSecretName := printf "%s-ca" (include "komodorAgent.admissionController.serviceName" .) -}}
     {{- $tlsSecret := lookup "v1" "Secret" .Release.Namespace $tlsSecretName -}}
     {{- $caSecret := lookup "v1" "Secret" .Release.Namespace $caSecretName -}}
 
     {{- if and .Values.capabilities.admissionController.webhookServer.reuseGeneratedTlsSecret (and (not (empty $tlsSecret)) (not (empty $caSecret))) -}}
         {{- printf "%s$%s$%s" (index $tlsSecret.data "tls.crt") (index $tlsSecret.data "tls.key") (index $caSecret.data "tls.crt") -}}
     {{- else -}}
-        {{- $ca := genCA (printf "*.%s.svc" .Release.Namespace) 3650 -}}
-        {{- $cn := printf "%s.%s.svc" (include "komodorAgent.admissionController.fullname" .) .Release.Namespace -}}
-        {{- $san := list $cn (printf "%s.%s.svc.cluster.local" (include "komodorAgent.admissionController.serviceName" .) .Release.Namespace) -}}
+        {{- $ca := genCA (print "*." .Release.Namespace ".svc") 3650 -}}
+        {{- $cn := print (include "komodorAgent.admissionController.serviceName" .) "." .Release.Namespace ".svc" -}}
+        {{- $san := list $cn (print (include "komodorAgent.admissionController.serviceName" .) "." .Release.Namespace ".svc.cluster.local") -}}
         {{- $cert := genSignedCert $cn nil $san 3650 $ca -}}
         {{- printf "%s$%s$%s" ($cert.Cert | b64enc) ($cert.Key | b64enc) ($ca.Cert | b64enc) -}}
     {{- end -}}

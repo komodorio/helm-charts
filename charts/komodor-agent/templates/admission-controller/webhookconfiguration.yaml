@@ -11,7 +11,7 @@ In a SPECIFIC ORDER. TLS.CRT is first (0), then TLS.KEY (1), and finally CA.CRT 
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ include "komodorAgent.admissionController.fullname" . }}-tls
+  name: {{ include "komodorAgent.admissionController.serviceName" . }}-tls
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "komodorAgent.admissionController.labels" . | nindent 4 }}
