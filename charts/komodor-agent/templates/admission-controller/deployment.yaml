@@ -1,0 +1,79 @@
+{{- if .Values.capabilities.admissionController.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "komodorAgent.admissionController.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "komodorAgent.admissionController.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "komodorAgent.admissionController.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "komodorAgent.admissionController.selectorLabels" . | nindent 8 }}
+      {{- with .Values.components.admissionController.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- with .Values.components.admissionController.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.components.admissionController.securityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.components.admissionController.securityContext | nindent 12 }}
+          image: "{{ .Values.imageRepo }}/{{ .Values.components.admissionController.image.name }}:{{ .Values.components.admissionController.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.pullPolicy }}
+          ports:
+            - name: https
+              containerPort: {{ include "komodorAgent.admissionController.servicePort" . }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: https
+              scheme: HTTPS
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: https
+              scheme: HTTPS
+          resources:
+            {{- toYaml .Values.components.admissionController.resources | nindent 12 }}
+          volumeMounts:
+            - name: webhook-tls
+              mountPath: /etc/komodor/admission/tls
+              readOnly: true
+            - name: configuration
+              mountPath: /etc/komodor
+              readOnly: true
+      volumes:
+        - name: webhook-tls
+          secret:
+            secretName: {{ include "komodorAgent.admissionController.serviceName" . }}-tls
+        - name: configuration
+          configMap:
+            name: {{ include "komodorAgent.admissionController.fullname" . }}
+            defaultMode: 420
+      {{- with .Values.components.admissionController.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.components.admissionController.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.components.admissionController.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

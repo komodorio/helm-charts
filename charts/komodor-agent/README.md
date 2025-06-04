@@ -154,6 +154,25 @@ The command removes all the Kubernetes components associated with the chart and 
 | capabilities.telemetry.collectApiServerMetrics | bool | `false` | Collect metrics from the api server (Should only be used for debugging purposes) |
 | capabilities.kubectlProxy | object | See sub-values | Configure the komodor kubectl proxy capabilities |
 | capabilities.kubectlProxy.enabled | bool | `false` | Enable the komodor kubectl proxy |
+| capabilities.admissionController | object | See sub-values | Configure the komodor admission controller capabilities |
+| capabilities.admissionController.enabled | bool | `false` | Enable the komodor admission controller |
+| capabilities.admissionController.logLevel | string | `"info"` | Log level for the admission controller |
+| capabilities.admissionController.logFormat | string | `"json"` | Log format for the admission controller |
+| capabilities.admissionController.webhookServer | object | See sub-values | Configure the webhook server for the admission controller |
+| capabilities.admissionController.webhookServer.serviceName | string | `"komodor-admission-controller"` | Name of the service for the webhook server |
+| capabilities.admissionController.webhookServer.port | int | `8443` | Port of the webhook server |
+| capabilities.admissionController.webhookServer.tlsCertFile | string | /etc/komodor/admission/tls/tls.crt | Path to the TLS certificate file for the webhook server. If set, overrides the default certificate generation |
+| capabilities.admissionController.webhookServer.tlsKeyFile | string | /etc/komodor/admission/tls/tls.key | Path to the TLS key file for the webhook server. If set, overrides the default certificate generation |
+| capabilities.admissionController.webhookServer.reuseGeneratedTlsSecret | bool | true | If true, the webhook server will reuse the generated TLS secret. If false, the webhook server will recreate a new TLS secret on every upgrade. |
+| capabilities.admissionController.mutatingWebhook | object | See sub-values | Configure the mutating webhook |
+| capabilities.admissionController.mutatingWebhook.selfManage | bool | `false` | If true, the mutating webhook will be managed by the chart. If false, the mutating webhook will be managed by the user. |
+| capabilities.admissionController.mutatingWebhook.timeoutSeconds | int | `5` | Timeout for the webhook call in seconds |
+| capabilities.admissionController.mutatingWebhook.podBinpackingWebhookPath | string | `"/webhook/binpacking/pod"` | Path for the pod binpacking webhook |
+| capabilities.admissionController.mutatingWebhook.caBundle | string | using the kube-root-ca.crt ConfigMap in the kube-system namespace | CA bundle for the mutating webhook configuration. It should match the webhook server CA. |
+| capabilities.admissionController.binpacking | object | See sub-values | Configure the binpacking capabilities for the admission controller |
+| capabilities.admissionController.binpacking.enabled | bool | `false` | Enable binpacking capabilities by the komodor agent |
+| capabilities.admissionController.binpacking.markUnevictable | bool | `false` | Add a label to mark pods as unevictable |
+| capabilities.admissionController.binpacking.addNodeAffinityToMarkedPods | bool | `false` | Add node affinity to marked pods to prefer scheduling on nodes with already unevictable pods |
 | components | object | See sub-values | Configure the agent components |
 | components.komodorAgent | object | See sub-values | Configure the komodor agent components |
 | components.komodorAgent.PriorityClassValue | int | `10000000` | Set the priority class value for the komodor agent deployment |
@@ -188,6 +207,18 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorKubectlProxy.tolerations | list | `[]` | Set tolerations for the komodor kubectl proxy deployment |
 | components.komodorKubectlProxy.securityContext | object | `{}` | Set custom securityContext to the komodor kubectl proxy deployment (use with caution) |
 | components.komodorKubectlProxy.strategy | object | `{}` | Set the rolling update strategy for the komodor kubectl proxy deployment |
+| components.admissionController | object | See sub-values | Configure the komodor admission controller component |
+| components.admissionController.image | object | see sub-values | Override the komodor admission controller image name or tag. |
+| components.admissionController.resources | object | `{"limits":{"cpu":1,"memory":"4Gi"},"requests":{"cpu":"500m","memory":"1Gi"}}` | Set custom resources to the komodor admission controller container - Memory utilization is relative to the amount of: [pods, nodes, pvcs, pvs, pdbs] resources you have in the cluster. |
+| components.admissionController.affinity | object | `{}` | Set node affinity for the komodor admission controller deployment |
+| components.admissionController.annotations | object | `{}` | Set annotations for the komodor admission controller deployment |
+| components.admissionController.podAnnotations | object | `{}` | Set pod annotations for the komodor admission controller deployment |
+| components.admissionController.labels | object | `{}` | Set custom labels |
+| components.admissionController.nodeSelector | object | `{}` | Set node selectors for the komodor admission controller deployment |
+| components.admissionController.tolerations | list | `[]` | Set tolerations for the komodor admission controller deployment |
+| components.admissionController.securityContext | object | `{}` | Set custom securityContext to the komodor admission controller deployment (use with caution) |
+| components.admissionController.strategy | object | `{}` | Set the rolling update strategy for the komodor admission controller |
+| components.admissionController.extraVolumes | list | `[]` | List of additional volumes to mount in the komodor admission controller deployment/pod      extraVolumes:        - volume:            name: webhook-tls            secret:              secretName: komodor-admission-controller-tls          volumeMount:            name: webhook-tls            mountPath: /etc/komodor/admission/tls            readOnly: true |
 | components.komodorMetrics.PriorityClassValue | int | `10000000` | Set the priority class value for the komodor metrics agent deployment |
 | components.komodorMetrics.affinity | object | `{}` | Set node affinity for the komodor metrics agent deployment |
 | components.komodorMetrics.annotations | object | `{}` | Set annotations for the komodor metrics agent deployment |
