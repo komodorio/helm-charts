@@ -276,32 +276,76 @@ components:
       # components.komodorAgent.supervisor.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
       extraEnvVars: []
 
-  # components.komodorKubectlProxy -- Configure the komodor kubectl proxy components
+    # components.komodorKubectlProxy -- Configure the komodor kubectl proxy components
+    # @default -- See sub-values
+    komodorKubectlProxy:
+      # components.komodorKubectlProxy.image -- Override the komodor kubectl proxy image name or tag.
+      # @default -- see sub-values
+      image:
+        name: nginx
+        tag: 1.27.5
+      # components.komodorKubectlProxy.resources -- Set custom resources to the komodor kubectl proxy container
+      resources: {}
+      # components.komodorKubectlProxy.affinity -- Set node affinity for the komodor kubectl proxy deployment
+      affinity: {}
+      # components.komodorKubectlProxy.annotations -- Set annotations for the komodor kubectl proxy deployment
+      annotations: {}
+      # components.komodorKubectlProxy.podAnnotations -- Set pod annotations for the komodor kubectl proxy deployment
+      podAnnotations: {}
+      # components.komodorKubectlProxy.labels -- Set custom labels
+      labels: {}
+      # components.komodorKubectlProxy.nodeSelector -- Set node selectors for the komodor kubectl proxy deployment
+      nodeSelector: {}
+      # components.komodorKubectlProxy.tolerations -- Set tolerations for the komodor kubectl proxy deployment
+      tolerations: []
+      # components.komodorKubectlProxy.securityContext -- Set custom securityContext to the komodor kubectl proxy deployment (use with caution)
+      securityContext: {}
+      # components.komodorKubectlProxy.strategy -- Set the rolling update strategy for the komodor kubectl proxy deployment
+      strategy: {}
+
+  # components.admissionController -- Configure the komodor admission controller component
   # @default -- See sub-values
-  komodorKubectlProxy:
-    # components.komodorKubectlProxy.image -- Override the komodor kubectl proxy image name or tag.
+  admissionController:
+    # components.admissionController.image -- Override the komodor admission controller image name or tag.
     # @default -- see sub-values
     image:
-      name: nginx
-      tag: 1.27.5
-    # components.komodorKubectlProxy.resources -- Set custom resources to the komodor kubectl proxy container
-    resources: {}
-    # components.komodorKubectlProxy.affinity -- Set node affinity for the komodor kubectl proxy deployment
+      name: admission-controller
+      tag: 0.0.5
+    # components.admissionController.resources -- Set custom resources to the komodor admission controller container - Memory utilization is relative to the amount of: [pods, nodes, pvcs, pvs, pdbs] resources you have in the cluster.
+    resources:
+      limits:
+        cpu: 1
+        memory: 4Gi
+      requests:
+        cpu: 500m
+        memory: 1Gi
+    # components.admissionController.affinity -- Set node affinity for the komodor admission controller deployment
     affinity: {}
-    # components.komodorKubectlProxy.annotations -- Set annotations for the komodor kubectl proxy deployment
+    # components.admissionController.annotations -- Set annotations for the komodor admission controller deployment
     annotations: {}
-    # components.komodorKubectlProxy.podAnnotations -- Set pod annotations for the komodor kubectl proxy deployment
+    # components.admissionController.podAnnotations -- Set pod annotations for the komodor admission controller deployment
     podAnnotations: {}
-    # components.komodorKubectlProxy.labels -- Set custom labels
+    # components.admissionController.labels -- Set custom labels
     labels: {}
-    # components.komodorKubectlProxy.nodeSelector -- Set node selectors for the komodor kubectl proxy deployment
+    # components.admissionController.nodeSelector -- Set node selectors for the komodor admission controller deployment
     nodeSelector: {}
-    # components.komodorKubectlProxy.tolerations -- Set tolerations for the komodor kubectl proxy deployment
+    # components.admissionController.tolerations -- Set tolerations for the komodor admission controller deployment
     tolerations: []
-    # components.komodorKubectlProxy.securityContext -- Set custom securityContext to the komodor kubectl proxy deployment (use with caution)
+    # components.admissionController.securityContext -- Set custom securityContext to the komodor admission controller deployment (use with caution)
     securityContext: {}
-    # components.komodorKubectlProxy.strategy -- Set the rolling update strategy for the komodor kubectl proxy deployment
+    # components.admissionController.strategy -- Set the rolling update strategy for the komodor admission controller
     strategy: {}
+    # components.admissionController.extraVolumes -- List of additional volumes to mount in the komodor admission controller deployment/pod
+    #      extraVolumes:
+    #        - volume:
+    #            name: webhook-tls
+    #            secret:
+    #              secretName: komodor-admission-controller-tls
+    #          volumeMount:
+    #            name: webhook-tls
+    #            mountPath: /etc/komodor/admission/tls
+    #            readOnly: true
+    extraVolumes: []
 
   komodorMetrics:
     # components.komodorMetrics.PriorityClassValue -- Set the priority class value for the komodor metrics agent deployment
