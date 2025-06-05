@@ -19,7 +19,7 @@
 {{- if and .Values.proxy.enabled .Values.proxy.komodorOnly }}
 - name: USE_SYSTEM_PROXY
   value: "false"
-- name: KOMOKW_HTTP_PROXY
+- name: KOMODOR_HTTP_PROXY
   value: {{ if .Values.proxy.http }}{{ .Values.proxy.http }}{{ else if .Values.proxy.https }}{{ .Values.proxy.https }}{{ else }}""{{ end }}
 {{- else }}
 - name: USE_SYSTEM_PROXY
