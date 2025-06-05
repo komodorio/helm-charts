@@ -10,7 +10,7 @@
     mountPath: /etc/telegraf
   {{- include "custom-ca.trusted-volumeMounts" . | indent 2 }}
   env:
-  {{- include "komodorAgent.proxy-conf" . | indent 2 }}
+  {{- include "komodorMetrics.proxy-conf" . | indent 2 }}
   - name: OS_TYPE
     value: linux
   - name: NODE_NAME
@@ -42,7 +42,7 @@
   {{- include "custom-ca.trusted-volumeMounts" . | indent 2 }}
 
   env:
-  {{- include "komodorAgent.proxy-conf" . | indent 2 }}
+  {{- include "komodorMetrics.proxy-conf" . | indent 2 }}
   - name: OS_TYPE
     value: windows
   - name: NODE_NAME
