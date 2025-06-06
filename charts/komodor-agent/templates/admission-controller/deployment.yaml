@@ -6,6 +6,8 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "komodorAgent.admissionController.labels" . | nindent 4 }}
+  annotations:
+    {{ toYaml .Values.components.admissionController.annotations | nindent 4 }}
 spec:
   replicas: 1
   selector:
@@ -15,10 +17,11 @@ spec:
     metadata:
       labels:
         {{- include "komodorAgent.admissionController.selectorLabels" . | nindent 8 }}
-      {{- with .Values.components.admissionController.podAnnotations }}
       annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        checksum/config: {{ include (print $.Template.BasePath "/admission-controller/configmap.yaml") . | sha256sum }}
+        {{- if not (empty (((.Values.components).admissionController).podAnnotations)) }}
+        {{- toYaml .Values.components.admissionController.podAnnotations | trim | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.components.admissionController.imagePullSecrets }}
       imagePullSecrets:
