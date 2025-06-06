@@ -61,7 +61,7 @@ process_repository() {
 
 add_images_to_release() {
     images=$(cd "$(dirname "$0")/../../charts/komodor-agent" && \
-             helm template . --set apiKey=FAKEUUID-0000-1111-2222-333333333333 --set clusterName=fake | \
+             helm template . --set apiKey=FAKEUUID-0000-1111-2222-333333333333 --set clusterName=fake --set capabilities.admissionController.enabled=true | \
              awk '/image:/ {print $2}' | sort | uniq)
 
     {

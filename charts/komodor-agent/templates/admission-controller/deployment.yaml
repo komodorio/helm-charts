@@ -34,7 +34,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.components.admissionController.securityContext | nindent 12 }}
-          image: "{{ .Values.imageRepo }}/{{ .Values.components.admissionController.image.name }}:{{ .Values.components.admissionController.image.tag | default .Chart.AppVersion }}"
+          image: {{ .Values.imageRepo }}/{{ .Values.components.admissionController.image.name }}:{{ .Values.components.admissionController.image.tag | default .Chart.AppVersion }}
           imagePullPolicy: {{ .Values.pullPolicy }}
           ports:
             - name: https
