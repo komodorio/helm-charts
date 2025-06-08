@@ -1,4 +1,3 @@
-
 {{- define "custom-ca.volumeMounts" -}}
 {{- if (.Values.customCa).enabled  }}
 - name: custom-ca
@@ -45,7 +44,7 @@ command:
   - -c
   - cp /certs/* /etc/ssl/certs/ &&
     update-ca-certificates --fresh &&
-    daemon
+    telegraf_init
 {{- end }}
 {{- end -}}
 
