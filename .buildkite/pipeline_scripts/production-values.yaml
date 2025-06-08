@@ -7,6 +7,14 @@ capabilities:
     create: false
   kubectlProxy:
     enabled: true
+  admissionController:
+    enabled: true
+    binpacking:
+      enabled: true
+      markUnevictable: true
+      addNodeAffinityToMarkedPods: false # Let's test it more before enabling that in prod..
+    mutatingWebhook:
+      selfManage: true # do not create the mutating webhook configuration since we need to install the agent multiple times it will conflict
 
 allowedResources:
   secret: true
