@@ -75,7 +75,7 @@
   resources:
     {{ toYaml .Values.components.komodorDaemon.metricsInit.resources | trim | nindent 4 }}
   {{- if .Values.customCa.enabled }}
-  {{ include "custom-ca.trusted-init-container.command" . | indent 2 }}
+  {{ include "custom-ca.trusted-telegraf-init-container.command" . | indent 2 }}
   {{- else }}
   command: ["telegraf_init"]
   {{- end }}
@@ -124,11 +124,7 @@
   imagePullPolicy: {{ .Values.pullPolicy }}
   resources:
     {{ toYaml .Values.components.komodorDaemonWindows.metricsInit.resources | trim | nindent 4 }}
-  {{- if .Values.customCa.enabled }}
-  {{ include "custom-ca.trusted-init-container.command" . | indent 2 }}
-  {{- else }}
   command: ["telegraf_init"]
-  {{- end }}
   volumeMounts:
   - name: configuration
     mountPath: /etc/komodor
