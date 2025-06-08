@@ -88,7 +88,7 @@
   env:
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
   - name: KOMOKW_COMPONENT
-    value: {{ .Chart.Name  }}-daemon
+    value: {{ .Chart.Name  }}-daemon-windows
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
   - name: KOMOKW_API_KEY
