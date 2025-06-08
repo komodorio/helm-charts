@@ -39,7 +39,11 @@
     {{ toYaml .Values.components.komodorDaemonWindows.metrics.resources | trim | nindent 4 }}
   volumeMounts:
   - name: {{ include "metrics.shared.volume.name" . }}
-    mountPath: /etc/telegraf
+    mountPath: C:/telegraf/telegraf.conf
+    subPath: telegraf.conf
+  - name: {{ include "metrics.shared.volume.name" . }}
+    mountPath: C:/telegraf/plugin.conf
+    subPath: plugin.conf
   {{- include "custom-ca.trusted-volumeMounts" . | indent 2 }}
   env:
   {{- include "komodorMetrics.proxy-conf" . | indent 2 }}

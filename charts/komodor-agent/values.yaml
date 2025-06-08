@@ -526,7 +526,7 @@ components:
       # components.komodorDaemonWindows.metricsInit.image -- Override the komodor agent metrics init image name or tag.
       # @default -- `{ "name": "init-daemon-agent", "tag": .Chart.AppVersion }`
       image:
-        name: komodor-agent
+        name: komodor-agent-windows
         tag:
       # components.komodorDaemonWindows.metricsInit.resources -- Set custom resources to the komodor agent metrics init container
       resources:
