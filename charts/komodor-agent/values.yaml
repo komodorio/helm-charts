@@ -319,6 +319,8 @@ components:
       requests:
         cpu: 500m
         memory: 1Gi
+    # components.admissionController.PriorityClassValue -- Set the priority class value for the komodor admission-controller deployment
+    PriorityClassValue: 10000000
     # components.admissionController.affinity -- Set node affinity for the komodor admission controller deployment
     affinity: {}
     # components.admissionController.annotations -- Set annotations for the komodor admission controller deployment

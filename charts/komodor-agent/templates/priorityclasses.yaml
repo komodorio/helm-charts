@@ -23,3 +23,14 @@ metadata:
 value: {{ .Values.components.komodorMetrics.PriorityClassValue }}
 globalDefault: false
 description: "This priority class should be used for Komodor  pods only."
+
+{{- if .Values.capabilities.admissionController.enabled }}
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: {{ include "komodorAgent.admissionController.priorityClassName"  . }}
+value: {{ .Values.components.admissionController.PriorityClassValue }}
+globalDefault: false
+description: "This priority class should be used for Komodor admission-controller pods only."
+{{- end }}

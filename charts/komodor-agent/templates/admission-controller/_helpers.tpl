@@ -58,6 +58,13 @@ Admission Controller webhook configuration name
 {{- printf "binpacking-pod-discovery" }}
 {{- end }}
 
+{{/*
+Admission Controller PriorityClass Name
+*/}}
+{{- define "komodorAgent.admissionController.priorityClassName" -}}
+{{- printf "%s-%s" (include "komodor.truncatedReleaseName" .) "admission-high-priority" -}}
+{{- end }}
+
 
 {{/*
 Generate certificates for aggregated api server

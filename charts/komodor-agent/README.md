@@ -210,6 +210,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.admissionController | object | See sub-values | Configure the komodor admission controller component |
 | components.admissionController.image | object | see sub-values | Override the komodor admission controller image name or tag. |
 | components.admissionController.resources | object | `{"limits":{"cpu":1,"memory":"4Gi"},"requests":{"cpu":"500m","memory":"1Gi"}}` | Set custom resources to the komodor admission controller container - Memory utilization is relative to the amount of: [pods, nodes, pvcs, pvs, pdbs] resources you have in the cluster. |
+| components.admissionController.PriorityClassValue | int | `10000000` | Set the priority class value for the komodor admission-controller deployment |
 | components.admissionController.affinity | object | `{}` | Set node affinity for the komodor admission controller deployment |
 | components.admissionController.annotations | object | `{}` | Set annotations for the komodor admission controller deployment |
 | components.admissionController.podAnnotations | object | `{}` | Set pod annotations for the komodor admission controller deployment |
