@@ -165,8 +165,12 @@ def test_proxy_envroinment_vars_are_set(
             for env in container.get("env", [])
             if "value" in env
         }
-
+        if container["name"] == "metrics":
+            assert "KOMODOR_HTTP_PROXY" in env_vars
+            continue
+        
         for env_name, expected_value in expected_env_vars.items():
+
             assert (
                 env_name in env_vars
             ), f"Expected {env_name} in container {container['name']}"

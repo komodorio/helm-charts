@@ -6,7 +6,7 @@ apiKeySecret:
 createNamespace: true
 # tags -- (dict) Tags the agent in order to identify it based on `key:value` properties separated by semicolon (`;`)
 # example: `--set tags.env=staging,tags.team=payments` --- Can also be set in the values under `tags` as a dictionary of key:value strings
-tags: { }
+tags: {}
 # clusterName -- **(*required*)** Name to be displayed in the Komodor web application
 clusterName:
 # createRbac -- Creates the necessary RBAC resources for the agent - use with caution!
@@ -25,7 +25,7 @@ serviceAccount:
   # serviceAccount.name -- (string) Name of the service account, Required if `serviceAccount.create` is false
   name:
   # serviceAccount.annotations -- Add annotations to the service account
-  annotations: { }
+  annotations: {}
 
 proxy:
   # proxy.enabled -- Enable proxy for the agent
@@ -39,7 +39,7 @@ proxy:
   # proxy.no_proxy -- (string) Specify specific domains to ignore proxy for. eg. `komodor.com,google.com`
   no_proxy:
 
-# customCa -- Configure custom CA for the agent
+# customCa -- Configure custom CA for the agent (Not supported for windows)
 # @default -- See sub-values
 customCa:
   # customCa.enabled -- (bool) Enable custom CA certificate for the agent
@@ -206,7 +206,6 @@ capabilities:
       # capabilities.admissionController.binpacking.unevictablePodNodeAffinityWeight -- (int) Weight for the node affinity of unevictable pods
       #unevictablePodNodeAffinityWeight: 100
 
-
 # components -- Configure the agent components
 # @default -- See sub-values
 components:
@@ -303,7 +302,7 @@ components:
     securityContext: {}
     # components.komodorKubectlProxy.strategy -- Set the rolling update strategy for the komodor kubectl proxy deployment
     strategy: {}
-    
+
   # components.admissionController -- Configure the komodor admission controller component
   # @default -- See sub-values
   admissionController:
@@ -315,11 +314,11 @@ components:
     # components.admissionController.resources -- Set custom resources to the komodor admission controller container - Memory utilization is relative to the amount of: [pods, nodes, pvcs, pvs, pdbs] resources you have in the cluster.
     resources:
       limits:
-          cpu: 1
-          memory: 4Gi
+        cpu: 1
+        memory: 4Gi
       requests:
-          cpu: 500m
-          memory: 1Gi
+        cpu: 500m
+        memory: 1Gi
     # components.admissionController.affinity -- Set node affinity for the komodor admission controller deployment
     affinity: {}
     # components.admissionController.annotations -- Set annotations for the komodor admission controller deployment
@@ -347,7 +346,6 @@ components:
     #            mountPath: /etc/komodor/admission/tls
     #            readOnly: true
     extraVolumes: []
-
 
   komodorMetrics:
     # components.komodorMetrics.PriorityClassValue -- Set the priority class value for the komodor metrics agent deployment
@@ -521,6 +519,25 @@ components:
     podAnnotations: {}
     # components.komodorDaemonWindows.updateStrategy -- Set the rolling update strategy for the komodor agent daemon deployment
     updateStrategy: {}
+
+    # components.komodorDaemonWindows.metricsInit -- Configure the komodor daemon metrics init container
+    # @default -- See sub-values
+    metricsInit:
+      # components.komodorDaemonWindows.metricsInit.image -- Override the komodor agent metrics init image name or tag.
+      # @default -- `{ "name": "init-daemon-agent", "tag": .Chart.AppVersion }`
+      image:
+        name: komodor-agent-windows
+        tag:
+      # components.komodorDaemonWindows.metricsInit.resources -- Set custom resources to the komodor agent metrics init container
+      resources:
+        limits:
+          cpu: 1
+          memory: 100Mi
+        requests:
+          cpu: 0.1
+          memory: 50Mi
+      # components.komodorDaemonWindows.metricsInit.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
+      extraEnvVars: []
 
     # components.komodorDaemonWindows.metrics -- Configure the komodor daemon metrics components
     metrics:

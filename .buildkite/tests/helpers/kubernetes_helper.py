@@ -57,7 +57,10 @@ def wait_for_pod_ready(pod_name, namespace, timeout=300):
     while True:
         try:
             pod = v1.read_namespaced_pod(name=pod_name, namespace=namespace)
-            if all(container.ready for container in pod.status.container_statuses):
+            if (pod is not None and 
+                pod.status is not None and 
+                pod.status.container_statuses is not None and 
+                all(container.ready for container in pod.status.container_statuses)):
                 print(f"Pod {pod_name} is ready.")
                 return True
         except client.exceptions.ApiException as e:
