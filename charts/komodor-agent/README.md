@@ -208,6 +208,11 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorKubectlProxy.securityContext | object | `{}` | Set custom securityContext to the komodor kubectl proxy deployment (use with caution) |
 | components.komodorKubectlProxy.strategy | object | `{}` | Set the rolling update strategy for the komodor kubectl proxy deployment |
 | components.admissionController | object | See sub-values | Configure the komodor admission controller component |
+| components.admissionController.enabled | bool | `false` | Enable the komodor admission controller |
+| components.admissionController.serviceAccount | object | see sub-values | Configure the service account for the admission controller |
+| components.admissionController.serviceAccount.create | bool | `true` | Creates a service account for the admission controller |
+| components.admissionController.serviceAccount.name | string | `nil` | Name of the service account, Required if `serviceAccount.create` is false |
+| components.admissionController.serviceAccount.annotations | object | `{}` | Add annotations to the service account |
 | components.admissionController.image | object | see sub-values | Override the komodor admission controller image name or tag. |
 | components.admissionController.resources | object | `{"limits":{"cpu":1,"memory":"4Gi"},"requests":{"cpu":"500m","memory":"1Gi"}}` | Set custom resources to the komodor admission controller container - Memory utilization is relative to the amount of: [pods, nodes, pvcs, pvs, pdbs] resources you have in the cluster. |
 | components.admissionController.PriorityClassValue | int | `10000000` | Set the priority class value for the komodor admission-controller deployment |

@@ -306,6 +306,17 @@ components:
   # components.admissionController -- Configure the komodor admission controller component
   # @default -- See sub-values
   admissionController:
+    # components.admissionController.enabled -- (bool) Enable the komodor admission controller
+    enabled: false
+    # components.admissionController.serviceAccount -- Configure the service account for the admission controller
+    # @default -- see sub-values
+    serviceAccount:
+      # components.admissionController.serviceAccount.create -- Creates a service account for the admission controller
+      create: true
+      # components.admissionController.serviceAccount.name -- (string) Name of the service account, Required if `serviceAccount.create` is false
+      name:
+      # components.admissionController.serviceAccount.annotations -- Add annotations to the service account
+      annotations: {}
     # components.admissionController.image -- Override the komodor admission controller image name or tag.
     # @default -- see sub-values
     image:
