@@ -28,7 +28,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       priorityClassName: {{ include "komodorAgent.admissionController.priorityClassName"  . }}
-      serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
+      serviceAccountName: {{ include "komodorAgent.admissionController.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.components.admissionController.securityContext | nindent 8 }}
       containers:
