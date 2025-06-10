@@ -14,6 +14,8 @@
   {{- include "komodorMetrics.proxy-conf" . | indent 2 }}
   - name: OS_TYPE
     value: linux
+  - name: KOMOKW_API_KEY
+    {{ include "komodorAgent.apiKeySecretRef" . | nindent 4 }}
   - name: NODE_NAME
     valueFrom:
       fieldRef:
