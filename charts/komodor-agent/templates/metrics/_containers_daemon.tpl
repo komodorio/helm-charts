@@ -24,7 +24,7 @@
     valueFrom:
       fieldRef:
         fieldPath: status.hostIP
-  - name: QUIT
+  - name: QUIET
     value: {{ .Values.components.komodorDaemon.metrics.quiet | default false | quote }}
   - name: KOMODOR_SERVER_URL
     value: {{ .Values.communications.serverHost | quote }}
@@ -55,7 +55,7 @@
     value: windows
   - name: KOMOKW_API_KEY
     {{ include "komodorAgent.apiKeySecretRef" . | nindent 4 }}
-  - name: QUIT
+  - name: QUIET
     value: {{ .Values.components.komodorDaemonWindows.metrics.quiet | default false | quote }}
   - name: NODE_NAME
     valueFrom:
