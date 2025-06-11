@@ -257,12 +257,11 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemon.metricsInit.image | object | `{ "name": "init-daemon-agent", "tag": .Chart.AppVersion }` | Override the komodor agent metrics init image name or tag. |
 | components.komodorDaemon.metricsInit.resources | object | `{"limits":{"cpu":1,"memory":"100Mi"},"requests":{"cpu":0.1,"memory":"50Mi"}}` | Set custom resources to the komodor agent metrics init container |
 | components.komodorDaemon.metricsInit.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
-| components.komodorDaemon.metrics | object | `{"dcgm":true,"extraEnvVars":[],"image":{"name":"telegraf","tag":"v1.34.4-build3-alpine"},"quiet":false,"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}}` | Configure the komodor daemon metrics components |
+| components.komodorDaemon.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf","tag":"v1.34.4-build3-alpine"},"quiet":false,"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}}` | Configure the komodor daemon metrics components |
 | components.komodorDaemon.metrics.image | object | `{"name":"telegraf","tag":"v1.34.4-build3-alpine"}` | Override the komodor agent metrics image name or tag. |
 | components.komodorDaemon.metrics.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
 | components.komodorDaemon.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemon.metrics.quiet | bool | `false` | Set the quiet mode for the komodor agent metrics |
-| components.komodorDaemon.metrics.dcgm | bool | `true` | Enable collecting NVIDIA GPU metrics via DCGM |
 | components.komodorDaemon.gpuAccessContainer | object | `{"enabled":false,"image":"alpine:latest","pullPolicy":"IfNotPresent","resources":{"limits":{"cpu":"250m","memory":"100Mi"},"requests":{"cpu":"100m","memory":"50Mi"}}}` | settings for GPU host diagnostics accessor container |
 | components.komodorDaemon.gpuAccessContainer.enabled | bool | `false` | Enable creating privileged CUDA container with host mounts to access GPU info |
 | components.komodorDaemon.gpuAccessContainer.image | string | `"alpine:latest"` | CUDA image to be used for GPU access container |
