@@ -24,6 +24,8 @@
     valueFrom:
       fieldRef:
         fieldPath: status.hostIP
+  - name: QUIT
+    value: {{ .Values.components.komodorDaemon.metrics.quiet | default false | quote }}
   - name: KOMODOR_SERVER_URL
     value: {{ .Values.communications.serverHost | quote }}
   {{- if gt (len .Values.components.komodorDaemon.metrics.extraEnvVars) 0 }}
@@ -53,6 +55,8 @@
     value: windows
   - name: KOMOKW_API_KEY
     {{ include "komodorAgent.apiKeySecretRef" . | nindent 4 }}
+  - name: QUIT
+    value: {{ .Values.components.komodorDaemonWindows.metrics.quiet | default false | quote }}
   - name: NODE_NAME
     valueFrom:
       fieldRef:
