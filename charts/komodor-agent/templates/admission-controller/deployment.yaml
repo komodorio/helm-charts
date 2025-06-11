@@ -32,7 +32,7 @@ spec:
       securityContext:
         {{- toYaml .Values.components.admissionController.securityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ include "komodorAgent.admissionController.containername" }}
           securityContext:
             {{- toYaml .Values.components.admissionController.securityContext | nindent 12 }}
           image: {{ .Values.imageRepo }}/{{ .Values.components.admissionController.image.name }}:{{ .Values.components.admissionController.image.tag | default .Chart.AppVersion }}
@@ -53,6 +53,9 @@ spec:
               scheme: HTTPS
           resources:
             {{- toYaml .Values.components.admissionController.resources | nindent 12 }}
+          env:
+            - name: KOMO_API_KEY
+              {{ include "komodorAgent.apiKeySecretRef" . | nindent 4 }}
           volumeMounts:
             - name: webhook-tls
               mountPath: /etc/komodor/admission/tls
