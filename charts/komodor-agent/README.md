@@ -184,7 +184,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorAgent.podAnnotations | object | `{}` | Set pod annotations for the komodor agent deployment |
 | components.komodorAgent.securityContext | object | `{}` | Set custom securityContext to the komodor agent deployment (use with caution) |
 | components.komodorAgent.strategy | object | `{}` | Set the rolling update strategy for the komodor agent deployment |
-| components.komodorAgent.watcher.image | object | `{ "name": "k8s-watcher", "tag": .Chart.AppVersion }` | Override the komodor agent watcher image name or tag. |
+| components.komodorAgent.watcher.image | object | `{ "name": "komodor-agent", "tag": .Chart.AppVersion }` | Override the komodor agent watcher image name or tag. |
 | components.komodorAgent.watcher.resources | object | `{"limits":{"cpu":2,"memory":"8Gi"},"requests":{"cpu":0.25,"memory":"256Mi"}}` | Set custom resources to the komodor agent watcher container |
 | components.komodorAgent.watcher.securityContext | object | `{}` | Set security context for the komodor agent watcher container (use with caution) |
 | components.komodorAgent.watcher.ports | object | `{"healthCheck":8090}` | Override the komodor agent watcher ports configuration |

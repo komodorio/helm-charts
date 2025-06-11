@@ -233,7 +233,7 @@ components:
 
     watcher:
       # components.komodorAgent.watcher.image -- Override the komodor agent watcher image name or tag.
-      # @default -- `{ "name": "k8s-watcher", "tag": .Chart.AppVersion }`
+      # @default -- `{ "name": "komodor-agent", "tag": .Chart.AppVersion }`
       image:
         name: komodor-agent
         tag:
