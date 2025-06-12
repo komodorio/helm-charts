@@ -32,7 +32,7 @@ spec:
       securityContext:
         {{- toYaml .Values.components.admissionController.securityContext | nindent 8 }}
       containers:
-        - name: {{ include "komodorAgent.admissionController.containername" }}
+        - name: {{ include "komodorAgent.admissionController.containername" . }}
           securityContext:
             {{- toYaml .Values.components.admissionController.securityContext | nindent 12 }}
           image: {{ .Values.imageRepo }}/{{ .Values.components.admissionController.image.name }}:{{ .Values.components.admissionController.image.tag | default .Chart.AppVersion }}
