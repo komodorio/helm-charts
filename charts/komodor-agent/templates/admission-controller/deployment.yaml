@@ -55,7 +55,7 @@ spec:
             {{- toYaml .Values.components.admissionController.resources | nindent 12 }}
           env:
             - name: KOMO_API_KEY
-              {{ include "komodorAgent.apiKeySecretRef" . | nindent 4 }}
+              {{- include "komodorAgent.apiKeySecretRef" . | nindent 14 }}
           volumeMounts:
             - name: webhook-tls
               mountPath: /etc/komodor/admission/tls
