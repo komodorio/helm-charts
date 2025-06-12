@@ -8,6 +8,8 @@ metadata:
     {{- include "komodorAgent.admissionController.labels" . | nindent 4 }}
 data:
   komodor.yaml: |
+    chartVersion: {{ .Chart.Version | quote }}
+    clusterName: {{ .Values.clusterName | required "clusterName is a required value!" }}
     admissionServer:
       port: {{ .Values.capabilities.admissionController.webhookServer.port }}
       tlsCertFile: {{ .Values.capabilities.admissionController.webhookServer.tlsCertFile | default "/etc/komodor/admission/tls/tls.crt" }}

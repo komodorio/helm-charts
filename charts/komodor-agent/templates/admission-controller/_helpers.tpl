@@ -13,6 +13,13 @@ Admission Controller fullname
 {{- end }}
 
 {{/*
+Admission Controller container name
+*/}}
+{{- define "komodorAgent.admissionController.containername" -}}
+{{- print "admission-controller" }}
+{{- end }}
+
+{{/*
 Admission Controller common labels
 */}}
 {{- define "komodorAgent.admissionController.labels" -}}
