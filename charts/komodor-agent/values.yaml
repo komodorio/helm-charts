@@ -571,8 +571,7 @@ components:
     # components.gpuAccess.labels -- Adds custom labels
     labels: {}
     # components.gpuAccess.nodeSelector -- Set node selectors for the komodor agent daemon
-    nodeSelector:
-      nvidia.com/gpu: "present"
+    nodeSelector: {}
     # components.gpuAccess.tolerations -- Add tolerations to the komodor agent daemon
     tolerations:
     - key: "nvidia.com/gpu"
