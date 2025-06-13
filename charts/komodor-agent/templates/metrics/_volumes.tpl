@@ -14,11 +14,3 @@
   emptyDir: {}
 {{- end }}
 
-{{- define "gpuAccess.volumes" }}
-{{- if .Values.components.gpuAccess.enabled }}
-- name: host-root
-  hostPath:
-    path: /
-{{- end }}
-{{- end }}
-

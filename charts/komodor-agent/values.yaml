@@ -568,7 +568,16 @@ components:
       requests:
         cpu: 100m
         memory: 50Mi
-
+    # components.gpuAccess.labels -- Adds custom labels
+    labels: {}
+    # components.gpuAccess.nodeSelector -- Set node selectors for the komodor agent daemon
+    nodeSelector:
+      nvidia.com/gpu: "present"
+    # components.gpuAccess.tolerations -- Add tolerations to the komodor agent daemon
+    tolerations:
+    - key: "nvidia.com/gpu"
+      operator: "Exists"
+      effect: "NoSchedule"
 
 allowedResources:
   # allowedResources.event -- Enables watching `event`

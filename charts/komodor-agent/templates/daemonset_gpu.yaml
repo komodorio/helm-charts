@@ -29,13 +29,15 @@ spec:
       tolerations:
         {{- toYaml .Values.components.gpuAccess.tolerations | nindent 8}}
       volumes:
-        {{- include "gpuAccess.volumes" . | nindent 8 }}
+        - name: host-root
+          hostPath:
+            path: /
       containers:
         - name: gpu-access
           image: {{ .Values.components.gpuAccess.image }}
           imagePullPolicy: {{ .Values.components.gpuAccess.pullPolicy }}
           resources:
-        {{ toYaml .Values.components.gpuAccess.resources | trim | nindent 4 }}
+          {{ toYaml .Values.components.gpuAccess.resources | trim | nindent 12 }}
           command: ["sleep", "infinity"]
           securityContext:
             privileged: {{ .Values.components.gpuAccess.enabled }}
