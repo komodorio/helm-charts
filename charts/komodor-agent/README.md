@@ -262,11 +262,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemon.metrics.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
 | components.komodorDaemon.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemon.metrics.quiet | bool | `false` | Set the quiet mode for the komodor agent metrics |
-| components.komodorDaemon.gpuAccessContainer | object | `{"enabled":false,"image":"alpine:latest","pullPolicy":"IfNotPresent","resources":{"limits":{"cpu":"250m","memory":"100Mi"},"requests":{"cpu":"100m","memory":"50Mi"}}}` | settings for GPU host diagnostics accessor container |
-| components.komodorDaemon.gpuAccessContainer.enabled | bool | `false` | Enable creating privileged CUDA container with host mounts to access GPU info |
-| components.komodorDaemon.gpuAccessContainer.image | string | `"alpine:latest"` | CUDA image to be used for GPU access container |
-| components.komodorDaemon.gpuAccessContainer.pullPolicy | string | `"IfNotPresent"` | Default Image pull policy for the GPU accessor image acceptable values <ifNotPresent\Always\Never>. |
-| components.komodorDaemon.gpuAccessContainer.resources | object | `{"limits":{"cpu":"250m","memory":"100Mi"},"requests":{"cpu":"100m","memory":"50Mi"}}` | Set custom resources to the GPU accessor container |
 | components.komodorDaemon.nodeEnricher | object | See sub-values | Configure the komodor daemon node enricher components |
 | components.komodorDaemon.nodeEnricher.image | object | `{"name":"komodor-agent","tag":null}` | Override the komodor agent node enricher image name or tag. |
 | components.komodorDaemon.nodeEnricher.resources | object | `{"limits":{"cpu":"10m","memory":"100Mi"},"requests":{"cpu":"1m","memory":"10Mi"}}` | Set custom resources to the komodor agent node enricher container |
@@ -289,6 +284,14 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemonWindows.metrics.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
 | components.komodorDaemonWindows.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemonWindows.metrics.quiet | bool | `false` | Set the quiet mode for the komodor agent metrics |
+| components.gpuAccess | object | `{"enabled":false,"image":"alpine:latest","labels":{},"nodeSelector":{},"pullPolicy":"IfNotPresent","resources":{"limits":{"cpu":"250m","memory":"100Mi"},"requests":{"cpu":"100m","memory":"50Mi"}},"tolerations":[{"effect":"NoSchedule","key":"nvidia.com/gpu","operator":"Exists"}]}` | settings for GPU host diagnostics accessor DaemonSet |
+| components.gpuAccess.enabled | bool | `false` | Enable creating privileged CUDA container with host mounts to access GPU info |
+| components.gpuAccess.image | string | `"alpine:latest"` | CUDA image to be used for GPU access container |
+| components.gpuAccess.pullPolicy | string | `"IfNotPresent"` | Default Image pull policy for the GPU accessor image acceptable values <ifNotPresent\Always\Never>. |
+| components.gpuAccess.resources | object | `{"limits":{"cpu":"250m","memory":"100Mi"},"requests":{"cpu":"100m","memory":"50Mi"}}` | Set custom resources to the GPU accessor container |
+| components.gpuAccess.labels | object | `{}` | Adds custom labels |
+| components.gpuAccess.nodeSelector | object | `{}` | Set node selectors for the komodor agent daemon |
+| components.gpuAccess.tolerations | list | `[{"effect":"NoSchedule","key":"nvidia.com/gpu","operator":"Exists"}]` | Add tolerations to the komodor agent daemon |
 | allowedResources.event | bool | `true` | Enables watching `event` |
 | allowedResources.deployment | bool | `true` | Enables watching `deployments` |
 | allowedResources.replicationController | bool | `true` | Enables watching `replicationControllers` |
