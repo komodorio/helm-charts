@@ -1,0 +1,46 @@
+{{- if .Values.components.gpuAccess.enabled }}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "komodorAgent.fullname" . }}-gpu-host-access
+  labels:
+    {{- include "gpuAccess.labels" . | nindent 4 }}
+    {{- include "gpuAccess.user.labels" . | nindent 4 }}
+
+  {{- if not (empty ((.Values.components).gpuAccess).annotations) }}
+  annotations: {{ toYaml ((.Values.components).gpuAccess).annotations | nindent 4 }}
+  {{- end }}
+spec:
+  selector:
+    matchLabels: {{- include "gpuAccess.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app.komodor.com/purpose: gpu-access
+        {{- include "gpuAccess.selectorLabels" . | nindent 8 }}
+        {{- include "gpuAccess.user.labels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
+      nodeSelector:
+        kubernetes.io/os: linux
+        {{- if not (empty (((.Values.components).gpuAccess).nodeSelector)) }}
+        {{- toYaml .Values.components.gpuAccess.nodeSelector | nindent 8 }}
+        {{- end }}
+      tolerations:
+        {{- toYaml .Values.components.gpuAccess.tolerations | nindent 8}}
+      volumes:
+        {{- include "gpuAccess.volumes" . | nindent 8 }}
+      containers:
+        - name: gpu-access
+          image: {{ .Values.components.gpuAccess.image }}
+          imagePullPolicy: {{ .Values.components.gpuAccess.pullPolicy }}
+          resources:
+        {{ toYaml .Values.components.gpuAccess.resources | trim | nindent 4 }}
+          command: ["sleep", "infinity"]
+          securityContext:
+            privileged: {{ .Values.components.gpuAccess.enabled }}
+          volumeMounts:
+            - name: host-root
+              mountPath: /host
+              readOnly: true
+{{- end }}

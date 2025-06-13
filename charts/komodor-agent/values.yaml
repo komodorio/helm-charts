@@ -475,23 +475,6 @@ components:
       # components.komodorDaemon.metrics.quiet -- Set the quiet mode for the komodor agent metrics
       quiet: false
 
-    # components.komodorDaemon.gpuAccessContainer -- settings for GPU host diagnostics accessor container
-    gpuAccessContainer:
-      # components.komodorDaemon.gpuAccessContainer.enabled -- (bool) Enable creating privileged CUDA container with host mounts to access GPU info
-      enabled: false
-      # components.komodorDaemon.gpuAccessContainer.image -- CUDA image to be used for GPU access container
-      image: alpine:latest
-      # components.komodorDaemon.gpuAccessContainer.pullPolicy -- (string) Default Image pull policy for the GPU accessor image acceptable values <ifNotPresent\Always\Never>.
-      pullPolicy: IfNotPresent
-      # components.komodorDaemon.gpuAccessContainer.resources -- Set custom resources to the GPU accessor container
-      resources:
-        limits:
-          cpu: 250m
-          memory: 100Mi
-        requests:
-          cpu: 100m
-          memory: 50Mi
-
     # components.komodorDaemon.nodeEnricher -- Configure the komodor daemon node enricher components
     # @default -- See sub-values
     nodeEnricher:
@@ -568,6 +551,24 @@ components:
       extraEnvVars: []
       # components.komodorDaemonWindows.metrics.quiet -- Set the quiet mode for the komodor agent metrics
       quiet: false
+
+  # components.gpuAccess -- settings for GPU host diagnostics accessor DaemonSet
+  gpuAccess:
+    # components.gpuAccess.enabled -- (bool) Enable creating privileged CUDA container with host mounts to access GPU info
+    enabled: false
+    # components.gpuAccess.image -- CUDA image to be used for GPU access container
+    image: alpine:latest
+    # components.gpuAccess.pullPolicy -- (string) Default Image pull policy for the GPU accessor image acceptable values <ifNotPresent\Always\Never>.
+    pullPolicy: IfNotPresent
+    # components.gpuAccess.resources -- Set custom resources to the GPU accessor container
+    resources:
+      limits:
+        cpu: 250m
+        memory: 100Mi
+      requests:
+        cpu: 100m
+        memory: 50Mi
+
 
 allowedResources:
   # allowedResources.event -- Enables watching `event`

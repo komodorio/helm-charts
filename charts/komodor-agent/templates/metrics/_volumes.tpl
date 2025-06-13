@@ -14,8 +14,8 @@
   emptyDir: {}
 {{- end }}
 
-{{- define "metrics.gpuAccess.volumes" }}
-{{- if .Values.components.komodorDaemon.gpuAccessContainer.enabled }}
+{{- define "gpuAccess.volumes" }}
+{{- if .Values.components.gpuAccess.enabled }}
 - name: host-root
   hostPath:
     path: /
