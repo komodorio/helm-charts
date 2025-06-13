@@ -77,16 +77,27 @@ app.kubernetes.io/name: {{ include "komodorAgent.name" . }}-daemon-windows
 app.kubernetes.io/instance: {{ include "komodor.truncatedReleaseName"  . }}-daemon-windows
 {{- end }}
 
-{{- define "gpuAccess.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "komodorAgent.name" . }}-gpu-access
-app.kubernetes.io/instance: {{ include "komodor.truncatedReleaseName"  . }}-gpu-access
-{{- end }}
-
 {{- define "KomodorDaemon.user.labels" -}}
 {{- if not (empty (((.Values.components).komodorDaemon).labels)) }}
 {{ toYaml .Values.components.komodorDaemon.labels }}
 {{- end }}
 {{- end}}
+
+{{- define "gpuAccess.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "komodorAgent.name" . }}-gpu-access
+app.kubernetes.io/instance: {{ include "komodor.truncatedReleaseName"  . }}-gpu-access
+{{- end }}
+
+{{- define "gpuAccess.user.labels" -}}
+{{- if not (empty (((.Values.components).gpuAccess).labels)) }}
+{{ toYaml .Values.components.gpuAccess.labels }}
+{{- end }}
+{{- end}}
+
+{{- define "gpuAccess.labels" -}}
+{{ include "gpuAccess.selectorLabels" . }}
+{{ include "komodorAgent.commonLabels" . }}
+{{- end }}
 
 {{- define "komodorAgent.user.labels" -}}
 {{- if not (empty (((.Values.components).komodorAgent).labels)) }}
