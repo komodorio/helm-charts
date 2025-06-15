@@ -1,6 +1,7 @@
 {{- define "metrics.daemonset.container" }}
 {{- if .Values.capabilities.metrics }}
 - name: metrics
+  command: ["telegraf"]
   image: {{ .Values.imageRepo }}/{{ .Values.components.komodorDaemon.metrics.image.name}}:{{ .Values.components.komodorDaemon.metrics.image.tag }}
   imagePullPolicy: {{ .Values.pullPolicy }}
   resources:
