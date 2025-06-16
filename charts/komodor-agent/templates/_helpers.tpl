@@ -83,6 +83,22 @@ app.kubernetes.io/instance: {{ include "komodor.truncatedReleaseName"  . }}-daem
 {{- end }}
 {{- end}}
 
+{{- define "gpuAccess.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "komodorAgent.name" . }}-gpu-access
+app.kubernetes.io/instance: {{ include "komodor.truncatedReleaseName"  . }}-gpu-access
+{{- end }}
+
+{{- define "gpuAccess.user.labels" -}}
+{{- if not (empty (((.Values.components).gpuAccess).labels)) }}
+{{ toYaml .Values.components.gpuAccess.labels }}
+{{- end }}
+{{- end}}
+
+{{- define "gpuAccess.labels" -}}
+{{ include "gpuAccess.selectorLabels" . }}
+{{ include "komodorAgent.commonLabels" . }}
+{{- end }}
+
 {{- define "komodorAgent.user.labels" -}}
 {{- if not (empty (((.Values.components).komodorAgent).labels)) }}
 {{ toYaml .Values.components.komodorAgent.labels }}
