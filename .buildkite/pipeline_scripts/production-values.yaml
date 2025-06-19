@@ -30,6 +30,10 @@ components:
         operator: "Equal"
         value: "true"
         effect: "NoSchedule"
+      - key: dedicated
+        operator: "Equal"
+        value: "ws-redis"
+        effect: "NoSchedule"
   komodorMetrics:
     tolerations:
       - key: "komodor.io/sensitive"
