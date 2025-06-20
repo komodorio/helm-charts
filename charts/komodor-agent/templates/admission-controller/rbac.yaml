@@ -5,6 +5,7 @@ kind: ClusterRole
 metadata:
   name: {{ include "komodorAgent.admissionController.serviceAccountName" . }}
 rules:
+  # Required for Binpacking:
   - apiGroups:
       - ""
     resources:
@@ -31,6 +32,7 @@ rules:
       - get
       - watch
       - list
+  # Required for Rightsizing: (in addition to patch pods)
   - apiGroups:
       - apps
     resources:
