@@ -168,11 +168,14 @@ The command removes all the Kubernetes components associated with the chart and 
 | capabilities.admissionController.mutatingWebhook.selfManage | bool | `false` | If true, the mutating webhook will be managed by the chart. If false, the mutating webhook will be managed by the user. |
 | capabilities.admissionController.mutatingWebhook.timeoutSeconds | int | `5` | Timeout for the webhook call in seconds |
 | capabilities.admissionController.mutatingWebhook.podBinpackingWebhookPath | string | `"/webhook/binpacking/pod"` | Path for the pod binpacking webhook |
+| capabilities.admissionController.mutatingWebhook.podRightsizingWebhookPath | string | `"/webhook/rightsizing/pod"` | Path for the pod rightsizing webhook |
 | capabilities.admissionController.mutatingWebhook.caBundle | string | using the kube-root-ca.crt ConfigMap in the kube-system namespace | CA bundle for the mutating webhook configuration. It should match the webhook server CA. |
 | capabilities.admissionController.binpacking | object | See sub-values | Configure the binpacking capabilities for the admission controller |
-| capabilities.admissionController.binpacking.enabled | bool | `false` | Enable binpacking capabilities by the komodor agent |
+| capabilities.admissionController.binpacking.enabled | bool | `false` | Enable binpacking capabilities by the komodor admission controller |
 | capabilities.admissionController.binpacking.markUnevictable | bool | `false` | Add a label to mark pods as unevictable |
 | capabilities.admissionController.binpacking.addNodeAffinityToMarkedPods | bool | `false` | Add node affinity to marked pods to prefer scheduling on nodes with already unevictable pods |
+| capabilities.admissionController.rightsizing | object | See sub-values | Configure the rightsizing capabilities for the admission controller |
+| capabilities.admissionController.rightsizing.enabled | bool | `false` | Enable rightsizing capabilities by the komodor admission controller |
 | components | object | See sub-values | Configure the agent components |
 | components.komodorAgent | object | See sub-values | Configure the komodor agent components |
 | components.komodorAgent.PriorityClassValue | int | `10000000` | Set the priority class value for the komodor agent deployment |

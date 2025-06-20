@@ -15,7 +15,7 @@ HELM_DOCS_ARGS := -s file \
                   -y="components.komodorDaemon" \
                   -y="allowedResources" \
                   -z ".*securityContext.*" \
-				  -z ".tolerations.*" \
+				  -z ".tolerations.*"
 
 # Determine OS and Arch for downloading helm-docs
 OS := $(shell uname -s)

@@ -30,4 +30,21 @@ data:
       {{- if .Values.capabilities.admissionController.binpacking.unevictablePodNodeAffinityWeight }}
       unevictablePodNodeAffinityWeight: {{ .Values.capabilities.admissionController.binpacking.unevictablePodNodeAffinityWeight }}
       {{- end }}
+    rightsizing:
+      enabled: {{ .Values.capabilities.admissionController.rightsizing.enabled }}
+      {{- if .Values.capabilities.admissionController.rightsizing.recommendationsSyncInterval }}
+      recommendationsSyncInterval: {{ .Values.capabilities.admissionController.rightsizing.recommendationsSyncInterval }}
+      {{- end }}
+      {{- if .Values.capabilities.admissionController.rightsizing.ignoreRecommendationsAnnotationKey }}
+      ignoreRecommendationsAnnotationKey: {{ .Values.capabilities.admissionController.rightsizing.ignoreRecommendationsAnnotationKey }}
+      {{- end }}
+      {{- if .Values.capabilities.admissionController.rightsizing.originalResourcesAnnotationKey }}
+      originalResourcesAnnotationKey: {{ .Values.capabilities.admissionController.rightsizing.originalResourcesAnnotationKey }}
+      {{- end }}
+      {{- if .Values.capabilities.admissionController.rightsizing.modifiedAnnotationKey }}
+      modifiedAnnotationKey: {{ .Values.capabilities.admissionController.rightsizing.modifiedAnnotationKey }}
+      {{- end }}
+      {{- if .Values.capabilities.admissionController.rightsizing.mutatedAnnotationKey }}
+      mutatedAnnotationKey: {{ .Values.capabilities.admissionController.rightsizing.mutatedAnnotationKey }}
+      {{- end }}
 {{- end }}

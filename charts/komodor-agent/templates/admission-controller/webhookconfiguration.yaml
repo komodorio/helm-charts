@@ -29,6 +29,7 @@ kind: MutatingWebhookConfiguration
 metadata:
   name: {{ include "komodorAgent.admissionController.webhookName" . }}
 webhooks:
+  {{- if .Values.capabilities.admissionController.binpacking.enabled }}
   - name: binpacking.komodor.com
     clientConfig:
       service:
@@ -48,4 +49,26 @@ webhooks:
       - "v1"
     sideEffects: None
     timeoutSeconds: {{ .Values.capabilities.admissionController.mutatingWebhook.timeoutSeconds | default 5 }}
+  {{- end }}
+  {{- if .Values.capabilities.admissionController.rightsizing.enabled }}
+  - name: rightsizing.komodor.com
+    clientConfig:
+      service:
+        name: {{ include "komodorAgent.admissionController.serviceName" . }}
+        namespace: {{ .Release.Namespace }}
+        path: {{ .Values.capabilities.admissionController.mutatingWebhook.podRightsizingWebhookPath | default "/webhook/rightsizing/pod" }}
+        port: {{ include "komodorAgent.admissionController.servicePort" . }}
+      caBundle: {{ .Values.capabilities.admissionController.mutatingWebhook.caBundle | default $certList._2 }}
+    rules:
+      - operations: [ "CREATE" ]
+        apiGroups: [ "" ]
+        apiVersions: [ "v1" ]
+        resources: [ "pods" ]
+        scope: "Namespaced"
+    failurePolicy: Ignore
+    admissionReviewVersions:
+      - "v1"
+    sideEffects: None
+    timeoutSeconds: {{ .Values.capabilities.admissionController.mutatingWebhook.timeoutSeconds | default 5 }}
+  {{- end }}
 {{- end }}
