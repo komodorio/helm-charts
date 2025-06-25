@@ -408,6 +408,10 @@ components:
           memory: 384Mi
       # components.komodorMetrics.metrics.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
       extraEnvVars: []
+      # components.komodorMetrics.metrics.sidecar -- Configure the telegraf-init sidecar container
+      sidecar:
+        # components.komodorMetrics.metrics.sidecar.enabled -- (bool) Enable the telegraf-init sidecar container
+        enabled: true
 
   # components.komodorDaemon -- Configure the komodor agent components
   # @default -- See sub-values
@@ -474,6 +478,10 @@ components:
       extraEnvVars: []
       # components.komodorDaemon.metrics.quiet -- Set the quiet mode for the komodor agent metrics
       quiet: false
+      # components.komodorDaemon.metrics.sidecar -- Configure the telegraf-init sidecar container
+      sidecar:
+        # components.komodorDaemon.metrics.sidecar.enabled -- (bool) Enable the telegraf-init sidecar container
+        enabled: true
 
     # components.komodorDaemon.nodeEnricher -- Configure the komodor daemon node enricher components
     # @default -- See sub-values
@@ -551,6 +559,10 @@ components:
       extraEnvVars: []
       # components.komodorDaemonWindows.metrics.quiet -- Set the quiet mode for the komodor agent metrics
       quiet: false
+      # components.komodorDaemonWindows.metrics.sidecar -- Configure the telegraf-init sidecar container
+      sidecar:
+        # components.komodorDaemonWindows.metrics.sidecar.enabled -- (bool) Enable the telegraf-init sidecar container
+        enabled: true
 
   # components.gpuAccess -- settings for GPU host diagnostics accessor DaemonSet
   gpuAccess:
