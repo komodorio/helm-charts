@@ -44,9 +44,7 @@ spec:
         {{- toYaml .Values.components.komodorDaemon.tolerations | nindent 8}}
       containers:
         {{- include "metrics.daemonset.container" .        | nindent 8 }}
-        {{- if .Values.components.komodorDaemon.metrics.sidecar.enabled }}
         {{- include "metrics.daemonset.sidecar.container" . | nindent 8 }}
-        {{- end }}
         {{- include "node_enricher.daemonset.container"  . | nindent 8 }}
       volumes:
         {{- include "metrics.shared.volume" .             | nindent 8 }}

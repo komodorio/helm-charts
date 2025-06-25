@@ -31,6 +31,7 @@
 {{- end }}
 
 {{- define "metrics.deployment.sidecar.container" }}
+{{- if .Values.components.komodorMetrics.metrics.sidecar.enabled }}
 - name: telegraf-init-sidecar
   image: {{ .Values.imageRepo }}/{{ .Values.components.komodorMetrics.metricsInit.image.name}}:{{ .Values.components.komodorMetrics.metricsInit.image.tag | default .Chart.AppVersion }}
   imagePullPolicy: {{ .Values.pullPolicy }}
@@ -62,6 +63,7 @@
   {{- if gt (len .Values.components.komodorMetrics.metricsInit.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorMetrics.metricsInit.extraEnvVars | nindent 2 }}
   {{- end }}
+{{- end }}
 {{- end }}
 
 {{- define "metrics.deployment.init.container" }}

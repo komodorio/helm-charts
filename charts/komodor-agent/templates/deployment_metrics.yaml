@@ -40,9 +40,7 @@ spec:
         {{- toYaml .Values.components.komodorMetrics.tolerations | nindent 8}}
       containers:
         {{- include "metrics.deployment.container" .      | nindent 8 }}
-        {{- if .Values.components.komodorMetrics.metrics.sidecar.enabled }}
         {{- include "metrics.deployment.sidecar.container" . | nindent 8 }}
-        {{- end }}
       volumes:
         {{- include "metrics.shared.volume" .             | nindent 8 }}
         {{- include "custom-ca.volume" .                  | nindent 8 }}

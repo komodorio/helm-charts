@@ -38,7 +38,7 @@
 {{- define "metrics.daemonsetWindows.container" }}
 {{- if .Values.capabilities.metrics }}
 - name: metrics
-  command: ["/usr/bin/telegraf", "--config", "/etc/telegraf/telegraf.conf", "--watch-config", "poll"]
+  command: ["C:/telegraf/telegraf.exe", "--config", "C:/telegraf/telegraf.conf", "--watch-config", "poll"]
   image: {{ .Values.imageRepo }}/{{ .Values.components.komodorDaemonWindows.metrics.image.name}}:{{ .Values.components.komodorDaemonWindows.metrics.image.tag }}
   imagePullPolicy: {{ .Values.pullPolicy }}
   resources:
@@ -150,7 +150,7 @@
 {{- end }}
 
 {{- define "metrics.daemonset.sidecar.container" }}
-{{- if .Values.capabilities.metrics }}
+{{- if and .Values.capabilities.metrics .Values.components.komodorDaemon.metrics.sidecar.enabled }}
 - name: telegraf-init-sidecar
   image: {{ .Values.imageRepo }}/{{ .Values.components.komodorDaemon.metricsInit.image.name}}:{{ .Values.components.komodorDaemon.metricsInit.image.tag | default .Chart.AppVersion }}
   imagePullPolicy: {{ .Values.pullPolicy }}
@@ -186,7 +186,7 @@
 {{- end }}
 
 {{- define "metrics.daemonset.sidecar.windows.container" }}
-{{- if .Values.capabilities.metrics }}
+{{- if and .Values.capabilities.metrics .Values.components.komodorDaemonWindows.metrics.sidecar.enabled }}
 - name: telegraf-init-sidecar
   image: {{ .Values.imageRepo }}/{{ .Values.components.komodorDaemonWindows.metricsInit.image.name}}:{{ .Values.components.komodorDaemonWindows.metricsInit.image.tag | default .Chart.AppVersion }}
   imagePullPolicy: {{ .Values.pullPolicy }}
