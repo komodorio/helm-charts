@@ -267,7 +267,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemon.metrics.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
 | components.komodorDaemon.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemon.metrics.quiet | bool | `false` | Set the quiet mode for the komodor agent metrics |
-| components.komodorDaemon.metrics.sidecar | object | `{"enabled":true}` | Configure the telegraf-init sidecar  |
+| components.komodorDaemon.metrics.sidecar | object | `{"enabled":true}` | Configure the telegraf-init sidecar container |
 | components.komodorDaemon.metrics.sidecar.enabled | bool | `true` | Enable the telegraf-init sidecar container |
 | components.komodorDaemon.nodeEnricher | object | See sub-values | Configure the komodor daemon node enricher components |
 | components.komodorDaemon.nodeEnricher.image | object | `{"name":"komodor-agent","tag":null}` | Override the komodor agent node enricher image name or tag. |
@@ -291,7 +291,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemonWindows.metrics.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
 | components.komodorDaemonWindows.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemonWindows.metrics.quiet | bool | `false` | Set the quiet mode for the komodor agent metrics |
-| components.komodorDaemonWindows.metrics.sidecar | object | `{"enabled":true}` | Configure the telegraf-init sidecar  |
+| components.komodorDaemonWindows.metrics.sidecar | object | `{"enabled":true}` | Configure the telegraf-init sidecar container |
 | components.komodorDaemonWindows.metrics.sidecar.enabled | bool | `true` | Enable the telegraf-init sidecar container |
 | components.gpuAccess | object | `{"enabled":false,"image":"alpine:latest","labels":{},"nodeSelector":{},"pullPolicy":"IfNotPresent","resources":{"limits":{"cpu":"250m","memory":"100Mi"},"requests":{"cpu":"100m","memory":"50Mi"}},"tolerations":[{"effect":"NoSchedule","key":"nvidia.com/gpu","operator":"Exists"}]}` | settings for GPU host diagnostics accessor DaemonSet |
 | components.gpuAccess.enabled | bool | `false` | Enable creating privileged CUDA container with host mounts to access GPU info |
