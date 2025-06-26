@@ -502,7 +502,7 @@ components:
       extraEnvVars: []
       # components.komodorDaemon.metrics.quiet -- Set the quiet mode for the komodor agent metrics
       quiet: false
-      # components.komodorDaemon.metrics.sidecar -- Configure the telegraf-init sidecar containerAdd commentMore actions
+      # components.komodorDaemon.metrics.sidecar -- Configure the telegraf-init sidecar 
       sidecar:
         # components.komodorDaemon.metrics.sidecar.enabled -- (bool) Enable the telegraf-init sidecar container
         enabled: true
@@ -583,7 +583,7 @@ components:
       extraEnvVars: []
       # components.komodorDaemonWindows.metrics.quiet -- Set the quiet mode for the komodor agent metrics
       quiet: false
-      # components.komodorDaemonWindows.metrics.sidecar -- Configure the telegraf-init sidecar containerAdd commentMore actions
+      # components.komodorDaemonWindows.metrics.sidecar -- Configure the telegraf-init sidecar 
       sidecar:
         # components.komodorDaemonWindows.metrics.sidecar.enabled -- (bool) Enable the telegraf-init sidecar container
         enabled: true
