@@ -42,6 +42,7 @@ spec:
         {{- toYaml .Values.components.komodorDaemonWindows.tolerations | nindent 8}}
       containers:
         {{- include "metrics.daemonsetWindows.container" .        | nindent 8 }}
+        {{- include "metrics.daemonset.sidecar.windows.container" . | nindent 8 }}
       volumes:
         {{- include "metrics.shared.volume" .             | nindent 8 }}
         {{- include "custom-ca.volume" .                 | nindent 8 }}
