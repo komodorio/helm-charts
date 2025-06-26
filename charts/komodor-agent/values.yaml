@@ -187,13 +187,15 @@ capabilities:
       timeoutSeconds: 5
       # capabilities.admissionController.mutatingWebhook.podBinpackingWebhookPath -- (string) Path for the pod binpacking webhook
       podBinpackingWebhookPath: /webhook/binpacking/pod
+      # capabilities.admissionController.mutatingWebhook.podRightsizingWebhookPath -- (string) Path for the pod rightsizing webhook
+      podRightsizingWebhookPath: /webhook/rightsizing/pod
       # capabilities.admissionController.mutatingWebhook.caBundle -- (string) CA bundle for the mutating webhook configuration. It should match the webhook server CA.
       # @default -- using the kube-root-ca.crt ConfigMap in the kube-system namespace
       caBundle:
     # capabilities.admissionController.binpacking -- Configure the binpacking capabilities for the admission controller
     # @default -- See sub-values
     binpacking:
-      # capabilities.admissionController.binpacking.enabled -- (bool) Enable binpacking capabilities by the komodor agent
+      # capabilities.admissionController.binpacking.enabled -- (bool) Enable binpacking capabilities by the komodor admission controller
       enabled: false
       # capabilities.admissionController.binpacking.markUnevictable -- (bool) Add a label to mark pods as unevictable
       markUnevictable: false
@@ -205,6 +207,28 @@ capabilities:
       #modifiedAnnotationKey: "komodor.io/modified-at"
       # capabilities.admissionController.binpacking.unevictablePodNodeAffinityWeight -- (int) Weight for the node affinity of unevictable pods
       #unevictablePodNodeAffinityWeight: 100
+
+    # capabilities.admissionController.rightsizing -- Configure the rightsizing capabilities for the admission controller
+    # @default -- See sub-values
+    rightsizing:
+      # capabilities.admissionController.rightsizing.enabled -- (bool) Enable rightsizing capabilities by the komodor admission controller
+      enabled: false
+      # capabilities.admissionController.rightsizing.recommendationsSyncInterval -- (string) Interval for syncing rightsizing recommendations. It should be a valid duration string (e.g., "30s", "1m", "5m", "1h").
+      # @default -- "1m"
+      #recommendationsSyncInterval: "1m"
+      # capabilities.admissionController.rightsizing.ignoreRecommendationsAnnotationKey -- (string) Annotation key to ignore rightsizing recommendations
+      # @default -- "komodor.com/ignore-rightsizing-recommendations"
+      #ignoreRecommendationsAnnotationKey: "komodor.com/ignore-rightsizing-recommendations"
+      # capabilities.admissionController.rightsizing.originalResourcesAnnotationKey -- (string) Annotation key to store original resources before rightsizing
+      # @default -- "komodor.com/original-resources"
+      #originalResourcesAnnotationKey: "komodor.com/original-resources"
+      # capabilities.admissionController.rightsizing.modifiedAnnotationKey -- (string) Annotation key to mark pods as modified by the rightsizing admission controller
+      # @default -- "komodor.io/modified-at"
+      #modifiedAnnotationKey: "komodor.io/modified-at"
+      # capabilities.admissionController.rightsizing.mutatedAnnotationKey -- (string) Annotation key to mark pods as mutated by the rightsizing admission controller
+      # @default -- "komodor.com/mutated"
+      #mutatedAnnotationKey: "komodor.com/mutated"
+
 
 # components -- Configure the agent components
 # @default -- See sub-values
@@ -321,7 +345,7 @@ components:
     # @default -- see sub-values
     image:
       name: admission-controller
-      tag: 0.0.11
+      tag: 0.0.13
     # components.admissionController.resources -- Set custom resources to the komodor admission controller container - Memory utilization is relative to the amount of: [pods, nodes, pvcs, pvs, pdbs] resources you have in the cluster.
     resources:
       limits:
@@ -586,9 +610,9 @@ components:
     nodeSelector: {}
     # components.gpuAccess.tolerations -- Add tolerations to the komodor agent daemon
     tolerations:
-    - key: "nvidia.com/gpu"
-      operator: "Exists"
-      effect: "NoSchedule"
+      - key: "nvidia.com/gpu"
+        operator: "Exists"
+        effect: "NoSchedule"
 
 allowedResources:
   # allowedResources.event -- Enables watching `event`
