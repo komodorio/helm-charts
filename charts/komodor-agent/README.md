@@ -152,6 +152,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | capabilities.telemetry | object | See sub-values | Configure the agent telemetry capabilities |
 | capabilities.telemetry.enabled | bool | `true` | Enable telemetry capabilities by the komodor agent |
 | capabilities.telemetry.collectApiServerMetrics | bool | `false` | Collect metrics from the api server (Should only be used for debugging purposes) |
+| capabilities.telemetry.deployOtelCollector | bool | `false` | Deploys OpenTelemetry collector daemonset sidecar |
 | capabilities.kubectlProxy | object | See sub-values | Configure the komodor kubectl proxy capabilities |
 | capabilities.kubectlProxy.enabled | bool | `false` | Enable the komodor kubectl proxy |
 | capabilities.admissionController | object | See sub-values | Configure the komodor admission controller capabilities |
@@ -273,6 +274,10 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemon.nodeEnricher.image | object | `{"name":"komodor-agent","tag":null}` | Override the komodor agent node enricher image name or tag. |
 | components.komodorDaemon.nodeEnricher.resources | object | `{"limits":{"cpu":"10m","memory":"100Mi"},"requests":{"cpu":"1m","memory":"10Mi"}}` | Set custom resources to the komodor agent node enricher container |
 | components.komodorDaemon.nodeEnricher.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
+| components.komodorDaemon.opentelemetry | object | See sub-values | Configure the komodor daemon OpenTelemetry collector components |
+| components.komodorDaemon.opentelemetry.image | object | `{"name":"634375685434.dkr.ecr.us-east-1.amazonaws.com/otelcol-komodor","tag":"1b72f179"}` | Override the OpenTelemetry collector image name or tag. |
+| components.komodorDaemon.opentelemetry.resources | object | `{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Set custom resources to the OpenTelemetry collector container |
+| components.komodorDaemon.opentelemetry.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemonWindows | object | See sub-values | Configure the komodor agent components |
 | components.komodorDaemonWindows.dnsPolicy | string | `"ClusterFirst"` | Set dns policy for the komodor agent daemon |
 | components.komodorDaemonWindows.affinity | object | `{}` | Set node affinity for the komodor agent daemon |
