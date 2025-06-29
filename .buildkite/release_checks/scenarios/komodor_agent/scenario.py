@@ -27,7 +27,7 @@ class KomodorAgentScenario(Scenario):
 
     async def install_komodor_agent(self, cluster_name, chart_version, name, extra_args):
         self.log(f"Starting to deploy {name}")
-        install_cmd = self.generate_installation_cmd(cluster_name, chart_version, name)
+        install_cmd = self.generate_installation_cmd(cluster_name, chart_version, name, extra_args)
 
         output, exit_code = await self.cmd(install_cmd, silent_errors=True)
         if exit_code != 0:
