@@ -26,8 +26,13 @@ class KomodorAgentScenario(Scenario):
                 f"--namespace {name} --create-namespace")
 
     async def install_komodor_agent(self, cluster_name, chart_version, name, extra_args):
-        cmd = self.generate_installation_cmd(cluster_name, chart_version, name, extra_args)
-        await self.cmd(cmd)
+        self.log(f"Starting to deploy {name}")
+        install_cmd = self.generate_installation_cmd(cluster_name, chart_version, name)
+
+        output, exit_code = await self.cmd(install_cmd, silent_errors=True)
+        if exit_code != 0:
+            self.error(f"Failed to deploy:\n\tCMD: {install_cmd}\n\tOutput: {output}")
+            raise Exception(f"Failed to deploy: {self.name}")
 
     async def run(self):
         await asyncio.sleep(120)  # Wait x seconds before deploying, to let other deployments to finish
