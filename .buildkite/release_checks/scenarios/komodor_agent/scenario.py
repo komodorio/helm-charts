@@ -24,11 +24,7 @@ class KomodorAgentScenario(Scenario):
                 f"{extra_args} "
                 f"{chart_version} "
                 f"--namespace {name} --create-namespace")
-
-    async def install_komodor_agent(self, cluster_name, chart_version, name, extra_args):
-        cmd = self.generate_installation_cmd(cluster_name, chart_version, name, extra_args)
-        await self.cmd(cmd)
-
+    
     async def run(self):
         await asyncio.sleep(120)  # Wait x seconds before deploying, to let other deployments to finish
 
@@ -36,10 +32,9 @@ class KomodorAgentScenario(Scenario):
         installation_tasks = []
         for agent in self.agents:
             installation_tasks.append(asyncio.create_task(self.install_komodor_agent(agent["clusterName"],
-                                                                                     agent["agentVersion"],
-                                                                                     agent["name"],
-                                                                                     agent["extra_args"])))
-
+                                                                                    agent["agentVersion"],
+                                                                                    agent["name"],
+                                                                                    agent["extra_args"])))
         await asyncio.gather(*installation_tasks)
         self.log("Finished deploying")
 
