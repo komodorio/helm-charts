@@ -20,10 +20,36 @@ data:
       filelog/komodor:
         include:
           - "/var/log/pods/*komodor-agent*/*/*.log"
+        include_file_name: false
+        include_file_path: true
+        poll_interval: 500ms
         start_at: beginning
         max_log_size: 1MiB
         attributes:
           komodor.cluster.name: "${env:KOMO_CLUSTER_NAME}"
+        operators:
+        - type: regex_parser
+          id: parse_log_path
+          parse_from: attributes["log.file.path"]
+          regex: "/var/log/pods/(?P<namespace>[^_/]+)_(?P<pod>[^_/]+)_[^/]+/(?P<container>[^/]+)/.*"
+          # this will extract:
+          # attributes["namespace"], attributes["pod"], attributes["container"]
+        - type: add
+          id: add_service_name_attr
+          field: attributes.service
+          value: EXPR(attributes.container)
+        - type: regex_parser
+          id: parse_kube_log_header
+          regex: '^(?P<timestamp>[^\s]+)\s+(?P<stream>stdout|stderr)\s+F\s+(?P<log>.*)$'
+          timestamp:
+            parse_from: attributes.timestamp
+            layout: '%Y-%m-%dT%H:%M:%S%z'
+        - type: json_parser
+          id: parse_json
+          parse_from: attributes.log
+          on_error: send_quiet
+          severity:
+            parse_from: body.level
 
     processors:
       batch:
@@ -40,7 +66,7 @@ data:
     exporters:
       # Debug exporter can be used for development and testing purposes
       debug:
-        verbosity: detailed
+        verbosity: normal
         sampling_initial: 5
         sampling_thereafter: 200
       otlphttp/komodor:
