@@ -1,6 +1,6 @@
 {{- define "opentelemetry.daemonset.container" }}
 {{- if and .Values.capabilities.telemetry.enabled .Values.capabilities.telemetry.deployOtelCollector }}
-- name: opentelemetry-collector
+- name: otel-collector
   image: {{ .Values.components.komodorDaemon.opentelemetry.image.name }}:{{ .Values.components.komodorDaemon.opentelemetry.image.tag }}
   imagePullPolicy: {{ .Values.pullPolicy }}
   command: ["/otelcol-komodor", "--config", "/etc/otelcol/config.yaml"]
