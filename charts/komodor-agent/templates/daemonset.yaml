@@ -49,16 +49,12 @@ spec:
         {{- include "metrics.daemonset.container" .        | nindent 8 }}
         {{- include "metrics.daemonset.sidecar.container" . | nindent 8 }}
         {{- include "node_enricher.daemonset.container"  . | nindent 8 }}
-        {{- if and .Values.capabilities.telemetry.enabled .Values.capabilities.telemetry.deployOtelCollector }}
         {{- include "opentelemetry.daemonset.container"  . | nindent 8 }}
-        {{- end }}
       volumes:
         {{- include "metrics.shared.volume" .             | nindent 8 }}
         {{- include "custom-ca.volume" .                 | nindent 8 }}
         {{- include "custom-ca.trusted-volume" .         | nindent 8 }}
-        {{- if and .Values.capabilities.telemetry.enabled .Values.capabilities.telemetry.deployOtelCollector }}
         {{- include "opentelemetry.volume" .             | nindent 8 }}
-        {{- end }}
       initContainers:
         {{- include "ca-init.container" .                | nindent 8 }}
         {{- include "metrics.daemonset.init.container" . | nindent 8 }}
