@@ -1,0 +1,72 @@
+{{- if and .Values.capabilities.telemetry.enabled .Values.capabilities.telemetry.deployOtelCollector }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "komodorAgent.fullname" . }}-opentelemetry-config
+  labels:
+    {{- include "komodorAgent.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+    extensions:
+      health_check:
+        endpoint: "0.0.0.0:13133"
+        path: "/status/health"
+
+    receivers:
+      otlp:
+        protocols:
+          http:
+            endpoint: "0.0.0.0:4318"
+      filelog/komodor:
+        include:
+          - "/var/log/pods/*komodor-agent*/*/*.log"
+        start_at: beginning
+        max_log_size: 1MiB
+        attributes:
+          komodor.cluster.name: "${env:KOMO_CLUSTER_NAME}"
+
+    processors:
+      batch:
+        send_batch_max_size: 50
+        send_batch_size: 10
+        timeout: 10s
+      memory_limiter:
+        check_interval: 1s
+        limit_percentage: 75
+        spike_limit_percentage: 20
+      probabilistic_sampler:
+        sampling_percentage: 70.0
+
+    exporters:
+      # Debug exporter can be used for development and testing purposes
+      debug:
+        verbosity: detailed
+      otlphttp/komodor:
+        endpoint: {{ .Values.communications.telemetryServerHost }}:{{ .Values.communications.telemetryServerPort }}
+        compression: gzip
+        timeout: 30s
+        headers:
+          X-API-KEY: "${env:KOMO_API_KEY}"
+
+    service:
+      telemetry:
+        metrics:
+          address: localhost:12345 # internal otel collector metrics endpoint
+        logs:
+          encoding: json
+          level: info
+      extensions: [health_check]
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [memory_limiter, probabilistic_sampler, batch]
+          exporters: [debug] # TODO: replace with otlphttp/komodor when testing is done
+        metrics:
+          receivers: [otlp]
+          processors: [memory_limiter, batch]
+          exporters: [debug] # TODO: replace with otlphttp/komodor when testing is done
+        logs:
+          receivers: [filelog/komodor]
+          processors: [memory_limiter, batch]
+          exporters: [debug] # TODO: replace with otlphttp/komodor when testing is done
+{{- end }} 

@@ -1,4 +1,4 @@
-{{- if (ne .Values.capabilities.metrics false) }}
+{{- if or (ne .Values.capabilities.metrics false) (and .Values.capabilities.telemetry.enabled .Values.capabilities.telemetry.deployOtelCollector) }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -21,6 +21,9 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if and .Values.capabilities.telemetry.enabled .Values.capabilities.telemetry.deployOtelCollector }}
+        checksum/opentelemetry-config: {{ include (print $.Template.BasePath "/opentelemetry/configmap.yaml") . | sha256sum }}
+        {{- end }}
         {{- if not (empty (((.Values.components).komodorDaemon).podAnnotations)) }}
         {{- toYaml .Values.components.komodorDaemon.podAnnotations | trim | nindent 8 }}
         {{- end }}
@@ -46,10 +49,16 @@ spec:
         {{- include "metrics.daemonset.container" .        | nindent 8 }}
         {{- include "metrics.daemonset.sidecar.container" . | nindent 8 }}
         {{- include "node_enricher.daemonset.container"  . | nindent 8 }}
+        {{- if and .Values.capabilities.telemetry.enabled .Values.capabilities.telemetry.deployOtelCollector }}
+        {{- include "opentelemetry.daemonset.container"  . | nindent 8 }}
+        {{- end }}
       volumes:
         {{- include "metrics.shared.volume" .             | nindent 8 }}
         {{- include "custom-ca.volume" .                 | nindent 8 }}
         {{- include "custom-ca.trusted-volume" .         | nindent 8 }}
+        {{- if and .Values.capabilities.telemetry.enabled .Values.capabilities.telemetry.deployOtelCollector }}
+        {{- include "opentelemetry.volume" .             | nindent 8 }}
+        {{- end }}
       initContainers:
         {{- include "ca-init.container" .                | nindent 8 }}
         {{- include "metrics.daemonset.init.container" . | nindent 8 }}
