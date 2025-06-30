@@ -532,7 +532,7 @@ components:
     opentelemetry:
       # components.komodorDaemon.opentelemetry.image -- Override the OpenTelemetry collector image name or tag.
       image:
-        name: 634375685434.dkr.ecr.us-east-1.amazonaws.com/otelcol-komodor
+        name: public.ecr.aws/komodor-public/komodor-otel-collector
         tag: 35a47f77
       # components.komodorDaemon.opentelemetry.resources -- Set custom resources to the OpenTelemetry collector container
       resources:
@@ -751,5 +751,4 @@ communications:
   wsHost: wss://app.komodor.com
   tasksServerHost: *serverHost
   telemetryServerHost: https://telemetry.komodor.com
-  telemetryServerPort: 4318
   mgmtServerHost: *serverHost

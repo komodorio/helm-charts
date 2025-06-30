@@ -41,8 +41,10 @@ data:
       # Debug exporter can be used for development and testing purposes
       debug:
         verbosity: detailed
+        sampling_initial: 5
+        sampling_thereafter: 200
       otlphttp/komodor:
-        endpoint: {{ .Values.communications.telemetryServerHost }}:{{ .Values.communications.telemetryServerPort }}
+        endpoint: {{ .Values.communications.telemetryServerHost }}
         compression: gzip
         timeout: 30s
         headers:
@@ -50,8 +52,6 @@ data:
 
     service:
       telemetry:
-        metrics:
-          address: localhost:12345 # internal otel collector metrics endpoint
         logs:
           encoding: json
           level: info
@@ -60,13 +60,13 @@ data:
         traces:
           receivers: [otlp]
           processors: [memory_limiter, probabilistic_sampler, batch]
-          exporters: [debug] # TODO: replace with otlphttp/komodor when testing is done
+          exporters: [otlphttp/komodor]
         metrics:
           receivers: [otlp]
           processors: [memory_limiter, batch]
-          exporters: [debug] # TODO: replace with otlphttp/komodor when testing is done
+          exporters: [otlphttp/komodor]
         logs:
           receivers: [filelog/komodor]
           processors: [memory_limiter, batch]
-          exporters: [debug] # TODO: replace with otlphttp/komodor when testing is done
+          exporters: [otlphttp/komodor]
 {{- end }} 
