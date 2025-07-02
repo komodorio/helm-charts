@@ -146,6 +146,8 @@ capabilities:
     enabled: true
     # capabilities.telemetry.collectApiServerMetrics -- Collect metrics from the api server (Should only be used for debugging purposes)
     collectApiServerMetrics: false
+    # capabilities.telemetry.deployOtelCollector -- (bool) Deploys OpenTelemetry collector daemonset sidecar
+    deployOtelCollector: false
 
   # capabilities.kubectlProxy -- Configure the komodor kubectl proxy capabilities
   # @default -- See sub-values
@@ -523,6 +525,24 @@ components:
           cpu: 1m
           memory: 10Mi
       # components.komodorDaemon.nodeEnricher.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
+      extraEnvVars: []
+
+    # components.komodorDaemon.opentelemetry -- Configure the komodor daemon OpenTelemetry collector components
+    # @default -- See sub-values
+    opentelemetry:
+      # components.komodorDaemon.opentelemetry.image -- Override the OpenTelemetry collector image name or tag.
+      image:
+        name: public.ecr.aws/komodor-public/komodor-otel-collector
+        tag: 35a47f77
+      # components.komodorDaemon.opentelemetry.resources -- Set custom resources to the OpenTelemetry collector container
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+      # components.komodorDaemon.opentelemetry.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
       extraEnvVars: []
 
   # components.komodorDaemonWindows -- Configure the komodor agent components
