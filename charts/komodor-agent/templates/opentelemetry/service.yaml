@@ -1,0 +1,17 @@
+{{- if and .Values.capabilities.telemetry.enabled .Values.capabilities.telemetry.useOpentelemetry }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "komodorAgent.fullname" . }}-otel-collector
+  labels:
+    {{- include "komodorAgent.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+  - name: otlp-http
+    port: 4318
+    targetPort: 4318
+    protocol: TCP
+  selector:
+    {{- include "komodorAgentDaemon.selectorLabels" . | nindent 4 }}
+{{- end }} 
