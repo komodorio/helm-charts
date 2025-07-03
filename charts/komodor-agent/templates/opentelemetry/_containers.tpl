@@ -3,7 +3,6 @@
 - name: otel-collector
   image: {{ .Values.components.komodorDaemon.opentelemetry.image.name }}:{{ .Values.components.komodorDaemon.opentelemetry.image.tag }}
   imagePullPolicy: {{ .Values.pullPolicy }}
-  command: ["/otelcol-komodor", "--config", "/etc/otelcol/config.yaml"]
   resources:
     {{ toYaml .Values.components.komodorDaemon.opentelemetry.resources | trim | nindent 4 }}
   ports:
