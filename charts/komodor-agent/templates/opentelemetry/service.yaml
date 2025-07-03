@@ -1,4 +1,4 @@
-{{- if and .Values.capabilities.telemetry.enabled .Values.capabilities.telemetry.useOpentelemetry }}
+{{- if and .Values.capabilities.telemetry.enabled .Values.capabilities.telemetry.deployOtelCollector }}
 apiVersion: v1
 kind: Service
 metadata:
