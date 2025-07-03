@@ -275,7 +275,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemon.nodeEnricher.resources | object | `{"limits":{"cpu":"10m","memory":"100Mi"},"requests":{"cpu":"1m","memory":"10Mi"}}` | Set custom resources to the komodor agent node enricher container |
 | components.komodorDaemon.nodeEnricher.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemon.opentelemetry | object | See sub-values | Configure the komodor daemon OpenTelemetry collector components |
-| components.komodorDaemon.opentelemetry.image | object | `{"name":"public.ecr.aws/komodor-public/komodor-otel-collector","tag":"5ee0c87e"}` | Override the OpenTelemetry collector image name or tag. |
+| components.komodorDaemon.opentelemetry.image | object | `{"name":"public.ecr.aws/komodor-public/komodor-otel-collector","tag":"a2a09964"}` | Override the OpenTelemetry collector image name or tag. |
 | components.komodorDaemon.opentelemetry.resources | object | `{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Set custom resources to the OpenTelemetry collector container |
 | components.komodorDaemon.opentelemetry.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemonWindows | object | See sub-values | Configure the komodor agent components |
