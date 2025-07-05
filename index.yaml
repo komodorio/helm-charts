@@ -2,6 +2,17 @@ apiVersion: v1
 entries:
   helm-dashboard:
   - apiVersion: v2
+    appVersion: 2.0.4
+    created: "2025-07-05T09:32:39.369490073Z"
+    description: A GUI Dashboard for Helm by Komodor
+    digest: 915a442ed04d5a1863935d5897c4e4f60541183c8f7abeb0123818fa7acb1e8c
+    icon: https://raw.githubusercontent.com/komodorio/helm-dashboard/refs/heads/main/images/logo.svg
+    name: helm-dashboard
+    type: application
+    urls:
+    - https://github.com/komodorio/helm-charts/releases/download/helm-dashboard-2.0.4/helm-dashboard-2.0.4.tgz
+    version: 2.0.4
+  - apiVersion: v2
     appVersion: 2.0.3
     created: "2025-07-03T21:49:52.416254874Z"
     description: A GUI Dashboard for Helm by Komodor
@@ -6605,4 +6616,4 @@ entries:
     urls:
     - komoplane/komoplane-0.0.2.tgz
     version: 0.0.2
-generated: "2025-07-03T21:49:52.411074113Z"
+generated: "2025-07-05T09:32:39.371832825Z"
