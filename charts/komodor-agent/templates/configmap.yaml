@@ -31,7 +31,11 @@ data:
     telemetry:
       enable: {{ .Values.capabilities.telemetry.enabled }}
       collectApiServerMetrics: {{ .Values.capabilities.telemetry.collectApiServerMetrics }}
+      {{- if .Values.capabilities.telemetry.deployOtelCollector }}
+      serverHost: {{ include "komodorAgent.openTelemetry.serviceFqdn" . }}
+      {{- else }}
       serverHost: {{ .Values.communications.telemetryServerHost }}
+      {{- end }}
     resync:
       period: "0"
 

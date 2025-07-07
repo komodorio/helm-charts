@@ -147,7 +147,7 @@ capabilities:
     # capabilities.telemetry.collectApiServerMetrics -- Collect metrics from the api server (Should only be used for debugging purposes)
     collectApiServerMetrics: false
     # capabilities.telemetry.deployOtelCollector -- (bool) Deploys OpenTelemetry collector daemonset sidecar
-    deployOtelCollector: false
+    deployOtelCollector: true
 
   # capabilities.kubectlProxy -- Configure the komodor kubectl proxy capabilities
   # @default -- See sub-values

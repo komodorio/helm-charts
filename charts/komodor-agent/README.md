@@ -152,7 +152,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | capabilities.telemetry | object | See sub-values | Configure the agent telemetry capabilities |
 | capabilities.telemetry.enabled | bool | `true` | Enable telemetry capabilities by the komodor agent |
 | capabilities.telemetry.collectApiServerMetrics | bool | `false` | Collect metrics from the api server (Should only be used for debugging purposes) |
-| capabilities.telemetry.deployOtelCollector | bool | `false` | Deploys OpenTelemetry collector daemonset sidecar |
+| capabilities.telemetry.deployOtelCollector | bool | `true` | Deploys OpenTelemetry collector daemonset sidecar |
 | capabilities.kubectlProxy | object | See sub-values | Configure the komodor kubectl proxy capabilities |
 | capabilities.kubectlProxy.enabled | bool | `false` | Enable the komodor kubectl proxy |
 | capabilities.admissionController | object | See sub-values | Configure the komodor admission controller capabilities |
