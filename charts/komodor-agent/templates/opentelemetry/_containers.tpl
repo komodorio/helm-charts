@@ -17,7 +17,7 @@
     protocol: TCP
   volumeMounts:
   - name: opentelemetry-config
-    mountPath: /etc/otelcol
+    mountPath: /etc/otel
   - name: opentelemetry-varlogpods
     mountPath: /var/log/pods
   livenessProbe:
