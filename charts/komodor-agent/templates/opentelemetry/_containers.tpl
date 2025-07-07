@@ -37,6 +37,7 @@
     failureThreshold: 3
     successThreshold: 1
   env:
+  {{- include "komodorAgent.proxy-conf" . | indent 2 }}
   - name: NODE_NAME
     valueFrom:
       fieldRef:
