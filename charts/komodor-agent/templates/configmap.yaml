@@ -36,6 +36,12 @@ data:
       {{- else }}
       serverHost: {{ .Values.communications.telemetryServerHost }}
       {{- end }}
+    {{- if .Values.capabilities.telemetry.deployOtelCollector }}
+    {{-/* When the OTEL Collector is enabled, it collect logs already thus not needing the remote sink */}}
+    logger:
+      remote:
+        enabled: false
+    {{- end }}
     resync:
       period: "0"
 
