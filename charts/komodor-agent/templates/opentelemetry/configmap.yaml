@@ -60,8 +60,6 @@ data:
         check_interval: 1s
         limit_percentage: 75
         spike_limit_percentage: 20
-      probabilistic_sampler:
-        sampling_percentage: 70.0
 
     exporters:
       # Debug exporter can be used for development and testing purposes
@@ -85,7 +83,7 @@ data:
       pipelines:
         traces:
           receivers: [otlp]
-          processors: [memory_limiter, probabilistic_sampler, batch]
+          processors: [memory_limiter, batch]
           exporters: [otlphttp/komodor]
         metrics:
           receivers: [otlp]
