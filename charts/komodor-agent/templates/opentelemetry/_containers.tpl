@@ -17,7 +17,7 @@
     protocol: TCP
   volumeMounts:
   - name: opentelemetry-config
-    mountPath: /etc/otelcol
+    mountPath: /etc/otel
   - name: opentelemetry-varlogpods
     mountPath: /var/log/pods
   livenessProbe:
@@ -37,6 +37,7 @@
     failureThreshold: 3
     successThreshold: 1
   env:
+  {{- include "komodorAgent.proxy-conf" . | indent 2 }}
   - name: NODE_NAME
     valueFrom:
       fieldRef:

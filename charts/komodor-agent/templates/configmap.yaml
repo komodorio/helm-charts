@@ -31,7 +31,17 @@ data:
     telemetry:
       enable: {{ .Values.capabilities.telemetry.enabled }}
       collectApiServerMetrics: {{ .Values.capabilities.telemetry.collectApiServerMetrics }}
+      {{- if .Values.capabilities.telemetry.deployOtelCollector }}
+      serverHost: {{ include "komodorAgent.openTelemetry.serviceFqdn" . }}
+      {{- else }}
       serverHost: {{ .Values.communications.telemetryServerHost }}
+      {{- end }}
+    {{- if .Values.capabilities.telemetry.deployOtelCollector }}
+    {{/* When the OTEL Collector is enabled, it collect logs already thus not needing the remote sink */}}
+    logger:
+      remote:
+        enabled: false
+    {{- end }}
     resync:
       period: "0"
 
