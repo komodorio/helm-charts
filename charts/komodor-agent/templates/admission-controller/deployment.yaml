@@ -19,6 +19,7 @@ spec:
         {{- include "komodorAgent.admissionController.selectorLabels" . | nindent 8 }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/admission-controller/configmap.yaml") . | sha256sum }}
+        checksum/certs-webhook: {{ include (print $.Template.BasePath "/admission-controller/webhookconfiguration.yaml") . | sha256sum }}
         {{- if not (empty (((.Values.components).admissionController).podAnnotations)) }}
         {{- toYaml .Values.components.admissionController.podAnnotations | trim | nindent 8 }}
         {{- end }}
