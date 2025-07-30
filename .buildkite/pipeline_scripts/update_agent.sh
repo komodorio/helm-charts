@@ -22,12 +22,15 @@ komo ctx "${environment}"
 helm repo add komodorio https://helm-charts.komodor.io
 helm repo update
 
+EXTRA_VALUES_ARG=""
+
 if [ "$CHART_VERSION" == "latest" ]; then
   CHART_VERSION=""
 elif [ "$CHART_VERSION" == "rc" ]; then
   # Get latest RC version from the public repo
   RC_VER=$(helm search repo komodorio/komodor-agent --versions --devel | grep '\-RC' |  awk '{ print $2 }' | sort -V | tail -n 1)
   CHART_VERSION="--version $RC_VER"
+  EXTRA_VALUES_ARG="-f ./.buildkite/pipeline_scripts/production-rc-values-override.yaml"
 else
   CHART_VERSION="--version $CHART_VERSION"
 fi
@@ -39,4 +42,4 @@ helm upgrade --install "${RELEASE_NAME}"  komodorio/komodor-agent \
   --set clusterName="${CLUSTER_NAME}" \
   --set apiKey="$KOMODOR_AGENT_API_KEY" \
   --set tags="env:${environment}" $CHART_VERSION \
-  -f ./.buildkite/pipeline_scripts/production-values.yaml
+  -f ./.buildkite/pipeline_scripts/production-values.yaml $EXTRA_VALUES_ARG
