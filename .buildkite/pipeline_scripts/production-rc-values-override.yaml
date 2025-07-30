@@ -1,0 +1,13 @@
+imagePullSecret: docker-cfg-komodorio
+
+capabilities:
+  admissionController:
+    enabled: true
+    binpacking:
+      enabled: true
+      markUnevictable: true
+      addNodeAffinityToMarkedPods: true
+    rightsizing:
+      enabled: true
+    mutatingWebhook:
+      selfManage: false
