@@ -35,6 +35,10 @@
     value: /opt/watcher/helm/config
   - name: HELM_DATA_HOME
     value: /opt/watcher/helm/data
+  {{- if .Values.skipTlsVerify }}
+  - name: SKIP_TLS_VERIFY
+    value: "true"
+  {{- end }}
   {{- if gt (len .Values.components.komodorAgent.watcher.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorAgent.watcher.extraEnvVars | nindent 2 }}
   {{- end }}

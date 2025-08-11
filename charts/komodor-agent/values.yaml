@@ -12,6 +12,9 @@ clusterName:
 # createRbac -- Creates the necessary RBAC resources for the agent - use with caution!
 createRbac: true
 
+# skipTlsVerify -- (bool) Skip TLS certificate verification for the agent (sets SKIP_TLS_VERIFY environment variable)
+skipTlsVerify: false
+
 # telegrafImageVersion -- (string) Telegraf version to be used
 telegrafImageVersion: &telegrafVersion v2.0.3-alpine
 # telegrafWindowsImageVersion -- (string) Telegraf version to be used for windows
