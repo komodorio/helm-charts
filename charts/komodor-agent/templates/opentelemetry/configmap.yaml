@@ -43,7 +43,8 @@ data:
           regex: '^(?P<timestamp>[^\s]+)\s+(?P<stream>stdout|stderr)\s+F\s+(?P<log>.*)$'
           timestamp:
             parse_from: attributes.timestamp
-            layout: '%Y-%m-%dT%H:%M:%S%z'
+            layout_type: gotime
+            layout: '2006-01-02T15:04:05.999999999Z07:00'
         - type: json_parser
           id: parse_json
           parse_from: attributes.log
