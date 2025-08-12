@@ -14,6 +14,8 @@ createRbac: true
 
 # skipTlsVerify -- (bool) Skip TLS certificate verification for the agent (sets SKIP_TLS_VERIFY environment variable)
 skipTlsVerify: false
+# httpRequestsSkipTlsVerify -- (bool) Skip TLS certificate verification for HTTP requests (sets HTTP_REQUESTS_SKIP_TLS_VERIFY environment variable)
+httpRequestsSkipTlsVerify: false
 
 # telegrafImageVersion -- (string) Telegraf version to be used
 telegrafImageVersion: &telegrafVersion v2.0.3-alpine

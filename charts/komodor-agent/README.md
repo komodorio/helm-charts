@@ -99,6 +99,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | clusterName | string | `nil` | **(*required*)** Name to be displayed in the Komodor web application |
 | createRbac | bool | `true` | Creates the necessary RBAC resources for the agent - use with caution! |
 | skipTlsVerify | bool | `false` | Skip TLS certificate verification for the agent (sets SKIP_TLS_VERIFY environment variable) |
+| httpRequestsSkipTlsVerify | bool | `false` | Skip TLS certificate verification for HTTP requests (sets HTTP_REQUESTS_SKIP_TLS_VERIFY environment variable) |
 | telegrafImageVersion | string | `"v2.0.3-alpine"` | Telegraf version to be used |
 | telegrafWindowsImageVersion | string | `"v2.0.3-windows"` | Telegraf version to be used for windows |
 | serviceAccount | object | See sub-values | Configure service account for the agent |

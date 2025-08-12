@@ -39,6 +39,10 @@
   - name: SKIP_TLS_VERIFY
     value: "true"
   {{- end }}
+  {{- if .Values.httpRequestsSkipTlsVerify }}
+  - name: HTTP_REQUESTS_SKIP_TLS_VERIFY
+    value: "true"
+  {{- end }}
   {{- if gt (len .Values.components.komodorAgent.watcher.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorAgent.watcher.extraEnvVars | nindent 2 }}
   {{- end }}
