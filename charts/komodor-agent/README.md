@@ -98,8 +98,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | tags | dict | `{}` | Tags the agent in order to identify it based on `key:value` properties separated by semicolon (`;`) example: `--set tags.env=staging,tags.team=payments` --- Can also be set in the values under `tags` as a dictionary of key:value strings |
 | clusterName | string | `nil` | **(*required*)** Name to be displayed in the Komodor web application |
 | createRbac | bool | `true` | Creates the necessary RBAC resources for the agent - use with caution! |
-| skipTlsVerify | bool | `false` | Skip TLS certificate verification for the agent (sets SKIP_TLS_VERIFY environment variable) |
-| httpRequestsSkipTlsVerify | bool | `false` | Skip TLS certificate verification for HTTP requests (sets HTTP_REQUESTS_SKIP_TLS_VERIFY environment variable) |
 | telegrafImageVersion | string | `"v2.0.3-alpine"` | Telegraf version to be used |
 | telegrafWindowsImageVersion | string | `"v2.0.3-windows"` | Telegraf version to be used for windows |
 | serviceAccount | object | See sub-values | Configure service account for the agent |
@@ -157,6 +155,9 @@ The command removes all the Kubernetes components associated with the chart and 
 | capabilities.telemetry.deployOtelCollector | bool | `true` | Deploys OpenTelemetry collector daemonset sidecar |
 | capabilities.kubectlProxy | object | See sub-values | Configure the komodor kubectl proxy capabilities |
 | capabilities.kubectlProxy.enabled | bool | `false` | Enable the komodor kubectl proxy |
+| capabilities.tasks | object | See sub-values | Configure the agent task capabilities |
+| capabilities.tasks.httpRequests | object | See sub-values | Configure HTTP request capabilities |
+| capabilities.tasks.httpRequests.skipTlsVerify | bool | `false` | Skip TLS certificate verification for HTTP requests (sets HTTP_REQUESTS_SKIP_TLS_VERIFY environment variable) |
 | capabilities.admissionController | object | See sub-values | Configure the komodor admission controller capabilities |
 | capabilities.admissionController.enabled | bool | `false` | Enable the komodor admission controller |
 | capabilities.admissionController.logLevel | string | `"info"` | Log level for the admission controller |
