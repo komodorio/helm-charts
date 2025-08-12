@@ -12,6 +12,7 @@ clusterName:
 # createRbac -- Creates the necessary RBAC resources for the agent - use with caution!
 createRbac: true
 
+
 # telegrafImageVersion -- (string) Telegraf version to be used
 telegrafImageVersion: &telegrafVersion v2.0.4-alpine
 # telegrafWindowsImageVersion -- (string) Telegraf version to be used for windows
@@ -154,6 +155,15 @@ capabilities:
   kubectlProxy:
     # capabilities.kubectlProxy.enabled -- (bool) Enable the komodor kubectl proxy
     enabled: false
+
+  # capabilities.tasks -- Configure the agent task capabilities
+  # @default -- See sub-values
+  tasks:
+    # capabilities.tasks.httpRequests -- Configure HTTP request capabilities
+    # @default -- See sub-values
+    httpRequests:
+      # capabilities.tasks.httpRequests.skipTlsVerify -- (bool) Skip TLS certificate verification for HTTP requests (sets HTTP_REQUESTS_SKIP_TLS_VERIFY environment variable)
+      skipTlsVerify: false
 
   # capabilities.admissionController -- Configure the komodor admission controller capabilities
   # @default -- See sub-values

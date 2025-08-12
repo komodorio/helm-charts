@@ -155,6 +155,9 @@ The command removes all the Kubernetes components associated with the chart and 
 | capabilities.telemetry.deployOtelCollector | bool | `true` | Deploys OpenTelemetry collector daemonset sidecar |
 | capabilities.kubectlProxy | object | See sub-values | Configure the komodor kubectl proxy capabilities |
 | capabilities.kubectlProxy.enabled | bool | `false` | Enable the komodor kubectl proxy |
+| capabilities.tasks | object | See sub-values | Configure the agent task capabilities |
+| capabilities.tasks.httpRequests | object | See sub-values | Configure HTTP request capabilities |
+| capabilities.tasks.httpRequests.skipTlsVerify | bool | `false` | Skip TLS certificate verification for HTTP requests (sets HTTP_REQUESTS_SKIP_TLS_VERIFY environment variable) |
 | capabilities.admissionController | object | See sub-values | Configure the komodor admission controller capabilities |
 | capabilities.admissionController.enabled | bool | `false` | Enable the komodor admission controller |
 | capabilities.admissionController.logLevel | string | `"info"` | Log level for the admission controller |
