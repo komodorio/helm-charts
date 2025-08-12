@@ -13,9 +13,9 @@ clusterName:
 createRbac: true
 
 # telegrafImageVersion -- (string) Telegraf version to be used
-telegrafImageVersion: &telegrafVersion v2.0.3-alpine
+telegrafImageVersion: &telegrafVersion v2.0.4-alpine
 # telegrafWindowsImageVersion -- (string) Telegraf version to be used for windows
-telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.3-windows
+telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.4-windows
 
 # serviceAccount -- Configure service account for the agent
 # @default -- See sub-values
@@ -230,7 +230,6 @@ capabilities:
       # capabilities.admissionController.rightsizing.mutatedAnnotationKey -- (string) Annotation key to mark pods as mutated by the rightsizing admission controller
       # @default -- "komodor.com/mutated"
       #mutatedAnnotationKey: "komodor.com/mutated"
-
 
 # components -- Configure the agent components
 # @default -- See sub-values
