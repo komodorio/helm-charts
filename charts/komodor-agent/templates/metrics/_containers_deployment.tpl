@@ -25,6 +25,8 @@
     valueFrom:
       fieldRef:
         fieldPath: status.hostIP
+  - name: GOMEMLIMIT
+    value: {{ .Values.components.komodorMetrics.metrics.resources.limits.memory | replace "Ki" "KiB" | replace "Mi" "MiB" | replace "Gi" "GiB" | replace "Ti" "TiB" | quote }}
   {{- if gt (len .Values.components.komodorMetrics.metrics.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorMetrics.metrics.extraEnvVars | nindent 2 }}
   {{- end }}
