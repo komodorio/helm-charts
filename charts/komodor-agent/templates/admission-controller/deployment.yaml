@@ -57,6 +57,8 @@ spec:
           env:
             - name: KOMO_API_KEY
               {{- include "komodorAgent.apiKeySecretRef" . | nindent 14 }}
+            - name: GOMEMLIMIT
+              value: {{ .Values.components.admissionController.resources.limits.memory | replace "Ki" "KiB" | replace "Mi" "MiB" | replace "Gi" "GiB" | replace "Ti" "TiB" | quote }}
           volumeMounts:
             - name: webhook-tls
               mountPath: /etc/komodor/admission/tls
