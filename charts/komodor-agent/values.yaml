@@ -14,9 +14,9 @@ createRbac: true
 
 
 # telegrafImageVersion -- (string) Telegraf version to be used
-telegrafImageVersion: &telegrafVersion v2.0.4-alpine
+telegrafImageVersion: &telegrafVersion v2.0.5-alpine
 # telegrafWindowsImageVersion -- (string) Telegraf version to be used for windows
-telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.4-windows
+telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.5-windows
 
 # serviceAccount -- Configure service account for the agent
 # @default -- See sub-values
