@@ -356,7 +356,7 @@ components:
     # @default -- see sub-values
     image:
       name: admission-controller
-      tag: 0.1.9
+      tag: 0.1.10
     # components.admissionController.resources -- Set custom resources to the komodor admission controller container - Memory utilization is relative to the amount of: [pods, nodes, pvcs, pvs, pdbs] resources you have in the cluster.
     resources:
       limits:
