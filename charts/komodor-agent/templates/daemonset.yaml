@@ -33,7 +33,7 @@ spec:
     spec:
       hostNetwork: {{ .Values.components.komodorDaemon.hostNetwork }}
       dnsPolicy: {{ .Values.components.komodorDaemon.dnsPolicy }}
-      priorityClassName: {{ include "komodor.truncatedReleaseName"  . }}-daemon-high-priority
+      priorityClassName: {{ .Values.components.komodorDaemon.priorityClassName | default (printf "%s-daemon-high-priority" (include "komodor.truncatedReleaseName" .)) }}
       serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
       {{ include "metrics.komodorDaemon.securityContext" . | nindent 6 }}
       affinity:

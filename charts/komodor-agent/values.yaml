@@ -249,6 +249,8 @@ components:
   komodorAgent:
     # components.komodorAgent.PriorityClassValue -- Set the priority class value for the komodor agent deployment
     PriorityClassValue: 10000000
+    # components.komodorAgent.priorityClassName -- Use an existing priority class for the komodor agent deployment. If not set, will create and use a priority class with PriorityClassValue. WARNING: priorityClassName is immutable and cannot be changed after initial deployment
+    priorityClassName: ""
     # components.komodorAgent.affinity -- Set node affinity for the komodor agent deployment
     affinity: {}
     # components.komodorAgent.annotations -- Set annotations for the komodor agent deployment
@@ -321,6 +323,10 @@ components:
       tag: 1.27.5
     # components.komodorKubectlProxy.resources -- Set custom resources to the komodor kubectl proxy container
     resources: {}
+    # components.komodorKubectlProxy.PriorityClassValue -- Set the priority class value for the komodor kubectl proxy deployment
+    PriorityClassValue: 10000000
+    # components.komodorKubectlProxy.priorityClassName -- Use an existing priority class for the komodor kubectl proxy deployment. If not set, will create and use a priority class with PriorityClassValue. WARNING: priorityClassName is immutable and cannot be changed after initial deployment
+    priorityClassName: ""
     # components.komodorKubectlProxy.affinity -- Set node affinity for the komodor kubectl proxy deployment
     affinity: {}
     # components.komodorKubectlProxy.annotations -- Set annotations for the komodor kubectl proxy deployment
@@ -367,6 +373,8 @@ components:
         memory: 1Gi
     # components.admissionController.PriorityClassValue -- Set the priority class value for the komodor admission-controller deployment
     PriorityClassValue: 10000000
+    # components.admissionController.priorityClassName -- Use an existing priority class for the komodor admission-controller deployment. If not set, will create and use a priority class with PriorityClassValue. WARNING: priorityClassName is immutable and cannot be changed after initial deployment
+    priorityClassName: ""
     # components.admissionController.affinity -- Set node affinity for the komodor admission controller deployment
     affinity: {}
     # components.admissionController.annotations -- Set annotations for the komodor admission controller deployment
@@ -398,6 +406,8 @@ components:
   komodorMetrics:
     # components.komodorMetrics.PriorityClassValue -- Set the priority class value for the komodor metrics agent deployment
     PriorityClassValue: 10000000
+    # components.komodorMetrics.priorityClassName -- Use an existing priority class for the komodor metrics agent deployment. If not set, will create and use a priority class with PriorityClassValue. WARNING: priorityClassName is immutable and cannot be changed after initial deployment
+    priorityClassName: ""
     # components.komodorMetrics.affinity -- Set node affinity for the komodor metrics agent deployment
     affinity: {}
     # components.komodorMetrics.annotations -- Set annotations for the komodor metrics agent deployment
@@ -457,6 +467,8 @@ components:
     dnsPolicy: ClusterFirst
     # components.komodorDaemon.PriorityClassValue -- Set the priority class value for the komodor daemon deployment
     PriorityClassValue: 10000000
+    # components.komodorDaemon.priorityClassName -- Use an existing priority class for the komodor daemon deployment. If not set, will create and use a priority class with PriorityClassValue. WARNING: priorityClassName is immutable and cannot be changed after initial deployment
+    priorityClassName: ""
     # components.komodorDaemon.affinity -- Set node affinity for the komodor agent daemon
     affinity: {}
     # components.komodorDaemon.annotations -- Adds custom annotations - Example: `--set annotations."app\.komodor\.com/app"="komodor-agent"`

@@ -36,6 +36,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
+      priorityClassName: {{ .Values.components.komodorKubectlProxy.priorityClassName | default (printf "%s-kubectl-proxy-high-priority" (include "komodor.truncatedReleaseName" .)) }}
       {{- with .Values.components.komodorKubectlProxy.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
