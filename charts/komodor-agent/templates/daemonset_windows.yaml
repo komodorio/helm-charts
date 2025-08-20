@@ -29,7 +29,7 @@ spec:
     spec:
       dnsPolicy: {{ .Values.components.komodorDaemonWindows.dnsPolicy }}
       terminationGracePeriodSeconds: 0
-      priorityClassName: {{ include "komodor.truncatedReleaseName"  . }}-daemon-high-priority
+      priorityClassName: {{ .Values.components.komodorDaemon.priorityClassName | default (printf "%s-daemon-high-priority" (include "komodor.truncatedReleaseName" .)) }}
       serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
       affinity:
         {{- toYaml .Values.components.komodorDaemonWindows.affinity | nindent 8 }}

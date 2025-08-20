@@ -33,7 +33,7 @@ spec:
         {{- include "komodorAgent.user.labels" . | nindent 8 }}
     spec:
       {{ include "komodorAgent.pod.securityContext" . | nindent 6 }}
-      priorityClassName: {{ include "komodor.truncatedReleaseName"  . }}-agent-high-priority
+      priorityClassName: {{ .Values.components.komodorAgent.priorityClassName | default (printf "%s-agent-high-priority" (include "komodor.truncatedReleaseName" .)) }}
       serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
       affinity:
         {{- toYaml .Values.components.komodorAgent.affinity | nindent 8 }}

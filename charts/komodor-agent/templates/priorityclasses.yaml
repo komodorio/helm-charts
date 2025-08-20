@@ -1,3 +1,4 @@
+{{- if not .Values.components.komodorDaemon.priorityClassName }}
 ---
 apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
@@ -6,7 +7,9 @@ metadata:
 value: {{ .Values.components.komodorDaemon.PriorityClassValue }}
 globalDefault: false
 description: "This priority class should be used for Komodor daemonset pods only."
+{{- end }}
 
+{{- if not .Values.components.komodorAgent.priorityClassName }}
 ---
 apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
@@ -15,6 +18,8 @@ metadata:
 value: {{ .Values.components.komodorAgent.PriorityClassValue }}
 globalDefault: false
 description: "This priority class should be used for Komodor agent pods only."
+{{- end }}
+{{- if not .Values.components.komodorMetrics.priorityClassName }}
 ---
 apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
@@ -22,9 +27,10 @@ metadata:
   name: {{ include "komodor.truncatedReleaseName"  . }}-metrics-high-priority
 value: {{ .Values.components.komodorMetrics.PriorityClassValue }}
 globalDefault: false
-description: "This priority class should be used for Komodor  pods only."
+description: "This priority class should be used for Komodor metrics pods only."
+{{- end }}
 
-{{- if .Values.capabilities.admissionController.enabled }}
+{{- if and .Values.capabilities.admissionController.enabled (not .Values.components.admissionController.priorityClassName) }}
 ---
 apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
@@ -33,4 +39,15 @@ metadata:
 value: {{ .Values.components.admissionController.PriorityClassValue }}
 globalDefault: false
 description: "This priority class should be used for Komodor admission-controller pods only."
+{{- end }}
+
+{{- if and .Values.capabilities.kubectlProxy.enabled (not .Values.components.komodorKubectlProxy.priorityClassName) }}
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: {{ include "komodor.truncatedReleaseName"  . }}-kubectl-proxy-high-priority
+value: {{ .Values.components.komodorKubectlProxy.PriorityClassValue }}
+globalDefault: false
+description: "This priority class should be used for Komodor kubectl proxy pods only."
 {{- end }}

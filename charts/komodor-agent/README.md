@@ -183,6 +183,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components | object | See sub-values | Configure the agent components |
 | components.komodorAgent | object | See sub-values | Configure the komodor agent components |
 | components.komodorAgent.PriorityClassValue | int | `10000000` | Set the priority class value for the komodor agent deployment |
+| components.komodorAgent.priorityClassName | string | `""` | Use an existing priority class for the komodor agent deployment. If not set, will create and use a priority class with PriorityClassValue. WARNING: priorityClassName is immutable and cannot be changed after initial deployment |
 | components.komodorAgent.affinity | object | `{}` | Set node affinity for the komodor agent deployment |
 | components.komodorAgent.annotations | object | `{}` | Set annotations for the komodor agent deployment |
 | components.komodorAgent.labels | object | `{}` | Set custom labels |
@@ -206,6 +207,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorKubectlProxy | object | See sub-values | Configure the komodor kubectl proxy components |
 | components.komodorKubectlProxy.image | object | see sub-values | Override the komodor kubectl proxy image name or tag. |
 | components.komodorKubectlProxy.resources | object | `{}` | Set custom resources to the komodor kubectl proxy container |
+| components.komodorKubectlProxy.PriorityClassValue | int | `10000000` | Set the priority class value for the komodor kubectl proxy deployment |
+| components.komodorKubectlProxy.priorityClassName | string | `""` | Use an existing priority class for the komodor kubectl proxy deployment. If not set, will create and use a priority class with PriorityClassValue. WARNING: priorityClassName is immutable and cannot be changed after initial deployment |
 | components.komodorKubectlProxy.affinity | object | `{}` | Set node affinity for the komodor kubectl proxy deployment |
 | components.komodorKubectlProxy.annotations | object | `{}` | Set annotations for the komodor kubectl proxy deployment |
 | components.komodorKubectlProxy.podAnnotations | object | `{}` | Set pod annotations for the komodor kubectl proxy deployment |
@@ -223,6 +226,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.admissionController.image | object | see sub-values | Override the komodor admission controller image name or tag. |
 | components.admissionController.resources | object | `{"limits":{"cpu":1,"memory":"4Gi"},"requests":{"cpu":"500m","memory":"1Gi"}}` | Set custom resources to the komodor admission controller container - Memory utilization is relative to the amount of: [pods, nodes, pvcs, pvs, pdbs] resources you have in the cluster. |
 | components.admissionController.PriorityClassValue | int | `10000000` | Set the priority class value for the komodor admission-controller deployment |
+| components.admissionController.priorityClassName | string | `""` | Use an existing priority class for the komodor admission-controller deployment. If not set, will create and use a priority class with PriorityClassValue. WARNING: priorityClassName is immutable and cannot be changed after initial deployment |
 | components.admissionController.affinity | object | `{}` | Set node affinity for the komodor admission controller deployment |
 | components.admissionController.annotations | object | `{}` | Set annotations for the komodor admission controller deployment |
 | components.admissionController.podAnnotations | object | `{}` | Set pod annotations for the komodor admission controller deployment |
@@ -233,6 +237,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.admissionController.strategy | object | `{}` | Set the rolling update strategy for the komodor admission controller |
 | components.admissionController.extraVolumes | list | `[]` | List of additional volumes to mount in the komodor admission controller deployment/pod      extraVolumes:        - volume:            name: webhook-tls            secret:              secretName: komodor-admission-controller-tls          volumeMount:            name: webhook-tls            mountPath: /etc/komodor/admission/tls            readOnly: true |
 | components.komodorMetrics.PriorityClassValue | int | `10000000` | Set the priority class value for the komodor metrics agent deployment |
+| components.komodorMetrics.priorityClassName | string | `""` | Use an existing priority class for the komodor metrics agent deployment. If not set, will create and use a priority class with PriorityClassValue. WARNING: priorityClassName is immutable and cannot be changed after initial deployment |
 | components.komodorMetrics.affinity | object | `{}` | Set node affinity for the komodor metrics agent deployment |
 | components.komodorMetrics.annotations | object | `{}` | Set annotations for the komodor metrics agent deployment |
 | components.komodorMetrics.labels | object | `{}` | Set custom labels |
@@ -254,6 +259,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemon.hostNetwork | bool | `false` | Set host network for the komodor agent daemon |
 | components.komodorDaemon.dnsPolicy | string | `"ClusterFirst"` | Set dns policy for the komodor agent daemon |
 | components.komodorDaemon.PriorityClassValue | int | `10000000` | Set the priority class value for the komodor daemon deployment |
+| components.komodorDaemon.priorityClassName | string | `""` | Use an existing priority class for the komodor daemon deployment. If not set, will create and use a priority class with PriorityClassValue. WARNING: priorityClassName is immutable and cannot be changed after initial deployment |
 | components.komodorDaemon.affinity | object | `{}` | Set node affinity for the komodor agent daemon |
 | components.komodorDaemon.annotations | object | `{}` | Adds custom annotations - Example: `--set annotations."app\.komodor\.com/app"="komodor-agent"` |
 | components.komodorDaemon.labels | object | `{}` | Adds custom labels |
