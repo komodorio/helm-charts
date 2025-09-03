@@ -207,8 +207,6 @@ capabilities:
     # capabilities.admissionController.binpacking -- Configure the binpacking capabilities for the admission controller
     # @default -- See sub-values
     binpacking:
-      # capabilities.admissionController.binpacking.enabled -- (bool) Enable binpacking capabilities by the komodor admission controller
-      enabled: false
       # capabilities.admissionController.binpacking.markUnevictable -- (bool) Add a label to mark pods as unevictable
       markUnevictable: false
       # capabilities.admissionController.binpacking.addNodeAffinityToMarkedPods -- (bool) Add node affinity to marked pods to prefer scheduling on nodes with already unevictable pods
@@ -347,8 +345,6 @@ components:
   # components.admissionController -- Configure the komodor admission controller component
   # @default -- See sub-values
   admissionController:
-    # components.admissionController.enabled -- (bool) Enable the komodor admission controller
-    enabled: false
     # components.admissionController.serviceAccount -- Configure the service account for the admission controller
     # @default -- see sub-values
     serviceAccount:

@@ -18,7 +18,6 @@ data:
       logLevel: {{ .Values.capabilities.admissionController.logLevel }}
       format: {{ .Values.capabilities.admissionController.logFormat }}
     binpacking:
-      enabled: {{ .Values.capabilities.admissionController.binpacking.enabled }}
       markUnevictable: {{ .Values.capabilities.admissionController.binpacking.markUnevictable }}
       addNodeAffinityToMarkedPods: {{ .Values.capabilities.admissionController.binpacking.addNodeAffinityToMarkedPods }}
       {{- if .Values.capabilities.admissionController.binpacking.unevictableLabelKey }}
