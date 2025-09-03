@@ -29,6 +29,10 @@ data:
       {{- if .Values.capabilities.admissionController.binpacking.unevictablePodNodeAffinityWeight }}
       unevictablePodNodeAffinityWeight: {{ .Values.capabilities.admissionController.binpacking.unevictablePodNodeAffinityWeight }}
       {{- end }}
+      {{- if .Values.capabilities.admissionController.binpacking.ignoredNamespaces }}
+      ignoredNamespaces:
+      {{- toYaml .Values.capabilities.admissionController.binpacking.ignoredNamespaces | nindent 8 }}
+      {{- end }}
     rightsizing:
       enabled: {{ .Values.capabilities.admissionController.rightsizing.enabled }}
       {{- if .Values.capabilities.admissionController.rightsizing.recommendationsSyncInterval }}
