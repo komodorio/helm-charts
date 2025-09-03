@@ -234,6 +234,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.admissionController.securityContext | object | `{}` | Set custom securityContext to the komodor admission controller deployment (use with caution) |
 | components.admissionController.strategy | object | `{}` | Set the rolling update strategy for the komodor admission controller |
 | components.admissionController.extraVolumes | list | `[]` | List of additional volumes to mount in the komodor admission controller deployment/pod      extraVolumes:        - volume:            name: webhook-tls            secret:              secretName: komodor-admission-controller-tls          volumeMount:            name: webhook-tls            mountPath: /etc/komodor/admission/tls            readOnly: true |
+| components.admissionController.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorMetrics.PriorityClassValue | int | `10000000` | Set the priority class value for the komodor metrics agent deployment |
 | components.komodorMetrics.priorityClassName | string | `""` | Use an existing priority class for the komodor metrics agent deployment. If not set, will create and use a priority class with PriorityClassValue. WARNING: priorityClassName is immutable and cannot be changed after initial deployment |
 | components.komodorMetrics.affinity | object | `{}` | Set node affinity for the komodor metrics agent deployment |

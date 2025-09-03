@@ -398,6 +398,8 @@ components:
     #            mountPath: /etc/komodor/admission/tls
     #            readOnly: true
     extraVolumes: []
+    # components.admissionController.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
+    extraEnvVars: []
 
   komodorMetrics:
     # components.komodorMetrics.PriorityClassValue -- Set the priority class value for the komodor metrics agent deployment
