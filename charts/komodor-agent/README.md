@@ -175,7 +175,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | capabilities.admissionController.mutatingWebhook.podRightsizingWebhookPath | string | `"/webhook/rightsizing/pod"` | Path for the pod rightsizing webhook |
 | capabilities.admissionController.mutatingWebhook.caBundle | string | using the kube-root-ca.crt ConfigMap in the kube-system namespace | CA bundle for the mutating webhook configuration. It should match the webhook server CA. |
 | capabilities.admissionController.binpacking | object | See sub-values | Configure the binpacking capabilities for the admission controller |
-| capabilities.admissionController.binpacking.enabled | bool | `false` | Enable binpacking capabilities by the komodor admission controller |
 | capabilities.admissionController.binpacking.markUnevictable | bool | `false` | Add a label to mark pods as unevictable |
 | capabilities.admissionController.binpacking.addNodeAffinityToMarkedPods | bool | `false` | Add node affinity to marked pods to prefer scheduling on nodes with already unevictable pods |
 | capabilities.admissionController.rightsizing | object | See sub-values | Configure the rightsizing capabilities for the admission controller |
@@ -218,7 +217,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorKubectlProxy.securityContext | object | `{}` | Set custom securityContext to the komodor kubectl proxy deployment (use with caution) |
 | components.komodorKubectlProxy.strategy | object | `{}` | Set the rolling update strategy for the komodor kubectl proxy deployment |
 | components.admissionController | object | See sub-values | Configure the komodor admission controller component |
-| components.admissionController.enabled | bool | `false` | Enable the komodor admission controller |
 | components.admissionController.serviceAccount | object | see sub-values | Configure the service account for the admission controller |
 | components.admissionController.serviceAccount.create | bool | `true` | Creates a service account for the admission controller |
 | components.admissionController.serviceAccount.name | string | `nil` | Name of the service account, Required if `serviceAccount.create` is false |
@@ -236,6 +234,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.admissionController.securityContext | object | `{}` | Set custom securityContext to the komodor admission controller deployment (use with caution) |
 | components.admissionController.strategy | object | `{}` | Set the rolling update strategy for the komodor admission controller |
 | components.admissionController.extraVolumes | list | `[]` | List of additional volumes to mount in the komodor admission controller deployment/pod      extraVolumes:        - volume:            name: webhook-tls            secret:              secretName: komodor-admission-controller-tls          volumeMount:            name: webhook-tls            mountPath: /etc/komodor/admission/tls            readOnly: true |
+| components.admissionController.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorMetrics.PriorityClassValue | int | `10000000` | Set the priority class value for the komodor metrics agent deployment |
 | components.komodorMetrics.priorityClassName | string | `""` | Use an existing priority class for the komodor metrics agent deployment. If not set, will create and use a priority class with PriorityClassValue. WARNING: priorityClassName is immutable and cannot be changed after initial deployment |
 | components.komodorMetrics.affinity | object | `{}` | Set node affinity for the komodor metrics agent deployment |

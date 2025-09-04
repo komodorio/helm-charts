@@ -207,8 +207,6 @@ capabilities:
     # capabilities.admissionController.binpacking -- Configure the binpacking capabilities for the admission controller
     # @default -- See sub-values
     binpacking:
-      # capabilities.admissionController.binpacking.enabled -- (bool) Enable binpacking capabilities by the komodor admission controller
-      enabled: false
       # capabilities.admissionController.binpacking.markUnevictable -- (bool) Add a label to mark pods as unevictable
       markUnevictable: false
       # capabilities.admissionController.binpacking.addNodeAffinityToMarkedPods -- (bool) Add node affinity to marked pods to prefer scheduling on nodes with already unevictable pods
@@ -219,6 +217,8 @@ capabilities:
       #modifiedAnnotationKey: "komodor.io/modified-at"
       # capabilities.admissionController.binpacking.unevictablePodNodeAffinityWeight -- (int) Weight for the node affinity of unevictable pods
       #unevictablePodNodeAffinityWeight: 100
+      # capabilities.admissionController.binpacking.ignoredNamespaces -- (list) List of namespaces to ignore for binpacking
+      #ignoredNamespaces: []
 
     # capabilities.admissionController.rightsizing -- Configure the rightsizing capabilities for the admission controller
     # @default -- See sub-values
@@ -347,8 +347,6 @@ components:
   # components.admissionController -- Configure the komodor admission controller component
   # @default -- See sub-values
   admissionController:
-    # components.admissionController.enabled -- (bool) Enable the komodor admission controller
-    enabled: false
     # components.admissionController.serviceAccount -- Configure the service account for the admission controller
     # @default -- see sub-values
     serviceAccount:
@@ -362,7 +360,7 @@ components:
     # @default -- see sub-values
     image:
       name: admission-controller
-      tag: 0.1.10
+      tag: 0.1.11
     # components.admissionController.resources -- Set custom resources to the komodor admission controller container - Memory utilization is relative to the amount of: [pods, nodes, pvcs, pvs, pdbs] resources you have in the cluster.
     resources:
       limits:
@@ -402,6 +400,8 @@ components:
     #            mountPath: /etc/komodor/admission/tls
     #            readOnly: true
     extraVolumes: []
+    # components.admissionController.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
+    extraEnvVars: []
 
   komodorMetrics:
     # components.komodorMetrics.PriorityClassValue -- Set the priority class value for the komodor metrics agent deployment
