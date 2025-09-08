@@ -29,7 +29,6 @@ kind: MutatingWebhookConfiguration
 metadata:
   name: {{ include "komodorAgent.admissionController.webhookName" . }}
 webhooks:
-  {{- if .Values.capabilities.admissionController.binpacking.enabled }}
   - name: binpacking.komodor.com
     clientConfig:
       service:
@@ -49,7 +48,6 @@ webhooks:
       - "v1"
     sideEffects: None
     timeoutSeconds: {{ .Values.capabilities.admissionController.mutatingWebhook.timeoutSeconds | default 5 }}
-  {{- end }}
   {{- if .Values.capabilities.admissionController.rightsizing.enabled }}
   - name: rightsizing.komodor.com
     clientConfig:
