@@ -42,6 +42,7 @@ helm.sh/chart: {{ include "komodorAgent.chart" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+app.komodor.cluster-name: {{ .Values.clusterName }}
 {{- end }}
 
 {{- define "komodorAgent.labels" -}}
