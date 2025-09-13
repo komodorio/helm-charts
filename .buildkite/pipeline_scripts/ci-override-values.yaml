@@ -1,0 +1,17 @@
+tolerations: &ci-tolerations
+      - key: komodor.io/ci-core
+        operator: Exists
+        effect: NoSchedule
+
+components:
+  komodorDaemon:
+    tolerations: *ci-tolerations
+  komodorMetrics:
+    tolerations: *ci-tolerations
+  komodorAgent:
+    tolerations: *ci-tolerations
+  admissionController:
+    tolerations: *ci-tolerations
+  komodorKubectlProxy:
+    tolerations: *ci-tolerations
+
