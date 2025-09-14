@@ -35,6 +35,10 @@ else
   CHART_VERSION="--version $CHART_VERSION"
 fi
 
+if [ -f ./.buildkite/pipeline_scripts/${environment}-override-values.yaml ]; then
+  EXTRA_VALUES_ARG="-f ./.buildkite/pipeline_scripts/${environment}-override-values.yaml"
+fi
+
 helm get values "$RELEASE_NAME" -n "${NAMESPACE}" > current-values.yaml
 helm upgrade --install "${RELEASE_NAME}"  komodorio/komodor-agent -n "${NAMESPACE}" --create-namespace -f current-values.yaml  --dry-run
 helm upgrade --install "${RELEASE_NAME}"  komodorio/komodor-agent \
