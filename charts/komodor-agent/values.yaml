@@ -206,10 +206,10 @@ capabilities:
     # capabilities.admissionController.binpacking -- Configure the binpacking capabilities for the admission controller
     # @default -- See sub-values
     binpacking:
-      # capabilities.admissionController.binpacking.markUnevictable -- (bool) Add a label to mark pods as unevictable
-      markUnevictable: false
-      # capabilities.admissionController.binpacking.addNodeAffinityToMarkedPods -- (bool) Add node affinity to marked pods to prefer scheduling on nodes with already unevictable pods
-      addNodeAffinityToMarkedPods: false
+      # capabilities.admissionController.binpacking.markUnevictable -- (bool) Add a label to mark pods as unevictable (requires enabling per cluster in UI in addition)
+      markUnevictable: true
+      # capabilities.admissionController.binpacking.addNodeAffinityToMarkedPods -- (bool) Add node affinity to marked pods to prefer scheduling on nodes with already unevictable pods (requires enabling per cluster in UI in addition)
+      addNodeAffinityToMarkedPods: true
       # capabilities.admissionController.binpacking.unevictableLabelKey -- (string) Label key to mark pods as unevictable
       #unevictableLabelKey: "komodor.io/unevictable"
       # capabilities.admissionController.binpacking.modifiedAnnotationKey -- (string) Annotation key to mark pods as modified by the binpacking admission controller
