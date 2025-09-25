@@ -17,6 +17,29 @@ data:
         protocols:
           http:
             endpoint: "0.0.0.0:4318"
+      prometheus/komodor-podmotion:
+        config:
+          scrape_configs:
+          - job_name: 'komodor-podmotion'
+            scrape_interval: 15s
+            kubernetes_sd_configs:
+            - role: pod
+            relabel_configs:
+            - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+              action: keep
+              regex: komodor-podmotion
+            - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+              action: keep
+              regex: true
+            - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+              action: replace
+              target_label: __metrics_path__
+              regex: (.+)
+            - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+              action: replace
+              regex: ([^:]+)(?::\d+)?;(\d+)
+              replacement: $1:$2
+              target_label: __address__
       filelog/komodor:
         include:
           - "/var/log/pods/*komodor*/*/*.log"
@@ -87,7 +110,7 @@ data:
           processors: [memory_limiter, batch]
           exporters: [otlphttp/komodor]
         metrics:
-          receivers: [otlp]
+          receivers: [otlp, prometheus/komodor-podmotion]
           processors: [memory_limiter, batch]
           exporters: [otlphttp/komodor]
         logs:
