@@ -1,0 +1,58 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: komodor-memory-checker
+  namespace: komodor-precheck
+  labels:
+    app.kubernetes.io/name: komodor-memory-checker
+    app.kubernetes.io/component: memory-planning
+    app.kubernetes.io/part-of: komodor-agent
+spec:
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: komodor-memory-checker
+        app.kubernetes.io/component: memory-planning
+        app.kubernetes.io/part-of: komodor-agent
+    spec:
+      restartPolicy: Never
+      serviceAccountName: komodor-memory-checker
+      containers:
+      - name: memory-checker
+        image: public.ecr.aws/komodor-public/komodor-agent:latest
+        imagePullPolicy: IfNotPresent
+        command: ["watcher"]
+        args: ["test", "-memorychecker"]
+        resources:
+          limits:
+            cpu: 1
+            # No memory limit for analysis purposes
+          requests:
+            cpu: 0.25
+            memory: 512Mi
+        volumeMounts:
+        - name: agent-configuration
+          mountPath: /etc/komodor
+        - name: tmp
+          mountPath: /tmp
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 65534
+          seccompProfile:
+            type: RuntimeDefault
+      volumes:
+      - name: agent-configuration
+        configMap:
+          name: komodor-memory-checker-config
+          items:
+            - key: komodor-k8s-watcher.yaml
+              path: komodor-k8s-watcher.yaml
+      - name: tmp
+        emptyDir: {}
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 7200  # Clean up job after 2 hours

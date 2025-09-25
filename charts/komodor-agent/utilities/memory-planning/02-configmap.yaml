@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: komodor-memory-checker-config
+  namespace: komodor-precheck
+  labels:
+    app.kubernetes.io/name: komodor-memory-checker
+    app.kubernetes.io/component: memory-planning
+    app.kubernetes.io/part-of: komodor-agent
+data:
+  komodor-k8s-watcher.yaml: |
+    # Memory Checker Configuration
+    # This configuration is used to analyze memory usage for Komodor agent planning
+
+    # Namespace to analyze ("all" = all namespaces)
+    watchNamespace: "all"
+    
+    # Resource configuration - set to false to disable specific resources for analysis
+    resources:
+      # Core Kubernetes resources
+      event: true
+      deployment: true
+      replicationController: true
+      replicaSet: true
+      daemonSet: true
+      statefulSet: true
+      service: true
+      pod: true
+      job: true
+      cronJob: true
+      node: true
+      clusterRole: true
+      serviceAccount: true
+      persistentVolume: true
+      persistentVolumeClaim: true
+      namespace: true
+      secret: true
+      configMap: true
+      ingress: true
+      endpoints: true
+      storageClass: true
+      limitRange: true
+      podTemplate: true
+      
+      # Argo resources (if available in cluster)
+      rollout: true
+      argoWorkflows:
+        workflows: true
+        workflowTemplates: true
+        clusterWorkflowTemplates: true
+        cronWorkflows: true
