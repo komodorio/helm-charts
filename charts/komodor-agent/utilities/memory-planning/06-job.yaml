@@ -20,7 +20,7 @@ spec:
       containers:
       - name: memory-checker
         image: public.ecr.aws/komodor-public/komodor-agent:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         command: ["watcher"]
         args: ["test", "-memorychecker"]
         resources:
