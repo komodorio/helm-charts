@@ -19,7 +19,7 @@ data:
             endpoint: "0.0.0.0:4318"
       filelog/komodor:
         include:
-          - "/var/log/pods/*komodor-agent*/*/*.log"
+          - "/var/log/pods/*komodor*/*/*.log"
         include_file_name: false
         include_file_path: true
         poll_interval: 500ms
