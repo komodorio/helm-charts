@@ -7,3 +7,32 @@ __pycache__/
 release_notes.txt
 .venv/
 venv/
+
+# Testing
+.coverage
+htmlcov/
+coverage.xml
+.tox/
+.nox/
+
+# Claude Code
+.claude/*
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Virtual environments
+env/
+ENV/
+
+# IDE files
+*.swp
+*.swo
+*~
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
