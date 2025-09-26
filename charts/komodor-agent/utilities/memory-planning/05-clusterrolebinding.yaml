@@ -1,0 +1,16 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: komodor-memory-checker
+  labels:
+    app.kubernetes.io/name: komodor-memory-checker
+    app.kubernetes.io/component: memory-planning
+    app.kubernetes.io/part-of: komodor-agent
+subjects:
+- kind: ServiceAccount
+  name: komodor-memory-checker
+  namespace: komodor-precheck
+roleRef:
+  kind: ClusterRole
+  name: komodor-memory-checker
+  apiGroup: rbac.authorization.k8s.io

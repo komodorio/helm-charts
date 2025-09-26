@@ -51,6 +51,45 @@ This chart bootstraps a Kubernetes Resources/Event Watcher deployment on a [Kube
 - Kubernetes 1.19+ (older versions not officially supported)
 - Helm 2/3
 
+## Memory Planning (Recommended)
+
+Before installing the Komodor agent, we recommend running our memory checker utility to analyze your cluster's resource requirements and determine appropriate memory limits. This helps prevent out-of-memory issues and ensures optimal performance.
+
+### Quick Memory Analysis
+
+```bash
+# Clone or download and apply the memory planning utility resources - They will be installed in the 'komodor-precheck' namespace
+kubectl apply -f https://raw.githubusercontent.com/komodorio/helm-charts/master/charts/komodor-agent/utilities/memory-planning/01-namespace.yaml
+kubectl apply -f https://raw.githubusercontent.com/komodorio/helm-charts/master/charts/komodor-agent/utilities/memory-planning/02-configmap.yaml
+kubectl apply -f https://raw.githubusercontent.com/komodorio/helm-charts/master/charts/komodor-agent/utilities/memory-planning/03-serviceaccount.yaml
+kubectl apply -f https://raw.githubusercontent.com/komodorio/helm-charts/master/charts/komodor-agent/utilities/memory-planning/04-clusterrole.yaml
+kubectl apply -f https://raw.githubusercontent.com/komodorio/helm-charts/master/charts/komodor-agent/utilities/memory-planning/05-clusterrolebinding.yaml
+kubectl apply -f https://raw.githubusercontent.com/komodorio/helm-charts/master/charts/komodor-agent/utilities/memory-planning/06-job.yaml
+
+# Monitor the analysis
+kubectl logs -f job/komodor-memory-checker -n komodor-precheck
+
+# View results and recommendations
+kubectl logs job/komodor-memory-checker -n komodor-precheck | grep -A 10 "MEMORY RECOMMENDATIONS"
+
+# Clean up after analysis
+kubectl delete namespace komodor-precheck
+```
+
+### Using the Results
+
+Apply the memory recommendations to your Helm installation:
+
+```bash
+helm upgrade --install komodor-agent komodorio/komodor-agent \
+  --set apiKey=<YOUR_API_KEY_HERE> \
+  --set clusterName=<CLUSTER_NAME> \
+  --set components.komodorAgent.watcher.resources.requests.memory=<RECOMMENDED_REQUEST> \
+  --set components.komodorAgent.watcher.resources.limits.memory=<RECOMMENDED_LIMIT>
+```
+
+For detailed instructions and configuration options, see the [Memory Planning Utility Documentation](utilities/memory-planning/README.md).
+
 ## Installing the Chart
 
 To install the chart with the release name `komodor-agent`:

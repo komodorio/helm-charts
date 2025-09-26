@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: komodor-precheck
+  labels:
+    app.kubernetes.io/name: komodor-memory-checker
+    app.kubernetes.io/component: memory-planning
+    app.kubernetes.io/part-of: komodor-agent
