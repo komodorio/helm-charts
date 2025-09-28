@@ -1,23 +1,34 @@
+retry: &retry
+  automatic:
+    - exit_status: -1
+      limit: 3
+    - exit_status: 255
+      limit: 3
+    - exit_status: 1
+      limit: 2
+              
 steps:
   - label: ":memo: helm template check for sanity"
     command: helm template komodor-agent charts/komodor-agent -f charts/komodor-agent/values.yaml --set apiKey="sanity" --set clusterName=test-template
     agents:
       builder: "dind"
     if: build.message !~ /feat\(OSS.+\):/i
+    retry: *retry
 
   - label: ":memo: Test bump version script"
     command: bats .buildkite/pipeline_scripts_tests/*.bat
     agents:
       builder: "dind"
     if: build.message !~ /feat\(OSS.+\):/i
+    retry: *retry
 
   - label: ":book: Validate Readme is up to date"
     commands:
       - cd charts/komodor-agent
       - make install-helm-docs
       - make validate-readme
-
     if: build.message !~ /feat\(OSS.+\):/i
+    retry: *retry
 
   - label: ":test_tube: Basic tests"
     commands:
@@ -31,6 +42,7 @@ steps:
           parameters:
             API_KEY: /helm-chart-test/production/API_KEY
             PUBLIC_API_KEY: /helm-chart-test/production/PUBLIC_API_KEY
+    retry: *retry
 
   - label: ":test_tube: values_base_test"
     commands:
@@ -44,6 +56,7 @@ steps:
           parameters:
             API_KEY: /helm-chart-test/production/API_KEY
             PUBLIC_API_KEY: /helm-chart-test/production/PUBLIC_API_KEY
+    retry: *retry
 
   - label: ":test_tube: values_capabilities_events_test"
     commands:
@@ -57,6 +70,7 @@ steps:
           parameters:
             API_KEY: /helm-chart-test/production/API_KEY
             PUBLIC_API_KEY: /helm-chart-test/production/PUBLIC_API_KEY
+    retry: *retry
 
   - label: ":test_tube: values_capabilities_proxy_test"
     commands:
@@ -65,6 +79,7 @@ steps:
       - make values_capabilities_proxy_test
     agents:
       builder: "dind"
+    retry: *retry
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
@@ -78,6 +93,7 @@ steps:
       - make values_capabilities_test
     agents:
       builder: "dind"
+    retry: *retry
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
@@ -91,6 +107,7 @@ steps:
       - make values_components_test
     agents:
       builder: "dind"
+    retry: *retry
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
@@ -104,6 +121,7 @@ steps:
       - make legacy_k8s_versions_test
     agents:
       builder: "dind"
+    retry: *retry
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
