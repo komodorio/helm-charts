@@ -113,7 +113,7 @@ def verify_communication_through_proxy():
             print(f"Attempt {attempt + 1} failed: {e}")
 
         if attempt < attempts - 1:
-            time.sleep(10)
+            time.sleep(20)
 
     assert (
         success
