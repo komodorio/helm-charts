@@ -32,7 +32,7 @@ SET_VARS ?=
 install-helm-docs:
 	if ! helm-docs --version | grep -q $(HELM_DOCS_VERSION); then \
 		curl -L "https://github.com/norwoodj/helm-docs/releases/download/v$(HELM_DOCS_VERSION)/helm-docs_$(OS)_$(ARCH).tar.gz" | tar -xz helm-docs; \
-		sudo mv helm-docs /usr/local/bin/helm-docs; \
+		mv helm-docs /usr/local/bin/helm-docs || sudo mv helm-docs /usr/local/bin/helm-docs; \
 	fi
 
 .PHONY: generate-readme
