@@ -76,6 +76,11 @@ data:
             parse_from: body.level
 
     processors:
+      attributes/upsert-cluster:
+        actions:
+          - key: komodor.cluster.name
+            value: "${env:KOMO_CLUSTER_NAME}"
+            action: upsert
       batch:
         send_batch_max_size: 50
         send_batch_size: 10
@@ -111,7 +116,7 @@ data:
           exporters: [otlphttp/komodor]
         metrics:
           receivers: [otlp, prometheus/komodor-podmotion]
-          processors: [memory_limiter, batch]
+          processors: [memory_limiter, attributes/upsert-cluster, batch]
           exporters: [otlphttp/komodor]
         logs:
           receivers: [filelog/komodor]
