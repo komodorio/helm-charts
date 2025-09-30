@@ -54,10 +54,9 @@ rules:
       - watch
       - list
   - apiGroups:
-      - "sparkoperator.k8s.io"
+      - "*"
     resources:
-      - sparkapplications
-      - scheduledsparkapplications
+      - "*"
     verbs:
       - get
 
