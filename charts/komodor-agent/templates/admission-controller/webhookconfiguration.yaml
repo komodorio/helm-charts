@@ -64,6 +64,7 @@ webhooks:
         resources: [ "pods" ]
         scope: "Namespaced"
     failurePolicy: Ignore
+    reinvocationPolicy: IfNeeded
     admissionReviewVersions:
       - "v1"
     sideEffects: None
