@@ -40,7 +40,7 @@ spec:
       {{- end }}
       initContainers:
         # Installer container
-        - name: installer
+        - name: podmotion-installer
           image: {{ include "podmotion.installerImage" . }}
           imagePullPolicy: {{ .Values.images.installer.pullPolicy }}
           args:
@@ -74,7 +74,7 @@ spec:
             - mountPath: {{ .Values.installer.volumeMounts.tls }}
               name: tls
         # Prepare BPF filesystem
-        - name: prepare-bpf-fs
+        - name: podmotion-prepare-bpf-fs
           image: {{ include "podmotion.alpineImage" . }}
           imagePullPolicy: {{ .Values.images.alpine.pullPolicy }}
           command:
@@ -92,7 +92,7 @@ spec:
       containers:
         {{- if .Values.uninstall.enabled }}
         # Dummy container for uninstall mode
-        - name: manager
+        - name: podmotion-manager
           image: {{ include "podmotion.alpineImage" . }}
           imagePullPolicy: {{ .Values.images.alpine.pullPolicy }}
           command: ["/bin/sh"]
@@ -108,7 +108,7 @@ spec:
               memory: 16Mi
         {{- else }}
         # Manager container
-        - name: manager
+        - name: podmotion-manager
           image: {{ include "podmotion.managerImage" . }}
           imagePullPolicy: {{ .Values.images.manager.pullPolicy }}
           command: ["/podmotion-manager"]
