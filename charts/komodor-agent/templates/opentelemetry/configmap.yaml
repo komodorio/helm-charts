@@ -122,4 +122,4 @@ data:
           receivers: [filelog/komodor]
           processors: [memory_limiter, batch]
           exporters: [otlphttp/komodor]
-{{- end }} 
+{{- end }}
