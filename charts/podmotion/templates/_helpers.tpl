@@ -103,7 +103,7 @@ Create CRIU image name
 Create node selector labels for daemonset
 */}}
 {{- define "podmotion.nodeSelector" -}}
-app.kubernetes.io/name: komodor-podmotion-node
+app.kubernetes.io/name: {{ include "podmotion.name" . }}
 {{- end }}
 
 {{/*
