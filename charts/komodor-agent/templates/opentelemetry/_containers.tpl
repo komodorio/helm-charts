@@ -20,6 +20,10 @@
     mountPath: /etc/otel
   - name: opentelemetry-varlogpods
     mountPath: {{ .Values.components.komodorDaemon.opentelemetry.volumes.varlogpods.mountPath }}
+    readOnly: true
+  - name: opentelemetry-varlib-docker-containers
+    mountPath: {{ .Values.components.komodorDaemon.opentelemetry.volumes.varlibdockercontainers.mountPath }}
+    readOnly: true
   livenessProbe:
     httpGet:
       path: /status/health
