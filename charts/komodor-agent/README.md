@@ -2,7 +2,7 @@
 
 Watches and sends kubernetes resource-related events
 
-![AppVersion: 0.2.160](https://img.shields.io/badge/AppVersion-0.2.160-informational?style=flat-square)
+![AppVersion: 0.2.162](https://img.shields.io/badge/AppVersion-0.2.162-informational?style=flat-square)
 
 ## TL;DR;
 
@@ -50,6 +50,45 @@ This chart bootstraps a Kubernetes Resources/Event Watcher deployment on a [Kube
 
 - Kubernetes 1.19+ (older versions not officially supported)
 - Helm 2/3
+
+## Memory Planning (Recommended)
+
+Before installing the Komodor agent, we recommend running our memory checker utility to analyze your cluster's resource requirements and determine appropriate memory limits. This helps prevent out-of-memory issues and ensures optimal performance.
+
+### Quick Memory Analysis
+
+```bash
+# Clone or download and apply the memory planning utility resources - They will be installed in the 'komodor-precheck' namespace
+kubectl apply -f https://raw.githubusercontent.com/komodorio/helm-charts/master/charts/komodor-agent/utilities/memory-planning/01-namespace.yaml
+kubectl apply -f https://raw.githubusercontent.com/komodorio/helm-charts/master/charts/komodor-agent/utilities/memory-planning/02-configmap.yaml
+kubectl apply -f https://raw.githubusercontent.com/komodorio/helm-charts/master/charts/komodor-agent/utilities/memory-planning/03-serviceaccount.yaml
+kubectl apply -f https://raw.githubusercontent.com/komodorio/helm-charts/master/charts/komodor-agent/utilities/memory-planning/04-clusterrole.yaml
+kubectl apply -f https://raw.githubusercontent.com/komodorio/helm-charts/master/charts/komodor-agent/utilities/memory-planning/05-clusterrolebinding.yaml
+kubectl apply -f https://raw.githubusercontent.com/komodorio/helm-charts/master/charts/komodor-agent/utilities/memory-planning/06-job.yaml
+
+# Monitor the analysis
+kubectl logs -f job/komodor-memory-checker -n komodor-precheck
+
+# View results and recommendations
+kubectl logs job/komodor-memory-checker -n komodor-precheck | grep -A 10 "MEMORY RECOMMENDATIONS"
+
+# Clean up after analysis
+kubectl delete namespace komodor-precheck
+```
+
+### Using the Results
+
+Apply the memory recommendations to your Helm installation:
+
+```bash
+helm upgrade --install komodor-agent komodorio/komodor-agent \
+  --set apiKey=<YOUR_API_KEY_HERE> \
+  --set clusterName=<CLUSTER_NAME> \
+  --set components.komodorAgent.watcher.resources.requests.memory=<RECOMMENDED_REQUEST> \
+  --set components.komodorAgent.watcher.resources.limits.memory=<RECOMMENDED_LIMIT>
+```
+
+For detailed instructions and configuration options, see the [Memory Planning Utility Documentation](utilities/memory-planning/README.md).
 
 ## Installing the Chart
 
@@ -286,6 +325,12 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemon.opentelemetry.image | object | `{"name":"public.ecr.aws/komodor-public/komodor-otel-collector","tag":"0.1.3"}` | Override the OpenTelemetry collector image name or tag. |
 | components.komodorDaemon.opentelemetry.resources | object | `{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Set custom resources to the OpenTelemetry collector container |
 | components.komodorDaemon.opentelemetry.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
+| components.komodorDaemon.opentelemetry.volumes | object | `{"varlogpods":{"hostPath":{"path":"/var/log/pods","type":""},"mountPath":"/var/log/pods"}}` | Configure volumes for OpenTelemetry collector |
+| components.komodorDaemon.opentelemetry.volumes.varlogpods | object | `{"hostPath":{"path":"/var/log/pods","type":""},"mountPath":"/var/log/pods"}` | Configure varlogpods volume |
+| components.komodorDaemon.opentelemetry.volumes.varlogpods.hostPath | object | `{"path":"/var/log/pods","type":""}` | Configure hostPath for varlogpods volume |
+| components.komodorDaemon.opentelemetry.volumes.varlogpods.hostPath.path | string | `"/var/log/pods"` | Host path to mount for pod logs |
+| components.komodorDaemon.opentelemetry.volumes.varlogpods.hostPath.type | string | `""` | Type of hostPath ("" (Empty string, default = no checks), Directory, DirectoryOrCreate, File, FileOrCreate, Socket, CharDevice, BlockDevice) |
+| components.komodorDaemon.opentelemetry.volumes.varlogpods.mountPath | string | `"/var/log/pods"` | Mount path inside the container for pod logs |
 | components.komodorDaemonWindows | object | See sub-values | Configure the komodor agent components |
 | components.komodorDaemonWindows.dnsPolicy | string | `"ClusterFirst"` | Set dns policy for the komodor agent daemon |
 | components.komodorDaemonWindows.affinity | object | `{}` | Set node affinity for the komodor agent daemon |
