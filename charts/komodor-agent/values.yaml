@@ -564,6 +564,18 @@ components:
           memory: 128Mi
       # components.komodorDaemon.opentelemetry.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
       extraEnvVars: []
+      # components.komodorDaemon.opentelemetry.volumes -- Configure volumes for OpenTelemetry collector
+      volumes:
+        # components.komodorDaemon.opentelemetry.volumes.varlogpods -- Configure varlogpods volume
+        varlogpods:
+          # components.komodorDaemon.opentelemetry.volumes.varlogpods.hostPath -- Configure hostPath for varlogpods volume
+          hostPath:
+            # components.komodorDaemon.opentelemetry.volumes.varlogpods.hostPath.path -- Host path to mount for pod logs
+            path: /var/log/pods
+            # components.komodorDaemon.opentelemetry.volumes.varlogpods.hostPath.type -- Type of hostPath ("" (Empty string, default = no checks), Directory, DirectoryOrCreate, File, FileOrCreate, Socket, CharDevice, BlockDevice)
+            type: ""
+          # components.komodorDaemon.opentelemetry.volumes.varlogpods.mountPath -- Mount path inside the container for pod logs
+          mountPath: /var/log/pods
 
   # components.komodorDaemonWindows -- Configure the komodor agent components
   # @default -- See sub-values

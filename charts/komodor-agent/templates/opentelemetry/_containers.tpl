@@ -19,7 +19,7 @@
   - name: opentelemetry-config
     mountPath: /etc/otel
   - name: opentelemetry-varlogpods
-    mountPath: /var/log/pods
+    mountPath: {{ .Values.components.komodorDaemon.opentelemetry.volumes.varlogpods.mountPath }}
   livenessProbe:
     httpGet:
       path: /status/health
