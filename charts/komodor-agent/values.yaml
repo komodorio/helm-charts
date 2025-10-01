@@ -573,7 +573,7 @@ components:
             # components.komodorDaemon.opentelemetry.volumes.varlogpods.hostPath.path -- Host path to mount for pod logs
             path: /var/log/pods
             # components.komodorDaemon.opentelemetry.volumes.varlogpods.hostPath.type -- Type of hostPath ("" (Empty string, default = no checks), Directory, DirectoryOrCreate, File, FileOrCreate, Socket, CharDevice, BlockDevice)
-            type: Directory
+            type: ""
           # components.komodorDaemon.opentelemetry.volumes.varlogpods.mountPath -- Mount path inside the container for pod logs
           mountPath: /var/log/pods
         # components.komodorDaemon.opentelemetry.volumes.varlibdockercontainers -- Configure docker containers volume
@@ -583,7 +583,7 @@ components:
             # components.komodorDaemon.opentelemetry.volumes.varlibdockercontainers.hostPath.path -- Host path to mount for docker containers
             path: /var/lib/docker/containers
             # components.komodorDaemon.opentelemetry.volumes.varlibdockercontainers.hostPath.type -- Type of hostPath ("" (Empty string, default = no checks), Directory, DirectoryOrCreate, File, FileOrCreate, Socket, CharDevice, BlockDevice)
-            type: Directory
+            type: ""
           # components.komodorDaemon.opentelemetry.volumes.varlibdockercontainers.mountPath -- Mount path inside the container for docker containers
           mountPath: /var/lib/docker/containers
 
