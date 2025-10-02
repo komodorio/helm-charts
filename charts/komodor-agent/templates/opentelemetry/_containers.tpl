@@ -15,6 +15,9 @@
   - name: health-check
     containerPort: 13133
     protocol: TCP
+  - name: otel-prom
+    containerPort: 8888
+    protocol: TCP
   volumeMounts:
   - name: opentelemetry-config
     mountPath: /etc/otel
