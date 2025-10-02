@@ -12,6 +12,10 @@ spec:
     port: 4318
     targetPort: 4318
     protocol: TCP
+  - name: otel-prom
+    port: 8888
+    targetPort: 8888
+    protocol: TCP
   selector:
     {{- include "komodorAgentDaemon.selectorLabels" . | nindent 4 }}
 {{- end }} 

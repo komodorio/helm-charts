@@ -27,6 +27,8 @@ data:
         max_log_size: 1MiB
         attributes:
           komodor.cluster.name: "${env:KOMO_CLUSTER_NAME}"
+        # Always try to parse as much as possible (on_error: send_quiet) and send quietly whatever resulted.
+        # We will be able to monitor parsing errors in the backend instead of spamming with parse errors.
         operators:
         - type: regex_parser
           id: parse_log_path
@@ -34,10 +36,12 @@ data:
           regex: "/var/log/pods/(?P<namespace>[^_/]+)_(?P<pod>[^_/]+)_[^/]+/(?P<container>[^/]+)/.*"
           # this will extract:
           # attributes["namespace"], attributes["pod"], attributes["container"]
+          on_error: send_quiet
         - type: add
           id: add_service_name_attr
           field: attributes.service
           value: EXPR(attributes.container)
+          on_error: send_quiet
         - type: regex_parser
           id: parse_kube_log_header
           regex: '^(?P<timestamp>[^\s]+)\s+(?P<stream>stdout|stderr)\s+F\s+(?P<log>.*)$'
@@ -45,12 +49,24 @@ data:
             parse_from: attributes.timestamp
             layout_type: gotime
             layout: '2006-01-02T15:04:05.999999999Z07:00'
+          on_error: send_quiet
+        # Try containerd JSON logs next
+        - type: json_parser
+          id: parse_containerd_json
+          parse_from: body
+          timestamp:
+            parse_from: attributes.ts
+            layout_type: gotime
+            layout: '2006-01-02T15:04:05.999999999Z07:00'
+          severity:
+            parse_from: attributes.level
+          on_error: send_quiet
         - type: json_parser
           id: parse_json
           parse_from: attributes.log
-          on_error: send_quiet
           severity:
             parse_from: body.level
+          on_error: send_quiet
 
     processors:
       batch:
@@ -77,6 +93,13 @@ data:
 
     service:
       telemetry:
+        metrics:
+          readers:
+            - pull:
+                exporter:
+                  prometheus:
+                    host: '0.0.0.0'
+                    port: 8888
         logs:
           encoding: json
           level: info
@@ -94,4 +117,4 @@ data:
           receivers: [filelog/komodor]
           processors: [memory_limiter, batch]
           exporters: [otlphttp/komodor]
-{{- end }} 
+{{- end }}
