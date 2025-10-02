@@ -132,6 +132,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
+            {{- include "podmotion.versionEnvVars" . | nindent 12 }}
           {{- with .Values.resources.manager }}
           resources:
             {{- toYaml . | nindent 12 }}

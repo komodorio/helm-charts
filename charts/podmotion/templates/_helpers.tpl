@@ -115,3 +115,17 @@ Create common pod labels
 {{ toYaml . }}
 {{- end }}
 {{- end }}
+
+{{/*
+Component version environment variables
+*/}}
+{{- define "podmotion.versionEnvVars" -}}
+- name: PODMOTION_INSTALLER_VERSION
+  value: {{ .Values.images.installer.tag | quote }}
+- name: PODMOTION_MANAGER_VERSION
+  value: {{ .Values.images.manager.tag | quote }}
+- name: PODMOTION_CRIU_VERSION
+  value: {{ .Values.images.criu.tag | quote }}
+- name: PODMOTION_CHART_VERSION
+  value: {{ .Chart.Version | quote }}
+{{- end }}
