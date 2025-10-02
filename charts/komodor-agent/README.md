@@ -322,15 +322,20 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemon.nodeEnricher.resources | object | `{"limits":{"cpu":"10m","memory":"100Mi"},"requests":{"cpu":"1m","memory":"10Mi"}}` | Set custom resources to the komodor agent node enricher container |
 | components.komodorDaemon.nodeEnricher.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemon.opentelemetry | object | See sub-values | Configure the komodor daemon OpenTelemetry collector components |
-| components.komodorDaemon.opentelemetry.image | object | `{"name":"public.ecr.aws/komodor-public/komodor-otel-collector","tag":"0.1.3"}` | Override the OpenTelemetry collector image name or tag. |
+| components.komodorDaemon.opentelemetry.image | object | `{"name":"public.ecr.aws/komodor-public/komodor-otel-collector","tag":"0.1.4"}` | Override the OpenTelemetry collector image name or tag. |
 | components.komodorDaemon.opentelemetry.resources | object | `{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Set custom resources to the OpenTelemetry collector container |
 | components.komodorDaemon.opentelemetry.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
-| components.komodorDaemon.opentelemetry.volumes | object | `{"varlogpods":{"hostPath":{"path":"/var/log/pods","type":""},"mountPath":"/var/log/pods"}}` | Configure volumes for OpenTelemetry collector |
+| components.komodorDaemon.opentelemetry.volumes | object | `{"varlibdockercontainers":{"hostPath":{"path":"/var/lib/docker/containers","type":""},"mountPath":"/var/lib/docker/containers"},"varlogpods":{"hostPath":{"path":"/var/log/pods","type":""},"mountPath":"/var/log/pods"}}` | Configure volumes for OpenTelemetry collector |
 | components.komodorDaemon.opentelemetry.volumes.varlogpods | object | `{"hostPath":{"path":"/var/log/pods","type":""},"mountPath":"/var/log/pods"}` | Configure varlogpods volume |
 | components.komodorDaemon.opentelemetry.volumes.varlogpods.hostPath | object | `{"path":"/var/log/pods","type":""}` | Configure hostPath for varlogpods volume |
 | components.komodorDaemon.opentelemetry.volumes.varlogpods.hostPath.path | string | `"/var/log/pods"` | Host path to mount for pod logs |
 | components.komodorDaemon.opentelemetry.volumes.varlogpods.hostPath.type | string | `""` | Type of hostPath ("" (Empty string, default = no checks), Directory, DirectoryOrCreate, File, FileOrCreate, Socket, CharDevice, BlockDevice) |
 | components.komodorDaemon.opentelemetry.volumes.varlogpods.mountPath | string | `"/var/log/pods"` | Mount path inside the container for pod logs |
+| components.komodorDaemon.opentelemetry.volumes.varlibdockercontainers | object | `{"hostPath":{"path":"/var/lib/docker/containers","type":""},"mountPath":"/var/lib/docker/containers"}` | Configure docker containers volume |
+| components.komodorDaemon.opentelemetry.volumes.varlibdockercontainers.hostPath | object | `{"path":"/var/lib/docker/containers","type":""}` | Configure hostPath for docker containers volume |
+| components.komodorDaemon.opentelemetry.volumes.varlibdockercontainers.hostPath.path | string | `"/var/lib/docker/containers"` | Host path to mount for docker containers |
+| components.komodorDaemon.opentelemetry.volumes.varlibdockercontainers.hostPath.type | string | `""` | Type of hostPath ("" (Empty string, default = no checks), Directory, DirectoryOrCreate, File, FileOrCreate, Socket, CharDevice, BlockDevice) |
+| components.komodorDaemon.opentelemetry.volumes.varlibdockercontainers.mountPath | string | `"/var/lib/docker/containers"` | Mount path inside the container for docker containers |
 | components.komodorDaemonWindows | object | See sub-values | Configure the komodor agent components |
 | components.komodorDaemonWindows.dnsPolicy | string | `"ClusterFirst"` | Set dns policy for the komodor agent daemon |
 | components.komodorDaemonWindows.affinity | object | `{}` | Set node affinity for the komodor agent daemon |

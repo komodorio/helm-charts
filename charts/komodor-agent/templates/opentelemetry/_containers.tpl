@@ -15,11 +15,18 @@
   - name: health-check
     containerPort: 13133
     protocol: TCP
+  - name: otel-prom
+    containerPort: 8888
+    protocol: TCP
   volumeMounts:
   - name: opentelemetry-config
     mountPath: /etc/otel
   - name: opentelemetry-varlogpods
     mountPath: {{ .Values.components.komodorDaemon.opentelemetry.volumes.varlogpods.mountPath }}
+    readOnly: true
+  - name: opentelemetry-varlib-docker-containers
+    mountPath: {{ .Values.components.komodorDaemon.opentelemetry.volumes.varlibdockercontainers.mountPath }}
+    readOnly: true
   livenessProbe:
     httpGet:
       path: /status/health
