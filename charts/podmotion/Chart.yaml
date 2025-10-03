@@ -1,0 +1,24 @@
+apiVersion: v2
+type: application
+
+name: podmotion
+description: A Helm chart for Podmotion - Live container migration for Kubernetes
+icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/k8s-watcher.svg
+maintainers:
+  - name: Komodor Team
+    url: https://komodor.com
+
+version: 0.1.0
+appVersion: "latest"
+
+keywords:
+  - podmotion
+  - container
+  - migration
+  - kubernetes
+  - komodor
+
+home: https://app.komodor.com
+sources:
+  - https://github.com/komodorio/podmotion
+  - https://github.com/komodorio/helm-charts
