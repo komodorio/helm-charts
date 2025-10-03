@@ -48,6 +48,7 @@ spec:
             - -uninstall
           {{- else }}
             - -criu-image={{ include "podmotion.criuImage" . }}
+            - -k8s-namespace={{ include "podmotion.namespace" . }}
           {{- end }}
           {{- with .Values.resources.installer }}
           resources:

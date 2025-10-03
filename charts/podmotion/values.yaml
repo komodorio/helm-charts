@@ -27,12 +27,12 @@ daemonset:
 images:
   installer:
     repository: public.ecr.aws/komodor-public/podmotion-installer
-    tag: v0.7.0
+    tag: v0.8.0
     pullPolicy: IfNotPresent
   
   manager:
     repository: public.ecr.aws/komodor-public/podmotion-manager
-    tag: v0.7.0
+    tag: v0.8.0
     pullPolicy: IfNotPresent
   
   alpine:
@@ -42,7 +42,7 @@ images:
   
   criu:
     repository: public.ecr.aws/komodor-public/podmotion-criu
-    tag: "v4.1"
+    tag: "116991736c7641258a5b7f53f5079b90fc80b99e"
 
 # Manager configuration
 manager:
