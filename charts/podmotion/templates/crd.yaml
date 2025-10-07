@@ -143,6 +143,8 @@ spec:
                       properties:
                         phase:
                           type: string
+                        reason:
+                          type: string
                       type: object
                     migrationDuration:
                       type: string
