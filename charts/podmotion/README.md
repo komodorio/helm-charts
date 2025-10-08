@@ -69,8 +69,9 @@ CRIU and Podmotion support the following architectures:
 
 While Podmotion should work with any type of workload supported by Kubernetes - we tested and officially support the following:
 * Deployment
-* DaemonSet
 * StatefulSet
+* Jobs
+* CronJobs
 
 #### Recommended Use Cases
 
