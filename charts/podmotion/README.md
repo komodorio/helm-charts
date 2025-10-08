@@ -112,9 +112,59 @@ Before using podmotion, label the nodes where you want to enable live migration:
 kubectl label nodes <node-name> komodor.com/podmotion-node=true
 ```
 
-### 2. Create a Migration
+### 2. Trigger Migrations
 
-Create a Migration custom resource to migrate a pod:
+There are two ways to trigger migrations:
+
+#### Method 1: Using Annotations (Recommended)
+
+Annotate your workloads (Deployment, StatefulSet, etc.) to enable automatic migration when pods are rescheduled.
+
+##### `komodor.com/podmotion-migrate`
+
+Enables migration of scaled down containers by listing the containers to be migrated. When such an annotated pod is deleted and it's part of a Deployment, the new pod will fetch the checkpoints of these containers and instead of starting it will simply wait for activation again. This minimizes the surge in resources if for example a whole node of scaled down podmotions is drained.
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  template:
+    metadata:
+      annotations:
+        komodor.com/podmotion-migrate: "nginx,sidecar"
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+      - name: sidecar
+        image: sidecar:latest
+```
+
+##### `komodor.com/podmotion-live-migrate`
+
+Enables live-migration of a running container in the pod. Only one container per pod is supported at this point. When such an annotated pod is deleted and it's part of a Deployment, the new pod will do a lazy-migration of the memory contents.
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  template:
+    metadata:
+      annotations:
+        komodor.com/podmotion-live-migrate: "nginx"
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+```
+
+#### Method 2: Manual Migration CRD
+
+Create a Migration custom resource to manually trigger a migration:
 
 ```yaml
 apiVersion: runtime.podmotion.komodorio.dev/v1
@@ -143,8 +193,7 @@ kubectl get migrations --all-namespaces
 kubectl describe migration example-migration
 
 # Check podmotion logs
-kubectl logs -n podmotion-system -l app.kubernetes.io/name=podmotion-node
-```
+kubectl logs -n komodor-podmotion-system -l app.kubernetes.io/name=komodor-podmotion
 
 ## Troubleshooting
 
