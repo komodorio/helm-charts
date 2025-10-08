@@ -4,11 +4,11 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.19.0
-  name: migrations.runtime.podmotion.komodorio.dev
+  name: migrations.runtime.podmotion.komodor.com
   labels:
     {{- include "podmotion.labels" . | nindent 4 }}
 spec:
-  group: runtime.podmotion.komodorio.dev
+  group: runtime.podmotion.komodor.com
   names:
     kind: Migration
     listKind: MigrationList
