@@ -96,7 +96,7 @@ metadata:
     {{- include "podmotion.labels" . | nindent 4 }}
 rules:
   - apiGroups:
-    - runtime.podmotion.komodorio.dev
+    - runtime.podmotion.komodor.com
     resources:
       - migrations
       - migrations/status
