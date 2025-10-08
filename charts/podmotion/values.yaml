@@ -124,19 +124,19 @@ crd:
 resources:
   manager:
     limits:
-      cpu: 500m
-      memory: 512Mi
+      cpu: 1000m
+      memory: 2048Mi
     requests:
       cpu: 100m
       memory: 128Mi
   
   installer:
     limits:
-      cpu: 200m
-      memory: 256Mi
+      cpu: 500m
+      memory: 512Mi
     requests:
-      cpu: 50m
-      memory: 64Mi
+      cpu: 100m
+      memory: 128Mi
 
 # Pod annotations
 podAnnotations: {}
