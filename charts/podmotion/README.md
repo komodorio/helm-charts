@@ -8,10 +8,116 @@ Podmotion enables live migration of containers between Kubernetes nodes with min
 
 ## Prerequisites
 
-- Kubernetes 1.20+
+- Kubernetes 1.23+
 - Helm 3.2.0+
 - Nodes must support CRIU and have the required kernel features
-- Container runtime must be containerd
+- Container runtime must be containerd 1.6+
+
+## Requirements and Limitations
+
+### System Requirements
+
+Podmotion uses [CRIU](https://criu.org/) (Checkpoint/Restore In Userspace) for checkpointing and restoring containers. The following requirements must be met:
+
+#### Kernel Requirements
+
+- **Linux Kernel**: Modern Linux kernel with CRIU support (kernel 3.11+ recommended, though 5.x+ is preferred)
+- **userfaultfd**: For live migration support, the kernel must have `CONFIG_USERFAULTFD` enabled
+- **CRIU Features**: The following kernel config options are required:
+  - `CONFIG_CHECKPOINT_RESTORE`
+  - `CONFIG_NAMESPACES`
+  - `CONFIG_UTS_NS`, `CONFIG_IPC_NS`, `CONFIG_PID_NS`, `CONFIG_NET_NS`
+  - `CONFIG_FHANDLE`
+  - `CONFIG_EVENTFD`
+  - `CONFIG_EPOLL`
+  - `CONFIG_UNIX_DIAG`
+  - `CONFIG_INET_DIAG`
+  - `CONFIG_PACKET_DIAG`
+  - `CONFIG_NETLINK_DIAG`
+
+#### Container Runtime
+
+- **Containerd**: Version 1.6+ is required
+- **RuntimeClass**: Pods must use `runtimeClassName: podmotion`
+- **Network**: Host network mode is used by default for the daemonset
+
+#### Privileges
+
+- The installer runs as a privileged init container
+- The manager requires specific capabilities: `SYS_PTRACE`, `SYS_ADMIN`, `NET_ADMIN`, `SYS_RESOURCE`
+- eBPF programs are used for packet redirection and TCP activity tracking
+
+### Supported Environments
+
+Podmotion has been tested and is compatible with the following Kubernetes distributions:
+
+- **Standard Kubernetes**: Generic Kubernetes clusters with containerd
+- **Azure Kubernetes Service (AKS)**: Supported
+- **Google Kubernetes Engine (GKE)**: Special configuration required -- Contact us!
+- **kind**: Supported with specific configuration - Ideal for local testing and development
+- **k3s**: Supported with specific configuration (note: initial installation requires k3s service restart)
+- **rke2**: Supported with specific configuration (note: initial installation requires rke2 service restart)
+
+#### Supported Architectures
+
+CRIU and Podmotion support the following architectures:
+
+- **x86_64** (amd64) - Supported (Linux)
+- **arm64** (aarch64) - Supported (Linux, some workloads in VMs on macOS may be flaky)
+
+### Supported Workloads
+
+While Podmotion should work with any type of workload supported by Kubernetes - we tested and officially support the following:
+* Deployment
+* DaemonSet
+* StatefulSet
+
+#### Recommended Use Cases
+
+- **Low-traffic web applications**: Sites with intermittent traffic that can tolerate brief restoration times
+- **Development/Staging environments**: Non-production workloads where minimal resource usage is prioritized
+- **API services**: RESTful APIs with bursty traffic patterns
+- **Stateful applications**: Applications that maintain in-memory state that needs to be preserved between restarts
+
+#### Compatible Application Types
+
+Most standard applications work with Podmotion, including:
+
+- Web servers (nginx, Apache)
+- Application runtimes (Node.js, Python, Ruby, Go applications)
+- Databases running in containers (with appropriate checkpointing intervals)
+- Microservices
+- Containerized applications without special kernel dependencies
+
+#### Probe Support
+
+- **HTTP Probes**: Fully supported while scaled down (probes don't wake container)
+- **TCP Probes**: Fully supported while scaled down (probes don't wake container)
+- **GRPC Probes**: Will wake the container on each probe
+- **Exec Probes**: Will wake the container on each probe
+
+### Limitations
+
+#### Known Limitations
+
+- **Live Migration**: Only one container per pod is supported for live migration (`komodor.com/podmotion-live-migrate`)
+- **RuntimeClass Required**: Pods must explicitly set `runtimeClassName: podmotion`
+- **Containerd Only**: Docker and other container runtimes are not supported
+- **Restoration Time**: Depending on memory size, restoration can take up to hundreds of milliseconds or more
+- **First Install Impact**: Installation restarts the containerd service on each targeted node (k3s/rke2 require full service restart)
+- **eBPF Requirements**: The host must support eBPF programs for packet redirection
+
+#### Platform-Specific Issues
+
+- **macOS VMs**: Some arm64 workloads running in Linux VMs on macOS can be flaky
+- **k3s/rke2**: Initial installation causes workload restarts on targeted nodes due to service restart requirements
+
+#### Unsupported Scenarios
+
+- **Kernel Modules**: Applications that load custom kernel modules
+- **Direct Hardware Access**: Applications requiring direct hardware access beyond standard containerization (i.e. GPUs)
+- **Real-time Applications**: Applications with strict real-time requirements that cannot tolerate checkpoint/restore overhead
+- **Very Large Memory Footprints**: While technically supported, very large applications (multiple GB) may have longer checkpoint/restore times that could time out
 
 ## Installation
 
@@ -112,7 +218,11 @@ Before using podmotion, label the nodes where you want to enable live migration:
 kubectl label nodes <node-name> komodor.com/podmotion-node=true
 ```
 
-### 2. Trigger Migrations
+### 2. Ensure correct Runtime is used
+
+Make sure your workloads use the `podmotion` runtime class by setting `runtimeClassName: podmotion` in the pod spec.
+
+### 3. Trigger Migrations
 
 There are two ways to trigger migrations:
 
@@ -183,7 +293,7 @@ spec:
     id: container-id-123
 ```
 
-### 3. Monitor Migrations
+### 4. Monitor Migrations
 
 ```bash
 # List all migrations
