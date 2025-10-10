@@ -1,0 +1,156 @@
+# Default values for podmotion.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Global settings
+global:
+  # Image registry for all podmotion images
+  imageRegistry: ""
+  # Image pull secrets
+  imagePullSecrets: []
+
+# Node DaemonSet configuration
+daemonset:
+  # Node selector for podmotion nodes
+  nodeSelector:
+    komodor.com/podmotion-node: "true"
+  
+  # Tolerations for the daemonset
+  tolerations:
+    - operator: Exists
+  
+  # Host network configuration
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
+
+# Image configuration
+images:
+  installer:
+    repository: public.ecr.aws/komodor-public/podmotion-installer
+    tag: "0.1.1"
+    pullPolicy: IfNotPresent
+  
+  manager:
+    repository: public.ecr.aws/komodor-public/podmotion-manager
+    tag: "0.1.1"
+    pullPolicy: IfNotPresent
+  
+  alpine:
+    repository: alpine
+    tag: "3.19.1"
+    pullPolicy: IfNotPresent
+  
+  criu:
+    repository: public.ecr.aws/komodor-public/podmotion-criu
+    tag: "0.1.0-1169917"
+
+# Manager configuration
+manager:
+  # Metrics server configuration
+  metrics:
+    enabled: true
+    port: 8080
+    addr: ":8080"
+  
+  # Node server configuration
+  nodeServer:
+    port: 8090
+  
+  # Security context for manager container
+  securityContext:
+    appArmorProfile:
+      type: Unconfined
+    capabilities:
+      add:
+        # for net nsenter
+        - "SYS_PTRACE"
+        - "SYS_ADMIN"
+        # for attaching qdiscs/filters
+        - "NET_ADMIN"
+        # for setting memlock rlimit
+        - "SYS_RESOURCE"
+
+# Installer configuration
+installer:
+  # Security context for installer container
+  securityContext:
+    privileged: true
+  
+  # Volume mounts for installer
+  volumeMounts:
+    hostroot: /host
+    containerdEtc: /etc/containerd
+    containerdRun: /run/containerd
+    podmotionOpt: /opt/podmotion
+    systemdRun: /run/systemd
+    criuEtc: /etc/criu
+    tls: /tls
+
+# Volume configuration
+volumes:
+  # Host paths
+  hostPaths:
+    root: /
+    containerdEtc: /etc/containerd
+    containerdRun: /run/containerd
+    podmotionVar: /var/lib/podmotion
+    podmotionOpt: /opt/podmotion
+    podmotionRun: /run/podmotion
+    systemdRun: /run/systemd
+    criuEtc: /etc/criu
+    proc: /proc
+    bpf: /sys/fs/bpf
+
+# RBAC configuration
+rbac:
+  # Create RBAC resources
+  create: true
+
+# Service Account configuration
+serviceAccount:
+  # Create service account
+  create: true
+  # Service account name (defaults to komodor-podmotion-node)
+  name: ""
+  # Annotations for service account
+  annotations: {}
+
+# CRD configuration
+crd:
+  # Install the Migration CRD
+  create: true
+
+# Resource limits and requests
+resources:
+  manager:
+    limits:
+      cpu: 1000m
+      memory: 2048Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  
+  installer:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+# Pod annotations
+podAnnotations: {}
+
+# Pod labels
+podLabels: {}
+
+# Migration manager specific configuration
+migrationManager:
+  # Enable migration manager RBAC
+  enabled: true
+
+# Uninstall configuration
+uninstall:
+  # Enable uninstall mode - when true, the installer will run in uninstall mode
+  # This will clean up podmotion components from the nodes
+  enabled: false

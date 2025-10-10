@@ -1,0 +1,135 @@
+{{- if .Values.rbac.create }}
+---
+# ServiceAccount for podmotion-node
+{{- if .Values.serviceAccount.create }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "podmotion.serviceAccountName" . }}
+  namespace: {{ include "podmotion.namespace" . }}
+  labels:
+    {{- include "podmotion.labels" . | nindent 4 }}
+  {{- with .Values.serviceAccount.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- if .Values.global.imagePullSecrets }}
+imagePullSecrets:
+  {{- toYaml .Values.global.imagePullSecrets | nindent 2 }}
+{{- end }}
+{{- end }}
+---
+# ClusterRole for RuntimeClass installer
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "podmotion.fullname" . }}:runtimeclass-installer
+  labels:
+    {{- include "podmotion.labels" . | nindent 4 }}
+rules:
+  - apiGroups:
+      - node.k8s.io
+    resources:
+      - runtimeclasses
+    verbs:
+      - create
+      - delete
+      - update
+---
+# ClusterRoleBinding for RuntimeClass installer
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "podmotion.fullname" . }}:runtimeclass-installer
+  labels:
+    {{- include "podmotion.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "podmotion.fullname" . }}:runtimeclass-installer
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "podmotion.serviceAccountName" . }}
+    namespace: {{ include "podmotion.namespace" . }}
+---
+# Role for secret creator
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "podmotion.fullname" . }}:secret-creator
+  namespace: {{ include "podmotion.namespace" . }}
+  labels:
+    {{- include "podmotion.labels" . | nindent 4 }}
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - get
+      - create
+---
+# RoleBinding for secret creator
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "podmotion.fullname" . }}:secret-creator
+  namespace: {{ include "podmotion.namespace" . }}
+  labels:
+    {{- include "podmotion.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "podmotion.fullname" . }}:secret-creator
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "podmotion.serviceAccountName" . }}
+    namespace: {{ include "podmotion.namespace" . }}
+{{- if .Values.migrationManager.enabled }}
+---
+# ClusterRole for migration manager
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "podmotion.fullname" . }}:migration-manager
+  labels:
+    {{- include "podmotion.labels" . | nindent 4 }}
+rules:
+  - apiGroups:
+    - runtime.podmotion.komodor.com
+    resources:
+      - migrations
+      - migrations/status
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - delete
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - get
+      - list
+      - watch
+---
+# ClusterRoleBinding for migration manager
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "podmotion.fullname" . }}:migration-manager
+  labels:
+    {{- include "podmotion.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "podmotion.fullname" . }}:migration-manager
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "podmotion.serviceAccountName" . }}
+    namespace: {{ include "podmotion.namespace" . }}
+{{- end }}
+{{- end }}

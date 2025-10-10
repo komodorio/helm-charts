@@ -1,0 +1,201 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "podmotion.fullname" . }}-node
+  namespace: {{ include "podmotion.namespace" . }}
+  labels:
+    {{- include "podmotion.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "podmotion.nodeSelector" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "podmotion.podLabels" . | nindent 8 }}
+      annotations:
+        {{- if .Values.manager.metrics.enabled }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "{{ .Values.manager.metrics.port }}"
+        prometheus.io/path: "/metrics"
+        {{- end }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- if .Values.daemonset.hostNetwork }}
+      hostNetwork: true
+      {{- end }}
+      {{- if .Values.daemonset.dnsPolicy }}
+      dnsPolicy: {{ .Values.daemonset.dnsPolicy }}
+      {{- end }}
+      serviceAccountName: {{ include "podmotion.serviceAccountName" . }}
+      {{- with .Values.daemonset.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      initContainers:
+        # Installer container
+        - name: podmotion-installer
+          image: {{ include "podmotion.installerImage" . }}
+          imagePullPolicy: {{ .Values.images.installer.pullPolicy }}
+          args:
+          {{- if .Values.uninstall.enabled }}
+            - -uninstall
+          {{- else }}
+            - -criu-image={{ include "podmotion.criuImage" . }}
+            - -k8s-namespace={{ include "podmotion.namespace" . }}
+          {{- end }}
+          {{- with .Values.resources.installer }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - mountPath: {{ .Values.installer.volumeMounts.hostroot }}
+              name: hostroot
+            - mountPath: {{ .Values.installer.volumeMounts.containerdEtc }}
+              name: containerd-etc
+            - mountPath: {{ .Values.installer.volumeMounts.containerdRun }}
+              name: containerd-run
+            {{- if .Values.uninstall.enabled }}
+            - mountPath: /opt
+              name: opt
+            {{- else }}
+            - mountPath: {{ .Values.installer.volumeMounts.podmotionOpt }}
+              name: podmotion-opt
+            {{- end }}
+            - mountPath: {{ .Values.installer.volumeMounts.systemdRun }}
+              name: systemd-run
+            - mountPath: {{ .Values.installer.volumeMounts.criuEtc }}
+              name: criu-etc
+            - mountPath: {{ .Values.installer.volumeMounts.tls }}
+              name: tls
+        # Prepare BPF filesystem
+        - name: podmotion-prepare-bpf-fs
+          image: {{ include "podmotion.alpineImage" . }}
+          imagePullPolicy: {{ .Values.images.alpine.pullPolicy }}
+          command:
+            - /bin/sh
+            - -c
+            - --
+          args:
+            - mount | grep "/sys/fs/bpf type bpf" || mount -t bpf bpf /sys/fs/bpf
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - mountPath: /sys/fs/bpf
+              mountPropagation: Bidirectional
+              name: bpf
+      containers:
+        {{- if .Values.uninstall.enabled }}
+        # Dummy container for uninstall mode
+        - name: podmotion-manager
+          image: {{ include "podmotion.alpineImage" . }}
+          imagePullPolicy: {{ .Values.images.alpine.pullPolicy }}
+          command: ["/bin/sh"]
+          args:
+            - -c
+            - "echo 'Uninstall mode: sleeping indefinitely'; sleep infinity"
+          resources:
+            limits:
+              cpu: 10m
+              memory: 16Mi
+            requests:
+              cpu: 10m
+              memory: 16Mi
+        {{- else }}
+        # Manager container
+        - name: podmotion-manager
+          image: {{ include "podmotion.managerImage" . }}
+          imagePullPolicy: {{ .Values.images.manager.pullPolicy }}
+          command: ["/podmotion-manager"]
+          args:
+            {{- if .Values.manager.metrics.enabled }}
+            - -metrics-addr={{ .Values.manager.metrics.addr }}
+            {{- end }}
+          {{- if .Values.manager.metrics.enabled }}
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.manager.metrics.port }}
+            - name: node-server
+              containerPort: {{ .Values.manager.nodeServer.port }}
+          {{- end }}
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            {{- include "podmotion.versionEnvVars" . | nindent 12 }}
+          {{- with .Values.resources.manager }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - mountPath: /run/podmotion
+              name: podmotion-run
+            - mountPath: /var/lib/podmotion
+              name: podmotion-var
+            - mountPath: /hostproc
+              name: hostproc
+            - mountPath: /sys/fs/bpf
+              name: bpf
+            - mountPath: /tls
+              name: tls
+          {{- with .Values.manager.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+        {{- end }}
+      {{- with .Values.daemonset.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: hostroot
+          hostPath:
+            path: {{ .Values.volumes.hostPaths.root }}
+        - name: containerd-etc
+          hostPath:
+            path: {{ .Values.volumes.hostPaths.containerdEtc }}
+        - name: containerd-run
+          hostPath:
+            path: {{ .Values.volumes.hostPaths.containerdRun }}
+        - name: podmotion-var
+          hostPath:
+            path: {{ .Values.volumes.hostPaths.podmotionVar }}
+        {{- if .Values.uninstall.enabled }}
+        - name: opt
+          hostPath:
+            path: /opt
+        {{- else }}
+        - name: podmotion-opt
+          hostPath:
+            path: {{ .Values.volumes.hostPaths.podmotionOpt }}
+        {{- end }}
+        - name: podmotion-run
+          hostPath:
+            path: {{ .Values.volumes.hostPaths.podmotionRun }}
+        - name: systemd-run
+          hostPath:
+            path: {{ .Values.volumes.hostPaths.systemdRun }}
+        - name: criu-etc
+          hostPath:
+            path: {{ .Values.volumes.hostPaths.criuEtc }}
+        - name: hostproc
+          hostPath:
+            path: {{ .Values.volumes.hostPaths.proc }}
+            type: Directory
+        - name: bpf
+          hostPath:
+            path: {{ .Values.volumes.hostPaths.bpf }}
+            type: Directory
+        - name: tls
+          emptyDir: {}

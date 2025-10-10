@@ -1,0 +1,57 @@
+1. Get the application URL by running these commands:
+
+{{- if .Values.manager.metrics.enabled }}
+   # To access the metrics endpoint:
+   kubectl port-forward --namespace {{ include "podmotion.namespace" . }} daemonset/{{ include "podmotion.fullname" . }}-node {{ .Values.manager.metrics.port }}:{{ .Values.manager.metrics.port }}
+
+   Then visit http://127.0.0.1:{{ .Values.manager.metrics.port }}/metrics to view the metrics.
+{{- end }}
+
+2. Check the status of the podmotion daemonset:
+   kubectl get daemonset --namespace {{ include "podmotion.namespace" . }} {{ include "podmotion.fullname" . }}-node
+
+3. View the logs of podmotion nodes:
+   kubectl logs --namespace {{ include "podmotion.namespace" . }} -l app.kubernetes.io/name={{ include "podmotion.name" . }}-node
+
+4. To enable podmotion on your nodes, label them with:
+   kubectl label nodes <node-name> komodor.com/podmotion-node=true
+
+5. To create a migration, apply a Migration custom resource:
+   apiVersion: runtime.podmotion.komodorio.dev/v1
+   kind: Migration
+   metadata:
+     name: example-migration
+     namespace: default
+   spec:
+     sourceNode: <source-node-name>
+     targetNode: <target-node-name>
+     sourcePod: <source-pod-name>
+     podTemplateHash: <pod-template-hash>
+     liveMigration: true
+     containers:
+     - name: <container-name>
+       id: <container-id>
+
+6. Check migration status:
+   kubectl get migrations --all-namespaces
+
+{{- if .Values.uninstall.enabled }}
+
+⚠️  UNINSTALL MODE ENABLED ⚠️
+This installation is running in uninstall mode and will clean up podmotion components from nodes.
+After the cleanup is complete, you should uninstall this release:
+   helm uninstall {{ .Release.Name }}
+
+{{- else }}
+
+7. To uninstall podmotion properly, first enable uninstall mode:
+   helm upgrade {{ .Release.Name }} {{ .Chart.Name }} --set uninstall.enabled=true
+   
+   Then after cleanup completes, uninstall the release:
+   helm uninstall {{ .Release.Name }}
+
+{{- end }}
+
+For more information about podmotion, contact us via help.komodor.com!
+
+Happy migrating! 🚀
