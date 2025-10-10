@@ -8,8 +8,8 @@ maintainers:
   - name: Komodor Team
     url: https://komodor.com
 
-version: 0.1.0
-appVersion: "latest"
+version: 0.1.2
+appVersion: 0.1.2
 
 keywords:
   - podmotion
