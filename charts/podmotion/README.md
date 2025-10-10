@@ -356,11 +356,3 @@ kubectl delete namespace <namespace>
 ```
 
 **Note**: Using Method 1 (uninstall mode) is recommended as it ensures proper cleanup of podmotion components installed on the nodes.
-
-## Contributing
-
-Please see the main [Podmotion repository](https://github.com/komodorio/podmotion) for contribution guidelines.
-
-## License
-
-This chart is licensed under the same license as Podmotion. See the [LICENSE](https://github.com/komodorio/podmotion/blob/main/LICENSE.md) file for details.
