@@ -7036,4 +7036,29 @@ entries:
     urls:
     - komoplane/komoplane-0.0.2.tgz
     version: 0.0.2
-generated: "2025-10-09T13:12:18.259656208Z"
+  podmotion:
+  - apiVersion: v2
+    appVersion: latest
+    created: "2025-10-10T19:14:26.149511663Z"
+    description: A Helm chart for Podmotion - Live container migration for Kubernetes
+    digest: 3bc10cba4a4a4fb7a50019a7aff12efe29fd6c099f3dc1ff71d77c6beec13b57
+    home: https://app.komodor.com
+    icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/k8s-watcher.svg
+    keywords:
+    - podmotion
+    - container
+    - migration
+    - kubernetes
+    - komodor
+    maintainers:
+    - name: Komodor Team
+      url: https://komodor.com
+    name: podmotion
+    sources:
+    - https://github.com/komodorio/podmotion
+    - https://github.com/komodorio/helm-charts
+    type: application
+    urls:
+    - https://github.com/komodorio/helm-charts/releases/download/podmotion-0.1.0/podmotion-0.1.0.tgz
+    version: 0.1.0
+generated: "2025-10-10T19:14:26.150696194Z"
