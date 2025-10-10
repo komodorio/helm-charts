@@ -67,13 +67,15 @@ CRIU and Podmotion support the following architectures:
 
 ### Supported Workloads
 
-While Podmotion should work with any type of workload supported by Kubernetes - we tested and officially support the following:
-* Deployment
-
-Support will be soon added for:
-* StatefulSet
-* Job
-* CronJob
+While Podmotion should work with any type of workload supported by Kubernetes - we tested and officially support the following:  
+- **Deployments**: Uses `pod-template-hash` label for pod matching
+- **StatefulSets**: Uses `controller-revision-hash` label for pod matching
+  - Might require special configuration [pod management policy](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#pod-management-policies) (`Parallel`) to allow for both pods to be up during migration
+- **DaemonSets**: Uses `controller-revision-hash` label for pod matching
+  - For obvious reasons a migration would only make sense when restarting a container on the same node
+- **Jobs**: Uses `batch.kubernetes.io/job-name` label for pod matching
+- **CronJobs**: Uses `batch.kubernetes.io/job-name` label (from the Job) for pod matching
+- **Uncontrolled Pods**: Requires manual migration CRD creation (see [examples](./examples))
 
 #### Recommended Use Cases
 

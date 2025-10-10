@@ -1,0 +1,36 @@
+# Manual Migration CRD for Uncontrolled Pods
+#
+# For uncontrolled pods (not managed by Deployment, StatefulSet, etc.),
+# you must manually create the Migration CRD before deleting the source pod.
+#
+# Steps:
+# 1. Get the container ID from your pod:
+#    kubectl get pod <pod-name> -n <namespace> -o jsonpath='{.status.containerStatuses[0].containerID}'
+#
+# 2. Create this Migration CRD (update values below)
+#
+# 3. Delete the source pod:
+#    kubectl delete pod <pod-name> -n <namespace> --grace-period=240
+#
+# 4. Create a new pod with the same name on a different node
+---
+apiVersion: runtime.podmotion.komodor.com/v1
+kind: Migration
+metadata:
+  name: my-uncontrolled-pod  # Must match the pod name
+  namespace: default
+spec:
+  sourcePod: my-uncontrolled-pod
+  sourceNode: node-1           # The node the pod is currently running on
+
+  # Optional: Specify target pod and node (should be set automatically by target pod if not specified)
+  # targetPod: my-uncontrolled-pod
+  # targetNode: node-2
+
+  liveMigration: true
+  restoreReady: false
+
+  containers:
+    - name: app                  # Container name
+      id: abc123def456           # Container ID (get from: kubectl get pod ... -o jsonpath='{.status.containerStatuses[0].containerID}')
+
