@@ -42,7 +42,8 @@ data:
               target_label: __address__
       filelog/komodor:
         include:
-          - "/var/log/pods/*komodor*/*/*.log"
+          - "/var/log/pods/*{{ include "komodorAgent.fullname" . }}*/*/*.log"
+          - "/var/log/pods/*komodor-podmotion*/*/*.log"
         include_file_name: false
         include_file_path: true
         poll_interval: 500ms
