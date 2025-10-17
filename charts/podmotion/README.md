@@ -44,7 +44,7 @@ Podmotion uses [CRIU](https://criu.org/) (Checkpoint/Restore In Userspace) for c
 #### Privileges
 
 - The installer runs as a privileged init container
-- The manager requires specific capabilities: `SYS_PTRACE`, `SYS_ADMIN`, `NET_ADMIN`, `SYS_RESOURCE`
+- The manager requires specific capabilities: `SYS_PTRACE`, `SYS_ADMIN`, `NET_ADMIN`, `SYS_RESOURCE`, `BPF`
 - eBPF programs are used for packet redirection and TCP activity tracking
 
 ### Supported Environments

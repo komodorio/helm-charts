@@ -56,6 +56,10 @@ manager:
   nodeServer:
     port: 8090
   
+  # Annotate Pods with Events and/or Labels to keep track of migration status
+  statusEvents: true
+  statusLabels: true
+  
   # Security context for manager container
   securityContext:
     appArmorProfile:
@@ -69,6 +73,7 @@ manager:
         - "NET_ADMIN"
         # for setting memlock rlimit
         - "SYS_RESOURCE"
+        - "BPF"
 
 # Installer configuration
 installer:
