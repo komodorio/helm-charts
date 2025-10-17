@@ -18,18 +18,48 @@ spec:
   scope: Namespaced
   versions:
     - additionalPrinterColumns:
-        - jsonPath: .status.containers[*].condition.phase
+        - description: Current phase of the migration (Pending, Running, Completed, Failed,
+            Unclaimed)
+          jsonPath: .status.containers[*].condition.phase
           name: Phase
           type: string
-        - jsonPath: .spec.liveMigration
-          name: Live
-          type: boolean
-        - jsonPath: .status.containers[*].migrationDuration
-          name: Duration
+        - description: Type of workload being migrated (Deployment, StatefulSet, DaemonSet,
+            Job, Pod)
+          jsonPath: .spec.workloadKind
+          name: Workload
           type: string
-        - jsonPath: .metadata.creationTimestamp
+        - description: Node where the pod is migrating from
+          jsonPath: .spec.sourceNode
+          name: Source Node
+          type: string
+        - description: Node where the pod is migrating to
+          jsonPath: .spec.targetNode
+          name: Target Node
+          type: string
+        - description: Whether this is a live (lazy) migration
+          jsonPath: .spec.liveMigration
+          name: Live
+          priority: 1
+          type: boolean
+        - description: Time taken to checkpoint the original container
+          jsonPath: .status.containers[*].checkpointDuration
+          name: Checkpoint Duration
+          priority: 1
+          type: string
+        - description: Approximation of time from original container shut down to restore
+            completion on new container
+          jsonPath: .status.containers[*].migrationDuration
+          name: Migration Duration
+          type: string
+        - description: Time since the migration was created
+          jsonPath: .metadata.creationTimestamp
           name: Age
           type: date
+        - description: Reason for migration failure if Phase is Failed
+          jsonPath: .status.containers[*].condition.reason
+          name: Failure Reason
+          priority: 1
+          type: string
       name: v1
       schema:
         openAPIV3Schema:
@@ -137,6 +167,10 @@ spec:
                 targetPod:
                   description: TargetPod of the migration
                   type: string
+                workloadKind:
+                  description: WorkloadKind indicates the type of workload (Deployment,
+                    StatefulSet, DaemonSet, Job, CronJob, or Pod)
+                  type: string
               required:
                 - containers
                 - restoreReady
@@ -149,6 +183,8 @@ spec:
                     migrations.
                   items:
                     properties:
+                      checkpointDuration:
+                        type: string
                       condition:
                         properties:
                           phase:
