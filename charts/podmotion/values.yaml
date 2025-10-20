@@ -73,7 +73,6 @@ manager:
         - "NET_ADMIN"
         # for setting memlock rlimit
         - "SYS_RESOURCE"
-        - "BPF"
 
 # Installer configuration
 installer:
