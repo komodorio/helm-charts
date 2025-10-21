@@ -27,12 +27,12 @@ daemonset:
 images:
   installer:
     repository: public.ecr.aws/komodor-public/podmotion-installer
-    tag: "0.1.2"
+    tag: "0.1.4"
     pullPolicy: IfNotPresent
   
   manager:
     repository: public.ecr.aws/komodor-public/podmotion-manager
-    tag: "0.1.2"
+    tag: "0.1.4"
     pullPolicy: IfNotPresent
   
   alpine:
@@ -55,6 +55,10 @@ manager:
   # Node server configuration
   nodeServer:
     port: 8090
+  
+  # Annotate Pods with Events and/or Labels to keep track of migration status
+  statusEvents: true
+  statusLabels: true
   
   # Security context for manager container
   securityContext:

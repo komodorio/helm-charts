@@ -117,6 +117,12 @@ spec:
             {{- if .Values.manager.metrics.enabled }}
             - -metrics-addr={{ .Values.manager.metrics.addr }}
             {{- end }}
+            {{- if .Values.manager.statusEvents }}
+            - -status-events
+            {{- end }}
+            {{- if .Values.manager.statusLabels }}
+            - -status-labels
+            {{- end }}
           {{- if .Values.manager.metrics.enabled }}
           ports:
             - name: metrics
