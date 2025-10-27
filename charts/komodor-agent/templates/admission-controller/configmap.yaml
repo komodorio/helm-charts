@@ -15,6 +15,11 @@ data:
     {{ else if .Values.proxy.https }}
     proxyUrl: {{ .Values.proxy.https }}
     {{ end }}
+    {{ if .Values.proxy.http }}
+    proxyUrl: {{ .Values.proxy.http }}
+    {{ else if .Values.proxy.https }}
+    proxyUrl: {{ .Values.proxy.https }}
+    {{ end }}
     admissionServer:
       port: {{ .Values.capabilities.admissionController.webhookServer.port }}
       tlsCertFile: {{ .Values.capabilities.admissionController.webhookServer.tlsCertFile | default "/etc/komodor/admission/tls/tls.crt" }}
