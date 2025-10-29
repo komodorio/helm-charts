@@ -10,9 +10,9 @@ data:
   komodor.yaml: |
     chartVersion: {{ .Chart.Version | quote }}
     clusterName: {{ .Values.clusterName | required "clusterName is a required value!" }}
-    {{ if .Values.proxy.https }}
+    {{- if .Values.proxy.https }}
     proxyUrl: {{ .Values.proxy.https }}
-    {{ end }}
+    {{- end }}
     admissionServer:
       port: {{ .Values.capabilities.admissionController.webhookServer.port }}
       tlsCertFile: {{ .Values.capabilities.admissionController.webhookServer.tlsCertFile | default "/etc/komodor/admission/tls/tls.crt" }}
