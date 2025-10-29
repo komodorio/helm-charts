@@ -10,7 +10,7 @@ data:
   komodor.yaml: |
     chartVersion: {{ .Chart.Version | quote }}
     clusterName: {{ .Values.clusterName | required "clusterName is a required value!" }}
-    {{- if .Values.proxy.https }}
+    {{- if and .Values.proxy.enabled .Values.proxy.https }}
     proxyUrl: {{ .Values.proxy.https }}
     {{- end }}
     admissionServer:
