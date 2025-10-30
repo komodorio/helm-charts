@@ -44,15 +44,22 @@ data:
         include:
           - "/var/log/pods/*{{ include "komodorAgent.fullname" . }}*/*/*.log"
           - "/var/log/pods/*komodor-podmotion*/*/*.log"
+        exclude:
+          - "/var/log/pods/*{{ include "komodorAgent.fullname" . }}*/otel-collector/*.log"
         include_file_name: false
         include_file_path: true
         poll_interval: 500ms
-        start_at: beginning
+        start_at: end
         max_log_size: 1MiB
         attributes:
           komodor.cluster.name: "${env:KOMO_CLUSTER_NAME}"
         # Always try to parse as much as possible (on_error: send_quiet) and send quietly whatever resulted.
         # We will be able to monitor parsing errors in the backend instead of spamming with parse errors.
+        retry_on_failure:
+          enabled: true
+          initial_interval: 3s
+          max_interval: 15s
+          max_elapsed_time: 60s
         operators:
         - type: regex_parser
           id: parse_log_path
@@ -99,9 +106,9 @@ data:
             value: "${env:KOMO_CLUSTER_NAME}"
             action: upsert
       batch:
-        send_batch_max_size: 50
-        send_batch_size: 10
-        timeout: 10s
+        send_batch_max_size: 256
+        send_batch_size: 256
+        timeout: 5s
       memory_limiter:
         check_interval: 1s
         limit_percentage: 75
