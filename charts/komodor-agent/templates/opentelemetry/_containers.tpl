@@ -1,7 +1,7 @@
 {{- define "opentelemetry.daemonset.container" }}
 {{- if and .Values.capabilities.telemetry.enabled .Values.capabilities.telemetry.deployOtelCollector }}
 - name: otel-collector
-  image: {{ .Values.components.komodorDaemon.opentelemetry.image.name }}:{{ .Values.components.komodorDaemon.opentelemetry.image.tag }}
+  image: {{ .Values.imageRepo }}/{{ .Values.components.komodorDaemon.opentelemetry.image.name }}:{{ .Values.components.komodorDaemon.opentelemetry.image.tag }}
   imagePullPolicy: {{ .Values.pullPolicy }}
   resources:
     {{ toYaml .Values.components.komodorDaemon.opentelemetry.resources | trim | nindent 4 }}
