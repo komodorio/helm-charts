@@ -161,7 +161,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | capabilities.nodeEnricher | bool | `true` | Enable node enricher capabilities by the komodor agent |
 | capabilities.actions | bool | `true` | Allow users to perform actions on the cluster, granular access control is defined in the application<boolean> |
 | capabilities.cost | object | See sub-values | Configure the agent cost capabilities |
-| capabilities.cost.hpa | bool | `false` | Enable patch and update permissions for KEDA ScaledObjects and ScaledJobs |
+| capabilities.cost.hpa | bool | `true` | Enable patch and update permissions for KEDA ScaledObjects and ScaledJobs |
 | capabilities.helm | object | `{"enabled":true,"readonly":false}` | Enable helm capabilities by the komodor agent |
 | capabilities.helm.enabled | bool | `true` | Enable helm capabilities by the komodor agent |
 | capabilities.helm.readonly | bool | `false` | Allow komodor to read helm resources only (remove create/update/delete permissions from secrets) |
