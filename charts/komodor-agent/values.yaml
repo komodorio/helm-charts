@@ -73,6 +73,11 @@ capabilities:
   nodeEnricher: true
   # capabilities.actions -- (bool) Allow users to perform actions on the cluster, granular access control is defined in the application<boolean>
   actions: true
+  # capabilities.cost -- Configure the agent cost capabilities
+  # @default -- See sub-values
+  cost:
+    # capabilities.cost.hpa -- (bool) Enable patch and update permissions for KEDA ScaledObjects and ScaledJobs
+    hpa: true
   # capabilities.helm -- Enable helm capabilities by the komodor agent
   helm:
     # capabilities.helm.enabled -- (bool) Enable helm capabilities by the komodor agent

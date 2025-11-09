@@ -416,6 +416,18 @@ rules:
     - update
     - create
 {{- end }}
+{{- if .Values.capabilities.cost.hpa }}
+  - apiGroups:
+    - keda.sh
+    resources:
+    - scaledjobs
+    - scaledobjects
+    verbs:
+    - get
+    - list
+    - patch
+    - update
+{{- end }}
 {{- if .Values.capabilities.metrics }}
   - apiGroups:
     - ""
