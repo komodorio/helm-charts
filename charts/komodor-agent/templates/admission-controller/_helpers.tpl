@@ -29,8 +29,10 @@ helm.sh/chart: {{ include "komodorAgent.chart" . }}
 app.kubernetes.io/version: {{ .Values.components.admissionController.image.tag }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- with .Values.components.admissionController.labels }}
+{{ toYaml . }}
 {{- end }}
-
+{{- end }}
 {{/*
 Admission Controller selector labels
 */}}
@@ -38,8 +40,10 @@ Admission Controller selector labels
 app.kubernetes.io/name: {{ include "komodorAgent.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/component: admission-controller
+{{- with .Values.components.admissionController.labels }}
+{{ toYaml . }}
 {{- end }}
-
+{{- end }}
 {{/*
 Admission Controller service name
 */}}
