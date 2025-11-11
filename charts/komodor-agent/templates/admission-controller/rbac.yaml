@@ -59,6 +59,12 @@ rules:
       - "*"
     verbs:
       - get
+  - apiGroups:
+      - ""
+    resources:
+      - pods/resize
+    verbs:
+      - patch
 
   # Required for Admission Controller in-place mutation:
   - nonResourceURLs:
