@@ -412,6 +412,8 @@ components:
     PriorityClassValue: 10000000
     # components.komodorMetrics.priorityClassName -- Use an existing priority class for the komodor metrics agent deployment. If not set, will create and use a priority class with PriorityClassValue. WARNING: priorityClassName is immutable and cannot be changed after initial deployment
     priorityClassName: ""
+    # components.komodorMetrics.disableHttp2 -- Disable HTTP/2 client by setting GODEBUG=http2client=0 for komodor-agent-metrics
+    disableHttp2: false
     # components.komodorMetrics.affinity -- Set node affinity for the komodor metrics agent deployment
     affinity: {}
     # components.komodorMetrics.annotations -- Set annotations for the komodor metrics agent deployment
@@ -469,6 +471,8 @@ components:
     hostNetwork: false
     # components.komodorDaemon.dnsPolicy -- Set dns policy for the komodor agent daemon
     dnsPolicy: ClusterFirst
+    # components.komodorDaemon.disableHttp2 -- Disable HTTP/2 client by setting GODEBUG=http2client=0 for komodor-agent-daemon
+    disableHttp2: false
     # components.komodorDaemon.PriorityClassValue -- Set the priority class value for the komodor daemon deployment
     PriorityClassValue: 10000000
     # components.komodorDaemon.priorityClassName -- Use an existing priority class for the komodor daemon deployment. If not set, will create and use a priority class with PriorityClassValue. WARNING: priorityClassName is immutable and cannot be changed after initial deployment

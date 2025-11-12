@@ -278,6 +278,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.admissionController.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorMetrics.PriorityClassValue | int | `10000000` | Set the priority class value for the komodor metrics agent deployment |
 | components.komodorMetrics.priorityClassName | string | `""` | Use an existing priority class for the komodor metrics agent deployment. If not set, will create and use a priority class with PriorityClassValue. WARNING: priorityClassName is immutable and cannot be changed after initial deployment |
+| components.komodorMetrics.disableHttp2 | bool | `false` | Disable HTTP/2 client by setting GODEBUG=http2client=0 for komodor-agent-metrics |
 | components.komodorMetrics.affinity | object | `{}` | Set node affinity for the komodor metrics agent deployment |
 | components.komodorMetrics.annotations | object | `{}` | Set annotations for the komodor metrics agent deployment |
 | components.komodorMetrics.labels | object | `{}` | Set custom labels |
@@ -298,6 +299,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemon | object | See sub-values | Configure the komodor agent components |
 | components.komodorDaemon.hostNetwork | bool | `false` | Set host network for the komodor agent daemon |
 | components.komodorDaemon.dnsPolicy | string | `"ClusterFirst"` | Set dns policy for the komodor agent daemon |
+| components.komodorDaemon.disableHttp2 | bool | `false` | Disable HTTP/2 client by setting GODEBUG=http2client=0 for komodor-agent-daemon |
 | components.komodorDaemon.PriorityClassValue | int | `10000000` | Set the priority class value for the komodor daemon deployment |
 | components.komodorDaemon.priorityClassName | string | `""` | Use an existing priority class for the komodor daemon deployment. If not set, will create and use a priority class with PriorityClassValue. WARNING: priorityClassName is immutable and cannot be changed after initial deployment |
 | components.komodorDaemon.affinity | object | `{}` | Set node affinity for the komodor agent daemon |

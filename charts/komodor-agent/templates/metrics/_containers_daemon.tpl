@@ -29,6 +29,10 @@
     value: {{ .Values.components.komodorDaemon.metrics.quiet | default false | quote }}
   - name: KOMODOR_SERVER_URL
     value: {{ .Values.communications.serverHost | quote }}
+  {{- if .Values.components.komodorDaemon.disableHttp2 }}
+  - name: GODEBUG
+    value: http2client=0
+  {{- end }}
   {{- if gt (len .Values.components.komodorDaemon.metrics.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorDaemon.metrics.extraEnvVars | nindent 2 }}
   {{- end }}
@@ -69,6 +73,10 @@
         fieldPath: status.hostIP
   - name: KOMODOR_SERVER_URL
     value: {{ .Values.communications.serverHost | quote }}
+  {{- if .Values.components.komodorDaemon.disableHttp2 }}
+  - name: GODEBUG
+    value: http2client=0
+  {{- end }}
   {{- if gt (len .Values.components.komodorDaemonWindows.metrics.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorDaemonWindows.metrics.extraEnvVars | nindent 2 }}
   {{- end }}
