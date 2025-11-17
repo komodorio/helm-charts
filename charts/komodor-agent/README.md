@@ -166,6 +166,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | capabilities.helm.enabled | bool | `true` | Enable helm capabilities by the komodor agent |
 | capabilities.helm.readonly | bool | `false` | Allow komodor to read helm resources only (remove create/update/delete permissions from secrets) |
 | capabilities.rbac | bool | `true` | Allow komodor to create and manage serviceaccounts, roles and bindings in cluster |
+| capabilities.rbacTempTokens | bool | `true` | Allow komodor to create temporary tokens for service accounts |
 | capabilities.rbacClusterSyncParams | object | See sub-values | Configure the agent cluster sync capabilities |
 | capabilities.rbacClusterSyncParams.enabled | bool | `false` | Enable cluster sync configuration from helm chart |
 | capabilities.rbacClusterSyncParams.clusterURL | string | `nil` | URL of the cluster to sync with |

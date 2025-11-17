@@ -86,6 +86,8 @@ capabilities:
     readonly: false
   # capabilities.rbac -- (bool) Allow komodor to create and manage serviceaccounts, roles and bindings in cluster
   rbac: true
+  # capabilities.rbacTempTokens -- (bool) Allow komodor to create temporary tokens for service accounts
+  rbacTempTokens: true
   # capabilities.rbacClusterSyncParams -- Configure the agent cluster sync capabilities
   # @default -- See sub-values
   rbacClusterSyncParams:
