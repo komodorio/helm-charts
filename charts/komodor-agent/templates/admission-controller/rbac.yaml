@@ -54,6 +54,14 @@ rules:
       - watch
       - list
   - apiGroups:
+      - autoscaling
+    resources:
+      - horizontalpodautoscalers
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
       - "*"
     resources:
       - "*"
