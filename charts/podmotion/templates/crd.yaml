@@ -167,6 +167,9 @@ spec:
                 targetPod:
                   description: TargetPod of the migration
                   type: string
+                targetPodIP:
+                  description: TargetPodIP of the migration
+                  type: string
                 workloadKind:
                   description: WorkloadKind indicates the type of workload (Deployment,
                     StatefulSet, DaemonSet, Job, CronJob, or Pod)
