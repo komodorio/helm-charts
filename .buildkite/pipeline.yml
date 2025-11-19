@@ -8,21 +8,6 @@ retry: &retry
       limit: 2
               
 steps:
-  - label: "check if komodor-agent has changed"
-    commands: |
-      if git diff --quiet HEAD^ HEAD -- charts/komodor-agent/; then
-        echo "No changes in charts/komodor-agent/, skipping pipeline. You can still approve to run it manually in the next step."
-        buildkite-agent meta-data set "SHOULD_RUN_AGENT_PIPELINE" "false"
-      else
-        echo "Changes detected in charts/komodor-agent/, proceeding with pipeline."
-        buildkite-agent meta-data set "SHOULD_RUN_AGENT_PIPELINE" "true"
-      fi
-    agents:
-      builder: "non-docker"
-  - block: "Run Pipeline Anyways?"
-    prompt: "Would you like to run the pipeline even if there seem no be no changes in charts/komodor-agent/ ?"
-    if: build.meta_data("SHOULD_RUN_AGENT_PIPELINE") == "false"
-  - wait
   - label: ":memo: helm template check for sanity"
     command: helm template komodor-agent charts/komodor-agent -f charts/komodor-agent/values.yaml --set apiKey="sanity" --set clusterName=test-template
     agents:
