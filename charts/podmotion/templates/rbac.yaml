@@ -118,6 +118,19 @@ rules:
       {{- if .Values.manager.statusLabels }}
       - update
       {{- end }}
+  - apiGroups:
+      - ""
+    resources:
+      - pods/eviction
+    verbs:
+      - create
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+    verbs:
+      - get
+      - list
   {{- if .Values.manager.statusEvents }}
   - apiGroups:
       - ""
