@@ -55,6 +55,10 @@ manager:
   # Node server configuration
   nodeServer:
     port: 8090
+
+  # API server configuration
+  apiServer:
+    port: 8100
   
   # Annotate Pods with Events and/or Labels to keep track of migration status
   statusEvents: true

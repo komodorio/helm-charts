@@ -131,6 +131,7 @@ rules:
     verbs:
       - get
       - list
+      - watch
   {{- if .Values.manager.statusEvents }}
   - apiGroups:
       - ""

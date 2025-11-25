@@ -129,6 +129,8 @@ spec:
               containerPort: {{ .Values.manager.metrics.port }}
             - name: node-server
               containerPort: {{ .Values.manager.nodeServer.port }}
+            - name: api-server
+              containerPort: {{ .Values.manager.apiServer.port }}
           {{- end }}
           env:
             - name: POD_IP
