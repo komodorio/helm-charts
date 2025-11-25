@@ -127,6 +127,8 @@ def look_for_errors_in_pod_log(pod_name, container_name="k8s-watcher"):
             continue
         json_log = json.loads(line)
         if "level" in json_log and json_log["level"] == "error":
+            if "Failed to run task" in json_log["msg"] and "failed with HTTP status 404" in json_log["msg"]:
+                continue # this is expected when the agent is starting up
             assert False, f"Found error in logs of {pod_name}\nLog: {json_log['msg']}"
 
 
