@@ -80,6 +80,7 @@ manager:
 
 # Installer configuration
 installer:
+  allowNonPodmotionNodes: false
   # Security context for installer container
   securityContext:
     privileged: true
