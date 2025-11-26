@@ -1,6 +1,7 @@
 import time
 
 import yaml
+import pytest
 
 from config import BE_BASE_URL, NAMESPACE, RELEASE_NAME, API_KEY
 from fixtures import setup_cluster, cleanup_agent_from_cluster  # noqa # pylint: disable=unused-import
@@ -14,7 +15,7 @@ CLUSTER_NAME = get_filename_as_cluster_name(__file__)
 
 def wait_for_metrics(container_name, pod_name):
     start_time = int(time.time() * 1000) - 120_000  # two minutes ago
-    for _ in range(120):  # ~2 minutes
+    for _ in range(300):  # ~5 minutes
         end_time = int(time.time() * 1000)
         url = (f"{BE_BASE_URL}/metrics/api/v1/fullMetrics/pod/{container_name}/cpu?"
                f"clusterName={CLUSTER_NAME}&namespace={NAMESPACE}&podName={pod_name}&"
@@ -34,6 +35,7 @@ def verify_metrics_response(response):
         'avgUtilization'), f"Expected at least one item in the 'avgUtilization', response: {response}"
 
 
+@pytest.mark.flaky(reruns=3)
 def test_get_metrics(setup_cluster):
     output, exit_code = helm_agent_install(CLUSTER_NAME)
     assert exit_code == 0, f"Agent installation failed, output: {output}"

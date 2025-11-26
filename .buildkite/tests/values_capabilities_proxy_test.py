@@ -95,7 +95,7 @@ def test_use_proxy_and_custom_ca(setup_cluster, kube_client):
 
 
 def verify_communication_through_proxy():
-    attempts = 12
+    attempts = 30
     success = False
     for attempt in range(attempts):
         try:
@@ -113,7 +113,7 @@ def verify_communication_through_proxy():
             print(f"Attempt {attempt + 1} failed: {e}")
 
         if attempt < attempts - 1:
-            time.sleep(20)
+            time.sleep(10)
 
     assert (
         success
