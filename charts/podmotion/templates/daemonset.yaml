@@ -50,6 +50,7 @@ spec:
             - -criu-image={{ include "podmotion.criuImage" . }}
             - -k8s-namespace={{ include "podmotion.namespace" . }}
           {{- end }}
+            - -allow-non-podmotion-nodes={{ .Values.installer.allowNonPodmotionNodes | default false }}
           {{- with .Values.resources.installer }}
           resources:
             {{- toYaml . | nindent 12 }}

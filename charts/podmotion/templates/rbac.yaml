@@ -32,9 +32,11 @@ rules:
     resources:
       - runtimeclasses
     verbs:
+      - get
       - create
       - delete
       - update
+      - patch
 ---
 # ClusterRoleBinding for RuntimeClass installer
 apiVersion: rbac.authorization.k8s.io/v1
