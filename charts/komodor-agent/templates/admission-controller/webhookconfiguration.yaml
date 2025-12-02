@@ -49,7 +49,7 @@ webhooks:
     sideEffects: None
     timeoutSeconds: {{ .Values.capabilities.admissionController.mutatingWebhook.timeoutSeconds | default 5 }}
   {{- if .Values.capabilities.admissionController.rightsizing.enabled }}
-  - name: rightsizing.komodor.com
+  - name: hpa.rightsizing.komodor.com
     clientConfig:
       service:
         name: {{ include "komodorAgent.admissionController.serviceName" . }}
@@ -69,14 +69,12 @@ webhooks:
       - "v1"
     sideEffects: None
     timeoutSeconds: {{ .Values.capabilities.admissionController.mutatingWebhook.timeoutSeconds | default 5 }}
-  {{- end }}
-  {{- if .Values.capabilities.admissionController.hpaWebhook.enabled }}
   - name: hpa.komodor.com
     clientConfig:
       service:
         name: {{ include "komodorAgent.admissionController.serviceName" . }}
         namespace: {{ .Release.Namespace }}
-        path: {{ .Values.capabilities.admissionController.mutatingWebhook.hpaWebhookPath | default "/webhook/rightsizing/hpa" }}
+        path: {{ .Values.capabilities.admissionController.mutatingWebhook.hpaRightsizingWebhookPath | default "/webhook/rightsizing/hpa" }}
         port: {{ include "komodorAgent.admissionController.servicePort" . }}
       caBundle: {{ .Values.capabilities.admissionController.mutatingWebhook.caBundle | default $certList._2 }}
     rules:
