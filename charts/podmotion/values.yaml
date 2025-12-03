@@ -2,6 +2,11 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# apiKey -- (guid) **(*required*)** To be obtained from komodor app during onboarding
+apiKey:
+# apiKeySecret -- (string) Secret name containing Komodor agent api key
+apiKeySecret:
+
 # Global settings
 global:
   # Image registry for all podmotion images
