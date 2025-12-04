@@ -7318,6 +7318,30 @@ entries:
     version: 0.0.2
   podmotion:
   - apiVersion: v2
+    appVersion: 0.1.10
+    created: "2025-12-04T16:30:11.589793304Z"
+    description: A Helm chart for Podmotion - Live container migration for Kubernetes
+    digest: c38da74b8134a2c22f5b83d5e96c7e8213e5a9d614d0279c8564a3c2ed8c7ee4
+    home: https://app.komodor.com
+    icon: https://raw.githubusercontent.com/komodorio/helm-charts/master/k8s-watcher.svg
+    keywords:
+    - podmotion
+    - container
+    - migration
+    - kubernetes
+    - komodor
+    maintainers:
+    - name: Komodor Team
+      url: https://komodor.com
+    name: podmotion
+    sources:
+    - https://github.com/komodorio/podmotion
+    - https://github.com/komodorio/helm-charts
+    type: application
+    urls:
+    - https://github.com/komodorio/helm-charts/releases/download/podmotion-0.1.10/podmotion-0.1.10.tgz
+    version: 0.1.10
+  - apiVersion: v2
     appVersion: 0.1.9
     created: "2025-12-03T06:49:42.58401398Z"
     description: A Helm chart for Podmotion - Live container migration for Kubernetes
@@ -7461,4 +7485,4 @@ entries:
     urls:
     - podmotion/podmotion-0.1.0.tgz
     version: 0.1.0
-generated: "2025-12-03T06:49:41.969195548Z"
+generated: "2025-12-04T16:30:11.591689105Z"
