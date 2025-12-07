@@ -52,12 +52,12 @@ spec:
           {{- end }}
             - -allow-non-podmotion-nodes={{ .Values.installer.allowNonPodmotionNodes | default false }}
           {{- with .Values.resources.installer }}
-          env:
-            - name: KOMO_API_KEY
-              {{ include "podmotion.apiKeySecretRef" . | nindent 4 }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          env:
+            - name: KOMO_API_KEY
+              {{ include "podmotion.apiKeySecretRef" . | nindent 14 }}
           volumeMounts:
             - mountPath: {{ .Values.installer.volumeMounts.hostroot }}
               name: hostroot
@@ -154,7 +154,7 @@ spec:
                 fieldRef:
                   fieldPath: spec.nodeName
             - name: KOMO_API_KEY
-              {{ include "podmotion.apiKeySecretRef" . | nindent 4 }}
+              {{ include "podmotion.apiKeySecretRef" . | nindent 14 }}
             {{- include "podmotion.versionEnvVars" . | nindent 12 }}
           {{- with .Values.resources.manager }}
           resources:
