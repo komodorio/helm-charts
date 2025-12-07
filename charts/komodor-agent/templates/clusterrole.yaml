@@ -518,7 +518,7 @@ rules:
   # Allow to uninstall charts
   - apiGroups: ["*"]
     resources: ["*"]
-    verbs: ["delete", "list", "get"]
+    verbs: ["delete", "list", "get", "patch"]
 {{- end}}
 
 {{- if .Values.allowedResources.allowReadAll }}
