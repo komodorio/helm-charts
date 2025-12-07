@@ -481,6 +481,11 @@ rules:
     verbs:
     - create
 {{- end}}
+{{- if .Values.capabilities.crActions}}
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["delete", "list", "get", "watch", "patch"]
+{{- end}}
 {{- if .Values.capabilities.events.create }}
   - apiGroups:
       - ""
@@ -518,7 +523,7 @@ rules:
   # Allow to uninstall charts
   - apiGroups: ["*"]
     resources: ["*"]
-    verbs: ["delete", "list", "get", "patch"]
+    verbs: ["delete", "list", "get"]
 {{- end}}
 
 {{- if .Values.allowedResources.allowReadAll }}
