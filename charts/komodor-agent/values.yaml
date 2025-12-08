@@ -222,7 +222,7 @@ capabilities:
       # capabilities.admissionController.binpacking.unevictableLabelKey -- (string) Label key to mark pods as unevictable
       #unevictableLabelKey: "komodor.io/unevictable"
       # capabilities.admissionController.binpacking.modifiedAnnotationKey -- (string) Annotation key to mark pods as modified by the binpacking admission controller
-      #modifiedAnnotationKey: "komodor.io/modified-at"
+      #modifiedAnnotationKey: "pod-placement.komodor.com/modified-at"
       # capabilities.admissionController.binpacking.unevictablePodNodeAffinityWeight -- (int) Weight for the node affinity of unevictable pods
       #unevictablePodNodeAffinityWeight: 100
       # capabilities.admissionController.binpacking.ignoredNamespaces -- (list) List of namespaces to ignore for binpacking
@@ -243,11 +243,11 @@ capabilities:
       # @default -- "komodor.com/original-resources"
       #originalResourcesAnnotationKey: "komodor.com/original-resources"
       # capabilities.admissionController.rightsizing.modifiedAnnotationKey -- (string) Annotation key to mark pods as modified by the rightsizing admission controller
-      # @default -- "komodor.io/modified-at"
-      #modifiedAnnotationKey: "komodor.io/modified-at"
+      # @default -- "rightsizing.komodor.com/modified-at"
+      #modifiedAnnotationKey: "rightsizing.komodor.com/modified-at"
       # capabilities.admissionController.rightsizing.mutatedAnnotationKey -- (string) Annotation key to mark pods as mutated by the rightsizing admission controller
-      # @default -- "komodor.com/mutated"
-      #mutatedAnnotationKey: "komodor.com/mutated"
+      # @default -- "rightsizing.komodor.com/mutated"
+      #mutatedAnnotationKey: "rightsizing.komodor.com/mutated"
 
 # components -- Configure the agent components
 # @default -- See sub-values
