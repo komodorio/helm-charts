@@ -73,6 +73,8 @@ capabilities:
   nodeEnricher: true
   # capabilities.actions -- (bool) Allow users to perform actions on the cluster, granular access control is defined in the application<boolean>
   actions: true
+  # capabilities.crActions -- (bool) Allow komodor service account to edit and delete custom resources in the cluster
+  crActions: true
   # capabilities.cost -- Configure the agent cost capabilities
   # @default -- See sub-values
   cost:
