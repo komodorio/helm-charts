@@ -61,6 +61,7 @@ rules:
       - get
       - watch
       - list
+      - patch
   - apiGroups:
       - "*"
     resources:
@@ -72,6 +73,15 @@ rules:
     resources:
       - pods/resize
     verbs:
+      - patch
+  - apiGroups:
+      - keda.sh
+    resources:
+      - scaledobjects
+    verbs:
+      - get
+      - watch
+      - list
       - patch
 
   # Required for Admission Controller in-place mutation:
