@@ -13,9 +13,9 @@ clusterName:
 createRbac: true
 
 # telegrafImageVersion -- (string) Telegraf version to be used
-telegrafImageVersion: &telegrafVersion v2.0.13-alpine
+telegrafImageVersion: &telegrafVersion v2.0.15-alpine
 # telegrafWindowsImageVersion -- (string) Telegraf version to be used for windows
-telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.13
+telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.15
 
 # serviceAccount -- Configure service account for the agent
 # @default -- See sub-values
@@ -566,7 +566,7 @@ components:
       # components.komodorDaemon.opentelemetry.image -- Override the OpenTelemetry collector image name or tag.
       image:
         name: komodor-otel-collector
-        tag: 0.1.4
+        tag: 0.1.5
       # components.komodorDaemon.opentelemetry.resources -- Set custom resources to the OpenTelemetry collector container
       resources:
         limits:
