@@ -134,14 +134,12 @@ rules:
       - get
       - list
       - watch
-  {{- if .Values.manager.statusEvents }}
   - apiGroups:
       - ""
     resources:
       - events
     verbs:
       - create
-  {{- end }}
   # Cannot restrict creation due to name not existing yet
   - apiGroups:
       - coordination.k8s.io
