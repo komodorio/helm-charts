@@ -25,3 +25,13 @@
 {{- define "communication.mgmtServerHost" }}
 {{- .Values.communications.mgmtServerHost | default (include "communication.serverHost" .) }}
 {{- end }}
+
+{{- define "communication.allHosts" -}}
+apiServerUrl: {{ include "communication.apiServerUrl" . }}
+serverHost: {{ include "communication.serverHost" . }}
+wsHost: {{ include "communication.wsHost" . }}
+tasksServerHost: {{ include "communication.tasksServerHost" . }}
+tasksV1ServerHost: {{ include "communication.tasksV1ServerHost" . }}
+mgmtServerHost: {{ include "communication.mgmtServerHost" . }}
+telemetryServerHost: {{ include "communication.telemetryServerHost" . }}
+{{- end }}

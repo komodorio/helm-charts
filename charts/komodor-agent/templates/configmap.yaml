@@ -5,13 +5,7 @@ metadata:
   name: {{ include "komodorAgent.name" . }}-config
 data:
   komodor-k8s-watcher.yaml: |
-    apiServerUrl: {{ include "communication.apiServerUrl" . }}
-    serverHost: {{ include "communication.serverHost" . }}
-    wsHost: {{ include "communication.wsHost" . }}
-    tasksServerHost: {{ include "communication.tasksServerHost" . }}
-    tasksV1ServerHost: {{ include "communication.tasksV1ServerHost" . }}
-    mgmtServerHost: {{ include "communication.mgmtServerHost" . }}
-    telemetryServerHost: {{ include "communication.telemetryServerHost" . }}
+{{- include "communication.allHosts" . | nindent 4 }}
     clusterName: {{ .Values.clusterName | required "clusterName is a required value!" }}
     chartVersion: {{ .Chart.Version | quote }}
     enableAgentTaskExecution: true
