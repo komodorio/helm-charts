@@ -1,3 +1,6 @@
+# site -- (string) Site to be used for the agent
+# @allowed values -- "us", "eu"
+site: "us"
 # apiKey -- (guid) **(*required*)** To be obtained from komodor app during onboarding
 apiKey:
 # apiKeySecret -- (string) Secret name containing Komodor agent api key
@@ -801,9 +804,9 @@ allowedResources:
 
 # @ignored
 communications:
-  apiServerUrl: https://kubernetes.default.svc.cluster.local
-  serverHost: &serverHost https://app.komodor.com
-  wsHost: wss://app.komodor.com
-  tasksServerHost: *serverHost
-  telemetryServerHost: https://telemetry.komodor.com
-  mgmtServerHost: *serverHost
+  apiServerUrl:
+  serverHost:
+  wsHost:
+  tasksServerHost:
+  telemetryServerHost:
+  mgmtServerHost:

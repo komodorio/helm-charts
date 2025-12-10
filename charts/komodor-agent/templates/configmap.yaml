@@ -5,7 +5,13 @@ metadata:
   name: {{ include "komodorAgent.name" . }}-config
 data:
   komodor-k8s-watcher.yaml: |
-    {{ toYaml .Values.communications | trim | nindent 4 }}
+    apiServerUrl: {{ include "communication.apiServerUrl" . }}
+    serverHost: {{ include "communication.serverHost" . }}
+    wsHost: {{ include "communication.wsHost" . }}
+    tasksServerHost: {{ include "communication.tasksServerHost" . }}
+    tasksV1ServerHost: {{ include "communication.tasksV1ServerHost" . }}
+    mgmtServerHost: {{ include "communication.mgmtServerHost" . }}
+    telemetryServerHost: {{ include "communication.telemetryServerHost" . }}
     clusterName: {{ .Values.clusterName | required "clusterName is a required value!" }}
     chartVersion: {{ .Chart.Version | quote }}
     enableAgentTaskExecution: true
@@ -34,7 +40,7 @@ data:
       {{- if .Values.capabilities.telemetry.deployOtelCollector }}
       serverHost: {{ include "komodorAgent.openTelemetry.serviceFqdn" . }}
       {{- else }}
-      serverHost: {{ .Values.communications.telemetryServerHost }}
+      serverHost: {{ include "communication.telemetryServerHost" . }}
       {{- end }}
     {{- if .Values.capabilities.telemetry.deployOtelCollector }}
     {{/* When the OTEL Collector is enabled, it collect logs already thus not needing the remote sink */}}
