@@ -65,9 +65,9 @@ manager:
   apiServer:
     port: 8100
   
-  # Annotate Pods with Events and/or Labels to keep track of migration status
-  statusEvents: true
-  statusLabels: true
+  # Annotate Pods with Events and/or Labels to keep track of status with auto-scaledown capabilities
+  statusEvents: false
+  statusLabels: false
   
   # Security context for manager container
   securityContext:
