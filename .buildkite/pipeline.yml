@@ -30,6 +30,15 @@ steps:
     if: build.message !~ /feat\(OSS.+\):/i
     retry: *retry
 
+  - label: ":test_tube: Validations tests"
+    commands:
+      - cd .buildkite/tests
+      - make validations_test
+    agents:
+      builder: "dind"
+    if: build.message !~ /feat\(OSS.+\):/i
+    retry: *retry
+
   - label: ":test_tube: Basic tests"
     commands:
       - cd .buildkite/tests
