@@ -6,7 +6,8 @@ retry: &retry
       limit: 3
     - exit_status: 1
       limit: 2
-              
+    - exit_status: 2
+      limit: 3
 steps:
   - label: ":memo: helm template check for sanity"
     command: helm template komodor-agent charts/komodor-agent -f charts/komodor-agent/values.yaml --set apiKey="sanity" --set clusterName=test-template
