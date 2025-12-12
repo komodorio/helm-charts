@@ -9,7 +9,7 @@ metadata:
 data:
   komodor.yaml: |
     chartVersion: {{ .Chart.Version | quote }}
-    clusterName: {{ .Values.clusterName | required "clusterName is a required value!" }}
+    clusterName: {{ .Values.clusterName }}
     {{- if and .Values.proxy.enabled .Values.proxy.https }}
     proxyUrl: {{ .Values.proxy.https }}
     {{- end }}

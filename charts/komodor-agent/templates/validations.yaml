@@ -1,0 +1,44 @@
+{{- /*
+This file contains validations that run before rendering any templates.
+It doesn't produce any Kubernetes resources - it only validates input values.
+*/ -}}
+
+{{- /* Validate site value */ -}}
+{{- if not (or (eq .Values.site "eu") (eq .Values.site "us")) }}
+  {{- fail "site is required and must be either 'eu' or 'us'" }}
+{{- end }}
+
+{{- /* Validate clusterName is provided */ -}}
+{{- if not .Values.clusterName }}
+  {{- fail "clusterName is a required value!" }}
+{{- end }}
+
+{{- /* Validate apiKey is provided when not using existing secret */ -}}
+{{- if not .Values.apiKeySecret }}
+  {{- if not .Values.apiKey }}
+    {{- fail "apiKey is a required value!" }}
+  {{- end }}
+{{- end }}
+
+{{- /* Validate serviceAccount configuration */ -}}
+{{- if not .Values.serviceAccount.create }}
+  {{- if not .Values.serviceAccount.name }}
+    {{- fail "you must provide a serviceAccount.name when serviceAccount.create is not set to true" }}
+  {{- end }}
+{{- end }}
+
+{{- /* Validate admission controller serviceAccount configuration */ -}}
+{{- if .Values.components.admissionController.enabled }}
+  {{- if not .Values.components.admissionController.serviceAccount.create }}
+    {{- if not .Values.components.admissionController.serviceAccount.name }}
+      {{- fail "you must provide a components.admissionController.serviceAccount.name when components.admissionController.serviceAccount.create is not set to true" }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+
+{{- /* Validate tags format */ -}}
+{{- if .Values.tags }}
+  {{- if not (or (kindIs "map" .Values.tags) (kindIs "string" .Values.tags)) }}
+    {{- fail "Invalid type for .Values.tags. Expected map or string." }}
+  {{- end }}
+{{- end }}

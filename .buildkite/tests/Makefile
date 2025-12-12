@@ -7,7 +7,7 @@ KIND_BINARY = ./kind
 
 # Targets
 .PHONY: install-kind setup-venv test-all basic_test values_base_test values_capabilities_events_test values_capabilities_proxy_test \
-	values_capabilities_test values_components_test cleanup-kind
+	values_capabilities_test values_components_test validations_test cleanup-kind
 
 install-kind:
 	@if ! command -v kind &> /dev/null ; then \
@@ -56,3 +56,6 @@ values_components_test: setup-venv install-kind cleanup-kind
 
 legacy_k8s_versions_test: setup-venv install-kind cleanup-kind
 	$(VENV_ACTIVATE) ; pytest legacy_k8s_versions_test.py
+
+validations_test: setup-venv
+	$(VENV_ACTIVATE) ; pytest validations_test.py

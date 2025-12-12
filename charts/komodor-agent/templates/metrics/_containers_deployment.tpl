@@ -16,7 +16,7 @@
   - name: KOMOKW_API_KEY
     {{ include "komodorAgent.apiKeySecretRef" . | nindent 4 }}
   - name: KOMODOR_SERVER_URL
-    value: {{ .Values.communications.serverHost | quote }}
+    value: {{ include "communication.serverHost" . | quote }}
   - name: NODE_NAME
     valueFrom:
       fieldRef:
