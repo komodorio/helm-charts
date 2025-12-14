@@ -121,7 +121,7 @@ data:
         sampling_initial: 5
         sampling_thereafter: 200
       otlphttp/komodor:
-        endpoint: {{ .Values.communications.telemetryServerHost }}
+        endpoint: {{ include "communication.telemetryServerHost" . }}
         compression: gzip
         timeout: 30s
         headers:

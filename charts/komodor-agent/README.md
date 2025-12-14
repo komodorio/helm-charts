@@ -131,6 +131,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| site | string | "us" | Komodor site, allowed values: "us", "eu" |
 | apiKey | guid | `nil` | **(*required*)** To be obtained from komodor app during onboarding |
 | apiKeySecret | string | `nil` | Secret name containing Komodor agent api key |
 | createNamespace | bool | `true` | Creates the namespace |

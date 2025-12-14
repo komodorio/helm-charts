@@ -6,19 +6,20 @@ retry: &retry
       limit: 3
     - exit_status: 1
       limit: 2
-              
+    - exit_status: 2
+      limit: 3
 steps:
   - label: ":memo: helm template check for sanity"
     command: helm template komodor-agent charts/komodor-agent -f charts/komodor-agent/values.yaml --set apiKey="sanity" --set clusterName=test-template
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     if: build.message !~ /feat\(OSS.+\):/i
     retry: *retry
 
   - label: ":memo: Test bump version script"
     command: bats .buildkite/pipeline_scripts_tests/*.bat
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     if: build.message !~ /feat\(OSS.+\):/i
     retry: *retry
 
@@ -30,13 +31,22 @@ steps:
     if: build.message !~ /feat\(OSS.+\):/i
     retry: *retry
 
+  - label: ":test_tube: Validations tests"
+    commands:
+      - cd .buildkite/tests
+      - make validations_test
+    agents:
+      builder: "builder-dind-agent"
+    if: build.message !~ /feat\(OSS.+\):/i
+    retry: *retry
+
   - label: ":test_tube: Basic tests"
     commands:
       - cd .buildkite/tests
       - ./ci/use-new-agent-version.sh
       - make basic_test
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
@@ -50,7 +60,7 @@ steps:
       - ./ci/use-new-agent-version.sh
       - make values_base_test
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
@@ -64,7 +74,7 @@ steps:
       - ./ci/use-new-agent-version.sh
       - make values_capabilities_events_test
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
@@ -78,7 +88,7 @@ steps:
       - ./ci/use-new-agent-version.sh
       - make values_capabilities_proxy_test
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     retry: *retry
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
@@ -92,7 +102,7 @@ steps:
       - ./ci/use-new-agent-version.sh
       - make values_capabilities_test
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     retry: *retry
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
@@ -106,7 +116,7 @@ steps:
       - ./ci/use-new-agent-version.sh
       - make values_components_test
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     retry: *retry
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
@@ -120,7 +130,7 @@ steps:
       - ./ci/use-new-agent-version.sh
       - make legacy_k8s_versions_test
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     retry: *retry
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
@@ -142,7 +152,7 @@ steps:
     commands:
       - ./.buildkite/pipeline_scripts/test_helm_new_install.sh
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
@@ -154,7 +164,7 @@ steps:
     commands:
       - ./.buildkite/pipeline_scripts/test_helm_update_install.sh
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
@@ -170,7 +180,7 @@ steps:
     commands:
       - ./.buildkite/pipeline_scripts/bump_version.sh
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     key: bump-versions
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
 
@@ -187,7 +197,7 @@ steps:
     commands:
       - ./.buildkite/pipeline_scripts/publish_helm_charts.sh
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
@@ -212,7 +222,7 @@ steps:
     commands:
       - python3 ./.buildkite/validate_helm_chart_updated.py "komodor-agent"
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
   - wait
 
@@ -227,7 +237,7 @@ steps:
 
       - ./.buildkite/pipeline_scripts/update_agent.sh staging komodor-staging komodor-agent-production $$STAGING_PRODUCTION_API_KEY
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
@@ -241,7 +251,7 @@ steps:
       - ./.buildkite/pipeline_scripts/update_agent.sh production production komodor-agent
       - ./.buildkite/pipeline_scripts/update_agent.sh production production-rc-chart komodor-agent-rc "" "komodor-agent-rc" "rc"
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
@@ -252,7 +262,7 @@ steps:
     commands:
       - ./.buildkite/pipeline_scripts/update_agent.sh ci ci komodor-agent
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
