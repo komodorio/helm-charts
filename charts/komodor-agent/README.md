@@ -2,7 +2,7 @@
 
 Watches and sends kubernetes resource-related events
 
-![AppVersion: 0.2.179](https://img.shields.io/badge/AppVersion-0.2.179-informational?style=flat-square)
+![AppVersion: 0.2.180](https://img.shields.io/badge/AppVersion-0.2.180-informational?style=flat-square)
 
 ## TL;DR;
 
@@ -131,6 +131,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| site | string | "us" | Komodor site, allowed values: "us", "eu" |
 | apiKey | guid | `nil` | **(*required*)** To be obtained from komodor app during onboarding |
 | apiKeySecret | string | `nil` | Secret name containing Komodor agent api key |
 | createNamespace | bool | `true` | Creates the namespace |
