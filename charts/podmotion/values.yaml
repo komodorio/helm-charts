@@ -172,6 +172,8 @@ uninstall:
 proxy:
   # proxy.enabled -- Enable proxy
   enabled: false
+  # proxy.komodorOnly -- Configure proxy to be applied only on communication to Komodor servers (comms. to K8S API remains without proxy)
+  komodorOnly: true
   # proxy.http -- (string) Configure Proxy setting (HTTP_PROXY) `eg. http://proxy.com:8080`
   http:
   # proxy.https -- (string) Configure Proxy setting (HTTPS_PROXY) `eg. https://proxy.com:8080`
