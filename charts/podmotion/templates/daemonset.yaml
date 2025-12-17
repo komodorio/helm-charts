@@ -58,6 +58,7 @@ spec:
           env:
             - name: KOMO_API_KEY
               {{ include "podmotion.apiKeySecretRef" . | nindent 14 }}
+            {{- include "podmotion.proxy-conf-env" . | nindent 12 }}
           volumeMounts:
             - mountPath: {{ .Values.installer.volumeMounts.hostroot }}
               name: hostroot
@@ -156,6 +157,7 @@ spec:
             - name: KOMO_API_KEY
               {{ include "podmotion.apiKeySecretRef" . | nindent 14 }}
             {{- include "podmotion.versionEnvVars" . | nindent 12 }}
+            {{- include "podmotion.proxy-conf-env" . | nindent 12 }}
           {{- with .Values.resources.manager }}
           resources:
             {{- toYaml . | nindent 12 }}
