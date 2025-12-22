@@ -63,6 +63,12 @@ rules:
       - list
       - patch
   - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - watch
+  - apiGroups:
       - "*"
     resources:
       - "*"
