@@ -52,8 +52,7 @@ spec:
           jsonPath: .status.containers[*].migrationDuration
           name: Migration Duration
           type: string
-        - description: Approximation of time from original container shut down to restore
-            completion on new container
+        - description: Time taken to restore the container on the target pod
           jsonPath: .status.containers[*].restoreDuration
           name: Restore Duration
           type: string
