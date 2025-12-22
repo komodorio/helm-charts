@@ -54,8 +54,8 @@ spec:
           type: string
         - description: Approximation of time from original container shut down to restore
             completion on new container
-          jsonPath: .status.containers[*].migrationDuration
-          name: Migration Duration
+          jsonPath: .status.containers[*].restoreDuration
+          name: Restore Duration
           type: string
         - description: Time since the migration was created
           jsonPath: .metadata.creationTimestamp
