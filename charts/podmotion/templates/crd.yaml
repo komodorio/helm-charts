@@ -46,6 +46,12 @@ spec:
           name: Checkpoint Duration
           priority: 1
           type: string
+        - description:
+            Approximation of time from original container shut down to restore
+            completion on new container
+          jsonPath: .status.containers[*].migrationDuration
+          name: Migration Duration
+          type: string
         - description: Approximation of time from original container shut down to restore
             completion on new container
           jsonPath: .status.containers[*].migrationDuration
@@ -196,6 +202,8 @@ spec:
                             type: string
                         type: object
                       migrationDuration:
+                        type: string
+                      restoreDuration:
                         type: string
                       name:
                         type: string
