@@ -19,7 +19,7 @@ spec:
   versions:
     - additionalPrinterColumns:
         - description: Current phase of the migration (Pending, Running, Completed, Failed,
-            Unclaimed)
+            Unclaimed, Skipped)
           jsonPath: .status.containers[*].condition.phase
           name: Phase
           type: string
