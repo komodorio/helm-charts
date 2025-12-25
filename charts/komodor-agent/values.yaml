@@ -416,6 +416,9 @@ components:
     extraVolumes: []
     # components.admissionController.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
     extraEnvVars: []
+    # components.admissionController.markUnevictable -- (bool) Mark the admission controller as unevictable by adding pod labels and annotations for various autoscalers
+    # @default -- true
+    markUnevictable: true
 
   komodorMetrics:
     # components.komodorMetrics.PriorityClassValue -- Set the priority class value for the komodor metrics agent deployment

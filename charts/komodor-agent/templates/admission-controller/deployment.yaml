@@ -17,9 +17,22 @@ spec:
     metadata:
       labels:
         {{- include "komodorAgent.admissionController.selectorLabels" . | nindent 8 }}
+        {{- if .Values.components.admissionController.markUnevictable }}
+        beta.evictor.cast.ai/eviction-disabled: "true"
+        autoscaling.cast.ai/removal-disabled: "true"
+        cast.ai/do-not-evict: "true"
+        spot.io/restrict-scale-down: "true"
+        {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/admission-controller/configmap.yaml") . | sha256sum }}
         checksum/certs-webhook: {{ include (print $.Template.BasePath "/admission-controller/webhookconfiguration.yaml") . | sha256sum }}
+        {{- if .Values.components.admissionController.markUnevictable }}
+        beta.evictor.cast.ai/eviction-disabled: "true"
+        autoscaling.cast.ai/removal-disabled: "true"
+        karpenter.sh/do-not-disrupt: "true"
+        karpenter.sh/do-not-evict: "true"
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
+        {{- end }}
         {{- if not (empty (((.Values.components).admissionController).podAnnotations)) }}
         {{- toYaml .Values.components.admissionController.podAnnotations | trim | nindent 8 }}
         {{- end }}
