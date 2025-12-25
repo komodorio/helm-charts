@@ -53,4 +53,7 @@ data:
       {{- if .Values.capabilities.admissionController.rightsizing.mutatedAnnotationKey }}
       mutatedAnnotationKey: {{ .Values.capabilities.admissionController.rightsizing.mutatedAnnotationKey }}
       {{- end }}
+      {{- if .Values.capabilities.admissionController.rightsizing.applyProtocolAnnotationKey }}
+      applyProtocolAnnotationKey: {{ .Values.capabilities.admissionController.rightsizing.applyProtocolAnnotationKey }}
+      {{- end }}
 {{- end }}

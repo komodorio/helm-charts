@@ -251,6 +251,9 @@ capabilities:
       # capabilities.admissionController.rightsizing.mutatedAnnotationKey -- (string) Annotation key to mark pods as mutated by the rightsizing admission controller
       # @default -- "rightsizing.komodor.com/mutated"
       #mutatedAnnotationKey: "rightsizing.komodor.com/mutated"
+      # capabilities.admissionController.rightsizing.applyProtocolAnnotationKey -- (string) Annotation key to mark the protocol used by the rightsizing admission controller
+      # @default -- "rightsizing.komodor.com/apply-protocol"
+      #applyProtocolAnnotationKey: "rightsizing.komodor.com/apply-protocol"
 
 # components -- Configure the agent components
 # @default -- See sub-values
@@ -371,7 +374,7 @@ components:
     # @default -- see sub-values
     image:
       name: admission-controller
-      tag: 0.1.28
+      tag: 0.1.29
     # components.admissionController.resources -- Set custom resources to the komodor admission controller container - Memory utilization is relative to the amount of: [pods, nodes, pvcs, pvs, pdbs] resources you have in the cluster.
     resources:
       limits:
