@@ -251,6 +251,9 @@ capabilities:
       # capabilities.admissionController.rightsizing.mutatedAnnotationKey -- (string) Annotation key to mark pods as mutated by the rightsizing admission controller
       # @default -- "rightsizing.komodor.com/mutated"
       #mutatedAnnotationKey: "rightsizing.komodor.com/mutated"
+      # capabilities.admissionController.rightsizing.applyProtocolAnnotationKey -- (string) Annotation key to mark the protocol used by the rightsizing admission controller
+      # @default -- "rightsizing.komodor.com/apply-protocol"
+      #applyProtocolAnnotationKey: "rightsizing.komodor.com/apply-protocol"
 
 # components -- Configure the agent components
 # @default -- See sub-values
