@@ -1,0 +1,15 @@
+{{- if .Values.capabilities.admissionController.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "komodorAgent.admissionController.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "komodorAgent.admissionController.labels" . | nindent 4 }}
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      {{- include "komodorAgent.admissionController.selectorLabels" . | nindent 6 }}
+{{- end }}
+
