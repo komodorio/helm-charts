@@ -395,37 +395,23 @@ components:
             preference:
               matchExpressions:
                 - key: eks.amazonaws.com/capacityType
-                  operator: NotIn
+                  operator: In
                   values:
-                    - SPOT
+                    - ON_DEMAND
           - weight: 100
             preference:
               matchExpressions:
                 - key: karpenter.sh/capacity-type
-                  operator: NotIn
+                  operator: In
                   values:
-                    - spot
-          - weight: 100
-            preference:
-              matchExpressions:
-                - key: cloud.google.com/gke-spot
-                  operator: NotIn
-                  values:
-                    - "true"
-          - weight: 100
-            preference:
-              matchExpressions:
-                - key: cloud.google.com/gke-preemptible
-                  operator: NotIn
-                  values:
-                    - "true"
+                    - on-demand
           - weight: 100
             preference:
               matchExpressions:
                 - key: kubernetes.azure.com/scalesetpriority
-                  operator: NotIn
+                  operator: In
                   values:
-                    - spot
+                    - regular
     # components.admissionController.annotations -- Set annotations for the komodor admission controller deployment
     annotations: {}
     # components.admissionController.podAnnotations -- Set pod annotations for the komodor admission controller deployment
