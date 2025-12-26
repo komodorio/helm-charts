@@ -398,30 +398,18 @@ components:
                   operator: NotIn
                   values:
                     - SPOT
-          - weight: 100
-            preference:
-              matchExpressions:
                 - key: karpenter.sh/capacity-type
                   operator: NotIn
                   values:
                     - spot
-          - weight: 100
-            preference:
-              matchExpressions:
                 - key: cloud.google.com/gke-spot
                   operator: NotIn
                   values:
                     - "true"
-          - weight: 100
-            preference:
-              matchExpressions:
                 - key: cloud.google.com/gke-preemptible
                   operator: NotIn
                   values:
                     - "true"
-          - weight: 100
-            preference:
-              matchExpressions:
                 - key: kubernetes.azure.com/scalesetpriority
                   operator: NotIn
                   values:
