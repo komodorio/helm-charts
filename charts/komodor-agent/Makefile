@@ -13,6 +13,7 @@ HELM_DOCS_ARGS := -s file \
                   -y="components.komodorMetrics.metrics" \
                   -y="components.komodorDaemon.metrics" \
                   -y="components.komodorDaemon" \
+                  -z="components.admissionController.affinity.nodeAffinity.*" \
                   -y="allowedResources" \
                   -z ".*securityContext.*" \
 				  -z ".tolerations.*"
