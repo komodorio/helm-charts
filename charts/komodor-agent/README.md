@@ -203,7 +203,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | capabilities.tasks.httpRequests | object | See sub-values | Configure HTTP request capabilities |
 | capabilities.tasks.httpRequests.skipTlsVerify | bool | `false` | Skip TLS certificate verification for HTTP requests (sets HTTP_REQUESTS_SKIP_TLS_VERIFY environment variable) |
 | capabilities.admissionController | object | See sub-values | Configure the komodor admission controller capabilities |
-| capabilities.admissionController.enabled | bool | `false` | Enable the komodor admission controller |
+| capabilities.admissionController.enabled | bool | `true` | Enable the komodor admission controller |
 | capabilities.admissionController.pdb | object | `{"enabled":false}` | Configure the PodDisruptionBudget for the admission controller |
 | capabilities.admissionController.pdb.enabled | bool | `false` | Enable PodDisruptionBudget for the admission controller |
 | capabilities.admissionController.logLevel | string | `"info"` | Log level for the admission controller |

@@ -180,7 +180,7 @@ capabilities:
   # @default -- See sub-values
   admissionController:
     # capabilities.admissionController.enabled -- (bool) Enable the komodor admission controller
-    enabled: false
+    enabled: true
     # capabilities.admissionController.pdb -- Configure the PodDisruptionBudget for the admission controller
     pdb:
       # capabilities.admissionController.pdb.enabled -- (bool) Enable PodDisruptionBudget for the admission controller
