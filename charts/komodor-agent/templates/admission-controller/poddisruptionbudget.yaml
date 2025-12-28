@@ -1,4 +1,4 @@
-{{- if and .Values.capabilities.admissionController.enabled capabilities.admissionController.pdb.enabled }}
+{{- if and .Values.capabilities.admissionController.enabled .Values.capabilities.admissionController.pdb.enabled }}
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
