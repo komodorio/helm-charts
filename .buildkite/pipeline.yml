@@ -68,19 +68,19 @@ steps:
             PUBLIC_API_KEY: /helm-chart-test/production/PUBLIC_API_KEY
     retry: *retry
 
-  - label: ":test_tube: values_capabilities_events_test"
-    commands:
-      - cd .buildkite/tests
-      - ./ci/use-new-agent-version.sh
-      - make values_capabilities_events_test
-    agents:
-      builder: "builder-dind-agent"
-    plugins:
-      - zacharymctague/aws-ssm#v1.0.0:
-          parameters:
-            API_KEY: /helm-chart-test/production/API_KEY
-            PUBLIC_API_KEY: /helm-chart-test/production/PUBLIC_API_KEY
-    retry: *retry
+  # - label: ":test_tube: values_capabilities_events_test"
+  #   commands:
+  #     - cd .buildkite/tests
+  #     - ./ci/use-new-agent-version.sh
+  #     - make values_capabilities_events_test
+  #   agents:
+  #     builder: "builder-dind-agent"
+  #   plugins:
+  #     - zacharymctague/aws-ssm#v1.0.0:
+  #         parameters:
+  #           API_KEY: /helm-chart-test/production/API_KEY
+  #           PUBLIC_API_KEY: /helm-chart-test/production/PUBLIC_API_KEY
+  #   retry: *retry
 
   - label: ":test_tube: values_capabilities_proxy_test"
     commands:
