@@ -16,9 +16,9 @@ clusterName:
 createRbac: true
 
 # telegrafImageVersion -- (string) Telegraf version to be used
-telegrafImageVersion: &telegrafVersion v2.0.16-alpine
+telegrafImageVersion: &telegrafVersion v2.0.20-alpine
 # telegrafWindowsImageVersion -- (string) Telegraf version to be used for windows
-telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.16
+telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.20
 
 # serviceAccount -- Configure service account for the agent
 # @default -- See sub-values
@@ -392,7 +392,32 @@ components:
     # components.admissionController.priorityClassName -- Use an existing priority class for the komodor admission-controller deployment. If not set, will create and use a priority class with PriorityClassValue. WARNING: priorityClassName is immutable and cannot be changed after initial deployment
     priorityClassName: ""
     # components.admissionController.affinity -- Set node affinity for the komodor admission controller deployment
-    affinity: {}
+    affinity:
+      nodeAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            preference:
+              matchExpressions:
+                - key: eks.amazonaws.com/capacityType
+                  operator: NotIn
+                  values:
+                    - SPOT
+                - key: karpenter.sh/capacity-type
+                  operator: NotIn
+                  values:
+                    - spot
+                - key: cloud.google.com/gke-spot
+                  operator: NotIn
+                  values:
+                    - "true"
+                - key: cloud.google.com/gke-preemptible
+                  operator: NotIn
+                  values:
+                    - "true"
+                - key: kubernetes.azure.com/scalesetpriority
+                  operator: NotIn
+                  values:
+                    - spot
     # components.admissionController.annotations -- Set annotations for the komodor admission controller deployment
     annotations: {}
     # components.admissionController.podAnnotations -- Set pod annotations for the komodor admission controller deployment

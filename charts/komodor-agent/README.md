@@ -138,8 +138,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | tags | dict | `{}` | Tags the agent in order to identify it based on `key:value` properties separated by semicolon (`;`) example: `--set tags.env=staging,tags.team=payments` --- Can also be set in the values under `tags` as a dictionary of key:value strings |
 | clusterName | string | `nil` | **(*required*)** Name to be displayed in the Komodor web application |
 | createRbac | bool | `true` | Creates the necessary RBAC resources for the agent - use with caution! |
-| telegrafImageVersion | string | `"v2.0.16-alpine"` | Telegraf version to be used |
-| telegrafWindowsImageVersion | string | `"v2.0.16"` | Telegraf version to be used for windows |
+| telegrafImageVersion | string | `"v2.0.20-alpine"` | Telegraf version to be used |
+| telegrafWindowsImageVersion | string | `"v2.0.20"` | Telegraf version to be used for windows |
 | serviceAccount | object | See sub-values | Configure service account for the agent |
 | serviceAccount.create | bool | `true` | Creates a service account for the agent |
 | serviceAccount.name | string | `nil` | Name of the service account, Required if `serviceAccount.create` is false |
@@ -269,7 +269,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.admissionController.resources | object | `{"limits":{"cpu":1,"memory":"4Gi"},"requests":{"cpu":"500m","memory":"1Gi"}}` | Set custom resources to the komodor admission controller container - Memory utilization is relative to the amount of: [pods, nodes, pvcs, pvs, pdbs] resources you have in the cluster. |
 | components.admissionController.PriorityClassValue | int | `10000000` | Set the priority class value for the komodor admission-controller deployment |
 | components.admissionController.priorityClassName | string | `""` | Use an existing priority class for the komodor admission-controller deployment. If not set, will create and use a priority class with PriorityClassValue. WARNING: priorityClassName is immutable and cannot be changed after initial deployment |
-| components.admissionController.affinity | object | `{}` | Set node affinity for the komodor admission controller deployment |
+| components.admissionController.affinity | object | `{"nodeAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"preference":{"matchExpressions":[{"key":"eks.amazonaws.com/capacityType","operator":"NotIn","values":["SPOT"]},{"key":"karpenter.sh/capacity-type","operator":"NotIn","values":["spot"]},{"key":"cloud.google.com/gke-spot","operator":"NotIn","values":["true"]},{"key":"cloud.google.com/gke-preemptible","operator":"NotIn","values":["true"]},{"key":"kubernetes.azure.com/scalesetpriority","operator":"NotIn","values":["spot"]}]},"weight":100}]}}` | Set node affinity for the komodor admission controller deployment |
 | components.admissionController.annotations | object | `{}` | Set annotations for the komodor admission controller deployment |
 | components.admissionController.podAnnotations | object | `{}` | Set pod annotations for the komodor admission controller deployment |
 | components.admissionController.labels | object | `{}` | Set custom labels |
@@ -294,7 +294,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorMetrics.metricsInit.image | object | `{ "name": "komodor-agent", "tag": .Chart.AppVersion }` | Override the komodor agent metrics init image name or tag. |
 | components.komodorMetrics.metricsInit.resources | object | `{}` | Set custom resources to the komodor agent metrics init container |
 | components.komodorMetrics.metricsInit.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
-| components.komodorMetrics.metrics.image | object | `{"name":"telegraf","tag":"v2.0.16-alpine"}` | Override the komodor agent metrics image name or tag. |
+| components.komodorMetrics.metrics.image | object | `{"name":"telegraf","tag":"v2.0.20-alpine"}` | Override the komodor agent metrics image name or tag. |
 | components.komodorMetrics.metrics.resources | object | `{"limits":{"cpu":1,"memory":"4Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
 | components.komodorMetrics.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorMetrics.metrics.sidecar | object | `{"enabled":true}` | Configure the telegraf-init sidecar container |
@@ -317,8 +317,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemon.metricsInit.image | object | `{ "name": "init-daemon-agent", "tag": .Chart.AppVersion }` | Override the komodor agent metrics init image name or tag. |
 | components.komodorDaemon.metricsInit.resources | object | `{"limits":{"cpu":1,"memory":"100Mi"},"requests":{"cpu":0.1,"memory":"50Mi"}}` | Set custom resources to the komodor agent metrics init container |
 | components.komodorDaemon.metricsInit.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
-| components.komodorDaemon.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf","tag":"v2.0.16-alpine"},"quiet":false,"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}},"sidecar":{"enabled":true}}` | Configure the komodor daemon metrics components |
-| components.komodorDaemon.metrics.image | object | `{"name":"telegraf","tag":"v2.0.16-alpine"}` | Override the komodor agent metrics image name or tag. |
+| components.komodorDaemon.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf","tag":"v2.0.20-alpine"},"quiet":false,"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}},"sidecar":{"enabled":true}}` | Configure the komodor daemon metrics components |
+| components.komodorDaemon.metrics.image | object | `{"name":"telegraf","tag":"v2.0.20-alpine"}` | Override the komodor agent metrics image name or tag. |
 | components.komodorDaemon.metrics.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
 | components.komodorDaemon.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemon.metrics.quiet | bool | `false` | Set the quiet mode for the komodor agent metrics |
@@ -356,8 +356,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemonWindows.metricsInit.image | object | `{ "name": "init-daemon-agent", "tag": .Chart.AppVersion }` | Override the komodor agent metrics init image name or tag. |
 | components.komodorDaemonWindows.metricsInit.resources | object | `{"limits":{"cpu":1,"memory":"100Mi"},"requests":{"cpu":0.1,"memory":"50Mi"}}` | Set custom resources to the komodor agent metrics init container |
 | components.komodorDaemonWindows.metricsInit.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
-| components.komodorDaemonWindows.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf-windows","tag":"v2.0.16"},"quiet":false,"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}},"sidecar":{"enabled":true}}` | Configure the komodor daemon metrics components |
-| components.komodorDaemonWindows.metrics.image | object | `{"name":"telegraf-windows","tag":"v2.0.16"}` | Override the komodor agent metrics image name or tag. |
+| components.komodorDaemonWindows.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf-windows","tag":"v2.0.20"},"quiet":false,"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}},"sidecar":{"enabled":true}}` | Configure the komodor daemon metrics components |
+| components.komodorDaemonWindows.metrics.image | object | `{"name":"telegraf-windows","tag":"v2.0.20"}` | Override the komodor agent metrics image name or tag. |
 | components.komodorDaemonWindows.metrics.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
 | components.komodorDaemonWindows.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemonWindows.metrics.quiet | bool | `false` | Set the quiet mode for the komodor agent metrics |
