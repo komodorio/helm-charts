@@ -94,7 +94,9 @@ def find_pod_name_by_deployment(deployment_name, namespace):
             namespace=namespace,
             label_selector=label_selector
         )
-        # If there are any Pods, return the name of the first one
+        for pod in pods.items:
+            if pod.metadata.name.startswith(deployment_name + "-"):
+                return pod.metadata.name
         if pods.items:
             return pods.items[0].metadata.name
         else:
