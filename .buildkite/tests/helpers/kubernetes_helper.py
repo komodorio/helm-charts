@@ -94,9 +94,18 @@ def find_pod_name_by_deployment(deployment_name, namespace):
             namespace=namespace,
             label_selector=label_selector
         )
+        # Filter pods to ensure they belong to the correct deployment
+        # Pods are named like: deployment-name-<hash>-<random>
+        # We check that the pod name starts with the deployment name followed by a hyphen
+        # and does NOT contain "-admission-controller-" to avoid matching admission-controller pods
+        # that might have overlapping label selectors
         for pod in pods.items:
-            if pod.metadata.name.startswith(deployment_name + "-"):
-                return pod.metadata.name
+            pod_name = pod.metadata.name
+            if (pod_name.startswith(deployment_name + "-") and 
+                "-admission-controller-" not in pod_name):
+                return pod_name
+        # Fallback: if no pod matches the prefix, return the first one
+        # (this maintains backward compatibility)
         if pods.items:
             return pods.items[0].metadata.name
         else:
