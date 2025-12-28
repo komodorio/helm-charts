@@ -181,6 +181,10 @@ capabilities:
   admissionController:
     # capabilities.admissionController.enabled -- (bool) Enable the komodor admission controller
     enabled: false
+    # capabilities.admissionController.pdb -- Configure the PodDisruptionBudget for the admission controller
+    pdb:
+      # capabilities.admissionController.pdb.enabled -- (bool) Enable PodDisruptionBudget for the admission controller
+      enabled: false
     # capabilities.admissionController.logLevel -- (string) Log level for the admission controller
     logLevel: info
     # capabilities.admissionController.logFormat -- (string) Log format for the admission controller
