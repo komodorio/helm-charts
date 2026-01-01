@@ -219,6 +219,8 @@ capabilities:
       # capabilities.admissionController.mutatingWebhook.caBundle -- (string) CA bundle for the mutating webhook configuration. It should match the webhook server CA.
       # @default -- using the kube-root-ca.crt ConfigMap in the kube-system namespace
       caBundle:
+      # capabilities.admissionController.mutatingWebhook.allowOnAKSManagedNamespaces -- (bool) Allow mutating webhook to be called for pods in AKS-managed namespaces (See also: https://learn.microsoft.com/en-us/azure/aks/faq#can-admission-controller-webhooks-affect-kube-system-and-internal-aks-namespaces-)
+      allowOnAKSManagedNamespaces: false
     # capabilities.admissionController.binpacking -- Configure the binpacking capabilities for the admission controller
     # @default -- See sub-values
     binpacking:

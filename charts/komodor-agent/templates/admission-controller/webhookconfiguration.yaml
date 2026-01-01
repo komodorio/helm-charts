@@ -28,6 +28,10 @@ apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
   name: {{ include "komodorAgent.admissionController.webhookName" . }}
+  {{- if .Values.capabilities.admissionController.mutatingWebhook.allowOnAKSManagedNamespaces }}
+  labels:
+    "admissions.enforcer/disabled": "true"
+  {{- end }}
 webhooks:
   - name: binpacking.komodor.com
     clientConfig:
