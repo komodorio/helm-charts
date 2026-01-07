@@ -10,6 +10,7 @@ data:
   komodor.yaml: |
     chartVersion: {{ .Chart.Version | quote }}
     clusterName: {{ .Values.clusterName }}
+    serverHost: {{ include "communication.serverHost" . | quote }}
     {{- if and .Values.proxy.enabled .Values.proxy.https }}
     proxyUrl: {{ .Values.proxy.https }}
     {{- end }}
