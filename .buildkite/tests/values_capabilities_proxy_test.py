@@ -168,10 +168,6 @@ def test_proxy_envroinment_vars_are_set(
         if container["name"] == "metrics":
             assert "KOMODOR_HTTP_PROXY" in env_vars
             continue
-        if container["name"] == "otel-collector":
-            assert "HTTP_PROXY" in env_vars
-            assert "HTTPS_PROXY" in env_vars
-            continue
         
         for env_name, expected_value in expected_env_vars.items():
 
