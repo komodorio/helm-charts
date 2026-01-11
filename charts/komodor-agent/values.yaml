@@ -418,6 +418,15 @@ components:
                   operator: NotIn
                   values:
                     - spot
+      podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: komodor-agent
+                  app.kubernetes.io/component: admission-controller
+              topologyKey: kubernetes.io/hostname
     # components.admissionController.annotations -- Set annotations for the komodor admission controller deployment
     annotations: {}
     # components.admissionController.podAnnotations -- Set pod annotations for the komodor admission controller deployment

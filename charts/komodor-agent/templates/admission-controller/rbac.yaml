@@ -89,6 +89,16 @@ rules:
       - watch
       - list
       - patch
+  # leader election
+  - apiGroups:
+    - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+    - get
+    - create
+    - update
+    
 
   # Required for Admission Controller in-place mutation:
   - nonResourceURLs:
