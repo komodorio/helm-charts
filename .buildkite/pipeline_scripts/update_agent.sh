@@ -17,6 +17,7 @@ RELEASE_NAME="${3:-komodor-agent}"
 KOMODOR_AGENT_API_KEY="${4:-$API_KEY}"
 NAMESPACE="${5:-komodor-agent}"
 CHART_VERSION="${6:-latest}"
+SITE="${7:-us}"
 
 komo ctx "${environment}"
 helm repo add komodorio https://helm-charts.komodor.io
@@ -46,4 +47,5 @@ helm upgrade --install "${RELEASE_NAME}"  komodorio/komodor-agent \
   --set clusterName="${CLUSTER_NAME}" \
   --set apiKey="$KOMODOR_AGENT_API_KEY" \
   --set tags="env:${environment}" $CHART_VERSION \
+  --set site="${SITE}" \
   -f ./.buildkite/pipeline_scripts/production-values.yaml $EXTRA_VALUES_ARG
