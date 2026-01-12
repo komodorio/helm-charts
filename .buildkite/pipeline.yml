@@ -249,6 +249,7 @@ steps:
   - label: ":magic_wand: Install new komodor-agent version on komodor production :kubernetes: cluster"
     commands:
       - ./.buildkite/pipeline_scripts/update_agent.sh production production komodor-agent
+      - ./.buildkite/pipeline_scripts/update_agent.sh eu-production eu-production komodor-agent komodor-agent-us "komodor-agent-report-to-us"
       - ./.buildkite/pipeline_scripts/update_agent.sh production production-rc-chart komodor-agent-rc "" "komodor-agent-rc" "rc"
     agents:
       builder: "builder-dind-agent"
@@ -258,9 +259,20 @@ steps:
             API_KEY: /komodor/production/kubernetes/api-key
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
 
+  - label: ":magic_wand: Install new komodor-agent version on komodor production :kubernetes: cluster"
+    commands:
+      - ./.buildkite/pipeline_scripts/update_agent.sh eu-production eu-production komodor-agent komodor-agent-us "komodor-agent-report-to-us"
+    agents:
+      builder: "builder-dind-agent"
+    plugins:
+      - zacharymctague/aws-ssm#v1.0.0:
+          parameters:
+            API_KEY: /komodor/production/kubernetes/api-key
+
   - label: ":magic_wand: Install new komodor-agent version on komodor eu-production :kubernetes: cluster"
     commands:
       - ./.buildkite/pipeline_scripts/update_agent.sh eu-production eu-production komodor-agent "" "default" "" "eu"
+      - ./.buildkite/pipeline_scripts/update_agent.sh production us-production komodor-agent-eu "" "komodor-agent-report-to-eu" "eu"
     agents:
       builder: "builder-dind-agent"
     env:
@@ -268,8 +280,8 @@ steps:
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
-            API_KEY: /komodor/eu-production/kubernetes/api-key
-    if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
+            API_KEY: /komodor/eu-production/kubernetes/komodor-agent-api-key
+    # if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
 
   - label: ":magic_wand: Install new watcher version on komodor ci :kubernetes: cluster"
     commands:
