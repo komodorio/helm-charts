@@ -32,12 +32,12 @@ daemonset:
 images:
   installer:
     repository: public.ecr.aws/komodor-public/podmotion-installer
-    tag: "0.1.15"
+    tag: "0.1.16"
     pullPolicy: IfNotPresent
   
   manager:
     repository: public.ecr.aws/komodor-public/podmotion-manager
-    tag: "0.1.15"
+    tag: "0.1.16"
     pullPolicy: IfNotPresent
   
   alpine:
