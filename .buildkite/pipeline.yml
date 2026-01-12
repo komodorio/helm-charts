@@ -269,7 +269,7 @@ steps:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
             API_KEY: /komodor/eu-production/kubernetes/api-key
-    # if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
+    if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
 
   - label: ":magic_wand: Install new watcher version on komodor ci :kubernetes: cluster"
     commands:
