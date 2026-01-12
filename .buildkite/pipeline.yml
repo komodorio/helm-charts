@@ -12,13 +12,16 @@ steps:
   - label: ":magic_wand: Install new komodor-agent version on komodor ci & lab :kubernetes: cluster"
     commands:
       - ./.buildkite/pipeline_scripts/update_agent.sh ci ci komodor-agent
-      - ./.buildkite/pipeline_scripts/update_agent.sh lab labs-e2e komodor-agent
+      - AWS_DEFAULT_REGION=\$E2E_AWS_DEFAULT_REGION AWS_ACCESS_KEY_ID=\$E2E_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=\$E2E_AWS_SECRET_ACCESS_KEY ./.buildkite/pipeline_scripts/update_agent.sh lab labs-e2e komodor-agent
     agents:
       builder: "builder-dind-agent"
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
             API_KEY: /komodor/ci/kubernetes/agent-api-key
+            E2E_AWS_ACCESS_KEY_ID: "/app/e2e/default/buildkite-aws/AWS_ACCESS_KEY_ID"
+            E2E_AWS_DEFAULT_REGION: "/app/e2e/default/buildkite-aws/AWS_REGION"
+            E2E_AWS_SECRET_ACCESS_KEY: "/app/e2e/default/buildkite-aws/AWS_SECRET_ACCESS_KEY"
             
   - label: ":memo: helm template check for sanity"
     command: helm template komodor-agent charts/komodor-agent -f charts/komodor-agent/values.yaml --set apiKey="sanity" --set clusterName=test-template
