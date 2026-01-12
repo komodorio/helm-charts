@@ -8,7 +8,7 @@ retry: &retry
       limit: 2
     - exit_status: 2
       limit: 3
-steps:
+steps:           
   - label: ":memo: helm template check for sanity"
     command: helm template komodor-agent charts/komodor-agent -f charts/komodor-agent/values.yaml --set apiKey="sanity" --set clusterName=test-template
     agents:
@@ -246,9 +246,11 @@ steps:
 
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
 
-  - label: ":magic_wand: Install new komodor-agent version on komodor production :kubernetes: cluster"
+  - label: ":magic_wand: Install new komodor-agent version reporting to komodor production (US) :kubernetes: cluster"
     commands:
       - ./.buildkite/pipeline_scripts/update_agent.sh production production komodor-agent
+     # Install komodor agent on EU-production cluster report to US-production cluster
+      - ./.buildkite/pipeline_scripts/update_agent.sh eu-production eu-production "komodor-agent-us" "" "komodor-agent-report-to-us"
       - ./.buildkite/pipeline_scripts/update_agent.sh production production-rc-chart komodor-agent-rc "" "komodor-agent-rc" "rc"
     agents:
       builder: "builder-dind-agent"
@@ -258,13 +260,34 @@ steps:
             API_KEY: /komodor/production/kubernetes/api-key
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
 
-  - label: ":magic_wand: Install new watcher version on komodor ci :kubernetes: cluster"
+
+  - label: ":magic_wand: Install new komodor-agent version reporting to komodor eu-production (EU) :kubernetes: cluster"
+    commands:
+      # Install komodor agent on eu-production cluster report to eu-production cluster
+      - ./.buildkite/pipeline_scripts/update_agent.sh eu-production eu-production "komodor-agent" "" "default" "" "eu"
+      # Install komodor agent on US-production cluster report to eu-production cluster
+      - ./.buildkite/pipeline_scripts/update_agent.sh production us-production "komodor-agent-eu" "" "komodor-agent-report-to-eu" "" "eu"
+    agents:
+      builder: "builder-dind-agent"
+    env:
+      AWS_REGION: "eu-central-1"
+    plugins:
+      - zacharymctague/aws-ssm#v1.0.0:
+          parameters:
+            API_KEY: /komodor/eu-production/kubernetes/komodor-agent-api-key
+    if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
+
+  - label: ":magic_wand: Install new komodor-agent version on komodor ci & lab :kubernetes: cluster"
     commands:
       - ./.buildkite/pipeline_scripts/update_agent.sh ci ci komodor-agent
+      - AWS_DEFAULT_REGION=\$E2E_AWS_DEFAULT_REGION AWS_ACCESS_KEY_ID=\$E2E_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=\$E2E_AWS_SECRET_ACCESS_KEY ./.buildkite/pipeline_scripts/update_agent.sh lab labs-e2e komodor-agent
     agents:
       builder: "builder-dind-agent"
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
             API_KEY: /komodor/ci/kubernetes/agent-api-key
+            E2E_AWS_ACCESS_KEY_ID: "/app/e2e/default/buildkite-aws/AWS_ACCESS_KEY_ID"
+            E2E_AWS_DEFAULT_REGION: "/app/e2e/default/buildkite-aws/AWS_REGION"
+            E2E_AWS_SECRET_ACCESS_KEY: "/app/e2e/default/buildkite-aws/AWS_SECRET_ACCESS_KEY"
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
