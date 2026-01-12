@@ -272,9 +272,9 @@ steps:
   - label: ":magic_wand: Install new komodor-agent version on komodor eu-production :kubernetes: cluster"
     commands:
       # Install komodor agent on eu-production cluster report to eu-production cluster
-      - ./.buildkite/pipeline_scripts/update_agent.sh eu-production eu-production "komodor-agent" "" "komodor-agent-report-to-eu" "eu"
-      # Install komodor agent on us-production cluster report to eu-production cluster
-      - ./.buildkite/pipeline_scripts/update_agent.sh production us-production "komodor-agent-eu" "" "komodor-agent-report-to-eu" "eu"
+      - ./.buildkite/pipeline_scripts/update_agent.sh eu-production eu-production "komodor-agent" "" "komodor-agent-report-to-eu" "" "eu"
+      # Install komodor agent on US-production cluster report to eu-production cluster
+      - ./.buildkite/pipeline_scripts/update_agent.sh production us-production "komodor-agent-eu" "" "komodor-agent-report-to-eu" "" "eu"
     agents:
       builder: "builder-dind-agent"
     env:
