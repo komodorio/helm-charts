@@ -89,10 +89,32 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.components.admissionController.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- with .Values.components.admissionController.affinity.nodeAffinity }}
+        nodeAffinity:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .Values.components.admissionController.affinity.nodeAntiAffinity }}
+        nodeAntiAffinity:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .Values.components.admissionController.affinity.podAffinity }}
+        podAffinity:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- if empty .Values.components.admissionController.affinity.podAntiAffinity }}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  {{- include "komodorAgent.admissionController.selectorLabels" . | nindent 18 }}
+              topologyKey: kubernetes.io/hostname
+        {{- else }}
+        podAntiAffinity:
+          {{- toYaml .Values.components.admissionController.affinity.podAntiAffinity | nindent 10 }}
+        {{- end }}
       {{- with .Values.components.admissionController.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
