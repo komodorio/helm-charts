@@ -94,10 +94,6 @@ spec:
         nodeAffinity:
           {{- toYaml . | nindent 10 }}
         {{- end }}
-        {{- with .Values.components.admissionController.affinity.nodeAntiAffinity }}
-        nodeAntiAffinity:
-          {{- toYaml . | nindent 10 }}
-        {{- end }}
         {{- with .Values.components.admissionController.affinity.podAffinity }}
         podAffinity:
           {{- toYaml . | nindent 10 }}
