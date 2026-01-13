@@ -114,6 +114,7 @@
   {{- if gt (len .Values.components.komodorDaemon.metricsInit.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorDaemon.metricsInit.extraEnvVars | nindent 2 }}
   {{- end }}
+  {{ include "metrics.daemonset.container.securityContext" . | nindent 2 }}
 {{- end }}
 {{- end }}
 
@@ -190,6 +191,7 @@
   {{- if gt (len .Values.components.komodorDaemon.metricsInit.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorDaemon.metricsInit.extraEnvVars | nindent 2 }}
   {{- end }}
+  {{ include "metrics.daemonset.container.securityContext" . | nindent 2 }}
 {{- end }}
 {{- end }}
 
