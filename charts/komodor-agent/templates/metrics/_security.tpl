@@ -6,23 +6,28 @@ securityContext:
 {{- end }}
 
 {{- define "metrics.komodorDaemon.securityContext" }}
-{{- if gt (len .Values.components.komodorDaemon.securityContext) 0 }}
+{{- if .Values.components.komodorDaemon.securityContext }}
 securityContext:
-  {{ toYaml .Values.components.komodorDaemon.securityContext | nindent 2 }}
-{{- else }}
-securityContext:
-  runAsNonRoot: true
-  runAsUser: 1000
-  runAsGroup: 1000
-  fsGroup: 1000
+  runAsNonRoot: {{ .Values.components.komodorDaemon.securityContext.runAsNonRoot | default true }}
+  {{- if .Values.components.komodorDaemon.securityContext.runAsUser }}
+  runAsUser: {{ .Values.components.komodorDaemon.securityContext.runAsUser }}
+  {{- end }}
+  {{- if .Values.components.komodorDaemon.securityContext.runAsGroup }}
+  runAsGroup: {{ .Values.components.komodorDaemon.securityContext.runAsGroup }}
+  {{- end }}
+  {{- if .Values.components.komodorDaemon.securityContext.fsGroup }}
+  fsGroup: {{ .Values.components.komodorDaemon.securityContext.fsGroup }}
+  {{- end }}
+  {{- if .Values.components.komodorDaemon.securityContext.seccompProfile }}
+  seccompProfile:
+    {{- toYaml .Values.components.komodorDaemon.securityContext.seccompProfile | nindent 10 }}
+  {{- end }}
 {{- end }}
 {{- end }}
 
 {{- define "metrics.daemonset.container.securityContext" }}
+{{- with .Values.components.komodorDaemon.metrics.securityContext }}
 securityContext:
-  runAsNonRoot: true
-  allowPrivilegeEscalation: false
-  capabilities:
-    drop:
-    - ALL
+  {{ toYaml . | nindent 2 }}
+{{- end }}
 {{- end }}

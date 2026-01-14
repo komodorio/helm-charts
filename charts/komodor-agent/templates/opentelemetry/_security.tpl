@@ -1,14 +1,6 @@
 {{- define "opentelemetry.daemonset.container.securityContext" }}
+{{- with .Values.components.komodorDaemon.opentelemetry.securityContext }}
 securityContext:
-  runAsUser: 0
-  runAsGroup: 0
-  runAsNonRoot: false
-  allowPrivilegeEscalation: false
-  readOnlyRootFilesystem: true
-  capabilities:
-    drop:
-      - ALL
-    add:
-      - DAC_OVERRIDE
-      - SYS_PTRACE
+  {{ toYaml . | nindent 2 }}
+{{- end }}
 {{- end }}

@@ -1,8 +1,6 @@
 {{- define "node_enricher.daemonset.container.securityContext" }}
+{{- with .Values.components.komodorDaemon.nodeEnricher.securityContext }}
 securityContext:
-  runAsNonRoot: true
-  allowPrivilegeEscalation: false
-  capabilities:
-    drop:
-    - ALL
+  {{ toYaml . | nindent 2 }}
+{{- end }}
 {{- end }}
