@@ -6,22 +6,9 @@ securityContext:
 {{- end }}
 
 {{- define "metrics.komodorDaemon.securityContext" }}
-{{- if .Values.components.komodorDaemon.securityContext }}
+{{- with .Values.components.komodorDaemon.securityContext}}
 securityContext:
-  runAsNonRoot: {{ .Values.components.komodorDaemon.securityContext.runAsNonRoot | default true }}
-  {{- if .Values.components.komodorDaemon.securityContext.runAsUser }}
-  runAsUser: {{ .Values.components.komodorDaemon.securityContext.runAsUser }}
-  {{- end }}
-  {{- if .Values.components.komodorDaemon.securityContext.runAsGroup }}
-  runAsGroup: {{ .Values.components.komodorDaemon.securityContext.runAsGroup }}
-  {{- end }}
-  {{- if .Values.components.komodorDaemon.securityContext.fsGroup }}
-  fsGroup: {{ .Values.components.komodorDaemon.securityContext.fsGroup }}
-  {{- end }}
-  {{- if .Values.components.komodorDaemon.securityContext.seccompProfile }}
-  seccompProfile:
-    {{- toYaml .Values.components.komodorDaemon.securityContext.seccompProfile | nindent 10 }}
-  {{- end }}
+  {{ toYaml . | nindent 2 }}
 {{- end }}
 {{- end }}
 
