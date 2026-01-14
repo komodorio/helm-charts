@@ -587,7 +587,7 @@ components:
       sidecar:
         # components.komodorDaemon.metrics.sidecar.enabled -- (bool) Enable the telegraf-init sidecar container
         enabled: true
-      # components.komodorDaemon.metrics.sidecar.securityContext -- Set custom securityContext to the telegraf-init sidecar container
+      # components.komodorDaemon.metrics.securityContext -- Set custom securityContext to the telegraf-init sidecar container
       securityContext: &daemonDefaultSecurityContext
         runAsNonRoot: true
         allowPrivilegeEscalation: false
