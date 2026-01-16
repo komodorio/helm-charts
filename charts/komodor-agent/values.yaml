@@ -642,9 +642,8 @@ components:
         capabilities:
           drop:
             - ALL
-          add:
+          # add:
             - DAC_OVERRIDE
-            - SYS_PTRACE
       # components.komodorDaemon.opentelemetry.volumes -- Configure volumes for OpenTelemetry collector
       volumes:
         # components.komodorDaemon.opentelemetry.volumes.varlogpods -- Configure varlogpods volume
