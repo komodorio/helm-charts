@@ -6,9 +6,15 @@ securityContext:
 {{- end }}
 
 {{- define "metrics.komodorDaemon.securityContext" }}
-{{- if gt (len .Values.components.komodorDaemon.securityContext) 0 }}
+{{- with .Values.components.komodorDaemon.securityContext}}
 securityContext:
-  {{ toYaml .Values.components.komodorDaemon.securityContext | nindent 2 }}
+  {{ toYaml . | nindent 2 }}
 {{- end }}
 {{- end }}
 
+{{- define "metrics.daemonset.container.securityContext" }}
+{{- with .Values.components.komodorDaemon.metrics.securityContext }}
+securityContext:
+  {{ toYaml . | nindent 2 }}
+{{- end }}
+{{- end }}

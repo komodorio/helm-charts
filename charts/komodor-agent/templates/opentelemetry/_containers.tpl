@@ -58,5 +58,6 @@
   {{- if gt (len .Values.components.komodorDaemon.opentelemetry.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorDaemon.opentelemetry.extraEnvVars | nindent 2 }}
   {{- end }}
+  {{ include "opentelemetry.daemonset.container.securityContext" . | nindent 2 }}
 {{- end }}
 {{- end }} 

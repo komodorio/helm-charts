@@ -18,7 +18,8 @@ HELM_DOCS_ARGS := -s file \
                   -z="components.admissionController.affinity.podAntiAffinity.*" \
                   -y="allowedResources" \
                   -z ".*securityContext.*" \
-				  -z ".tolerations.*"
+				  -z ".tolerations.*" \
+				  -z ".SecurityContext.*"
 
 # Determine OS and Arch for downloading helm-docs
 OS := $(shell uname -s)

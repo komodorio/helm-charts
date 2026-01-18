@@ -537,7 +537,11 @@ components:
     # components.komodorDaemon.podAnnotations --  # Add annotations to the komodor agent watcher pod
     podAnnotations: {}
     # components.komodorDaemon.securityContext -- Set custom securityContext to the komodor agent daemon (use with caution)
-    securityContext: {}
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 1001
+      runAsGroup: 1001
+      fsGroup: 1001
     # components.komodorDaemon.updateStrategy -- Set the rolling update strategy for the komodor agent daemon deployment
     updateStrategy: {}
 
@@ -583,6 +587,14 @@ components:
       sidecar:
         # components.komodorDaemon.metrics.sidecar.enabled -- (bool) Enable the telegraf-init sidecar container
         enabled: true
+      # components.komodorDaemon.metrics.securityContext -- Set custom securityContext to the telegraf-init sidecar container
+      securityContext: &daemonDefaultSecurityContext
+        runAsNonRoot: true
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+          add: []
 
     # components.komodorDaemon.nodeEnricher -- Configure the komodor daemon node enricher components
     # @default -- See sub-values
@@ -601,6 +613,8 @@ components:
           memory: 10Mi
       # components.komodorDaemon.nodeEnricher.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
       extraEnvVars: []
+      # components.komodorDaemon.nodeEnricher.securityContext -- Set custom securityContext to the komodor agent node enricher container
+      securityContext: *daemonDefaultSecurityContext
 
     # components.komodorDaemon.opentelemetry -- Configure the komodor daemon OpenTelemetry collector components
     # @default -- See sub-values
@@ -619,6 +633,17 @@ components:
           memory: 128Mi
       # components.komodorDaemon.opentelemetry.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
       extraEnvVars: []
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        runAsNonRoot: false
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop:
+            - ALL
+          # add:
+            - DAC_OVERRIDE
       # components.komodorDaemon.opentelemetry.volumes -- Configure volumes for OpenTelemetry collector
       volumes:
         # components.komodorDaemon.opentelemetry.volumes.varlogpods -- Configure varlogpods volume
