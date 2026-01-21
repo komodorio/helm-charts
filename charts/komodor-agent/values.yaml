@@ -642,7 +642,7 @@ components:
         capabilities:
           drop:
             - ALL
-            # add:
+          add:
             - DAC_OVERRIDE
       # components.komodorDaemon.opentelemetry.volumes -- Configure volumes for OpenTelemetry collector
       volumes:
