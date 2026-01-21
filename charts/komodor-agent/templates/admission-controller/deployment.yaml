@@ -68,7 +68,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: KOMO_LEADER_ELECTION__LEASE_NAME
-              value: {{ .Values.components.admissionController.leaderElectionLeaseName | default .Release.Name | quote }}
+              value: {{ .Values.components.admissionController.leaderElectionLeaseName | default (printf "%s-admission-controller" .Release.Name) | quote }}
           {{- with .Values.components.admissionController.extraEnvVars }}
           {{- toYaml . | nindent 12 }}
           {{- end }}
