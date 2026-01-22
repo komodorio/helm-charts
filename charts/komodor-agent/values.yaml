@@ -450,6 +450,8 @@ components:
     #            mountPath: /etc/komodor/admission/tls
     #            readOnly: true
     extraVolumes: []
+    # components.admissionController.leaderElectionLeaseName -- (string) The name to use for leader election leases. If not set, defaults to the admission controller deployment name
+    leaderElectionLeaseName: ""
     # components.admissionController.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
     extraEnvVars: []
 
