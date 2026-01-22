@@ -367,6 +367,8 @@ components:
   # components.admissionController -- Configure the komodor admission controller component
   # @default -- See sub-values
   admissionController:
+    # components.admissionController.replicas -- (int) Number of replicas for the admission controller deployment
+    replicas: 1
     # components.admissionController.serviceAccount -- Configure the service account for the admission controller
     # @default -- see sub-values
     serviceAccount:

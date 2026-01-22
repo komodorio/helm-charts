@@ -9,7 +9,7 @@ metadata:
   annotations:
     {{ toYaml .Values.components.admissionController.annotations | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.components.admissionController.replicas }}
   selector:
     matchLabels:
       {{- include "komodorAgent.admissionController.selectorLabels" . | nindent 6 }}
