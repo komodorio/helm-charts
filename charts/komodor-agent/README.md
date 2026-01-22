@@ -264,6 +264,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorKubectlProxy.securityContext | object | `{}` | Set custom securityContext to the komodor kubectl proxy deployment (use with caution) |
 | components.komodorKubectlProxy.strategy | object | `{}` | Set the rolling update strategy for the komodor kubectl proxy deployment |
 | components.admissionController | object | See sub-values | Configure the komodor admission controller component |
+| components.admissionController.replicas | int | `1` | Number of replicas for the admission controller deployment |
 | components.admissionController.serviceAccount | object | see sub-values | Configure the service account for the admission controller |
 | components.admissionController.serviceAccount.create | bool | `true` | Creates a service account for the admission controller |
 | components.admissionController.serviceAccount.name | string | `nil` | Name of the service account, Required if `serviceAccount.create` is false |
