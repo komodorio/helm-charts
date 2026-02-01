@@ -340,7 +340,7 @@ components:
     # @default -- see sub-values
     image:
       name: nginx
-      tag: 1.29.4
+      tag: 1.29.4-alpine3.23
     # components.komodorKubectlProxy.resources -- Set custom resources to the komodor kubectl proxy container
     resources: {}
     # components.komodorKubectlProxy.PriorityClassValue -- Set the priority class value for the komodor kubectl proxy deployment
