@@ -38,7 +38,7 @@ data:
       {{- toYaml .Values.capabilities.admissionController.binpacking.ignoredNamespaces | nindent 8 }}
       {{- end }}
     rightsizing:
-      enabled: {{ .Values.capabilities.admissionController.rightsizing.enabled }}
+      enabled: true
       {{- if .Values.capabilities.admissionController.rightsizing.recommendationsSyncInterval }}
       recommendationsSyncInterval: {{ .Values.capabilities.admissionController.rightsizing.recommendationsSyncInterval }}
       {{- end }}
