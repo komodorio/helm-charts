@@ -16,9 +16,9 @@ clusterName:
 createRbac: true
 
 # telegrafImageVersion -- (string) Telegraf version to be used
-telegrafImageVersion: &telegrafVersion v2.0.27-alpine
+telegrafImageVersion: &telegrafVersion v2.0.28-alpine
 # telegrafWindowsImageVersion -- (string) Telegraf version to be used for windows
-telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.27
+telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.28
 
 # serviceAccount -- Configure service account for the agent
 # @default -- See sub-values
@@ -380,7 +380,7 @@ components:
     # @default -- see sub-values
     image:
       name: admission-controller
-      tag: 0.1.43
+      tag: 0.1.44
     # components.admissionController.resources -- Set custom resources to the komodor admission controller container - Memory utilization is relative to the amount of: [pods, nodes, pvcs, pvs, pdbs] resources you have in the cluster.
     resources:
       limits:
