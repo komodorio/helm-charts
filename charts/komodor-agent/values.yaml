@@ -239,9 +239,7 @@ capabilities:
 
     # capabilities.admissionController.rightsizing -- Configure the rightsizing capabilities for the admission controller
     # @default -- See sub-values
-    rightsizing:
-      # capabilities.admissionController.rightsizing.enabled -- (bool) Enable rightsizing capabilities by the komodor admission controller
-      enabled: true
+    rightsizing: {}
       # capabilities.admissionController.rightsizing.recommendationsSyncInterval -- (string) Interval for syncing rightsizing recommendations. It should be a valid duration string (e.g., "30s", "1m", "5m", "1h").
       # @default -- "1m"
       #recommendationsSyncInterval: "1m"
