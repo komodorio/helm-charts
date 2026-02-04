@@ -6,9 +6,14 @@ securityContext:
 {{- end }}
 
 {{- define "metrics.komodorDaemon.securityContext" }}
-{{- with .Values.components.komodorDaemon.securityContext}}
 securityContext:
+{{- with .Values.components.komodorDaemon.securityContext }}
   {{ toYaml . | nindent 2 }}
+{{- else }}
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
 {{- end }}
 {{- end }}
 
