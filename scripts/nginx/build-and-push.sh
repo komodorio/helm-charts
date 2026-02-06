@@ -9,7 +9,7 @@ fi
 # Authenticate with AWS ECR & Docker Hub
 # komo ci docker-login
 
-NGINX_VERSION="1.29.4-alpine3.23"
+NGINX_VERSION="1.29.5-alpine3.23-slim"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Create/use buildx builder for multi-platform builds
