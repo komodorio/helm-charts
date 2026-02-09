@@ -100,6 +100,16 @@ get_app_version() {
      grep 'appVersion:' charts/$chart/Chart.yaml | awk '{print $2}'
 }
 
+get_admission_controller_version() {
+    local chart=$1
+    ver=$(buildkite-agent meta-data get "version" --job ${AC_PARENT_JOB_ID})
+    if [ $? -eq 0 ]; then
+        echo $ver
+        return
+    fi
+    grep 'admissionControllerVersion:' charts/$chart/values.yaml | awk '{print $3}'
+}
+
 update_chart_app_version() {
     local chart=$1
     local app_version=$2
@@ -109,6 +119,17 @@ update_chart_app_version() {
     buildkite-agent meta-data set "agent-version" "$app_version"
 
     git add charts/$chart/Chart.yaml
+}
+
+update_chart_admission_controller_version() {
+    local chart=$1
+    local admission_controller_version=$2
+
+    echo "Updating admission controller version to $admission_controller_version"
+    sed -i -e "s/\(&acVersion \)[^[:space:]]*/\1$admission_controller_version/g" charts/$chart/values.yaml
+    buildkite-agent meta-data set "admission-controller-version" "$admission_controller_version"
+
+    git add charts/$chart/values.yaml
 }
 
 get_increment_type() {
@@ -148,6 +169,9 @@ main () {
   chart="komodor-agent"
   app_version=$(get_app_version "$chart")
   update_chart_app_version "$chart" "$app_version"
+
+  admission_controller_version=$(get_admission_controller_version "$chart")
+  update_chart_admission_controller_version "$chart" "$admission_controller_version"
 
   update_readme
   increment_version_commit_and_push
