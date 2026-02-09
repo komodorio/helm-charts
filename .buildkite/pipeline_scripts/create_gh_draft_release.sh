@@ -16,6 +16,7 @@ AGENT_VERSION=$(buildkite-agent meta-data get "agent-version")
 
 # Agent Repository Configuration
 AGENT_REPO="komodor-agent"
+AC_REPO="admission-controller"
 
 git config pull.rebase false
 git fetch --tags
@@ -25,6 +26,8 @@ git pull --depth=50
 AGENT_REPO_GA_TAG=$(git show "${HELM_CHART_REPO_GA_TAG}":charts/komodor-agent/Chart.yaml | grep appVersion | awk '{print $2}') # agent version in helm ga version
 AGENT_REPO_RC_TAG=$(git show "${HELM_CHART_REPO_RC_TAG}":charts/komodor-agent/Chart.yaml | grep appVersion | awk '{print $2}') # agent version in helm rc version
 
+AC_REPO_GA_TAG=$(git show "${HELM_CHART_REPO_GA_TAG}":charts/komodor-agent/values.yaml | grep admissionControllerVersion | awk '{print $3}') # admission controller version in helm ga version
+AC_REPO_RC_TAG=$(git show "${HELM_CHART_REPO_RC_TAG}":charts/komodor-agent/values.yaml | grep admissionControllerVersion | awk '{print $3}') # admission controller version in helm rc version
 
 collect_pr_title() {
     local repo=$1
@@ -81,13 +84,16 @@ add_images_to_release() {
 echo "## Helm Chart Updates" > release_notes.txt
 echo "Chart versions: \`${HELM_CHART_REPO_GA_TAG}\` -> \`${HELM_CHART_REPO_RC_TAG}\`" >> release_notes.txt
 echo "Agent versions: \`${AGENT_REPO_GA_TAG}\` -> \`${AGENT_REPO_RC_TAG}\`" >> release_notes.txt
-
+echo "Admission Controller versions: \`${AC_REPO_GA_TAG}\` -> \`${AC_REPO_RC_TAG}\`" >> release_notes.txt
 
 # Process Helm Chart Repository
 process_repository "$HELM_CHART_REPO" "$HELM_CHART_REPO_GA_TAG" "$HELM_CHART_REPO_RC_TAG" "Helm Chart Updates"
 
 # Process Agent Repository
 process_repository "$AGENT_REPO" "$AGENT_REPO_GA_TAG" "$AGENT_REPO_RC_TAG" "Agent Updates"
+
+# Process Admission Controller Repository
+process_repository "$AC_REPO" "$AC_REPO_GA_TAG" "$AC_REPO_RC_TAG" "Admission Controller Updates"
 
 add_images_to_release
 
