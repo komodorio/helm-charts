@@ -26,8 +26,8 @@ git pull --depth=50
 AGENT_REPO_GA_TAG=$(git show "${HELM_CHART_REPO_GA_TAG}":charts/komodor-agent/Chart.yaml | grep appVersion | awk '{print $2}') # agent version in helm ga version
 AGENT_REPO_RC_TAG=$(git show "${HELM_CHART_REPO_RC_TAG}":charts/komodor-agent/Chart.yaml | grep appVersion | awk '{print $2}') # agent version in helm rc version
 
-AC_REPO_GA_TAG=$(git show "${HELM_CHART_REPO_GA_TAG}":charts/komodor-agent/values.yaml | grep admissionControllerVersion | awk '{print $3}') # admission controller version in helm ga version
-AC_REPO_RC_TAG=$(git show "${HELM_CHART_REPO_RC_TAG}":charts/komodor-agent/values.yaml | grep admissionControllerVersion | awk '{print $3}') # admission controller version in helm rc version
+AC_REPO_GA_TAG=$(git show "${HELM_CHART_REPO_GA_TAG}":charts/komodor-agent/values.yaml | grep admissionControllerVersion: | awk '{print $3}') # admission controller version in helm ga version
+AC_REPO_RC_TAG=$(git show "${HELM_CHART_REPO_RC_TAG}":charts/komodor-agent/values.yaml | grep admissionControllerVersion: | awk '{print $3}') # admission controller version in helm rc version
 
 collect_pr_title() {
     local repo=$1
