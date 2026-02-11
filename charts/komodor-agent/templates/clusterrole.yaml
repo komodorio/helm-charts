@@ -442,13 +442,6 @@ rules:
     - get
     - list
   - apiGroups:
-    - ""
-    resources:
-    - configmaps
-    verbs:
-    - update
-    - create
-  - apiGroups:
     - extensions
     - "networking.k8s.io"
     resources:
