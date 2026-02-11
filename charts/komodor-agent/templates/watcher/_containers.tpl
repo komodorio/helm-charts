@@ -35,6 +35,8 @@
     value: /opt/watcher/helm/config
   - name: HELM_DATA_HOME
     value: /opt/watcher/helm/data
+  - name: HOME
+    value: /tmp/home
   {{- if .Values.capabilities.tasks.httpRequests.skipTlsVerify }}
   - name: HTTP_REQUESTS_SKIP_TLS_VERIFY
     value: "true"
