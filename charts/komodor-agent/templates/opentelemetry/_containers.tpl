@@ -63,6 +63,8 @@
     value: {{ .Values.clusterName }}
   - name: GOMEMLIMIT
     value: {{ .Values.components.komodorDaemon.opentelemetry.resources.limits.memory | replace "Ki" "KiB" | replace "Mi" "MiB" | replace "Gi" "GiB" | replace "Ti" "TiB" | quote }}
+  - name: KOMODOR_SERVER_URL
+    value: {{ include "communication.telemetryServerHost" . }}
   {{- if gt (len .Values.components.komodorDaemon.opentelemetry.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorDaemon.opentelemetry.extraEnvVars | nindent 2 }}
   {{- end }}
@@ -77,6 +79,7 @@
   imagePullPolicy: {{ .Values.pullPolicy }}
   resources:
     {{ toYaml .Values.components.komodorDaemon.opentelemetry.otelInit.resources | trim | nindent 4 }}
+  {{ include "opentelemetry.daemonset.container.securityContext" . | nindent 2 }}
   {{- if .Values.customCa.enabled }}
   {{ include "custom-ca.trusted-otel-init-container.command" . | indent 2 }}
   {{- else }}
