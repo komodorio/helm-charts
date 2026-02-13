@@ -8,8 +8,13 @@
   hostPath:
     path: {{ .Values.components.komodorDaemon.opentelemetry.volumes.varlibdockercontainers.hostPath.path }}
     type: {{ .Values.components.komodorDaemon.opentelemetry.volumes.varlibdockercontainers.hostPath.type }}
+{{- if .Values.components.komodorDaemon.opentelemetry.otelInit.enabled }}
+- name: {{ include "opentelemetry.shared.volume.name" . }}
+  emptyDir: {}
+{{- else }}
 - name: opentelemetry-config
   configMap:
     name: {{ include "komodorAgent.fullname" . }}-opentelemetry-config
 {{- end }}
-{{- end }} 
+{{- end }}
+{{- end }}
