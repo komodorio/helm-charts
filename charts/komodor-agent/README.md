@@ -2,7 +2,7 @@
 
 Watches and sends kubernetes resource-related events
 
-![AppVersion: 0.2.186](https://img.shields.io/badge/AppVersion-0.2.186-informational?style=flat-square)
+![AppVersion: 0.2.187](https://img.shields.io/badge/AppVersion-0.2.187-informational?style=flat-square)
 
 ## TL;DR;
 
@@ -140,6 +140,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | createRbac | bool | `true` | Creates the necessary RBAC resources for the agent - use with caution! |
 | telegrafImageVersion | string | `"v2.0.28-alpine"` | Telegraf version to be used |
 | telegrafWindowsImageVersion | string | `"v2.0.28"` | Telegraf version to be used for windows |
+| admissionControllerVersion | string | `"0.1.46"` | Admission controller version to be used |
 | serviceAccount | object | See sub-values | Configure service account for the agent |
 | serviceAccount.create | bool | `true` | Creates a service account for the agent |
 | serviceAccount.name | string | `nil` | Name of the service account, Required if `serviceAccount.create` is false |
