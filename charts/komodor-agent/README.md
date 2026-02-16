@@ -2,7 +2,7 @@
 
 Watches and sends kubernetes resource-related events
 
-![AppVersion: 0.2.187](https://img.shields.io/badge/AppVersion-0.2.187-informational?style=flat-square)
+![AppVersion: 0.2.188](https://img.shields.io/badge/AppVersion-0.2.188-informational?style=flat-square)
 
 ## TL;DR;
 
@@ -342,6 +342,16 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemon.opentelemetry.image | object | `{"name":"komodor-otel-collector","tag":"0.1.7"}` | Override the OpenTelemetry collector image name or tag. |
 | components.komodorDaemon.opentelemetry.resources | object | `{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Set custom resources to the OpenTelemetry collector container |
 | components.komodorDaemon.opentelemetry.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
+| components.komodorDaemon.opentelemetry.otelInit | object | See sub-values | Configure the OTel init/sidecar containers for remote configuration |
+| components.komodorDaemon.opentelemetry.otelInit.enabled | bool | `true` | Enable remote configuration fetching via otel init |
+| components.komodorDaemon.opentelemetry.otelInit.image | object | `{ "name": "komodor-agent", "tag": .Chart.AppVersion }` | Override the otel init image name or tag. |
+| components.komodorDaemon.opentelemetry.otelInit.resources | object | `{"limits":{"cpu":1,"memory":"100Mi"},"requests":{"cpu":0.1,"memory":"50Mi"}}` | Set custom resources to the otel init containers |
+| components.komodorDaemon.opentelemetry.otelInit.configFileName | string | `"otel-config.yaml"` | Name of the config file written to the shared volume |
+| components.komodorDaemon.opentelemetry.otelInit.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
+| components.komodorDaemon.opentelemetry.otelInit.sidecar | object | `{"autoReloadConfig":true,"enabled":true,"pollingIntervalSeconds":300}` | Configure the sidecar for continuous config polling |
+| components.komodorDaemon.opentelemetry.otelInit.sidecar.enabled | bool | `true` | Enable the otel init sidecar for continuous config updates |
+| components.komodorDaemon.opentelemetry.otelInit.sidecar.pollingIntervalSeconds | int | `300` | Polling interval in seconds for config updates |
+| components.komodorDaemon.opentelemetry.otelInit.sidecar.autoReloadConfig | bool | `true` | Automatically send SIGHUP to the OTel Collector to reload configuration on change (requires shareProcessNamespace) |
 | components.komodorDaemon.opentelemetry.volumes | object | `{"varlibdockercontainers":{"hostPath":{"path":"/var/lib/docker/containers","type":""},"mountPath":"/var/lib/docker/containers"},"varlogpods":{"hostPath":{"path":"/var/log/pods","type":""},"mountPath":"/var/log/pods"}}` | Configure volumes for OpenTelemetry collector |
 | components.komodorDaemon.opentelemetry.volumes.varlogpods | object | `{"hostPath":{"path":"/var/log/pods","type":""},"mountPath":"/var/log/pods"}` | Configure varlogpods volume |
 | components.komodorDaemon.opentelemetry.volumes.varlogpods.hostPath | object | `{"path":"/var/log/pods","type":""}` | Configure hostPath for varlogpods volume |
