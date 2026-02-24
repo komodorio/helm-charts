@@ -220,6 +220,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | capabilities.admissionController.mutatingWebhook.timeoutSeconds | int | `5` | Timeout for the webhook call in seconds |
 | capabilities.admissionController.mutatingWebhook.podBinpackingWebhookPath | string | `"/webhook/binpacking/pod"` | Path for the pod binpacking webhook |
 | capabilities.admissionController.mutatingWebhook.podRightsizingWebhookPath | string | `"/webhook/rightsizing/pod"` | Path for the pod rightsizing webhook |
+| capabilities.admissionController.mutatingWebhook.hpaRightsizingWebhookPath | string | `"/webhook/rightsizing/hpa"` | Path for the HPA rightsizing webhook |
 | capabilities.admissionController.mutatingWebhook.caBundle | string | using the kube-root-ca.crt ConfigMap in the kube-system namespace | CA bundle for the mutating webhook configuration. It should match the webhook server CA. |
 | capabilities.admissionController.mutatingWebhook.allowOnAKSManagedNamespaces | bool | `true` | Allow mutating webhook to be called for pods in AKS-managed namespaces (See also: https://learn.microsoft.com/en-us/azure/aks/faq#can-admission-controller-webhooks-affect-kube-system-and-internal-aks-namespaces-) |
 | capabilities.admissionController.binpacking | object | See sub-values | Configure the binpacking capabilities for the admission controller |

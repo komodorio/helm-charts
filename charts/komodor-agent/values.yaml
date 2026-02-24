@@ -218,6 +218,8 @@ capabilities:
       podBinpackingWebhookPath: /webhook/binpacking/pod
       # capabilities.admissionController.mutatingWebhook.podRightsizingWebhookPath -- (string) Path for the pod rightsizing webhook
       podRightsizingWebhookPath: /webhook/rightsizing/pod
+      # capabilities.admissionController.mutatingWebhook.hpaRightsizingWebhookPath -- (string) Path for the HPA rightsizing webhook
+      hpaRightsizingWebhookPath: /webhook/rightsizing/hpa
       # capabilities.admissionController.mutatingWebhook.caBundle -- (string) CA bundle for the mutating webhook configuration. It should match the webhook server CA.
       # @default -- using the kube-root-ca.crt ConfigMap in the kube-system namespace
       caBundle:
