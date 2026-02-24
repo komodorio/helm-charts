@@ -89,6 +89,7 @@ webhooks:
         resources: [ "horizontalpodautoscalers" ]
         scope: "Namespaced"
     failurePolicy: Ignore
+    namespaceSelector: null
     admissionReviewVersions:
       - "v1"
     sideEffects: None
