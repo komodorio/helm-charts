@@ -1,3 +1,9 @@
-charts/k8s-watcher @MickaelAlliel @nirbenator @Moran-k
-charts/komodor-agent @MickaelAlliel @nirbenator @Moran-k
-.buildkite @MickaelAlliel @nirbenator @Moran-k
+# Platform team owns the whole repo (default)
+* @komodorio/platform
+
+# Platform and cost teams co-own files directly under komodor-agent (e.g. values, readme)
+charts/komodor-agent/* @komodorio/platform @komodorio/cost
+
+# Cost team owns admission-controller and metrics templates
+charts/komodor-agent/templates/admission-controller/ @komodorio/cost
+charts/komodor-agent/templates/metrics/ @komodorio/cost

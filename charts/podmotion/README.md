@@ -133,17 +133,21 @@ helm repo add komodorio https://helm-charts.komodor.io
 helm repo update
 ```
 
+### Getting an API Key
+
+Log in to [app.komodor.com](https://app.komodor.com) and navigate to the Clusters or Agent settings to get your API Key.
+
 ### Install Chart
 
 ```bash
 # Install with default values
-helm upgrade --install komodor-podmotion komodorio/podmotion
+helm upgrade --install komodor-podmotion komodorio/podmotion --set apiKey=<KOMODOR_API_KEY>
 
 # Install in a specific namespace
-helm upgrade --install komodor-podmotion komodorio/podmotion --create-namespace --namespace komodor-podmotion-system
+helm upgrade --install komodor-podmotion komodorio/podmotion --create-namespace --namespace komodor-podmotion-system --set apiKey=<KOMODOR_API_KEY>
 
 # Install with custom values
-helm upgrade --install komodor-podmotion komodorio/podmotion -f values.yaml
+helm upgrade --install komodor-podmotion komodorio/podmotion -f values.yaml --set apiKey=<KOMODOR_API_KEY>
 ```
 
 ## Configuration

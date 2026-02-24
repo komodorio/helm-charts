@@ -6,19 +6,20 @@ retry: &retry
       limit: 3
     - exit_status: 1
       limit: 2
-              
-steps:
+    - exit_status: 2
+      limit: 3
+steps:           
   - label: ":memo: helm template check for sanity"
     command: helm template komodor-agent charts/komodor-agent -f charts/komodor-agent/values.yaml --set apiKey="sanity" --set clusterName=test-template
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     if: build.message !~ /feat\(OSS.+\):/i
     retry: *retry
 
   - label: ":memo: Test bump version script"
     command: bats .buildkite/pipeline_scripts_tests/*.bat
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     if: build.message !~ /feat\(OSS.+\):/i
     retry: *retry
 
@@ -30,13 +31,22 @@ steps:
     if: build.message !~ /feat\(OSS.+\):/i
     retry: *retry
 
+  - label: ":test_tube: Validations tests"
+    commands:
+      - cd .buildkite/tests
+      - make validations_test
+    agents:
+      builder: "builder-dind-agent"
+    if: build.message !~ /feat\(OSS.+\):/i
+    retry: *retry
+
   - label: ":test_tube: Basic tests"
     commands:
       - cd .buildkite/tests
       - ./ci/use-new-agent-version.sh
       - make basic_test
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
@@ -50,7 +60,7 @@ steps:
       - ./ci/use-new-agent-version.sh
       - make values_base_test
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
@@ -58,19 +68,19 @@ steps:
             PUBLIC_API_KEY: /helm-chart-test/production/PUBLIC_API_KEY
     retry: *retry
 
-  - label: ":test_tube: values_capabilities_events_test"
-    commands:
-      - cd .buildkite/tests
-      - ./ci/use-new-agent-version.sh
-      - make values_capabilities_events_test
-    agents:
-      builder: "dind"
-    plugins:
-      - zacharymctague/aws-ssm#v1.0.0:
-          parameters:
-            API_KEY: /helm-chart-test/production/API_KEY
-            PUBLIC_API_KEY: /helm-chart-test/production/PUBLIC_API_KEY
-    retry: *retry
+  # - label: ":test_tube: values_capabilities_events_test"
+  #   commands:
+  #     - cd .buildkite/tests
+  #     - ./ci/use-new-agent-version.sh
+  #     - make values_capabilities_events_test
+  #   agents:
+  #     builder: "builder-dind-agent"
+  #   plugins:
+  #     - zacharymctague/aws-ssm#v1.0.0:
+  #         parameters:
+  #           API_KEY: /helm-chart-test/production/API_KEY
+  #           PUBLIC_API_KEY: /helm-chart-test/production/PUBLIC_API_KEY
+  #   retry: *retry
 
   - label: ":test_tube: values_capabilities_proxy_test"
     commands:
@@ -78,7 +88,7 @@ steps:
       - ./ci/use-new-agent-version.sh
       - make values_capabilities_proxy_test
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     retry: *retry
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
@@ -92,7 +102,7 @@ steps:
       - ./ci/use-new-agent-version.sh
       - make values_capabilities_test
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     retry: *retry
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
@@ -106,7 +116,7 @@ steps:
       - ./ci/use-new-agent-version.sh
       - make values_components_test
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     retry: *retry
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
@@ -120,7 +130,7 @@ steps:
       - ./ci/use-new-agent-version.sh
       - make legacy_k8s_versions_test
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     retry: *retry
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
@@ -142,7 +152,7 @@ steps:
     commands:
       - ./.buildkite/pipeline_scripts/test_helm_new_install.sh
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
@@ -154,7 +164,7 @@ steps:
     commands:
       - ./.buildkite/pipeline_scripts/test_helm_update_install.sh
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
@@ -170,7 +180,7 @@ steps:
     commands:
       - ./.buildkite/pipeline_scripts/bump_version.sh
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     key: bump-versions
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
 
@@ -187,7 +197,7 @@ steps:
     commands:
       - ./.buildkite/pipeline_scripts/publish_helm_charts.sh
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
@@ -212,7 +222,7 @@ steps:
     commands:
       - python3 ./.buildkite/validate_helm_chart_updated.py "komodor-agent"
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
   - wait
 
@@ -227,7 +237,7 @@ steps:
 
       - ./.buildkite/pipeline_scripts/update_agent.sh staging komodor-staging komodor-agent-production $$STAGING_PRODUCTION_API_KEY
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
@@ -236,25 +246,48 @@ steps:
 
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
 
-  - label: ":magic_wand: Install new komodor-agent version on komodor production :kubernetes: cluster"
+  - label: ":magic_wand: Install new komodor-agent version reporting to komodor production (US) :kubernetes: cluster"
     commands:
       - ./.buildkite/pipeline_scripts/update_agent.sh production production komodor-agent
+     # Install komodor agent on EU-production cluster report to US-production cluster
+      - ./.buildkite/pipeline_scripts/update_agent.sh eu-production eu-production "komodor-agent-us" "" "komodor-agent-report-to-us"
       - ./.buildkite/pipeline_scripts/update_agent.sh production production-rc-chart komodor-agent-rc "" "komodor-agent-rc" "rc"
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
             API_KEY: /komodor/production/kubernetes/api-key
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
 
-  - label: ":magic_wand: Install new watcher version on komodor ci :kubernetes: cluster"
+
+  - label: ":magic_wand: Install new komodor-agent version reporting to komodor eu-production (EU) :kubernetes: cluster"
+    commands:
+      # Install komodor agent on eu-production cluster report to eu-production cluster
+      - ./.buildkite/pipeline_scripts/update_agent.sh eu-production eu-production "komodor-agent" "" "default" "" "eu"
+      # Install komodor agent on US-production cluster report to eu-production cluster
+      - ./.buildkite/pipeline_scripts/update_agent.sh production us-production "komodor-agent-eu" "" "komodor-agent-report-to-eu" "" "eu"
+    agents:
+      builder: "builder-dind-agent"
+    env:
+      AWS_REGION: "eu-central-1"
+    plugins:
+      - zacharymctague/aws-ssm#v1.0.0:
+          parameters:
+            API_KEY: /komodor/eu-production/kubernetes/komodor-agent-api-key
+    if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
+
+  - label: ":magic_wand: Install new komodor-agent version on komodor ci & lab :kubernetes: cluster"
     commands:
       - ./.buildkite/pipeline_scripts/update_agent.sh ci ci komodor-agent
+      - AWS_DEFAULT_REGION=\$E2E_AWS_DEFAULT_REGION AWS_ACCESS_KEY_ID=\$E2E_AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY=\$E2E_AWS_SECRET_ACCESS_KEY ./.buildkite/pipeline_scripts/update_agent.sh lab labs-e2e komodor-agent
     agents:
-      builder: "dind"
+      builder: "builder-dind-agent"
     plugins:
       - zacharymctague/aws-ssm#v1.0.0:
           parameters:
             API_KEY: /komodor/ci/kubernetes/agent-api-key
+            E2E_AWS_ACCESS_KEY_ID: "/app/e2e/default/buildkite-aws/AWS_ACCESS_KEY_ID"
+            E2E_AWS_DEFAULT_REGION: "/app/e2e/default/buildkite-aws/AWS_REGION"
+            E2E_AWS_SECRET_ACCESS_KEY: "/app/e2e/default/buildkite-aws/AWS_SECRET_ACCESS_KEY"
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"

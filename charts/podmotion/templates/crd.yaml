@@ -19,7 +19,7 @@ spec:
   versions:
     - additionalPrinterColumns:
         - description: Current phase of the migration (Pending, Running, Completed, Failed,
-            Unclaimed)
+            Unclaimed, Skipped)
           jsonPath: .status.containers[*].condition.phase
           name: Phase
           type: string
@@ -46,10 +46,15 @@ spec:
           name: Checkpoint Duration
           priority: 1
           type: string
-        - description: Approximation of time from original container shut down to restore
+        - description:
+            Approximation of time from original container shut down to restore
             completion on new container
           jsonPath: .status.containers[*].migrationDuration
           name: Migration Duration
+          type: string
+        - description: Time taken to restore the container on the target pod
+          jsonPath: .status.containers[*].restoreDuration
+          name: Restore Duration
           type: string
         - description: Time since the migration was created
           jsonPath: .metadata.creationTimestamp
@@ -196,6 +201,8 @@ spec:
                             type: string
                         type: object
                       migrationDuration:
+                        type: string
+                      restoreDuration:
                         type: string
                       name:
                         type: string

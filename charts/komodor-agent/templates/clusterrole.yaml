@@ -442,13 +442,6 @@ rules:
     - get
     - list
   - apiGroups:
-    - ""
-    resources:
-    - configmaps
-    verbs:
-    - update
-    - create
-  - apiGroups:
     - extensions
     - "networking.k8s.io"
     resources:
@@ -480,6 +473,11 @@ rules:
     - pods/portforward
     verbs:
     - create
+{{- end}}
+{{- if .Values.capabilities.crActions}}
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["delete", "list", "get", "watch", "patch"]
 {{- end}}
 {{- if .Values.capabilities.events.create }}
   - apiGroups:

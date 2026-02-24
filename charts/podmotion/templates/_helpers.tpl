@@ -129,3 +129,22 @@ Component version environment variables
 - name: PODMOTION_CHART_VERSION
   value: {{ .Chart.Version | quote }}
 {{- end }}
+
+{{- define "podmotion.secret.name" -}}
+{{ include "podmotion.name" . }}-secret
+{{- end -}}
+
+{{/*
+API Key secret reference - returns the entire valueFrom block
+*/}}
+{{- define "podmotion.apiKeySecretRef" -}}
+valueFrom:
+  secretKeyRef:
+    {{- if .Values.apiKeySecret }}
+    name: {{ .Values.apiKeySecret | required "Existing secret name required!" }}
+    key: apiKey
+    {{- else }}
+    name: {{ include "podmotion.secret.name" . }}
+    key: apiKey
+    {{- end }}
+{{- end }}

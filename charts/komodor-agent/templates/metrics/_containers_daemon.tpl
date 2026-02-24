@@ -28,7 +28,7 @@
   - name: QUIET
     value: {{ .Values.components.komodorDaemon.metrics.quiet | default false | quote }}
   - name: KOMODOR_SERVER_URL
-    value: {{ .Values.communications.serverHost | quote }}
+    value: {{ include "communication.serverHost" . | quote }}
   {{- if .Values.components.komodorDaemon.disableHttp2 }}
   - name: GODEBUG
     value: http2client=0
@@ -72,7 +72,7 @@
       fieldRef:
         fieldPath: status.hostIP
   - name: KOMODOR_SERVER_URL
-    value: {{ .Values.communications.serverHost | quote }}
+    value: {{ include "communication.serverHost" . | quote }}
   {{- if .Values.components.komodorDaemon.disableHttp2 }}
   - name: GODEBUG
     value: http2client=0
@@ -114,6 +114,7 @@
   {{- if gt (len .Values.components.komodorDaemon.metricsInit.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorDaemon.metricsInit.extraEnvVars | nindent 2 }}
   {{- end }}
+  {{ include "metrics.daemonset.container.securityContext" . | nindent 2 }}
 {{- end }}
 {{- end }}
 
@@ -190,6 +191,7 @@
   {{- if gt (len .Values.components.komodorDaemon.metricsInit.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorDaemon.metricsInit.extraEnvVars | nindent 2 }}
   {{- end }}
+  {{ include "metrics.daemonset.container.securityContext" . | nindent 2 }}
 {{- end }}
 {{- end }}
 

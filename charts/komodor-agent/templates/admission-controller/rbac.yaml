@@ -61,6 +61,13 @@ rules:
       - get
       - watch
       - list
+      - patch
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - watch
   - apiGroups:
       - "*"
     resources:
@@ -73,6 +80,25 @@ rules:
       - pods/resize
     verbs:
       - patch
+  - apiGroups:
+      - keda.sh
+    resources:
+      - scaledobjects
+    verbs:
+      - get
+      - watch
+      - list
+      - patch
+  # leader election
+  - apiGroups:
+    - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+    - get
+    - create
+    - update
+    
 
   # Required for Admission Controller in-place mutation:
   - nonResourceURLs:

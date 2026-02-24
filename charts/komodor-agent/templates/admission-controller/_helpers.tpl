@@ -66,7 +66,7 @@ Admission Controller service port
 Admission Controller webhook configuration name
 */}}
 {{- define "komodorAgent.admissionController.webhookName" -}}
-{{- printf "komodor-managed-admission" }}
+{{- printf "%s-admission" (include "komodorAgent.fullname" .) }}
 {{- end }}
 
 {{/*

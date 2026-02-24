@@ -13,9 +13,13 @@ HELM_DOCS_ARGS := -s file \
                   -y="components.komodorMetrics.metrics" \
                   -y="components.komodorDaemon.metrics" \
                   -y="components.komodorDaemon" \
+                  -z="components.admissionController.affinity.nodeAffinity.*" \
+                  -z="components.admissionController.affinity.podAffinity.*" \
+                  -z="components.admissionController.affinity.podAntiAffinity.*" \
                   -y="allowedResources" \
                   -z ".*securityContext.*" \
-				  -z ".tolerations.*"
+				  -z ".tolerations.*" \
+				  -z ".SecurityContext.*"
 
 # Determine OS and Arch for downloading helm-docs
 OS := $(shell uname -s)

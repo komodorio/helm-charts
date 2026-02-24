@@ -3,7 +3,11 @@ Thank you for installing {{ .Chart.Name }}.
 The Komodor Agent was installed in namespace: {{ .Release.Namespace }}
 
 Visit our site at:
+{{ if eq .Values.site "us" }}
 https://app.komodor.com
+{{ else }}
+https://app.eu.komodor.com
+{{ end }}
 
 To learn more about Komodor please visit:
 https://help.komodor.com

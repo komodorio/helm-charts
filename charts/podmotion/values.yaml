@@ -2,6 +2,11 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+# apiKey -- (guid) **(*required*)** To be obtained from komodor app during onboarding
+apiKey:
+# apiKeySecret -- (string) Secret name containing Komodor agent api key
+apiKeySecret:
+
 # Global settings
 global:
   # Image registry for all podmotion images
@@ -27,12 +32,12 @@ daemonset:
 images:
   installer:
     repository: public.ecr.aws/komodor-public/podmotion-installer
-    tag: "0.1.8"
+    tag: "0.1.20"
     pullPolicy: IfNotPresent
   
   manager:
     repository: public.ecr.aws/komodor-public/podmotion-manager
-    tag: "0.1.8"
+    tag: "0.1.20"
     pullPolicy: IfNotPresent
   
   alpine:
@@ -60,9 +65,9 @@ manager:
   apiServer:
     port: 8100
   
-  # Annotate Pods with Events and/or Labels to keep track of migration status
-  statusEvents: true
-  statusLabels: true
+  # Annotate Pods with Events and/or Labels to keep track of status with auto-scaledown capabilities
+  statusEvents: false
+  statusLabels: false
   
   # Security context for manager container
   securityContext:
@@ -80,6 +85,7 @@ manager:
 
 # Installer configuration
 installer:
+  allowNonPodmotionNodes: false
   # Security context for installer container
   securityContext:
     privileged: true
@@ -162,3 +168,15 @@ uninstall:
   # Enable uninstall mode - when true, the installer will run in uninstall mode
   # This will clean up podmotion components from the nodes
   enabled: false
+
+proxy:
+  # proxy.enabled -- Enable proxy
+  enabled: false
+  # proxy.komodorOnly -- Configure proxy to be applied only on communication to Komodor servers (comms. to K8S API remains without proxy)
+  komodorOnly: true
+  # proxy.http -- (string) Configure Proxy setting (HTTP_PROXY) `eg. http://proxy.com:8080`
+  http:
+  # proxy.https -- (string) Configure Proxy setting (HTTPS_PROXY) `eg. https://proxy.com:8080`
+  https:
+  # proxy.no_proxy -- (string) Specify specific domains to ignore proxy for. eg. `komodor.com,google.com`
+  no_proxy:

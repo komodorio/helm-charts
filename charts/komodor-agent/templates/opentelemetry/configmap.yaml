@@ -1,4 +1,11 @@
-{{- if and .Values.capabilities.telemetry.enabled .Values.capabilities.telemetry.deployOtelCollector }}
+{{/*
+DEPRECATED: This static ConfigMap is only used as a fallback when otelInit is disabled
+(components.komodorDaemon.opentelemetry.otelInit.enabled=false).
+The recommended approach is to use the otel init sidecar which fetches configuration
+dynamically from the Komodor backend via remote configuration.
+See components.komodorDaemon.opentelemetry.otelInit in values.yaml.
+*/}}
+{{- if and .Values.capabilities.telemetry.enabled .Values.capabilities.telemetry.deployOtelCollector (not .Values.components.komodorDaemon.opentelemetry.otelInit.enabled) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -121,7 +128,7 @@ data:
         sampling_initial: 5
         sampling_thereafter: 200
       otlphttp/komodor:
-        endpoint: {{ .Values.communications.telemetryServerHost }}
+        endpoint: {{ include "communication.telemetryServerHost" . }}
         compression: gzip
         timeout: 30s
         headers:

@@ -2,7 +2,7 @@
 
 Watches and sends kubernetes resource-related events
 
-![AppVersion: 0.2.176](https://img.shields.io/badge/AppVersion-0.2.176-informational?style=flat-square)
+![AppVersion: 0.2.189](https://img.shields.io/badge/AppVersion-0.2.189-informational?style=flat-square)
 
 ## TL;DR;
 
@@ -131,14 +131,16 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
+| site | string | "us" | Komodor site, allowed values: "us", "eu" |
 | apiKey | guid | `nil` | **(*required*)** To be obtained from komodor app during onboarding |
 | apiKeySecret | string | `nil` | Secret name containing Komodor agent api key |
 | createNamespace | bool | `true` | Creates the namespace |
 | tags | dict | `{}` | Tags the agent in order to identify it based on `key:value` properties separated by semicolon (`;`) example: `--set tags.env=staging,tags.team=payments` --- Can also be set in the values under `tags` as a dictionary of key:value strings |
 | clusterName | string | `nil` | **(*required*)** Name to be displayed in the Komodor web application |
 | createRbac | bool | `true` | Creates the necessary RBAC resources for the agent - use with caution! |
-| telegrafImageVersion | string | `"v2.0.13-alpine"` | Telegraf version to be used |
-| telegrafWindowsImageVersion | string | `"v2.0.13"` | Telegraf version to be used for windows |
+| telegrafImageVersion | string | `"v2.0.32-alpine"` | Telegraf version to be used |
+| telegrafWindowsImageVersion | string | `"v2.0.32"` | Telegraf version to be used for windows |
+| admissionControllerVersion | string | `"0.1.48"` | Admission controller version to be used |
 | serviceAccount | object | See sub-values | Configure service account for the agent |
 | serviceAccount.create | bool | `true` | Creates a service account for the agent |
 | serviceAccount.name | string | `nil` | Name of the service account, Required if `serviceAccount.create` is false |
@@ -160,6 +162,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | capabilities.metrics | bool | `true` | Fetch workload metrics and send them to komodor backend |
 | capabilities.nodeEnricher | bool | `true` | Enable node enricher capabilities by the komodor agent |
 | capabilities.actions | bool | `true` | Allow users to perform actions on the cluster, granular access control is defined in the application<boolean> |
+| capabilities.crActions | bool | `true` | Allow komodor service account to edit and delete custom resources in the cluster |
 | capabilities.cost | object | See sub-values | Configure the agent cost capabilities |
 | capabilities.cost.hpa | bool | `true` | Enable patch and update permissions for KEDA ScaledObjects and ScaledJobs |
 | capabilities.helm | object | `{"enabled":true,"readonly":false}` | Enable helm capabilities by the komodor agent |
@@ -201,7 +204,9 @@ The command removes all the Kubernetes components associated with the chart and 
 | capabilities.tasks.httpRequests | object | See sub-values | Configure HTTP request capabilities |
 | capabilities.tasks.httpRequests.skipTlsVerify | bool | `false` | Skip TLS certificate verification for HTTP requests (sets HTTP_REQUESTS_SKIP_TLS_VERIFY environment variable) |
 | capabilities.admissionController | object | See sub-values | Configure the komodor admission controller capabilities |
-| capabilities.admissionController.enabled | bool | `false` | Enable the komodor admission controller |
+| capabilities.admissionController.enabled | bool | `true` | Enable the komodor admission controller |
+| capabilities.admissionController.pdb | object | `{"enabled":false}` | Configure the PodDisruptionBudget for the admission controller |
+| capabilities.admissionController.pdb.enabled | bool | `false` | Enable PodDisruptionBudget for the admission controller |
 | capabilities.admissionController.logLevel | string | `"info"` | Log level for the admission controller |
 | capabilities.admissionController.logFormat | string | `"json"` | Log format for the admission controller |
 | capabilities.admissionController.webhookServer | object | See sub-values | Configure the webhook server for the admission controller |
@@ -215,12 +220,13 @@ The command removes all the Kubernetes components associated with the chart and 
 | capabilities.admissionController.mutatingWebhook.timeoutSeconds | int | `5` | Timeout for the webhook call in seconds |
 | capabilities.admissionController.mutatingWebhook.podBinpackingWebhookPath | string | `"/webhook/binpacking/pod"` | Path for the pod binpacking webhook |
 | capabilities.admissionController.mutatingWebhook.podRightsizingWebhookPath | string | `"/webhook/rightsizing/pod"` | Path for the pod rightsizing webhook |
+| capabilities.admissionController.mutatingWebhook.hpaRightsizingWebhookPath | string | `"/webhook/rightsizing/hpa"` | Path for the HPA rightsizing webhook |
 | capabilities.admissionController.mutatingWebhook.caBundle | string | using the kube-root-ca.crt ConfigMap in the kube-system namespace | CA bundle for the mutating webhook configuration. It should match the webhook server CA. |
+| capabilities.admissionController.mutatingWebhook.allowOnAKSManagedNamespaces | bool | `true` | Allow mutating webhook to be called for pods in AKS-managed namespaces (See also: https://learn.microsoft.com/en-us/azure/aks/faq#can-admission-controller-webhooks-affect-kube-system-and-internal-aks-namespaces-) |
 | capabilities.admissionController.binpacking | object | See sub-values | Configure the binpacking capabilities for the admission controller |
 | capabilities.admissionController.binpacking.markUnevictable | bool | `true` | Add a label to mark pods as unevictable (requires enabling per cluster in UI in addition) |
 | capabilities.admissionController.binpacking.addNodeAffinityToMarkedPods | bool | `true` | Add node affinity to marked pods to prefer scheduling on nodes with already unevictable pods (requires enabling per cluster in UI in addition) |
 | capabilities.admissionController.rightsizing | object | See sub-values | Configure the rightsizing capabilities for the admission controller |
-| capabilities.admissionController.rightsizing.enabled | bool | `true` | Enable rightsizing capabilities by the komodor admission controller |
 | components | object | See sub-values | Configure the agent components |
 | components.komodorAgent | object | See sub-values | Configure the komodor agent components |
 | components.komodorAgent.PriorityClassValue | int | `10000000` | Set the priority class value for the komodor agent deployment |
@@ -259,6 +265,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorKubectlProxy.securityContext | object | `{}` | Set custom securityContext to the komodor kubectl proxy deployment (use with caution) |
 | components.komodorKubectlProxy.strategy | object | `{}` | Set the rolling update strategy for the komodor kubectl proxy deployment |
 | components.admissionController | object | See sub-values | Configure the komodor admission controller component |
+| components.admissionController.replicas | int | `1` | Number of replicas for the admission controller deployment |
 | components.admissionController.serviceAccount | object | see sub-values | Configure the service account for the admission controller |
 | components.admissionController.serviceAccount.create | bool | `true` | Creates a service account for the admission controller |
 | components.admissionController.serviceAccount.name | string | `nil` | Name of the service account, Required if `serviceAccount.create` is false |
@@ -267,7 +274,10 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.admissionController.resources | object | `{"limits":{"cpu":1,"memory":"4Gi"},"requests":{"cpu":"500m","memory":"1Gi"}}` | Set custom resources to the komodor admission controller container - Memory utilization is relative to the amount of: [pods, nodes, pvcs, pvs, pdbs] resources you have in the cluster. |
 | components.admissionController.PriorityClassValue | int | `10000000` | Set the priority class value for the komodor admission-controller deployment |
 | components.admissionController.priorityClassName | string | `""` | Use an existing priority class for the komodor admission-controller deployment. If not set, will create and use a priority class with PriorityClassValue. WARNING: priorityClassName is immutable and cannot be changed after initial deployment |
-| components.admissionController.affinity | object | `{}` | Set node affinity for the komodor admission controller deployment |
+| components.admissionController.affinity | object | `{"nodeAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"preference":{"matchExpressions":[{"key":"eks.amazonaws.com/capacityType","operator":"NotIn","values":["SPOT"]},{"key":"karpenter.sh/capacity-type","operator":"NotIn","values":["spot"]},{"key":"cloud.google.com/gke-spot","operator":"NotIn","values":["true"]},{"key":"cloud.google.com/gke-preemptible","operator":"NotIn","values":["true"]},{"key":"kubernetes.azure.com/scalesetpriority","operator":"NotIn","values":["spot"]}]},"weight":100}]},"podAffinity":{},"podAntiAffinity":{}}` | Set affinity rules for the komodor admission controller deployment. Split into nodeAffinity, podAffinity, and podAntiAffinity. If podAntiAffinity is not set, defaults to preferred pod anti-affinity on hostname |
+| components.admissionController.affinity.nodeAffinity | object | `{"preferredDuringSchedulingIgnoredDuringExecution":[{"preference":{"matchExpressions":[{"key":"eks.amazonaws.com/capacityType","operator":"NotIn","values":["SPOT"]},{"key":"karpenter.sh/capacity-type","operator":"NotIn","values":["spot"]},{"key":"cloud.google.com/gke-spot","operator":"NotIn","values":["true"]},{"key":"cloud.google.com/gke-preemptible","operator":"NotIn","values":["true"]},{"key":"kubernetes.azure.com/scalesetpriority","operator":"NotIn","values":["spot"]}]},"weight":100}]}` | Set node affinity for the komodor admission controller deployment |
+| components.admissionController.affinity.podAffinity | object | `{}` | Set pod affinity for the komodor admission controller deployment |
+| components.admissionController.affinity.podAntiAffinity | object | `{}` | Set pod anti-affinity for the komodor admission controller deployment. If not set, defaults to preferred pod anti-affinity on hostname |
 | components.admissionController.annotations | object | `{}` | Set annotations for the komodor admission controller deployment |
 | components.admissionController.podAnnotations | object | `{}` | Set pod annotations for the komodor admission controller deployment |
 | components.admissionController.labels | object | `{}` | Set custom labels |
@@ -276,6 +286,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.admissionController.securityContext | object | `{}` | Set custom securityContext to the komodor admission controller deployment (use with caution) |
 | components.admissionController.strategy | object | `{}` | Set the rolling update strategy for the komodor admission controller |
 | components.admissionController.extraVolumes | list | `[]` | List of additional volumes to mount in the komodor admission controller deployment/pod      extraVolumes:        - volume:            name: webhook-tls            secret:              secretName: komodor-admission-controller-tls          volumeMount:            name: webhook-tls            mountPath: /etc/komodor/admission/tls            readOnly: true |
+| components.admissionController.leaderElectionLeaseName | string | `""` | The name to use for leader election leases. If not set, defaults to the admission controller deployment name |
 | components.admissionController.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorMetrics.PriorityClassValue | int | `10000000` | Set the priority class value for the komodor metrics agent deployment |
 | components.komodorMetrics.priorityClassName | string | `""` | Use an existing priority class for the komodor metrics agent deployment. If not set, will create and use a priority class with PriorityClassValue. WARNING: priorityClassName is immutable and cannot be changed after initial deployment |
@@ -292,7 +303,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorMetrics.metricsInit.image | object | `{ "name": "komodor-agent", "tag": .Chart.AppVersion }` | Override the komodor agent metrics init image name or tag. |
 | components.komodorMetrics.metricsInit.resources | object | `{}` | Set custom resources to the komodor agent metrics init container |
 | components.komodorMetrics.metricsInit.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
-| components.komodorMetrics.metrics.image | object | `{"name":"telegraf","tag":"v2.0.13-alpine"}` | Override the komodor agent metrics image name or tag. |
+| components.komodorMetrics.metrics.image | object | `{"name":"telegraf","tag":"v2.0.32-alpine"}` | Override the komodor agent metrics image name or tag. |
 | components.komodorMetrics.metrics.resources | object | `{"limits":{"cpu":1,"memory":"4Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
 | components.komodorMetrics.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorMetrics.metrics.sidecar | object | `{"enabled":true}` | Configure the telegraf-init sidecar container |
@@ -309,27 +320,39 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemon.nodeSelector | object | `{}` | Set node selectors for the komodor agent daemon |
 | components.komodorDaemon.tolerations | list | `[{"operator":"Exists"}]` | Add tolerations to the komodor agent daemon |
 | components.komodorDaemon.podAnnotations | object | `{}` | # Add annotations to the komodor agent watcher pod |
-| components.komodorDaemon.securityContext | object | `{}` | Set custom securityContext to the komodor agent daemon (use with caution) |
+| components.komodorDaemon.securityContext | object | `{"fsGroup":1001,"runAsGroup":1001,"runAsNonRoot":true,"runAsUser":1001}` | Set custom securityContext to the komodor agent daemon (use with caution) |
 | components.komodorDaemon.updateStrategy | object | `{}` | Set the rolling update strategy for the komodor agent daemon deployment |
 | components.komodorDaemon.metricsInit | object | See sub-values | Configure the komodor daemon metrics init container |
 | components.komodorDaemon.metricsInit.image | object | `{ "name": "init-daemon-agent", "tag": .Chart.AppVersion }` | Override the komodor agent metrics init image name or tag. |
 | components.komodorDaemon.metricsInit.resources | object | `{"limits":{"cpu":1,"memory":"100Mi"},"requests":{"cpu":0.1,"memory":"50Mi"}}` | Set custom resources to the komodor agent metrics init container |
 | components.komodorDaemon.metricsInit.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
-| components.komodorDaemon.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf","tag":"v2.0.13-alpine"},"quiet":false,"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}},"sidecar":{"enabled":true}}` | Configure the komodor daemon metrics components |
-| components.komodorDaemon.metrics.image | object | `{"name":"telegraf","tag":"v2.0.13-alpine"}` | Override the komodor agent metrics image name or tag. |
+| components.komodorDaemon.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf","tag":"v2.0.32-alpine"},"quiet":false,"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"add":[],"drop":["ALL"]},"runAsNonRoot":true},"sidecar":{"enabled":true}}` | Configure the komodor daemon metrics components |
+| components.komodorDaemon.metrics.image | object | `{"name":"telegraf","tag":"v2.0.32-alpine"}` | Override the komodor agent metrics image name or tag. |
 | components.komodorDaemon.metrics.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
 | components.komodorDaemon.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemon.metrics.quiet | bool | `false` | Set the quiet mode for the komodor agent metrics |
 | components.komodorDaemon.metrics.sidecar | object | `{"enabled":true}` | Configure the telegraf-init sidecar container |
 | components.komodorDaemon.metrics.sidecar.enabled | bool | `true` | Enable the telegraf-init sidecar container |
+| components.komodorDaemon.metrics.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"add":[],"drop":["ALL"]},"runAsNonRoot":true}` | Set custom securityContext to the telegraf-init sidecar container |
 | components.komodorDaemon.nodeEnricher | object | See sub-values | Configure the komodor daemon node enricher components |
 | components.komodorDaemon.nodeEnricher.image | object | `{"name":"komodor-agent","tag":null}` | Override the komodor agent node enricher image name or tag. |
 | components.komodorDaemon.nodeEnricher.resources | object | `{"limits":{"cpu":"10m","memory":"100Mi"},"requests":{"cpu":"1m","memory":"10Mi"}}` | Set custom resources to the komodor agent node enricher container |
 | components.komodorDaemon.nodeEnricher.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
+| components.komodorDaemon.nodeEnricher.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"add":[],"drop":["ALL"]},"runAsNonRoot":true}` | Set custom securityContext to the komodor agent node enricher container |
 | components.komodorDaemon.opentelemetry | object | See sub-values | Configure the komodor daemon OpenTelemetry collector components |
-| components.komodorDaemon.opentelemetry.image | object | `{"name":"komodor-otel-collector","tag":"0.1.4"}` | Override the OpenTelemetry collector image name or tag. |
+| components.komodorDaemon.opentelemetry.image | object | `{"name":"komodor-otel-collector","tag":"0.1.7"}` | Override the OpenTelemetry collector image name or tag. |
 | components.komodorDaemon.opentelemetry.resources | object | `{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Set custom resources to the OpenTelemetry collector container |
 | components.komodorDaemon.opentelemetry.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
+| components.komodorDaemon.opentelemetry.otelInit | object | See sub-values | Configure the OTel init/sidecar containers for remote configuration |
+| components.komodorDaemon.opentelemetry.otelInit.enabled | bool | `true` | Enable remote configuration fetching via otel init |
+| components.komodorDaemon.opentelemetry.otelInit.image | object | `{ "name": "komodor-agent", "tag": .Chart.AppVersion }` | Override the otel init image name or tag. |
+| components.komodorDaemon.opentelemetry.otelInit.resources | object | `{"limits":{"cpu":1,"memory":"100Mi"},"requests":{"cpu":0.1,"memory":"50Mi"}}` | Set custom resources to the otel init containers |
+| components.komodorDaemon.opentelemetry.otelInit.configFileName | string | `"otel-config.yaml"` | Name of the config file written to the shared volume |
+| components.komodorDaemon.opentelemetry.otelInit.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
+| components.komodorDaemon.opentelemetry.otelInit.sidecar | object | `{"autoReloadConfig":true,"enabled":true,"pollingIntervalSeconds":300}` | Configure the sidecar for continuous config polling |
+| components.komodorDaemon.opentelemetry.otelInit.sidecar.enabled | bool | `true` | Enable the otel init sidecar for continuous config updates |
+| components.komodorDaemon.opentelemetry.otelInit.sidecar.pollingIntervalSeconds | int | `300` | Polling interval in seconds for config updates |
+| components.komodorDaemon.opentelemetry.otelInit.sidecar.autoReloadConfig | bool | `true` | Automatically send SIGHUP to the OTel Collector to reload configuration on change (requires shareProcessNamespace) |
 | components.komodorDaemon.opentelemetry.volumes | object | `{"varlibdockercontainers":{"hostPath":{"path":"/var/lib/docker/containers","type":""},"mountPath":"/var/lib/docker/containers"},"varlogpods":{"hostPath":{"path":"/var/log/pods","type":""},"mountPath":"/var/log/pods"}}` | Configure volumes for OpenTelemetry collector |
 | components.komodorDaemon.opentelemetry.volumes.varlogpods | object | `{"hostPath":{"path":"/var/log/pods","type":""},"mountPath":"/var/log/pods"}` | Configure varlogpods volume |
 | components.komodorDaemon.opentelemetry.volumes.varlogpods.hostPath | object | `{"path":"/var/log/pods","type":""}` | Configure hostPath for varlogpods volume |
@@ -354,8 +377,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemonWindows.metricsInit.image | object | `{ "name": "init-daemon-agent", "tag": .Chart.AppVersion }` | Override the komodor agent metrics init image name or tag. |
 | components.komodorDaemonWindows.metricsInit.resources | object | `{"limits":{"cpu":1,"memory":"100Mi"},"requests":{"cpu":0.1,"memory":"50Mi"}}` | Set custom resources to the komodor agent metrics init container |
 | components.komodorDaemonWindows.metricsInit.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
-| components.komodorDaemonWindows.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf-windows","tag":"v2.0.13"},"quiet":false,"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}},"sidecar":{"enabled":true}}` | Configure the komodor daemon metrics components |
-| components.komodorDaemonWindows.metrics.image | object | `{"name":"telegraf-windows","tag":"v2.0.13"}` | Override the komodor agent metrics image name or tag. |
+| components.komodorDaemonWindows.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf-windows","tag":"v2.0.32"},"quiet":false,"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}},"sidecar":{"enabled":true}}` | Configure the komodor daemon metrics components |
+| components.komodorDaemonWindows.metrics.image | object | `{"name":"telegraf-windows","tag":"v2.0.32"}` | Override the komodor agent metrics image name or tag. |
 | components.komodorDaemonWindows.metrics.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
 | components.komodorDaemonWindows.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemonWindows.metrics.quiet | bool | `false` | Set the quiet mode for the komodor agent metrics |

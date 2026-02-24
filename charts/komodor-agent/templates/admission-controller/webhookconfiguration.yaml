@@ -28,6 +28,10 @@ apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
   name: {{ include "komodorAgent.admissionController.webhookName" . }}
+  {{- if .Values.capabilities.admissionController.mutatingWebhook.allowOnAKSManagedNamespaces }}
+  labels:
+    "admissions.enforcer/disabled": "true"
+  {{- end }}
 webhooks:
   - name: binpacking.komodor.com
     clientConfig:
@@ -44,11 +48,11 @@ webhooks:
         resources: [ "pods" ]
         scope: "Namespaced"
     failurePolicy: Ignore
+    namespaceSelector: null
     admissionReviewVersions:
       - "v1"
     sideEffects: None
     timeoutSeconds: {{ .Values.capabilities.admissionController.mutatingWebhook.timeoutSeconds | default 5 }}
-  {{- if .Values.capabilities.admissionController.rightsizing.enabled }}
   - name: rightsizing.komodor.com
     clientConfig:
       service:
@@ -64,6 +68,7 @@ webhooks:
         resources: [ "pods" ]
         scope: "Namespaced"
     failurePolicy: Ignore
+    namespaceSelector: null
     reinvocationPolicy: IfNeeded
     admissionReviewVersions:
       - "v1"

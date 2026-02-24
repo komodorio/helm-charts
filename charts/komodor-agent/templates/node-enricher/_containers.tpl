@@ -36,5 +36,6 @@
   {{- if gt (len .Values.components.komodorDaemon.nodeEnricher.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorDaemon.nodeEnricher.extraEnvVars | nindent 2 }}
   {{- end }}
+  {{ include "node_enricher.daemonset.container.securityContext" . | nindent 2 }}
 {{- end }}
 {{- end }}

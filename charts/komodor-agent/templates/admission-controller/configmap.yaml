@@ -9,7 +9,8 @@ metadata:
 data:
   komodor.yaml: |
     chartVersion: {{ .Chart.Version | quote }}
-    clusterName: {{ .Values.clusterName | required "clusterName is a required value!" }}
+    clusterName: {{ .Values.clusterName }}
+    serverHost: {{ include "communication.serverHost" . | quote }}
     {{- if and .Values.proxy.enabled .Values.proxy.https }}
     proxyUrl: {{ .Values.proxy.https }}
     {{- end }}
@@ -37,7 +38,7 @@ data:
       {{- toYaml .Values.capabilities.admissionController.binpacking.ignoredNamespaces | nindent 8 }}
       {{- end }}
     rightsizing:
-      enabled: {{ .Values.capabilities.admissionController.rightsizing.enabled }}
+      enabled: true
       {{- if .Values.capabilities.admissionController.rightsizing.recommendationsSyncInterval }}
       recommendationsSyncInterval: {{ .Values.capabilities.admissionController.rightsizing.recommendationsSyncInterval }}
       {{- end }}
@@ -52,5 +53,8 @@ data:
       {{- end }}
       {{- if .Values.capabilities.admissionController.rightsizing.mutatedAnnotationKey }}
       mutatedAnnotationKey: {{ .Values.capabilities.admissionController.rightsizing.mutatedAnnotationKey }}
+      {{- end }}
+      {{- if .Values.capabilities.admissionController.rightsizing.applyProtocolAnnotationKey }}
+      applyProtocolAnnotationKey: {{ .Values.capabilities.admissionController.rightsizing.applyProtocolAnnotationKey }}
       {{- end }}
 {{- end }}
