@@ -21,6 +21,9 @@
   - name: otel-prom
     containerPort: 8888
     protocol: TCP
+  - name: local-prom
+    containerPort: 9090
+    protocol: TCP
   volumeMounts:
   {{- if .Values.components.komodorDaemon.opentelemetry.otelInit.enabled }}
   - name: {{ include "opentelemetry.shared.volume.name" . }}
@@ -65,6 +68,7 @@
     value: {{ .Values.components.komodorDaemon.opentelemetry.resources.limits.memory | replace "Ki" "KiB" | replace "Mi" "MiB" | replace "Gi" "GiB" | replace "Ti" "TiB" | quote }}
   - name: KOMODOR_SERVER_URL
     value: {{ include "communication.telemetryServerHost" . }}
+  {{- include "komodorAgent.opentelemetry.healthEndpointsEnvironment" . | nindent 2 }}
   {{- if gt (len .Values.components.komodorDaemon.opentelemetry.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorDaemon.opentelemetry.extraEnvVars | nindent 2 }}
   {{- end }}

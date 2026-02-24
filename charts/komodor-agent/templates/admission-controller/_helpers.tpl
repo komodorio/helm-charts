@@ -62,6 +62,10 @@ Admission Controller service port
 {{- .Values.capabilities.admissionController.webhookServer.port | default 8443 }}
 {{- end }}
 
+{{- define "komodorAgent.admissionController.healthEndpoint" -}}
+{{- printf "http://%s.%s.svc.cluster.local:%v/healthz" (include "komodorAgent.admissionController.serviceName" .) .Release.Namespace (include "komodorAgent.admissionController.servicePort" .) -}}
+{{- end }}
+
 {{/*
 Admission Controller webhook configuration name
 */}}

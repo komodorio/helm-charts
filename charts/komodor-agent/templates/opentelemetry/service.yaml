@@ -19,6 +19,10 @@ spec:
     port: 8888
     targetPort: 8888
     protocol: TCP
+  - name: local-prom
+    port: 9090
+    targetPort: 9090
+    protocol: TCP
   selector:
     {{- include "komodorAgentDaemon.selectorLabels" . | nindent 4 }}
 {{- end }} 

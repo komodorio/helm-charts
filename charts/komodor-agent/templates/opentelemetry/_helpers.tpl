@@ -9,3 +9,10 @@
 {{- define "opentelemetry.shared.volume.name" -}}
 opentelemetry-shared-config
 {{- end -}}
+
+{{- define "komodorAgent.opentelemetry.healthEndpointsEnvironment" -}}
+- name: WATCHER_HEALTH_ENDPOINT
+  value: {{ include "komodorAgent.watcher.healthEndpoint" . | quote }}
+- name: ADMISSION_CONTROLLER_HEALTH_ENDPOINT
+  value: {{ include "komodorAgent.admissionController.healthEndpoint" . | quote }}
+{{- end -}}

@@ -20,6 +20,28 @@ data:
         path: "/status/health"
 
     receivers:
+      httpcheck/local:
+        targets:
+          - endpoint: "${env:WATCHER_HEALTH_ENDPOINT}"
+            method: GET
+            validations:
+              - json_path: "$.checks.komodor_heartbeat.status"
+                equals: "healthy"
+              - json_path: "$.checks.kubernetes_api.status"
+                equals: "healthy"
+          - endpoint: "${env:ADMISSION_CONTROLLER_HEALTH_ENDPOINT}"
+            method: GET
+            validations:
+              - json_path: "$.checks.komodor_heartbeat.status"
+                equals: "healthy"
+              - json_path: "$.checks.kubernetes_api.status"
+                equals: "healthy"
+        metrics:
+          httpcheck.validation.passed:
+            enabled: true
+          httpcheck.validation.failed:
+            enabled: true
+        collection_interval: 60s
       otlp:
         protocols:
           http:
@@ -120,6 +142,13 @@ data:
         check_interval: 1s
         limit_percentage: 75
         spike_limit_percentage: 20
+      filter/local:
+        error_mode: ignore
+        metrics:
+          include:
+            match_type: regexp
+            metric_names:
+              - ".*"
 
     exporters:
       # Debug exporter can be used for development and testing purposes
@@ -133,6 +162,8 @@ data:
         timeout: 30s
         headers:
           X-API-KEY: "${env:KOMO_API_KEY}"
+      prometheus/local:
+        endpoint: "0.0.0.0:9090"
 
     service:
       telemetry:
@@ -160,4 +191,8 @@ data:
           receivers: [filelog/komodor]
           processors: [memory_limiter, batch]
           exporters: [otlphttp/komodor]
+        metrics/local:
+          receivers: [httpcheck/local]
+          processors: [memory_limiter, filter/local]
+          exporters: [prometheus/local]
 {{- end }}
