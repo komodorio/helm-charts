@@ -94,5 +94,4 @@ webhooks:
       - "v1"
     sideEffects: None
     timeoutSeconds: {{ .Values.capabilities.admissionController.mutatingWebhook.timeoutSeconds | default 5 }}
-  {{- end }}
 {{- end }}
