@@ -25,16 +25,18 @@ data:
           - endpoint: "${env:WATCHER_HEALTH_ENDPOINT}"
             method: GET
             validations:
-              - json_path: "$.checks.komodor_heartbeat.status"
+              - json_path: "checks.komodor_heartbeat.status"
                 equals: "healthy"
-              - json_path: "$.checks.kubernetes_api.status"
+              - json_path: "checks.kubernetes_api.status"
                 equals: "healthy"
           - endpoint: "${env:ADMISSION_CONTROLLER_HEALTH_ENDPOINT}"
+            tls:
+              insecure_skip_verify: true
             method: GET
             validations:
-              - json_path: "$.checks.komodor_heartbeat.status"
+              - json_path: "checks.komodor_heartbeat.status"
                 equals: "healthy"
-              - json_path: "$.checks.kubernetes_api.status"
+              - json_path: "checks.kubernetes_api.status"
                 equals: "healthy"
         metrics:
           httpcheck.validation.passed:

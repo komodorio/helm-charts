@@ -63,7 +63,7 @@ Admission Controller service port
 {{- end }}
 
 {{- define "komodorAgent.admissionController.healthEndpoint" -}}
-{{- printf "http://%s.%s.svc.cluster.local:%v/healthz" (include "komodorAgent.admissionController.serviceName" .) .Release.Namespace (include "komodorAgent.admissionController.servicePort" .) -}}
+{{- printf "https://%s.%s.svc.cluster.local:%v/healthz" (include "komodorAgent.admissionController.serviceName" .) .Release.Namespace (include "komodorAgent.admissionController.servicePort" .) -}}
 {{- end }}
 
 {{/*
