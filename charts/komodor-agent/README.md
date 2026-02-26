@@ -140,7 +140,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | createRbac | bool | `true` | Creates the necessary RBAC resources for the agent - use with caution! |
 | telegrafImageVersion | string | `"v2.0.34-alpine"` | Telegraf version to be used |
 | telegrafWindowsImageVersion | string | `"v2.0.34"` | Telegraf version to be used for windows |
-| admissionControllerVersion | string | `"0.1.48"` | Admission controller version to be used |
+| admissionControllerVersion | string | `"0.1.49"` | Admission controller version to be used |
 | serviceAccount | object | See sub-values | Configure service account for the agent |
 | serviceAccount.create | bool | `true` | Creates a service account for the agent |
 | serviceAccount.name | string | `nil` | Name of the service account, Required if `serviceAccount.create` is false |
