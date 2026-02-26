@@ -16,9 +16,9 @@ clusterName:
 createRbac: true
 
 # telegrafImageVersion -- (string) Telegraf version to be used
-telegrafImageVersion: &telegrafVersion v2.0.32-alpine
+telegrafImageVersion: &telegrafVersion v2.0.34-alpine
 # telegrafWindowsImageVersion -- (string) Telegraf version to be used for windows
-telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.32
+telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.34
 # admissionControllerVersion -- (string) Admission controller version to be used
 admissionControllerVersion: &acVersion 0.1.49
 
