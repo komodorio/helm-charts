@@ -35,6 +35,7 @@
   - name: opentelemetry-varlib-docker-containers
     mountPath: {{ .Values.components.komodorDaemon.opentelemetry.volumes.varlibdockercontainers.mountPath }}
     readOnly: true
+  {{- include "custom-ca.trusted-volumeMounts" . | nindent 2 }}
   livenessProbe:
     httpGet:
       path: /status/health
@@ -80,17 +81,13 @@
   resources:
     {{ toYaml .Values.components.komodorDaemon.opentelemetry.otelInit.resources | trim | nindent 4 }}
   {{ include "opentelemetry.daemonset.container.securityContext" . | nindent 2 }}
-  {{- if .Values.customCa.enabled }}
-  {{ include "custom-ca.trusted-otel-init-container.command" . | indent 2 }}
-  {{- else }}
   command: ["otel_init"]
-  {{- end }}
   volumeMounts:
   - name: configuration
     mountPath: /etc/komodor
   - name: {{ include "opentelemetry.shared.volume.name" . }}
     mountPath: /etc/otel
-  {{- include "custom-ca.volumeMounts" . | nindent 2 }}
+  {{- include "custom-ca.trusted-volumeMounts" . | nindent 2 }}
   env:
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
   - name: KOMOKW_RUNTIME_MODE
@@ -118,17 +115,13 @@
   imagePullPolicy: {{ .Values.pullPolicy }}
   resources:
     {{ toYaml .Values.components.komodorDaemon.opentelemetry.otelInit.resources | trim | nindent 4 }}
-  {{- if .Values.customCa.enabled }}
-  {{ include "custom-ca.trusted-otel-init-container.command" . | indent 2 }}
-  {{- else }}
   command: ["otel_init"]
-  {{- end }}
   volumeMounts:
   - name: configuration
     mountPath: /etc/komodor
   - name: {{ include "opentelemetry.shared.volume.name" . }}
     mountPath: /etc/otel
-  {{- include "custom-ca.volumeMounts" . | nindent 2 }}
+  {{- include "custom-ca.trusted-volumeMounts" . | nindent 2 }}
   env:
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
   - name: KOMOKW_RUNTIME_MODE
