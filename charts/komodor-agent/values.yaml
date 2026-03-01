@@ -632,7 +632,7 @@ components:
       # components.komodorDaemon.opentelemetry.image -- Override the OpenTelemetry collector image name or tag.
       image:
         name: komodor-otel-collector
-        tag: 0.1.7
+        tag: 0.1.8
       # components.komodorDaemon.opentelemetry.resources -- Set custom resources to the OpenTelemetry collector container
       resources:
         limits:

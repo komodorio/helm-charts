@@ -68,6 +68,11 @@ app.kubernetes.io/name: {{ include "komodorAgent.name" . }}
 app.kubernetes.io/instance: {{ include "komodor.truncatedReleaseName"  . }}
 {{- end }}
 
+{{- define "komodorAgent.watcher.selectorLabels" -}}
+{{ include "komodorAgent.selectorLabels" . }}
+app.kubernetes.io/component: watcher
+{{- end }}
+
 {{- define "komodorAgentDaemon.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "komodorAgent.name" . }}-daemon
 app.kubernetes.io/instance: {{ include "komodor.truncatedReleaseName"  . }}-daemon

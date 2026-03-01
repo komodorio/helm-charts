@@ -341,7 +341,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemon.nodeEnricher.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemon.nodeEnricher.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"add":[],"drop":["ALL"]},"runAsNonRoot":true}` | Set custom securityContext to the komodor agent node enricher container |
 | components.komodorDaemon.opentelemetry | object | See sub-values | Configure the komodor daemon OpenTelemetry collector components |
-| components.komodorDaemon.opentelemetry.image | object | `{"name":"komodor-otel-collector","tag":"0.1.7"}` | Override the OpenTelemetry collector image name or tag. |
+| components.komodorDaemon.opentelemetry.image | object | `{"name":"komodor-otel-collector","tag":"0.1.8"}` | Override the OpenTelemetry collector image name or tag. |
 | components.komodorDaemon.opentelemetry.resources | object | `{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Set custom resources to the OpenTelemetry collector container |
 | components.komodorDaemon.opentelemetry.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemon.opentelemetry.otelInit | object | See sub-values | Configure the OTel init/sidecar containers for remote configuration |
