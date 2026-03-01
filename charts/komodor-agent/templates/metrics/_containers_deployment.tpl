@@ -43,17 +43,13 @@
   imagePullPolicy: {{ .Values.pullPolicy }}
   resources:
     {{ toYaml .Values.components.komodorMetrics.metricsInit.resources | trim | nindent 4 }}
-  {{- if .Values.customCa.enabled }}
-  {{ include "custom-ca.trusted-telegraf-init-container.command" . | indent 2 }}
-  {{- else }}
   command: ["telegraf_init"]
-  {{- end }}
   volumeMounts:
   - name: configuration
     mountPath: /etc/komodor
   - name: {{ include "metrics.shared.volume.name" . }}
     mountPath: /etc/telegraf
-  {{- include "custom-ca.volumeMounts" . | nindent 2 }}
+  {{- include "custom-ca.trusted-volumeMounts" . | nindent 2 }}
   env:
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
   - name: KOMOKW_RUNTIME_MODE
@@ -78,17 +74,13 @@
   imagePullPolicy: {{ .Values.pullPolicy }}
   resources:
     {{ toYaml .Values.components.komodorMetrics.metricsInit.resources | trim | nindent 4 }}
-  {{- if .Values.customCa.enabled }}
-  {{ include "custom-ca.trusted-telegraf-init-container.command" . | indent 2 }}
-  {{- else }}
   command: ["telegraf_init"]
-  {{- end }}
   volumeMounts:
   - name: configuration
     mountPath: /etc/komodor
   - name: {{ include "metrics.shared.volume.name" . }}
     mountPath: /etc/telegraf
-  {{- include "custom-ca.volumeMounts" . | nindent 2 }}
+  {{- include "custom-ca.trusted-volumeMounts" . | nindent 2 }}
   env:
   {{- include "komodorAgent.proxy-conf" . | indent 2 }}
   - name: KOMOKW_RUNTIME_MODE

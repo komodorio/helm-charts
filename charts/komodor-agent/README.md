@@ -150,6 +150,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | proxy.http | string | `nil` | Configure Proxy setting (HTTP_PROXY) `eg. http://proxy.com:8080` |
 | proxy.https | string | `nil` | Configure Proxy setting (HTTPS_PROXY) `eg. https://proxy.com:8080` |
 | proxy.no_proxy | string | `nil` | Specify specific domains to ignore proxy for. eg. `komodor.com,google.com` |
+| proxy.no_proxy_local_addresses | bool | `false` | When true, prepends standard Kubernetes-internal addresses (localhost, 127.0.0.1, 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, .cluster.local, .svc) to NO_PROXY so that in-cluster traffic (e.g. Kubernetes API server) bypasses the proxy. |
 | customCa | object | See sub-values | Configure custom CA for the agent (Not supported for windows) |
 | customCa.enabled | bool | `false` | Enable custom CA certificate for the agent |
 | customCa.secretName | string | `nil` | Name of the secret containing the CA |

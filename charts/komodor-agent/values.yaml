@@ -43,6 +43,10 @@ proxy:
   https:
   # proxy.no_proxy -- (string) Specify specific domains to ignore proxy for. eg. `komodor.com,google.com`
   no_proxy:
+  # proxy.no_proxy_local_addresses -- When true, prepends standard Kubernetes-internal addresses
+  # (localhost, 127.0.0.1, 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, .cluster.local, .svc)
+  # to NO_PROXY so that in-cluster traffic (e.g. Kubernetes API server) bypasses the proxy.
+  no_proxy_local_addresses: false
 
 # customCa -- Configure custom CA for the agent (Not supported for windows)
 # @default -- See sub-values
