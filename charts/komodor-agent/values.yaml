@@ -236,10 +236,6 @@ capabilities:
       markUnevictable: true
       # capabilities.admissionController.binpacking.addNodeAffinityToMarkedPods -- (bool) Add node affinity to marked pods to prefer scheduling on nodes with already unevictable pods (requires enabling per cluster in UI in addition)
       addNodeAffinityToMarkedPods: true
-      # capabilities.admissionController.binpacking.unevictableLabelKey -- (string) Label key to mark pods as unevictable
-      #unevictableLabelKey: "komodor.io/unevictable"
-      # capabilities.admissionController.binpacking.modifiedAnnotationKey -- (string) Annotation key to mark pods as modified by the binpacking admission controller
-      #modifiedAnnotationKey: "pod-placement.komodor.com/modified-at"
       # capabilities.admissionController.binpacking.unevictablePodNodeAffinityWeight -- (int) Weight for the node affinity of unevictable pods
       #unevictablePodNodeAffinityWeight: 100
       # capabilities.admissionController.binpacking.ignoredNamespaces -- (list) List of namespaces to ignore for binpacking
@@ -251,21 +247,6 @@ capabilities:
       # capabilities.admissionController.rightsizing.recommendationsSyncInterval -- (string) Interval for syncing rightsizing recommendations. It should be a valid duration string (e.g., "30s", "1m", "5m", "1h").
       # @default -- "1m"
       #recommendationsSyncInterval: "1m"
-      # capabilities.admissionController.rightsizing.ignoreRecommendationsAnnotationKey -- (string) Annotation key to ignore rightsizing recommendations
-      # @default -- "komodor.com/ignore-rightsizing-recommendations"
-      #ignoreRecommendationsAnnotationKey: "komodor.com/ignore-rightsizing-recommendations"
-      # capabilities.admissionController.rightsizing.originalResourcesAnnotationKey -- (string) Annotation key to store original resources before rightsizing
-      # @default -- "komodor.com/original-resources"
-      #originalResourcesAnnotationKey: "komodor.com/original-resources"
-      # capabilities.admissionController.rightsizing.modifiedAnnotationKey -- (string) Annotation key to mark pods as modified by the rightsizing admission controller
-      # @default -- "rightsizing.komodor.com/modified-at"
-      #modifiedAnnotationKey: "rightsizing.komodor.com/modified-at"
-      # capabilities.admissionController.rightsizing.mutatedAnnotationKey -- (string) Annotation key to mark pods as mutated by the rightsizing admission controller
-      # @default -- "rightsizing.komodor.com/mutated"
-      #mutatedAnnotationKey: "rightsizing.komodor.com/mutated"
-      # capabilities.admissionController.rightsizing.applyProtocolAnnotationKey -- (string) Annotation key to mark the protocol used by the rightsizing admission controller
-      # @default -- "rightsizing.komodor.com/apply-protocol"
-      #applyProtocolAnnotationKey: "rightsizing.komodor.com/apply-protocol"
 
 # components -- Configure the agent components
 # @default -- See sub-values
