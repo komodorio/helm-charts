@@ -24,12 +24,6 @@ data:
     binpacking:
       markUnevictable: {{ .Values.capabilities.admissionController.binpacking.markUnevictable }}
       addNodeAffinityToMarkedPods: {{ .Values.capabilities.admissionController.binpacking.addNodeAffinityToMarkedPods }}
-      {{- if .Values.capabilities.admissionController.binpacking.unevictableLabelKey }}
-      unevictableLabelKey: {{ .Values.capabilities.admissionController.binpacking.unevictableLabelKey }}
-      {{- end }}
-      {{- if .Values.capabilities.admissionController.binpacking.modifiedAnnotationKey }}
-      modifiedAnnotationKey: {{ .Values.capabilities.admissionController.binpacking.modifiedAnnotationKey }}
-      {{- end }}
       {{- if .Values.capabilities.admissionController.binpacking.unevictablePodNodeAffinityWeight }}
       unevictablePodNodeAffinityWeight: {{ .Values.capabilities.admissionController.binpacking.unevictablePodNodeAffinityWeight }}
       {{- end }}
@@ -41,20 +35,5 @@ data:
       enabled: true
       {{- if .Values.capabilities.admissionController.rightsizing.recommendationsSyncInterval }}
       recommendationsSyncInterval: {{ .Values.capabilities.admissionController.rightsizing.recommendationsSyncInterval }}
-      {{- end }}
-      {{- if .Values.capabilities.admissionController.rightsizing.ignoreRecommendationsAnnotationKey }}
-      ignoreRecommendationsAnnotationKey: {{ .Values.capabilities.admissionController.rightsizing.ignoreRecommendationsAnnotationKey }}
-      {{- end }}
-      {{- if .Values.capabilities.admissionController.rightsizing.originalResourcesAnnotationKey }}
-      originalResourcesAnnotationKey: {{ .Values.capabilities.admissionController.rightsizing.originalResourcesAnnotationKey }}
-      {{- end }}
-      {{- if .Values.capabilities.admissionController.rightsizing.modifiedAnnotationKey }}
-      modifiedAnnotationKey: {{ .Values.capabilities.admissionController.rightsizing.modifiedAnnotationKey }}
-      {{- end }}
-      {{- if .Values.capabilities.admissionController.rightsizing.mutatedAnnotationKey }}
-      mutatedAnnotationKey: {{ .Values.capabilities.admissionController.rightsizing.mutatedAnnotationKey }}
-      {{- end }}
-      {{- if .Values.capabilities.admissionController.rightsizing.applyProtocolAnnotationKey }}
-      applyProtocolAnnotationKey: {{ .Values.capabilities.admissionController.rightsizing.applyProtocolAnnotationKey }}
       {{- end }}
 {{- end }}
