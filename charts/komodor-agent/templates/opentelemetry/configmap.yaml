@@ -159,10 +159,8 @@ data:
       filter/local:
         error_mode: ignore
         metrics:
-          include:
-            match_type: regexp
-            metric_names:
-              - ".*"
+          metric:
+            - 'not IsMatch(name, "^httpcheck.*") and not IsMatch(name, "^komodor.agent.telemetry.agent.task.handler.*") and not IsMatch(name, "^komodor.agent.telemetry.live.data.session.watch.sessions$")'
 
     exporters:
       # Debug exporter can be used for development and testing purposes
@@ -206,7 +204,7 @@ data:
           processors: [memory_limiter, batch]
           exporters: [otlphttp/komodor]
         metrics/local:
-          receivers: [httpcheck/local]
+          receivers: [otlp, httpcheck/local]
           processors: [memory_limiter, filter/local]
           exporters: [prometheus/local]
 {{- end }}
