@@ -8,3 +8,4 @@ release_notes.txt
 .venv/
 venv/
 **/helm-docs
+.claude/**
