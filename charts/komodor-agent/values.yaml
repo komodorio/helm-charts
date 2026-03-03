@@ -31,6 +31,10 @@ serviceAccount:
   name:
   # serviceAccount.annotations -- Add annotations to the service account
   annotations: {}
+  # serviceAccount.createDaemonMetrics -- Creates a dedicated service account for daemon and metrics workloads with segregated RBAC permissions
+  createDaemonMetrics: true
+  # serviceAccount.daemonMetricsName -- (string) Name of the daemon/metrics service account. If not set, defaults to `<fullname>-daemon-metrics`
+  daemonMetricsName:
 
 proxy:
   # proxy.enabled -- Enable proxy for the agent

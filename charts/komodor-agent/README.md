@@ -145,6 +145,8 @@ The command removes all the Kubernetes components associated with the chart and 
 | serviceAccount.create | bool | `true` | Creates a service account for the agent |
 | serviceAccount.name | string | `nil` | Name of the service account, Required if `serviceAccount.create` is false |
 | serviceAccount.annotations | object | `{}` | Add annotations to the service account |
+| serviceAccount.createDaemonMetrics | bool | `true` | Creates a dedicated service account for daemon and metrics workloads with minimal permissions |
+| serviceAccount.daemonMetricsName | string | `nil` | Name of the daemon-metrics service account (defaults to `<fullname>-daemon-metrics`) |
 | proxy.enabled | bool | `false` | Enable proxy for the agent |
 | proxy.komodorOnly | bool | `true` | Configure proxy to be applied only on communication to Komodor servers (comms. to K8S API remains without proxy) |
 | proxy.http | string | `nil` | Configure Proxy setting (HTTP_PROXY) `eg. http://proxy.com:8080` |

@@ -27,7 +27,7 @@ spec:
         {{- include "KomodorMetrics.user.labels" . | nindent 8 }}
     spec:
       priorityClassName: {{ .Values.components.komodorMetrics.priorityClassName | default (printf "%s-metrics-high-priority" (include "komodor.truncatedReleaseName" .)) }}
-      serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
+      serviceAccountName: {{ include "komodorAgent.daemonMetrics.serviceAccountName" . }}
       affinity:
         {{- toYaml .Values.components.komodorMetrics.affinity | nindent 8 }}
       nodeSelector:

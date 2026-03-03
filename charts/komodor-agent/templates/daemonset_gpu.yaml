@@ -20,7 +20,7 @@ spec:
         {{- include "gpuAccess.selectorLabels" . | nindent 8 }}
         {{- include "gpuAccess.user.labels" . | nindent 8 }}
     spec:
-      serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
+      serviceAccountName: {{ include "komodorAgent.daemonMetrics.serviceAccountName" . }}
       nodeSelector:
         kubernetes.io/os: linux
         {{- if not (empty (((.Values.components).gpuAccess).nodeSelector)) }}
