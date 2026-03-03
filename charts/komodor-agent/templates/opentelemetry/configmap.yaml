@@ -36,6 +36,7 @@ data:
             validations:
               - json_path: "status"
                 equals: "healthy"
+          {{- if .Values.capabilities.admissionController.enabled }}
           - endpoint: "${env:ADMISSION_CONTROLLER_HEALTH_ENDPOINT}?check=komodor_backend"
             tls:
               insecure_skip_verify: true
@@ -50,6 +51,7 @@ data:
             validations:
               - json_path: "status"
                 equals: "healthy"
+          {{- end }}
         metrics:
           httpcheck.validation.passed:
             enabled: true
@@ -161,6 +163,8 @@ data:
         metrics:
           metric:
             - 'not IsMatch(name, "^httpcheck.*") and not IsMatch(name, "^komodor.agent.telemetry.agent.task.handler.*") and not IsMatch(name, "^komodor.agent.telemetry.live.data.session.watch.sessions$")'
+          datapoint:
+            - 'IsMatch(metric.name, "^httpcheck.*") and IsMatch(attributes["http.url"], "^https://.*admission-controller.*") and "${env:ADMISSION_CONTROLLER_ENABLED}" != "true"'
 
     exporters:
       # Debug exporter can be used for development and testing purposes
