@@ -30,7 +30,7 @@ spec:
       dnsPolicy: {{ .Values.components.komodorDaemonWindows.dnsPolicy }}
       terminationGracePeriodSeconds: 0
       priorityClassName: {{ .Values.components.komodorDaemon.priorityClassName | default (printf "%s-daemon-high-priority" (include "komodor.truncatedReleaseName" .)) }}
-      serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
+      serviceAccountName: {{ include "komodorAgent.daemonMetrics.serviceAccountName" . }}
       affinity:
         {{- toYaml .Values.components.komodorDaemonWindows.affinity | nindent 8 }}
       nodeSelector:

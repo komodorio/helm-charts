@@ -8,3 +8,5 @@ release_notes.txt
 .venv/
 venv/
 **/helm-docs
+.claude/**
+former-testing-steps.sh

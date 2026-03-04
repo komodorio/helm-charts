@@ -1,0 +1,49 @@
+{{- if and .Values.serviceAccount.createDaemonMetrics .Values.createRbac -}}
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "komodorAgent.daemonMetrics.serviceAccountName" . }}
+rules:
+  # Base read permissions for metrics collection
+  #TODO replaces lines 431-452 in clusterrole.yaml file REMOVE_BEFORE_MERGE
+  - apiGroups:
+    - ""
+    resources:
+    - configmaps
+    - namespaces
+    - pods
+    - nodes
+    - nodes/stats
+    - nodes/proxy
+    verbs:
+    - get
+    - list
+  - apiGroups:
+    - extensions
+    - networking.k8s.io
+    resources:
+    - ingresses
+    verbs:
+    - get
+    - watch
+    - list
+
+  # metrics.k8s.io API group for metrics collection
+  #TODO replace lines 215-223 in clusterrole.yaml file REMOVE_BEFORE_MERGE
+  - apiGroups:
+    - metrics.k8s.io
+    resources:
+    - nodes
+    - pods
+    verbs:
+    - get
+    - watch
+    - list
+
+  # apiserver metrics access
+  #TODO replaces lines 455-458 in clusterrole.yaml file REMOVE_BEFORE_MERGE
+  - nonResourceURLs:
+    - "/metrics"
+    verbs:
+      - get
+{{- end -}}
