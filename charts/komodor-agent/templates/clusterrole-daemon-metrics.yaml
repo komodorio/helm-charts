@@ -1,0 +1,47 @@
+{{- if .Values.createRbac -}}
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "komodorAgent.daemonMetrics.serviceAccountName" . }}
+rules:
+  # Base read permissions for metrics collection
+{{- if .Values.capabilities.metrics }}
+  - apiGroups:
+    - ""
+    resources:
+    - configmaps
+    - namespaces
+    - pods
+    - nodes
+    - nodes/stats
+    - nodes/proxy
+    verbs:
+    - get
+    - list
+  - apiGroups:
+    - extensions
+    - networking.k8s.io
+    resources:
+    - ingresses
+    verbs:
+    - get
+    - watch
+    - list
+  # apiserver metrics access
+  - nonResourceURLs:
+    - "/metrics"
+    verbs:
+    - get
+{{- end }}
+{{- if or (.Values.allowedResources.metrics) ((.Values.metrics).enabled) }}
+  - apiGroups:
+    - metrics.k8s.io
+    resources:
+    - nodes
+    - pods
+    verbs:
+    - get
+    - watch
+    - list
+{{- end }}
+{{- end -}}
