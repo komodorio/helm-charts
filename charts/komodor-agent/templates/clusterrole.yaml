@@ -211,17 +211,6 @@ rules:
     - watch
     - list
 {{- end }}
-{{- if or (.Values.allowedResources.metrics) ((.Values.metrics).enabled) }}
-  - apiGroups:
-    - metrics.k8s.io
-    resources:
-    - nodes
-    - pods
-    verbs:
-    - get
-    - watch
-    - list
-{{- end }}
 {{- if .Values.allowedResources.admissionRegistrationResources }}
   - apiGroups:
     - admissionregistration.k8s.io
@@ -427,35 +416,6 @@ rules:
     - list
     - patch
     - update
-{{- end }}
-{{- if .Values.capabilities.metrics }}
-  - apiGroups:
-    - ""
-    resources:
-    - configmaps
-    - namespaces
-    - pods
-    - nodes
-    - nodes/stats
-    - nodes/proxy
-    verbs:
-    - get
-    - list
-  - apiGroups:
-    - extensions
-    - "networking.k8s.io"
-    resources:
-    - ingresses
-    verbs:
-    - get
-    - watch
-    - list
-
-  # apiserver metrics
-  - nonResourceURLs:
-    - "/metrics"
-    verbs:
-      - get
 {{- end }}
 {{- if .Values.capabilities.actions }}
   - apiGroups:

@@ -1,3 +1,11 @@
+{{- define "proxy.no_proxy_value" -}}
+{{- if .Values.proxy.no_proxy_local_addresses -}}
+{{- list "localhost" "127.0.0.1" "10.0.0.0/8" "172.16.0.0/12" "192.168.0.0/16" ".cluster.local" ".svc" .Values.proxy.no_proxy | compact | join "," -}}
+{{- else -}}
+{{- .Values.proxy.no_proxy -}}
+{{- end -}}
+{{- end }}
+
 {{- define "komodorAgent.proxy-conf" -}}
 {{- if .Values.proxy.enabled }}
 {{- if .Values.proxy.http }}
@@ -8,9 +16,9 @@
 - name: {{ .Values.proxy.komodorOnly | ternary "KOMOKW_HTTPS_PROXY" "HTTPS_PROXY" }}
   value: {{ .Values.proxy.https }}
 {{- end }}
-{{- if .Values.proxy.no_proxy }}
+{{- if or .Values.proxy.no_proxy .Values.proxy.no_proxy_local_addresses }}
 - name: {{ .Values.proxy.komodorOnly | ternary "KOMOKW_NO_PROXY" "NO_PROXY" }}
-  value: {{ .Values.proxy.no_proxy }}
+  value: {{ include "proxy.no_proxy_value" . }}
 {{- end }}
 {{- end }}
 {{- end }}
@@ -26,15 +34,15 @@
   value: "true"
 {{- if .Values.proxy.http }}
 - name: HTTP_PROXY
-  value: {{ .Values.proxy.http }}	
+  value: {{ .Values.proxy.http }}
 {{- end }}
 {{- if .Values.proxy.https }}
 - name: HTTPS_PROXY
   value: {{ .Values.proxy.https }}
 {{- end }}
-{{- if .Values.proxy.no_proxy }}	
+{{- if or .Values.proxy.no_proxy .Values.proxy.no_proxy_local_addresses }}
 - name: NO_PROXY
-  value: {{ .Values.proxy.no_proxy }}
+  value: {{ include "proxy.no_proxy_value" . }}
 {{- end }}
 {{- end }}
 {{- end }}
@@ -49,9 +57,9 @@
 - name: "HTTPS_PROXY"
   value: {{ .Values.proxy.https }}
 {{- end }}
-{{- if .Values.proxy.no_proxy }}
+{{- if or .Values.proxy.no_proxy .Values.proxy.no_proxy_local_addresses }}
 - name: "NO_PROXY"
-  value: {{ .Values.proxy.no_proxy }}
+  value: {{ include "proxy.no_proxy_value" . }}
 {{- end }}
 {{- end }}
 {{- end }}

@@ -27,6 +27,8 @@ KOMODOR_SERVICE_URLS = [
     "https://app.komodor.com/k8s-events/event",
     "https://app.komodor.com/metrics-collector",
     "https://app.komodor.com/agent-task-manager",
+    "https://app.komodor.com/resources/api/v1/ingest",
+    "https://telemetry.komodor.com/v1/logs"
 ]
 
 
@@ -85,6 +87,7 @@ def test_use_proxy_and_custom_ca(setup_cluster, kube_client):
         additional_settings=f"--set proxy.enabled=true "
         f"--set proxy.http={PROXY_URL} "
         f"--set proxy.https={PROXY_URL} "
+        f"--set proxy.no_proxy_local_addresses=true "
         f"--set customCa.enabled=true "
         f"--set customCa.secretName={secret_name} ",
     )

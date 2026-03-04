@@ -118,9 +118,10 @@
   command:
     - sh
     - -c
-    - cp /certs/* /etc/ssl/certs/ &&
-      update-ca-certificates --fresh &&
-      cp -r /etc/ssl/certs/* /trusted-ca/
+    - cp -rL /etc/ssl/certs/. /trusted-ca/ &&
+      cp /certs/* /trusted-ca/ &&
+      cat /trusted-ca/ca-certificates.crt /certs/* > /trusted-ca/ca-certificates.crt.new &&
+      mv /trusted-ca/ca-certificates.crt.new /trusted-ca/ca-certificates.crt
   volumeMounts:
     {{- include "custom-ca.trusted-volumeMounts-init" .    | nindent 4 }}
     {{- include "custom-ca.volumeMounts" .                 | nindent 4 }}
