@@ -127,6 +127,20 @@ helm delete --purge komodor-agent
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## Telemetry & Observability
+
+The Komodor agent ships an OpenTelemetry Collector sidecar that handles all traces, metrics, and logs produced by the agent components. It also exposes agent health-check metrics on a local Prometheus endpoint (`:9090`) that you can scrape with your own monitoring stack.
+
+For a full description of the data pipelines, exposed ports, health-check metrics, and the split between what is sent to Komodor and what is available to you locally, see the [OpenTelemetry Collector README](templates/opentelemetry/README.md).
+
+Relevant values:
+
+| Key | Default | Description |
+|---|---|---|
+| `capabilities.telemetry.enabled` | `true` | Master switch — disabling this stops all telemetry collection |
+| `capabilities.telemetry.deployOtelCollector` | `true` | Deploy the collector sidecar |
+| `components.komodorDaemon.opentelemetry.otelInit.enabled` | `true` | Fetch collector configuration remotely from the Komodor backend |
+
 ## Values
 
 | Key | Type | Default | Description |
@@ -341,7 +355,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | components.komodorDaemon.nodeEnricher.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemon.nodeEnricher.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"add":[],"drop":["ALL"]},"runAsNonRoot":true}` | Set custom securityContext to the komodor agent node enricher container |
 | components.komodorDaemon.opentelemetry | object | See sub-values | Configure the komodor daemon OpenTelemetry collector components |
-| components.komodorDaemon.opentelemetry.image | object | `{"name":"komodor-otel-collector","tag":"0.1.7"}` | Override the OpenTelemetry collector image name or tag. |
+| components.komodorDaemon.opentelemetry.image | object | `{"name":"komodor-otel-collector","tag":"0.1.8"}` | Override the OpenTelemetry collector image name or tag. |
 | components.komodorDaemon.opentelemetry.resources | object | `{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Set custom resources to the OpenTelemetry collector container |
 | components.komodorDaemon.opentelemetry.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemon.opentelemetry.otelInit | object | See sub-values | Configure the OTel init/sidecar containers for remote configuration |

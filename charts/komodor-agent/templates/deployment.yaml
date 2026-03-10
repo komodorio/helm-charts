@@ -29,7 +29,7 @@ spec:
         {{- toYaml .Values.components.komodorAgent.podAnnotations | trim | nindent 8 }}
         {{- end }}
       labels:
-        {{- include "komodorAgent.selectorLabels" . | nindent 8 }}
+        {{- include "komodorAgent.watcher.selectorLabels" . | nindent 8 }}
         {{- include "komodorAgent.user.labels" . | nindent 8 }}
     spec:
       {{ include "komodorAgent.pod.securityContext" . | nindent 6 }}
