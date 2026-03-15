@@ -566,7 +566,7 @@ components:
       resources:
         limits:
           cpu: 1
-          memory: 1Gi
+          memory: 4Gi
         requests:
           cpu: 0.1
           memory: 384Mi
@@ -739,7 +739,7 @@ components:
       resources:
         limits:
           cpu: 1
-          memory: 1Gi
+          memory: 4Gi
         requests:
           cpu: 0.1
           memory: 384Mi
