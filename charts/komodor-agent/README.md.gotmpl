@@ -126,6 +126,20 @@ helm delete --purge komodor-agent
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## Telemetry & Observability
+
+The Komodor agent ships an OpenTelemetry Collector sidecar that handles all traces, metrics, and logs produced by the agent components. It also exposes agent health-check metrics on a local Prometheus endpoint (`:9090`) that you can scrape with your own monitoring stack.
+
+For a full description of the data pipelines, exposed ports, health-check metrics, and the split between what is sent to Komodor and what is available to you locally, see the [OpenTelemetry Collector README](documentation/README_otel.md).
+
+Relevant values:
+
+| Key | Default | Description |
+|---|---|---|
+| `capabilities.telemetry.enabled` | `true` | Master switch — disabling this stops all telemetry collection |
+| `capabilities.telemetry.deployOtelCollector` | `true` | Deploy the collector sidecar |
+| `components.komodorDaemon.opentelemetry.otelInit.enabled` | `true` | Fetch collector configuration remotely from the Komodor backend |
+
 {{ template "chart.requirementsSection" . }}
 
 {{ template "chart.valuesSection" . }}
