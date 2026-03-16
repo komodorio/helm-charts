@@ -131,7 +131,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The Komodor agent ships an OpenTelemetry Collector sidecar that handles all traces, metrics, and logs produced by the agent components. It also exposes agent health-check metrics on a local Prometheus endpoint (`:9090`) that you can scrape with your own monitoring stack.
 
-For a full description of the data pipelines, exposed ports, health-check metrics, and the split between what is sent to Komodor and what is available to you locally, see the [OpenTelemetry Collector README](templates/opentelemetry/README.md).
+For a full description of the data pipelines, exposed ports, health-check metrics, and the split between what is sent to Komodor and what is available to you locally, see the [OpenTelemetry Collector README](documentation/README_otel.md).
 
 Relevant values:
 
