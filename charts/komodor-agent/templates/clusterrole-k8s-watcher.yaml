@@ -1,14 +1,9 @@
-{{/*
-DEPRECATED: This monolithic ClusterRole is deprecated and will be removed in a future release.
-Use the segregated ClusterRoles (clusterrole-k8s-watcher.yaml, clusterrole-supervisor.yaml, etc.) instead.
-Set rbacLegacyMode: false (default) to use the new segregated structure.
-*/}}
-{{- if and .Values.createRbac .Values.rbacLegacyMode -}}
+{{- if and .Values.createRbac (not .Values.rbacLegacyMode) -}}
 {{- include "migrateHelmValues" . -}}
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ include "komodorAgent.serviceAccountName" . }}
+  name: {{ include "komodorAgent.clusterRole.k8sWatcher" . }}
 rules:
   - apiGroups:
     - ""
@@ -80,7 +75,7 @@ rules:
     - get
     - watch
     - list
-  - apiGroups: # Required as minimum installation
+  - apiGroups:
     - apps
     resources:
     - deployments
@@ -327,123 +322,6 @@ rules:
     - watch
     - list
 {{- end }}
-{{- if .Values.capabilities.actions }}
-  - apiGroups:
-    - apps
-    resources:
-    - deployments/scale
-    - statefulsets/scale
-    - deployments
-    - replicasets
-    - statefulsets
-    - daemonsets
-    verbs:
-    - patch
-  - apiGroups:
-    - ""
-    resources:
-    - pods
-    verbs:
-    - delete
-  - apiGroups:
-    - batch
-    resources:
-    - jobs
-    verbs:
-    - delete
-    - create
-{{- end }}
-{{- if .Values.capabilities.actions }}
-  - apiGroups:
-    - ""
-    resources:
-    - pods
-    - persistentvolumeclaims
-    - configmaps
-    - services
-    - persistentvolumes
-    - storageclasses
-    verbs:
-    - delete
-    - patch
-    - update
-    - create
-  - apiGroups:
-    - apps
-    resources:
-    - replicasets
-    - deployments
-    - statefulsets
-    - daemonsets
-    verbs:
-    - delete
-    - patch
-    - update
-    - create
-  - apiGroups:
-    - batch
-    resources:
-    - cronjobs
-    - jobs
-    verbs:
-    - delete
-    - patch
-    - update
-    - create
-  - apiGroups:
-    - networking.k8s.io
-    resources:
-    - ingresses
-    - networkpolicies
-    verbs:
-    - delete
-    - patch
-    - update
-    - create
-  - apiGroups:
-    - autoscaling
-    resources:
-    - horizontalpodautoscalers
-    verbs:
-    - patch
-    - delete
-    - update
-    - create
-{{- end }}
-{{- if .Values.capabilities.cost.hpa }}
-  - apiGroups:
-    - keda.sh
-    resources:
-    - scaledjobs
-    - scaledobjects
-    verbs:
-    - get
-    - list
-    - patch
-    - update
-{{- end }}
-{{- if .Values.capabilities.actions }}
-  - apiGroups:
-    - ""
-    resources:
-    - nodes
-    verbs:
-    - patch
-
-  - apiGroups:
-    - ""
-    resources:
-    - pods/eviction
-    - pods/exec
-    - pods/portforward
-    verbs:
-    - create
-{{- end}}
-{{- if .Values.capabilities.crActions}}
-  - apiGroups: ["*"]
-    resources: ["*"]
-    verbs: ["delete", "list", "get", "watch", "patch"]
-{{- end}}
 {{- if .Values.capabilities.events.create }}
   - apiGroups:
       - ""
@@ -466,76 +344,16 @@ rules:
       - list
       - get
       - watch
-  {{- end }}
-
-  {{- if and .Values.capabilities.helm.enabled (not .Values.capabilities.helm.readonly) }}
-  - apiGroups:
-      - ""
-    resources:
-      - secrets
-    verbs:
-      - create
-      - update
-      - delete
-
-  # Allow to uninstall charts
-  - apiGroups: ["*"]
-    resources: ["*"]
-    verbs: ["delete", "list", "get"]
-{{- end}}
-
+{{- end }}
 {{- if .Values.allowedResources.allowReadAll }}
   - apiGroups: ["*"]
     resources: ["*"]
     verbs:     ["get", "watch", "list"]
 {{- end}}
-
 {{- if and .Values.allowedResources.customReadAPIGroups (gt (len .Values.allowedResources.customReadAPIGroups) 0) }}
   - apiGroups:
     {{- toYaml .Values.allowedResources.customReadAPIGroups | nindent 6 }}
     resources: ["*"]
     verbs:     ["get", "watch", "list"]
 {{- end }}
-
-{{- if .Values.capabilities.rbac }}
-  - apiGroups:
-      - ""
-    resources:
-      - serviceaccounts
-      - secrets
-    verbs:
-      - "*"
-  - apiGroups:
-      - "rbac.authorization.k8s.io"
-    resources:
-      - clusterroles
-      - clusterrolebindings
-      - roles
-      - rolebindings
-    verbs:
-      - "*"
-{{- end }}
-
-{{- if .Values.capabilities.rbacTempTokens }}
-  - apiGroups:
-      - ""
-    resources:
-      - serviceaccounts/token
-    verbs:
-      - create
-{{- end }}
-
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: {{ include "komodorAgent.serviceAccountName" . }}
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: {{ include "komodorAgent.serviceAccountName" . }}
-subjects:
-  - kind: ServiceAccount
-    name: {{ include "komodorAgent.serviceAccountName" . }}
-    namespace: {{ .Release.Namespace }}
 {{- end -}}

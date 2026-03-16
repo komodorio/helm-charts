@@ -1,0 +1,82 @@
+{{- if and .Values.createRbac (not .Values.rbacLegacyMode) -}}
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "komodorAgent.clusterRole.metricsDeployment" . }}
+rules:
+  # Base read permissions for metrics collection (same as daemon-metrics)
+{{- if .Values.capabilities.metrics }}
+  - apiGroups:
+    - ""
+    resources:
+    - configmaps
+    - namespaces
+    - pods
+    - nodes
+    - nodes/stats
+    - nodes/proxy
+    verbs:
+    - get
+    - list
+  - apiGroups:
+    - extensions
+    - networking.k8s.io
+    resources:
+    - ingresses
+    verbs:
+    - get
+    - watch
+    - list
+  # apiserver metrics access
+  - nonResourceURLs:
+    - "/metrics"
+    verbs:
+    - get
+{{- end }}
+{{- if or (.Values.allowedResources.metrics) ((.Values.metrics).enabled) }}
+  - apiGroups:
+    - metrics.k8s.io
+    resources:
+    - nodes
+    - pods
+    verbs:
+    - get
+    - watch
+    - list
+{{- end }}
+  # Additional permissions for metrics deployment (HPA, binpacking)
+{{- if .Values.capabilities.metrics }}
+  # For owner resolution (dynamic client) - needed by kube_consolidated
+  - apiGroups:
+    - apps
+    resources:
+    - deployments
+    - replicasets
+    - statefulsets
+    - daemonsets
+    verbs:
+    - get
+  - apiGroups:
+    - batch
+    resources:
+    - jobs
+    - cronjobs
+    verbs:
+    - get
+  # For HPA metrics (kube_generic plugin)
+  - apiGroups:
+    - autoscaling
+    resources:
+    - horizontalpodautoscalers
+    verbs:
+    - get
+    - list
+  # For binpacking state (informer cache) - needs watch
+  - apiGroups:
+    - ""
+    resources:
+    - pods
+    verbs:
+    - watch
+{{- end }}
+{{- end -}}

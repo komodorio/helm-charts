@@ -1,0 +1,159 @@
+{{- if and .Values.createRbac (not .Values.rbacLegacyMode) -}}
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "komodorAgent.clusterRole.supervisor" . }}
+rules:
+{{- if .Values.capabilities.actions }}
+  - apiGroups:
+    - apps
+    resources:
+    - deployments/scale
+    - statefulsets/scale
+    - deployments
+    - replicasets
+    - statefulsets
+    - daemonsets
+    verbs:
+    - patch
+  - apiGroups:
+    - ""
+    resources:
+    - pods
+    verbs:
+    - delete
+  - apiGroups:
+    - batch
+    resources:
+    - jobs
+    verbs:
+    - delete
+    - create
+  - apiGroups:
+    - ""
+    resources:
+    - pods
+    - persistentvolumeclaims
+    - configmaps
+    - services
+    - persistentvolumes
+    - storageclasses
+    verbs:
+    - delete
+    - patch
+    - update
+    - create
+  - apiGroups:
+    - apps
+    resources:
+    - replicasets
+    - deployments
+    - statefulsets
+    - daemonsets
+    verbs:
+    - delete
+    - patch
+    - update
+    - create
+  - apiGroups:
+    - batch
+    resources:
+    - cronjobs
+    - jobs
+    verbs:
+    - delete
+    - patch
+    - update
+    - create
+  - apiGroups:
+    - networking.k8s.io
+    resources:
+    - ingresses
+    - networkpolicies
+    verbs:
+    - delete
+    - patch
+    - update
+    - create
+  - apiGroups:
+    - autoscaling
+    resources:
+    - horizontalpodautoscalers
+    verbs:
+    - patch
+    - delete
+    - update
+    - create
+  - apiGroups:
+    - ""
+    resources:
+    - nodes
+    verbs:
+    - patch
+  - apiGroups:
+    - ""
+    resources:
+    - pods/eviction
+    - pods/exec
+    - pods/portforward
+    verbs:
+    - create
+{{- end}}
+{{- if .Values.capabilities.cost.hpa }}
+  - apiGroups:
+    - keda.sh
+    resources:
+    - scaledjobs
+    - scaledobjects
+    verbs:
+    - get
+    - list
+    - patch
+    - update
+{{- end }}
+{{- if .Values.capabilities.crActions}}
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["delete", "list", "get", "watch", "patch"]
+{{- end}}
+{{- if and .Values.capabilities.helm.enabled (not .Values.capabilities.helm.readonly) }}
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - create
+      - update
+      - delete
+  # Allow to uninstall charts
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["delete", "list", "get"]
+{{- end}}
+{{- if .Values.capabilities.rbac }}
+  - apiGroups:
+      - ""
+    resources:
+      - serviceaccounts
+      - secrets
+    verbs:
+      - "*"
+  - apiGroups:
+      - "rbac.authorization.k8s.io"
+    resources:
+      - clusterroles
+      - clusterrolebindings
+      - roles
+      - rolebindings
+    verbs:
+      - "*"
+{{- end }}
+{{- if .Values.capabilities.rbacTempTokens }}
+  - apiGroups:
+      - ""
+    resources:
+      - serviceaccounts/token
+    verbs:
+      - create
+{{- end }}
+{{- end -}}
