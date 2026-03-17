@@ -1,5 +1,5 @@
 # Variables
-HELM_DOCS_VERSION := 1.11.2
+HELM_DOCS_VERSION := 1.14.2
 HELM_DOCS_ARGS := -s file \
                   -x \
                   -z=".*image.name.*" \
