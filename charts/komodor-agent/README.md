@@ -152,6 +152,7 @@ Relevant values:
 | tags | dict | `{}` | Tags the agent in order to identify it based on `key:value` properties separated by semicolon (`;`) example: `--set tags.env=staging,tags.team=payments` --- Can also be set in the values under `tags` as a dictionary of key:value strings |
 | clusterName | string | `nil` | **(*required*)** Name to be displayed in the Komodor web application |
 | createRbac | bool | `true` | Creates the necessary RBAC resources for the agent - use with caution! |
+| rbacLegacyMode | bool | `false` | When true, uses a single monolithic ClusterRole (deprecated). When false (default), uses segregated per-container ClusterRoles for better auditability. |
 | telegrafImageVersion | string | `"v2.0.37-alpine"` | Telegraf version to be used |
 | telegrafWindowsImageVersion | string | `"v2.0.37"` | Telegraf version to be used for windows |
 | admissionControllerVersion | string | `"0.1.51"` | Admission controller version to be used |

@@ -1,0 +1,17 @@
+{{- if and .Values.createRbac (not .Values.rbacLegacyMode) -}}
+{{- if .Values.capabilities.nodeEnricher }}
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "komodorAgent.clusterRole.nodeEnricher" . }}
+rules:
+  # Minimal permissions for node-enricher container
+  # Only needs to read node metadata for cloud provider enrichment
+  - apiGroups:
+    - ""
+    resources:
+    - nodes
+    verbs:
+    - get
+{{- end }}
+{{- end -}}
