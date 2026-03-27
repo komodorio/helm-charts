@@ -2,6 +2,17 @@ apiVersion: v1
 entries:
   helm-dashboard:
   - apiVersion: v2
+    appVersion: 2.1.1
+    created: "2026-03-27T11:37:31.979287292Z"
+    description: A GUI Dashboard for Helm by Komodor
+    digest: 66afd2332880741bad4c484804062c106409f7753837e27808d2f2eb4000b8eb
+    icon: https://raw.githubusercontent.com/komodorio/helm-dashboard/refs/heads/main/images/logo.svg
+    name: helm-dashboard
+    type: application
+    urls:
+    - https://github.com/komodorio/helm-charts/releases/download/helm-dashboard-2.0.6/helm-dashboard-2.0.6.tgz
+    version: 2.0.6
+  - apiVersion: v2
     appVersion: 2.1.0
     created: "2026-03-26T10:25:22.936057809Z"
     description: A GUI Dashboard for Helm by Komodor
@@ -8308,4 +8319,4 @@ entries:
     urls:
     - podmotion/podmotion-0.1.0.tgz
     version: 0.1.0
-generated: "2026-03-26T10:25:22.930580988Z"
+generated: "2026-03-27T11:37:31.980624764Z"
