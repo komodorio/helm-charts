@@ -24,13 +24,6 @@ ClusterRole name for k8s-watcher container (read/watch permissions)
 {{- end }}
 
 {{/*
-ClusterRole name for supervisor container (write/action permissions)
-*/}}
-{{- define "komodorAgent.clusterRole.supervisor" -}}
-{{- printf "%s-supervisor" (include "komodorAgent.fullname" .) }}
-{{- end }}
-
-{{/*
 ClusterRole name for metrics deployment container
 */}}
 {{- define "komodorAgent.clusterRole.metricsDeployment" -}}

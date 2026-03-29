@@ -1,194 +1,25 @@
-{{- if and .Values.createRbac (not .Values.rbacLegacyMode) -}}
+{{- if .Values.createRbac -}}
 {{- include "migrateHelmValues" . -}}
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ include "komodorAgent.clusterRole.k8sWatcher" . }}
 rules:
+{{- if .Values.allowedResources.allowReadAll }}
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs:     ["get", "watch", "list"]
+{{- end}}
+{{- if .Values.allowedResources.admissionRegistrationResources }}
   - apiGroups:
-    - ""
+    - admissionregistration.k8s.io
     resources:
-{{- if .Values.allowedResources.event }}
-    - events
-{{- end }}
-{{- if .Values.allowedResources.pod }}
-    - pods
-{{- end }}
-{{- if .Values.allowedResources.replicationController }}
-    - replicationcontrollers
-{{- end }}
-{{- if .Values.allowedResources.service }}
-    - services
-{{- end }}
-{{- if .Values.allowedResources.namespace }}
-    - namespaces
-{{- end }}
-{{- if .Values.allowedResources.configMap }}
-    - configmaps
-{{- end }}
-{{- if .Values.allowedResources.node }}
-    - nodes
-{{- end }}
-{{- if .Values.allowedResources.persistentVolume }}
-    - persistentvolumes
-{{- end }}
-{{- if .Values.allowedResources.persistentVolumeClaim }}
-    - persistentvolumeclaims
-{{- end }}
-{{- if .Values.allowedResources.serviceAccount }}
-    - serviceaccounts
-{{- end }}
-{{- if .Values.allowedResources.secret }}
-    - secrets
-{{- end }}
-{{- if .Values.allowedResources.endpoints }}
-    - endpoints
-{{- end }}
-{{- if .Values.allowedResources.limitRange }}
-    - limitranges
-{{- end }}
-{{- if .Values.allowedResources.podTemplate }}
-    - podtemplates
-{{- end }}
-{{- if .Values.allowedResources.resourceQuota }}
-    - resourcequotas
-{{- end }}
+    - mutatingwebhookconfigurations
+    - validatingwebhookconfigurations
     verbs:
     - get
     - watch
     - list
-  - apiGroups:
-    - rbac
-    - rbac.authorization.k8s.io
-    resources:
-    - clusterroles
-{{- if .Values.allowedResources.clusterRoleBinding }}
-    - clusterrolebindings
-{{- end }}
-{{- if .Values.allowedResources.roleBinding }}
-    - rolebindings
-{{- end }}
-{{- if .Values.allowedResources.role }}
-    - roles
-{{- end }}
-    verbs:
-    - get
-    - watch
-    - list
-  - apiGroups:
-    - apps
-    resources:
-    - deployments
-    - daemonsets
-    - replicasets
-    - statefulsets
-{{- if .Values.allowedResources.controllerRevision }}
-    - controllerrevisions
-{{- end }}
-    verbs:
-    - get
-    - watch
-    - list
-  - apiGroups:
-    - batch
-    resources:
-{{- if .Values.allowedResources.job }}
-    - jobs
-{{- end }}
-{{- if .Values.allowedResources.cronjob }}
-    - cronjobs
-{{- end }}
-    verbs:
-    - get
-    - watch
-    - list
-  - apiGroups:
-    - extensions
-    resources:
-{{- if .Values.allowedResources.ingress }}
-    - ingresses
-{{- end }}
-{{- if .Values.allowedResources.networkPolicy }}
-    - networkpolicies
-{{- end }}
-{{- if .Values.allowedResources.ingressClass }}
-    - ingressclasses
-{{- end }}
-    verbs:
-    - get
-    - watch
-    - list
-  - apiGroups:
-    - networking.k8s.io
-    resources:
-{{- if .Values.allowedResources.ingress }}
-    - ingresses
-{{- end }}
-{{- if .Values.allowedResources.ingressClass }}
-    - ingressclasses
-{{- end }}
-{{- if .Values.allowedResources.networkPolicy }}
-    - networkpolicies
-{{- end }}
-    verbs:
-    - get
-    - watch
-    - list
-  - apiGroups:
-    - ""
-    resources:
-    - pods
-{{- if .Values.capabilities.logs.enabled }}
-    - pods/log
-{{- end }}
-    verbs:
-    - "get"
-    - "list"
-  - apiGroups:
-    - storage.k8s.io
-    resources:
-{{- if .Values.allowedResources.storageClass }}
-    - storageclasses
-{{- end }}
-{{- if .Values.allowedResources.csiDriver }}
-    - csidrivers
-{{- end }}
-{{- if .Values.allowedResources.csiNode }}
-    - csinodes
-{{- end }}
-{{- if .Values.allowedResources.csiStorageCapacity }}
-    - csistoragecapacities
-{{- end }}
-{{- if .Values.allowedResources.volumeAttachment }}
-    - volumeattachments
-{{- end }}
-    verbs:
-    - get
-    - watch
-    - list
-  # Required to validate if enabled CRDs are enabled on cluster
-  - apiGroups:
-    - apiextensions.k8s.io
-    resources:
-    - customresourcedefinitions
-    verbs:
-    - get
-    - watch
-    - list
-{{- if .Values.allowedResources.rollout }}
-  - apiGroups:
-    - argoproj.io
-    resources:
-    - rollouts
-    - rollouts/status
-    - rollouts/finalizers
-    - analysistemplates
-    - clusteranalysistemplates
-    verbs:
-    - get
-    - watch
-    - list
-    - patch
 {{- end }}
 {{- if or (((.Values.allowedResources.argoWorkflows)).workflows) (((.Values.allowedResources.argoWorkflows)).cronWorkflows) }}
   - apiGroups:
@@ -211,17 +42,6 @@ rules:
     - watch
     - list
 {{- end }}
-{{- if .Values.allowedResources.admissionRegistrationResources }}
-  - apiGroups:
-    - admissionregistration.k8s.io
-    resources:
-    - mutatingwebhookconfigurations
-    - validatingwebhookconfigurations
-    verbs:
-    - get
-    - watch
-    - list
-{{- end }}
 {{- if .Values.allowedResources.authorizationResources }}
   - apiGroups:
     - authorization.k8s.io
@@ -230,16 +50,6 @@ rules:
     - selfsubjectaccessreviews
     - selfsubjectrulesreviews
     - subjectaccessreviews
-    verbs:
-    - get
-    - watch
-    - list
-{{- end }}
-{{- if .Values.allowedResources.horizontalPodAutoscaler }}
-  - apiGroups:
-    - autoscaling
-    resources:
-    - horizontalpodautoscalers
     verbs:
     - get
     - watch
@@ -255,15 +65,130 @@ rules:
     - watch
     - list
 {{- end }}
-{{- if .Values.allowedResources.lease }}
   - apiGroups:
-    - coordination.k8s.io
+    - rbac
+    - rbac.authorization.k8s.io
     resources:
-    - leases
+    - clusterroles
+{{- if .Values.allowedResources.clusterRoleBinding }}
+    - clusterrolebindings
+{{- end }}
+{{- if .Values.allowedResources.role }}
+    - roles
+{{- end }}
+{{- if .Values.allowedResources.roleBinding }}
+    - rolebindings
+{{- end }}
     verbs:
     - get
     - watch
     - list
+  - apiGroups:
+    - ""
+    resources:
+{{- if .Values.allowedResources.configMap }}
+    - configmaps
+{{- end }}
+{{- if .Values.allowedResources.endpoints }}
+    - endpoints
+{{- end }}
+{{- if .Values.allowedResources.event }}
+    - events
+{{- end }}
+{{- if .Values.allowedResources.limitRange }}
+    - limitranges
+{{- end }}
+{{- if .Values.allowedResources.namespace }}
+    - namespaces
+{{- end }}
+{{- if .Values.allowedResources.node }}
+    - nodes
+{{- end }}
+{{- if .Values.allowedResources.persistentVolume }}
+    - persistentvolumes
+{{- end }}
+{{- if .Values.allowedResources.persistentVolumeClaim }}
+    - persistentvolumeclaims
+{{- end }}
+{{- if .Values.allowedResources.pod }}
+    - pods
+{{- end }}
+{{- if .Values.allowedResources.podTemplate }}
+    - podtemplates
+{{- end }}
+{{- if .Values.allowedResources.replicationController }}
+    - replicationcontrollers
+{{- end }}
+{{- if .Values.allowedResources.resourceQuota }}
+    - resourcequotas
+{{- end }}
+{{- if .Values.allowedResources.secret }}
+    - secrets
+{{- end }}
+{{- if .Values.allowedResources.service }}
+    - services
+{{- end }}
+{{- if .Values.allowedResources.serviceAccount }}
+    - serviceaccounts
+{{- end }}
+    verbs:
+    - get
+    - watch
+    - list
+  - apiGroups:
+    - apps
+    resources:
+{{- if .Values.allowedResources.controllerRevision }}
+    - controllerrevisions
+{{- end }}
+    - daemonsets
+    - deployments
+    - replicasets
+    - statefulsets
+    verbs:
+    - get
+    - watch
+    - list
+  - apiGroups:
+    - batch
+    resources:
+{{- if .Values.allowedResources.cronjob }}
+    - cronjobs
+{{- end }}
+{{- if .Values.allowedResources.job }}
+    - jobs
+{{- end }}
+    verbs:
+    - get
+    - watch
+    - list
+  - apiGroups:
+    - storage.k8s.io
+    resources:
+{{- if .Values.allowedResources.csiDriver }}
+    - csidrivers
+{{- end }}
+{{- if .Values.allowedResources.csiNode }}
+    - csinodes
+{{- end }}
+{{- if .Values.allowedResources.csiStorageCapacity }}
+    - csistoragecapacities
+{{- end }}
+{{- if .Values.allowedResources.storageClass }}
+    - storageclasses
+{{- end }}
+{{- if .Values.allowedResources.volumeAttachment }}
+    - volumeattachments
+{{- end }}
+    verbs:
+    - get
+    - watch
+    - list
+{{- if and .Values.allowedResources.customReadAPIGroups (gt (len .Values.allowedResources.customReadAPIGroups) 0) }}
+  - apiGroups:
+    {{- toYaml .Values.allowedResources.customReadAPIGroups | nindent 6 }}
+    resources: ["*"]
+    verbs:     ["get", "watch", "list"]
 {{- end }}
 {{- if .Values.allowedResources.endpointSlice }}
   - apiGroups:
@@ -286,11 +211,64 @@ rules:
     - watch
     - list
 {{- end }}
-{{- if .Values.allowedResources.runtimeClass }}
+{{- if .Values.allowedResources.horizontalPodAutoscaler }}
   - apiGroups:
-    - node.k8s.io
+    - autoscaling
     resources:
-    - runtimeclasses
+    - horizontalpodautoscalers
+    verbs:
+    - get
+    - watch
+    - list
+{{- end }}
+  - apiGroups:
+    - extensions
+    resources:
+{{- if .Values.allowedResources.ingress }}
+    - ingresses
+{{- end }}
+{{- if .Values.allowedResources.ingressClass }}
+    - ingressclasses
+{{- end }}
+{{- if .Values.allowedResources.networkPolicy }}
+    - networkpolicies
+{{- end }}
+    verbs:
+    - get
+    - watch
+    - list
+  - apiGroups:
+    - networking.k8s.io
+    resources:
+{{- if .Values.allowedResources.ingress }}
+    - ingresses
+{{- end }}
+{{- if .Values.allowedResources.ingressClass }}
+    - ingressclasses
+{{- end }}
+{{- if .Values.allowedResources.networkPolicy }}
+    - networkpolicies
+{{- end }}
+    verbs:
+    - get
+    - watch
+    - list
+{{- if .Values.allowedResources.lease }}
+  - apiGroups:
+    - coordination.k8s.io
+    resources:
+    - leases
+    verbs:
+    - get
+    - watch
+    - list
+{{- end }}
+{{- if or (.Values.allowedResources.metrics) ((.Values.metrics).enabled) }}
+  - apiGroups:
+    - metrics.k8s.io
+    resources:
+    - nodes
+    - pods
     verbs:
     - get
     - watch
@@ -307,11 +285,6 @@ rules:
     - watch
     - list
 {{- end }}
-{{- if .Values.capabilities.komodorCRD }}
-  - apiGroups: ["app.komodor.com"]
-    resources: ["*"]
-    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-{{- end }}
 {{- if .Values.allowedResources.priorityClass }}
   - apiGroups:
     - scheduling.k8s.io
@@ -322,6 +295,143 @@ rules:
     - watch
     - list
 {{- end }}
+{{- if .Values.allowedResources.rollout }}
+  - apiGroups:
+    - argoproj.io
+    resources:
+    - rollouts
+    - rollouts/status
+    - rollouts/finalizers
+    - analysistemplates
+    - clusteranalysistemplates
+    verbs:
+    - get
+    - watch
+    - list
+    - patch
+{{- end }}
+{{- if .Values.allowedResources.runtimeClass }}
+  - apiGroups:
+    - node.k8s.io
+    resources:
+    - runtimeclasses
+    verbs:
+    - get
+    - watch
+    - list
+{{- end }}
+{{- if .Values.capabilities.actions }}
+  - apiGroups:
+    - apps
+    resources:
+    - deployments/scale
+    - statefulsets/scale
+    - deployments
+    - replicasets
+    - statefulsets
+    - daemonsets
+    verbs:
+    - patch
+  - apiGroups:
+    - ""
+    resources:
+    - pods
+    verbs:
+    - delete
+  - apiGroups:
+    - batch
+    resources:
+    - jobs
+    verbs:
+    - delete
+    - create
+  - apiGroups:
+    - ""
+    resources:
+    - pods
+    - persistentvolumeclaims
+    - configmaps
+    - services
+    - persistentvolumes
+    - storageclasses
+    verbs:
+    - delete
+    - patch
+    - update
+    - create
+  - apiGroups:
+    - apps
+    resources:
+    - replicasets
+    - deployments
+    - statefulsets
+    - daemonsets
+    verbs:
+    - delete
+    - patch
+    - update
+    - create
+  - apiGroups:
+    - batch
+    resources:
+    - cronjobs
+    - jobs
+    verbs:
+    - delete
+    - patch
+    - update
+    - create
+  - apiGroups:
+    - networking.k8s.io
+    resources:
+    - ingresses
+    - networkpolicies
+    verbs:
+    - delete
+    - patch
+    - update
+    - create
+  - apiGroups:
+    - autoscaling
+    resources:
+    - horizontalpodautoscalers
+    verbs:
+    - patch
+    - delete
+    - update
+    - create
+  - apiGroups:
+    - ""
+    resources:
+    - nodes
+    verbs:
+    - patch
+  - apiGroups:
+    - ""
+    resources:
+    - pods/eviction
+    - pods/exec
+    - pods/portforward
+    verbs:
+    - create
+{{- end}}
+{{- if .Values.capabilities.cost.hpa }}
+  - apiGroups:
+    - keda.sh
+    resources:
+    - scaledjobs
+    - scaledobjects
+    verbs:
+    - get
+    - list
+    - patch
+    - update
+{{- end }}
+{{- if .Values.capabilities.crActions}}
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["delete", "list", "get", "watch", "patch"]
+{{- end}}
 {{- if .Values.capabilities.events.create }}
   - apiGroups:
       - ""
@@ -345,15 +455,63 @@ rules:
       - get
       - watch
 {{- end }}
-{{- if .Values.allowedResources.allowReadAll }}
+{{- if and .Values.capabilities.helm.enabled (not .Values.capabilities.helm.readonly) }}
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - create
+      - update
+      - delete
+  # Allow to uninstall charts
   - apiGroups: ["*"]
     resources: ["*"]
-    verbs:     ["get", "watch", "list"]
+    verbs: ["delete", "list", "get"]
 {{- end}}
-{{- if and .Values.allowedResources.customReadAPIGroups (gt (len .Values.allowedResources.customReadAPIGroups) 0) }}
   - apiGroups:
-    {{- toYaml .Values.allowedResources.customReadAPIGroups | nindent 6 }}
-    resources: ["*"]
-    verbs:     ["get", "watch", "list"]
+    - ""
+    resources:
+    - pods
+{{- if .Values.capabilities.logs.enabled }}
+    - pods/log
 {{- end }}
+    verbs:
+    - get
+    - list
+{{- if .Values.capabilities.rbac }}
+  - apiGroups:
+      - ""
+    resources:
+      - serviceaccounts
+      - secrets
+    verbs:
+      - "*"
+  - apiGroups:
+      - "rbac.authorization.k8s.io"
+    resources:
+      - clusterroles
+      - clusterrolebindings
+      - roles
+      - rolebindings
+    verbs:
+      - "*"
+{{- end }}
+{{- if .Values.capabilities.rbacTempTokens }}
+  - apiGroups:
+      - ""
+    resources:
+      - serviceaccounts/token
+    verbs:
+      - create
+{{- end }}
+  # Required to validate if enabled CRDs are enabled on cluster
+  - apiGroups:
+    - apiextensions.k8s.io
+    resources:
+    - customresourcedefinitions
+    verbs:
+    - get
+    - watch
+    - list
 {{- end -}}

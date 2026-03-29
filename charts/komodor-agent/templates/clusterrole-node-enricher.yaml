@@ -1,4 +1,4 @@
-{{- if and .Values.createRbac (not .Values.rbacLegacyMode) -}}
+{{- if .Values.createRbac -}}
 {{- if .Values.capabilities.nodeEnricher }}
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
