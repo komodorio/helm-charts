@@ -852,6 +852,8 @@ allowedResources:
   networkPolicy: true
   # allowedResources.runtimeClass -- Enables watching `runtimeClass`
   runtimeClass: true
+  # allowedResources.podDisruptionBudget -- Enables watching `podDisruptionBudgets`
+  podDisruptionBudget: true
   # allowedResources.policyResources -- Enables watching `policyResources`
   policyResources: true
   # allowedResources.clusterRoleBinding -- Enables watching `clusterRoleBinding`
