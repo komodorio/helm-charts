@@ -443,6 +443,7 @@ Relevant values:
 | allowedResources.ingressClass | bool | `true` | Enables watching `ingressClass` |
 | allowedResources.networkPolicy | bool | `true` | Enables watching `networkPolicy` |
 | allowedResources.runtimeClass | bool | `true` | Enables watching `runtimeClass` |
+| allowedResources.podDisruptionBudget | bool | `true` | Enables watching `podDisruptionBudgets` |
 | allowedResources.policyResources | bool | `true` | Enables watching `policyResources` |
 | allowedResources.clusterRoleBinding | bool | `true` | Enables watching `clusterRoleBinding` |
 | allowedResources.roleBinding | bool | `true` | Enables watching `roleBinding` |

@@ -274,11 +274,20 @@ rules:
     - watch
     - list
 {{- end }}
-{{- if .Values.allowedResources.policyResources }}
+{{- if .Values.allowedResources.podDisruptionBudget }}
   - apiGroups:
     - policy
     resources:
     - poddisruptionbudgets
+    verbs:
+    - get
+    - watch
+    - list
+{{- end }}
+{{- if .Values.allowedResources.policyResources }}
+  - apiGroups:
+    - policy
+    resources:
     - podsecuritypolicies
     verbs:
     - get
