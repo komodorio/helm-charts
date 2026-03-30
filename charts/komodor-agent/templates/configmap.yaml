@@ -45,6 +45,10 @@ data:
     resync:
       period: "0"
 
+    tunnel:
+      enabled: {{ .Values.capabilities.tunnel.enabled }}
+      whitelist: {{ toYaml .Values.capabilities.tunnel.whitelist | trim | nindent 8 }}
+
     resources:
       {{- toYaml .Values.allowedResources | trim | nindent 6 }}
 

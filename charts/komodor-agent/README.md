@@ -217,6 +217,9 @@ Relevant values:
 | capabilities.tasks | object | See sub-values | Configure the agent task capabilities |
 | capabilities.tasks.httpRequests | object | See sub-values | Configure HTTP request capabilities |
 | capabilities.tasks.httpRequests.skipTlsVerify | bool | `false` | Skip TLS certificate verification for HTTP requests (sets HTTP_REQUESTS_SKIP_TLS_VERIFY environment variable) |
+| capabilities.tunnel | object | See sub-values | Configure the WebSocket tunnel feature |
+| capabilities.tunnel.enabled | bool | `true` | Enable the network tunnel for remote WebSocket connections |
+| capabilities.tunnel.whitelist | list | `[]` | Allowed destinations for tunnel connections (empty = allow all) If no entries are configured, all destinations are allowed (default-allow). Entries can be:   - CIDR ranges (e.g. "10.0.0.0/8") — any port, matched against resolved IPs   - "host:port" pairs (e.g. "myservice:8080") — exact match   - plain hosts (e.g. "myservice") — any port on that host |
 | capabilities.admissionController | object | See sub-values | Configure the komodor admission controller capabilities |
 | capabilities.admissionController.enabled | bool | `true` | Enable the komodor admission controller |
 | capabilities.admissionController.pdb | object | `{"enabled":false}` | Configure the PodDisruptionBudget for the admission controller |
