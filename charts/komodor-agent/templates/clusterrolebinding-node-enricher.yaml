@@ -1,14 +1,16 @@
-{{- if and (.Values.createRbac) (.Values.capabilities.metrics) -}}
+{{- if .Values.createRbac -}}
+{{- if .Values.capabilities.nodeEnricher }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ include "komodorAgent.daemonMetrics.serviceAccountName" . }}
+  name: {{ include "komodorAgent.clusterRole.nodeEnricher" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ include "komodorAgent.daemonMetrics.serviceAccountName" . }}
+  name: {{ include "komodorAgent.clusterRole.nodeEnricher" . }}
 subjects:
   - kind: ServiceAccount
     name: {{ include "komodorAgent.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
+{{- end }}
 {{- end -}}

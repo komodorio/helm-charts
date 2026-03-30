@@ -31,7 +31,8 @@ setup-venv:
 	$(VENV_ACTIVATE) ; pip install -r requirements.txt
 
 cleanup-kind:
-	kind delete cluster --name test
+	docker rm -f test-control-plane 2>/dev/null || true
+	kind delete cluster --name test 2>/dev/null || true
 
 test-all: setup-venv install-kind cleanup-kind
 	$(VENV_ACTIVATE) ; pytest

@@ -2,9 +2,9 @@
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ include "komodorAgent.daemonMetrics.serviceAccountName" . }}
+  name: {{ include "komodorAgent.clusterRole.metricsDeployment" . }}
 rules:
-# Base read permissions for metrics collection
+# Base read permissions for metrics collection (same as daemon-metrics)
 - apiGroups:
   - ""
   resources:
@@ -17,6 +17,20 @@ rules:
   verbs:
   - get
   - list
+- apiGroups:
+  - extensions
+  - networking.k8s.io
+  resources:
+  - ingresses
+  verbs:
+  - get
+  - watch
+  - list
+# apiserver metrics access
+- nonResourceURLs:
+  - "/metrics"
+  verbs:
+  - get
 - apiGroups:
   - apps
   resources:
@@ -34,17 +48,16 @@ rules:
   verbs:
   - get
 - apiGroups:
-  - extensions
-  - networking.k8s.io
+  - autoscaling
   resources:
-  - ingresses
+  - horizontalpodautoscalers
   verbs:
   - get
-  - watch
   - list
-# apiserver metrics access
-- nonResourceURLs:
-  - "/metrics"
+- apiGroups:
+  - ""
+  resources:
+  - pods
   verbs:
-  - get
+  - watch
 {{- end -}}
