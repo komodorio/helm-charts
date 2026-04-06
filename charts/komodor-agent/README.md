@@ -222,8 +222,8 @@ Relevant values:
 | capabilities.tunnel.whitelist | list | `[]` | Allowed destinations for tunnel connections (empty = allow all) If no entries are configured, all destinations are allowed (default-allow). Entries can be:   - CIDR ranges (e.g. "10.0.0.0/8") — any port, matched against resolved IPs   - "host:port" pairs (e.g. "myservice:8080") — exact match   - plain hosts (e.g. "myservice") — any port on that host |
 | capabilities.admissionController | object | See sub-values | Configure the komodor admission controller capabilities |
 | capabilities.admissionController.enabled | bool | `true` | Enable the komodor admission controller |
-| capabilities.admissionController.pdb | object | `{"enabled":false}` | Configure the PodDisruptionBudget for the admission controller |
-| capabilities.admissionController.pdb.enabled | bool | `false` | Enable PodDisruptionBudget for the admission controller |
+| capabilities.admissionController.pdb | object | `{"enabled":true}` | Configure the PodDisruptionBudget for the admission controller |
+| capabilities.admissionController.pdb.enabled | bool | `true` | Enable PodDisruptionBudget for the admission controller |
 | capabilities.admissionController.logLevel | string | `"info"` | Log level for the admission controller |
 | capabilities.admissionController.logFormat | string | `"json"` | Log format for the admission controller |
 | capabilities.admissionController.webhookServer | object | See sub-values | Configure the webhook server for the admission controller |
@@ -282,7 +282,7 @@ Relevant values:
 | components.komodorKubectlProxy.securityContext | object | `{}` | Set custom securityContext to the komodor kubectl proxy deployment (use with caution) |
 | components.komodorKubectlProxy.strategy | object | `{}` | Set the rolling update strategy for the komodor kubectl proxy deployment |
 | components.admissionController | object | See sub-values | Configure the komodor admission controller component |
-| components.admissionController.replicas | int | `1` | Number of replicas for the admission controller deployment |
+| components.admissionController.replicas | int | `2` | Number of replicas for the admission controller deployment |
 | components.admissionController.serviceAccount | object | see sub-values | Configure the service account for the admission controller |
 | components.admissionController.serviceAccount.create | bool | `true` | Creates a service account for the admission controller |
 | components.admissionController.serviceAccount.name | string | `nil` | Name of the service account, Required if `serviceAccount.create` is false |

@@ -201,7 +201,7 @@ capabilities:
     # capabilities.admissionController.pdb -- Configure the PodDisruptionBudget for the admission controller
     pdb:
       # capabilities.admissionController.pdb.enabled -- (bool) Enable PodDisruptionBudget for the admission controller
-      enabled: false
+      enabled: true
     # capabilities.admissionController.logLevel -- (string) Log level for the admission controller
     logLevel: info
     # capabilities.admissionController.logFormat -- (string) Log format for the admission controller
@@ -366,7 +366,7 @@ components:
   # @default -- See sub-values
   admissionController:
     # components.admissionController.replicas -- (int) Number of replicas for the admission controller deployment
-    replicas: 1
+    replicas: 2
     # components.admissionController.serviceAccount -- Configure the service account for the admission controller
     # @default -- see sub-values
     serviceAccount:
