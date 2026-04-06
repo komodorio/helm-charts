@@ -263,7 +263,7 @@ rules:
     - watch
     - list
 {{- end }}
-{{- if or (.Values.allowedResources.metrics) ((.Values.metrics).enabled) }}
+{{- if or (.Values.allowedResources.metrics) (.Values.capabilities.metrics) }}
   - apiGroups:
     - metrics.k8s.io
     resources:
@@ -273,6 +273,13 @@ rules:
     - get
     - watch
     - list
+  - apiGroups: 
+    - ""
+    resources: 
+    - nodes/stats 
+    - nodes/proxy
+    verbs: 
+    - get
 {{- end }}
 {{- if .Values.allowedResources.podDisruptionBudget }}
   - apiGroups:
