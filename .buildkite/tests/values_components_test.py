@@ -166,13 +166,14 @@ def test_extra_env_vars(component, location, container, container_index, deploym
     assert  any(env_var["name"] == "TEST_ENV_VAR" for env_var in deployment_env_vars), f"Expected TEST_ENV_VAR in deployment env vars {deployment_env_vars}"
 
 
-@pytest.mark.parametrize("component_name, deployment_name_suffix, capability_to_enable", [
-    ("komodorAgent", "", None),
-    ("komodorMetrics", "-metrics", None),
-    ("komodorDaemon", "", None),
-    ("komodorKubectlProxy", "-proxy", "kubectlProxy.enabled")
+@pytest.mark.parametrize("component_name, resource_kind, deployment_name_suffix, capability_to_enable", [
+    ("komodorAgent",       "Deployment", "",       None),
+    ("komodorMetrics",     "Deployment", "-metrics", None),
+    ("komodorDaemon",      "DaemonSet",  "-daemon", None),
+    ("komodorKubectlProxy","Deployment", "-proxy",  "kubectlProxy.enabled")
 ])
-def test_override_security_context(component_name, deployment_name_suffix, capability_to_enable):
+def test_override_security_context(component_name, resource_kind, deployment_name_suffix, capability_to_enable):
+    """Tests the deprecated securityContext field still works as a pod-level fallback."""
     values_file = f"""
     components:
       {component_name}:
@@ -185,11 +186,81 @@ def test_override_security_context(component_name, deployment_name_suffix, capab
     if capability_to_enable:
         set_command += f" --set capabilities.{capability_to_enable}=true"
 
-    deployment_name = f"{RELEASE_NAME}-komodor-agent{deployment_name_suffix}"
-    deployment_affinity = get_yaml_from_helm_template(set_command, "Deployment", deployment_name,
-                                                      "spec.template.spec.securityContext", values_file=values_file)
+    resource_name = f"{RELEASE_NAME}-komodor-agent{deployment_name_suffix}"
+    pod_security_context = get_yaml_from_helm_template(set_command, resource_kind, resource_name,
+                                                       "spec.template.spec.securityContext", values_file=values_file)
 
-    assert deployment_affinity is not None, f"Expected securityContext in deployment {deployment_affinity}"
+    assert pod_security_context is not None, f"Expected securityContext in {resource_kind} {resource_name}"
+
+
+@pytest.mark.parametrize("component_name, resource_kind, resource_name_suffix, capability_to_enable", [
+    ("komodorAgent",       "Deployment", "",        None),
+    ("komodorMetrics",     "Deployment", "-metrics", None),
+    ("komodorDaemon",      "DaemonSet",  "-daemon",  None),
+    ("komodorKubectlProxy","Deployment", "-proxy",   "kubectlProxy.enabled")
+])
+def test_override_pod_security_context(component_name, resource_kind, resource_name_suffix, capability_to_enable):
+    """Tests that podSecurityContext is applied at pod level and takes precedence over the deprecated securityContext."""
+    values_file = f"""
+    components:
+      {component_name}:
+        podSecurityContext:
+          runAsUser: 2000
+          runAsGroup: 4000
+          fsGroup: 3000
+          runAsNonRoot: true
+        securityContext:
+          runAsUser: 9999
+    """
+    set_command = "test=test"
+    if capability_to_enable:
+        set_command += f" --set capabilities.{capability_to_enable}=true"
+
+    resource_name = f"{RELEASE_NAME}-komodor-agent{resource_name_suffix}"
+    pod_security_context = get_yaml_from_helm_template(set_command, resource_kind, resource_name,
+                                                       "spec.template.spec.securityContext", values_file=values_file)
+
+    assert pod_security_context is not None, f"Expected podSecurityContext in {resource_kind} {resource_name}"
+    assert pod_security_context.get("runAsUser") == 2000, \
+        f"Expected podSecurityContext.runAsUser=2000 (not deprecated securityContext value 9999), got {pod_security_context}"
+    assert pod_security_context.get("fsGroup") == 3000, \
+        f"Expected podSecurityContext.fsGroup=3000 in pod spec, got {pod_security_context}"
+
+
+@pytest.mark.parametrize("component_name, container_path, deployment_name_suffix, capability_to_enable", [
+    ("komodorAgent", "spec.template.spec.containers.0.securityContext", "", None),
+    ("komodorAgent", "spec.template.spec.containers.1.securityContext", "", None),
+])
+def test_override_container_security_context(component_name, container_path, deployment_name_suffix, capability_to_enable):
+    """Tests that per-container securityContext is applied at container level only."""
+    values_file = f"""
+    components:
+      {component_name}:
+        watcher:
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 1500
+            capabilities:
+              drop:
+                - ALL
+        supervisor:
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsUser: 1600
+            capabilities:
+              drop:
+                - ALL
+    """
+    set_command = "test=test"
+    deployment_name = f"{RELEASE_NAME}-komodor-agent{deployment_name_suffix}"
+    container_sc = get_yaml_from_helm_template(set_command, "Deployment", deployment_name,
+                                               container_path, values_file=values_file)
+
+    assert container_sc is not None, f"Expected container securityContext at {container_path}"
+    assert container_sc.get("allowPrivilegeEscalation") is False, \
+        f"Expected allowPrivilegeEscalation=false in container securityContext, got {container_sc}"
+    assert "ALL" in container_sc.get("capabilities", {}).get("drop", []), \
+        f"Expected capabilities.drop=[ALL] in container securityContext, got {container_sc}"
 
 
 @pytest.mark.parametrize("component_name, deployment_name_suffix, strategy_key, resource_kind, capability_to_enable", [
