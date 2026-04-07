@@ -38,6 +38,7 @@
   {{- if gt (len .Values.components.komodorDaemon.metrics.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorDaemon.metrics.extraEnvVars | nindent 2 }}
   {{- end }}
+  {{ include "metrics.daemonset.container.securityContext" . | nindent 2 }}
 {{- end }}
 {{- end }}
 

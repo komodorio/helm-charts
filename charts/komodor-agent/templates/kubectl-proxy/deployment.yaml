@@ -61,6 +61,10 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          {{- if gt (len .Values.components.komodorKubectlProxy.containerSecurityContext) 0 }}
+          securityContext:
+            {{- toYaml .Values.components.komodorKubectlProxy.containerSecurityContext | nindent 12 }}
+          {{- end }}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           volumeMounts:
@@ -74,9 +78,12 @@ spec:
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
-      {{- with .Values.components.komodorKubectlProxy.securityContext }}
+      {{- if gt (len .Values.components.komodorKubectlProxy.podSecurityContext) 0 }}
       securityContext:
-        {{- toYaml . | nindent 8 }}
+        {{- toYaml .Values.components.komodorKubectlProxy.podSecurityContext | nindent 8 }}
+      {{- else if gt (len .Values.components.komodorKubectlProxy.securityContext) 0 }}
+      securityContext:
+        {{- toYaml .Values.components.komodorKubectlProxy.securityContext | nindent 8 }}
       {{- end }}
       terminationGracePeriodSeconds: 30
       volumes:

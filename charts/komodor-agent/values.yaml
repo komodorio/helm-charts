@@ -281,7 +281,9 @@ components:
     tolerations: []
     # components.komodorAgent.podAnnotations -- Set pod annotations for the komodor agent deployment
     podAnnotations: {}
-    # components.komodorAgent.securityContext -- Set custom securityContext to the komodor agent deployment (use with caution)
+    # components.komodorAgent.podSecurityContext -- Set custom pod-level securityContext for the komodor agent deployment. Supports pod-only fields: fsGroup, runAsUser, runAsGroup, runAsNonRoot, supplementalGroups, sysctls, seccompProfile. (use with caution)
+    podSecurityContext: {}
+    # components.komodorAgent.securityContext -- DEPRECATED: use podSecurityContext instead. Kept as a fallback for backward compatibility with pod-level securityContext.
     securityContext: {}
     # components.komodorAgent.strategy -- Set the rolling update strategy for the komodor agent deployment
     strategy: {}
@@ -300,7 +302,7 @@ components:
         requests:
           cpu: 0.25
           memory: 256Mi
-      # components.komodorAgent.watcher.securityContext -- Set security context for the komodor agent watcher container (use with caution)
+      # components.komodorAgent.watcher.securityContext -- Set container-level securityContext for the komodor agent watcher container. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution)
       securityContext: {}
       # components.komodorAgent.watcher.ports -- Override the komodor agent watcher ports configuration
       ports:
@@ -322,7 +324,7 @@ components:
         requests:
           cpu: 0.1
           memory: 256Mi
-      # components.komodorAgent.supervisor.securityContext -- Set security context for the komodor agent supervisor container (use with caution)
+      # components.komodorAgent.supervisor.securityContext -- Set container-level securityContext for the komodor agent supervisor container. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution)
       securityContext: {}
       # components.komodorAgent.supervisor.ports -- Override the komodor agent supervisor ports configuration
       ports:
@@ -357,8 +359,12 @@ components:
     nodeSelector: {}
     # components.komodorKubectlProxy.tolerations -- Set tolerations for the komodor kubectl proxy deployment
     tolerations: []
-    # components.komodorKubectlProxy.securityContext -- Set custom securityContext to the komodor kubectl proxy deployment (use with caution)
+    # components.komodorKubectlProxy.podSecurityContext -- Set custom pod-level securityContext for the komodor kubectl proxy deployment. Supports pod-only fields: fsGroup, runAsUser, runAsGroup, runAsNonRoot, supplementalGroups, sysctls, seccompProfile. (use with caution)
+    podSecurityContext: {}
+    # components.komodorKubectlProxy.securityContext -- DEPRECATED: use podSecurityContext instead. Kept as a fallback for backward compatibility with pod-level securityContext.
     securityContext: {}
+    # components.komodorKubectlProxy.containerSecurityContext -- Set container-level securityContext for the komodor kubectl proxy container. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution)
+    containerSecurityContext: {}
     # components.komodorKubectlProxy.strategy -- Set the rolling update strategy for the komodor kubectl proxy deployment
     strategy: {}
 
@@ -435,8 +441,12 @@ components:
     nodeSelector: {}
     # components.admissionController.tolerations -- Set tolerations for the komodor admission controller deployment
     tolerations: []
-    # components.admissionController.securityContext -- Set custom securityContext to the komodor admission controller deployment (use with caution)
+    # components.admissionController.podSecurityContext -- Set custom pod-level securityContext for the komodor admission controller deployment. Supports pod-only fields: fsGroup, runAsUser, runAsGroup, runAsNonRoot, supplementalGroups, sysctls, seccompProfile. (use with caution)
+    podSecurityContext: {}
+    # components.admissionController.securityContext -- DEPRECATED: use podSecurityContext instead. Kept as a fallback for backward compatibility with pod-level securityContext.
     securityContext: {}
+    # components.admissionController.containerSecurityContext -- Set container-level securityContext for the admission controller container. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution)
+    containerSecurityContext: {}
     # components.admissionController.strategy -- Set the rolling update strategy for the komodor admission controller
     strategy: {}
     # components.admissionController.extraVolumes -- List of additional volumes to mount in the komodor admission controller deployment/pod
@@ -474,7 +484,9 @@ components:
     tolerations: []
     # components.komodorMetrics.podAnnotations -- Set pod annotations for the komodor metrics agent deployment
     podAnnotations: {}
-    # components.komodorMetrics.securityContext -- Set custom securityContext to the komodor metrics agent deployment (use with caution)
+    # components.komodorMetrics.podSecurityContext -- Set custom pod-level securityContext for the komodor metrics deployment. Supports pod-only fields: fsGroup, runAsUser, runAsGroup, runAsNonRoot, supplementalGroups, sysctls, seccompProfile. (use with caution)
+    podSecurityContext: {}
+    # components.komodorMetrics.securityContext -- DEPRECATED: use podSecurityContext instead. Kept as a fallback for backward compatibility with pod-level securityContext.
     securityContext: {}
     # components.komodorMetrics.strategy -- Set the rolling update strategy for the komodor metrics agent deployment
     strategy: {}
@@ -489,6 +501,8 @@ components:
         tag:
       # components.komodorMetrics.metricsInit.resources -- Set custom resources to the komodor agent metrics init container
       resources: {}
+      # components.komodorMetrics.metricsInit.securityContext -- Set container-level securityContext for the komodor metrics init and sidecar containers. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution)
+      securityContext: {}
       # components.komodorMetrics.metricsInit.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
       extraEnvVars: []
 
@@ -505,6 +519,8 @@ components:
         requests:
           cpu: 0.1
           memory: 384Mi
+      # components.komodorMetrics.metrics.securityContext -- Set container-level securityContext for the komodor metrics (telegraf) container. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution)
+      securityContext: {}
       # components.komodorMetrics.metrics.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
       extraEnvVars: []
       # components.komodorMetrics.metrics.sidecar -- Configure the telegraf-init sidecar container
@@ -538,12 +554,14 @@ components:
       - operator: "Exists"
     # components.komodorDaemon.podAnnotations --  # Add annotations to the komodor agent watcher pod
     podAnnotations: {}
-    # components.komodorDaemon.securityContext -- Set custom securityContext to the komodor agent daemon (use with caution)
-    securityContext:
+    # components.komodorDaemon.podSecurityContext -- Set custom pod-level securityContext for the komodor daemon. Supports pod-only fields: fsGroup, runAsUser, runAsGroup, runAsNonRoot, supplementalGroups, sysctls, seccompProfile. (use with caution)
+    podSecurityContext:
       runAsNonRoot: true
       runAsUser: 1001
       runAsGroup: 1001
       fsGroup: 1001
+    # components.komodorDaemon.securityContext -- DEPRECATED: use podSecurityContext instead. Kept as a fallback for backward compatibility with pod-level securityContext.
+    securityContext: {}
     # components.komodorDaemon.updateStrategy -- Set the rolling update strategy for the komodor agent daemon deployment
     updateStrategy: {}
 
@@ -788,6 +806,10 @@ components:
       - key: "nvidia.com/gpu"
         operator: "Exists"
         effect: "NoSchedule"
+    # components.gpuAccess.podSecurityContext -- Set custom pod-level securityContext for the GPU accessor DaemonSet. (use with caution)
+    podSecurityContext: {}
+    # components.gpuAccess.containerSecurityContext -- Set container-level securityContext for the GPU accessor container. When empty, defaults to privileged: true (matching gpuAccess.enabled). (use with caution)
+    containerSecurityContext: {}
 
 allowedResources:
   # allowedResources.event -- Enables watching `event`

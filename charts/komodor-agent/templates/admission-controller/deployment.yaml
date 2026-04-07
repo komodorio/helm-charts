@@ -30,12 +30,19 @@ spec:
       {{- end }}
       priorityClassName: {{ .Values.components.admissionController.priorityClassName | default (include "komodorAgent.admissionController.priorityClassName" .) }}
       serviceAccountName: {{ include "komodorAgent.admissionController.serviceAccountName" . }}
+      {{- if gt (len .Values.components.admissionController.podSecurityContext) 0 }}
+      securityContext:
+        {{- toYaml .Values.components.admissionController.podSecurityContext | nindent 8 }}
+      {{- else if gt (len .Values.components.admissionController.securityContext) 0 }}
       securityContext:
         {{- toYaml .Values.components.admissionController.securityContext | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ include "komodorAgent.admissionController.containername" . }}
+          {{- if gt (len .Values.components.admissionController.containerSecurityContext) 0 }}
           securityContext:
-            {{- toYaml .Values.components.admissionController.securityContext | nindent 12 }}
+            {{- toYaml .Values.components.admissionController.containerSecurityContext | nindent 12 }}
+          {{- end }}
           image: {{ .Values.imageRepo }}/{{ .Values.components.admissionController.image.name }}:{{ .Values.components.admissionController.image.tag | default .Chart.AppVersion }}
           imagePullPolicy: {{ .Values.pullPolicy }}
           ports:

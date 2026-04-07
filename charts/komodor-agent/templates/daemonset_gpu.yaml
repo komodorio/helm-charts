@@ -21,6 +21,7 @@ spec:
         {{- include "gpuAccess.user.labels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
+      {{- include "gpuAccess.pod.securityContext" . | nindent 6 }}
       nodeSelector:
         kubernetes.io/os: linux
         {{- if not (empty (((.Values.components).gpuAccess).nodeSelector)) }}
@@ -39,8 +40,7 @@ spec:
           resources:
           {{ toYaml .Values.components.gpuAccess.resources | trim | nindent 12 }}
           command: ["sleep", "infinity"]
-          securityContext:
-            privileged: {{ .Values.components.gpuAccess.enabled }}
+          {{- include "gpuAccess.container.securityContext" . | nindent 10 }}
           volumeMounts:
             - name: host-root
               mountPath: /host
