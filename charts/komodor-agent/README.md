@@ -254,17 +254,18 @@ Relevant values:
 | components.komodorAgent.nodeSelector | object | `{}` | Set node selectors for the komodor agent deployment |
 | components.komodorAgent.tolerations | list | `[]` | Set tolerations for the komodor agent deployment |
 | components.komodorAgent.podAnnotations | object | `{}` | Set pod annotations for the komodor agent deployment |
-| components.komodorAgent.securityContext | object | `{}` | Set custom securityContext to the komodor agent deployment (use with caution) |
+| components.komodorAgent.podSecurityContext | object | `{}` | Set custom pod-level securityContext for the komodor agent deployment. Supports pod-only fields: fsGroup, runAsUser, runAsGroup, runAsNonRoot, supplementalGroups, sysctls, seccompProfile. (use with caution) |
+| components.komodorAgent.securityContext | object | `{}` | DEPRECATED: use podSecurityContext instead. Kept as a fallback for backward compatibility with pod-level securityContext. |
 | components.komodorAgent.strategy | object | `{}` | Set the rolling update strategy for the komodor agent deployment |
 | components.komodorAgent.watcher.image | object | `{ "name": "komodor-agent", "tag": .Chart.AppVersion }` | Override the komodor agent watcher image name or tag. |
 | components.komodorAgent.watcher.resources | object | `{"limits":{"cpu":2,"memory":"8Gi"},"requests":{"cpu":0.25,"memory":"256Mi"}}` | Set custom resources to the komodor agent watcher container |
-| components.komodorAgent.watcher.securityContext | object | `{}` | Set security context for the komodor agent watcher container (use with caution) |
+| components.komodorAgent.watcher.securityContext | object | `{}` | Set container-level securityContext for the komodor agent watcher container. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution) |
 | components.komodorAgent.watcher.ports | object | `{"healthCheck":8090}` | Override the komodor agent watcher ports configuration |
 | components.komodorAgent.watcher.ports.healthCheck | int | `8090` | Override the health check port of the komodor agent watcher |
 | components.komodorAgent.watcher.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorAgent.supervisor.image | object | `{ "name": "supervisor", "tag": .Chart.AppVersion }` | Override the komodor agent supervisor image name or tag. |
 | components.komodorAgent.supervisor.resources | object | `{"requests":{"cpu":0.1,"memory":"256Mi"}}` | Set custom resources to the komodor agent supervisor container |
-| components.komodorAgent.supervisor.securityContext | object | `{}` | Set security context for the komodor agent supervisor container (use with caution) |
+| components.komodorAgent.supervisor.securityContext | object | `{}` | Set container-level securityContext for the komodor agent supervisor container. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution) |
 | components.komodorAgent.supervisor.ports | object | `{"healthCheck":8089}` | Override the komodor agent supervisor ports configuration |
 | components.komodorAgent.supervisor.ports.healthCheck | int | `8089` | Override the health check port of the komodor agent supervisor |
 | components.komodorAgent.supervisor.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
@@ -279,7 +280,9 @@ Relevant values:
 | components.komodorKubectlProxy.labels | object | `{}` | Set custom labels |
 | components.komodorKubectlProxy.nodeSelector | object | `{}` | Set node selectors for the komodor kubectl proxy deployment |
 | components.komodorKubectlProxy.tolerations | list | `[]` | Set tolerations for the komodor kubectl proxy deployment |
-| components.komodorKubectlProxy.securityContext | object | `{}` | Set custom securityContext to the komodor kubectl proxy deployment (use with caution) |
+| components.komodorKubectlProxy.podSecurityContext | object | `{}` | Set custom pod-level securityContext for the komodor kubectl proxy deployment. Supports pod-only fields: fsGroup, runAsUser, runAsGroup, runAsNonRoot, supplementalGroups, sysctls, seccompProfile. (use with caution) |
+| components.komodorKubectlProxy.securityContext | object | `{}` | DEPRECATED: use podSecurityContext instead. Kept as a fallback for backward compatibility with pod-level securityContext. |
+| components.komodorKubectlProxy.containerSecurityContext | object | `{}` | Set container-level securityContext for the komodor kubectl proxy container. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution) |
 | components.komodorKubectlProxy.strategy | object | `{}` | Set the rolling update strategy for the komodor kubectl proxy deployment |
 | components.admissionController | object | See sub-values | Configure the komodor admission controller component |
 | components.admissionController.replicas | int | `2` | Number of replicas for the admission controller deployment |
@@ -300,7 +303,9 @@ Relevant values:
 | components.admissionController.labels | object | `{}` | Set custom labels |
 | components.admissionController.nodeSelector | object | `{}` | Set node selectors for the komodor admission controller deployment |
 | components.admissionController.tolerations | list | `[]` | Set tolerations for the komodor admission controller deployment |
-| components.admissionController.securityContext | object | `{}` | Set custom securityContext to the komodor admission controller deployment (use with caution) |
+| components.admissionController.podSecurityContext | object | `{}` | Set custom pod-level securityContext for the komodor admission controller deployment. Supports pod-only fields: fsGroup, runAsUser, runAsGroup, runAsNonRoot, supplementalGroups, sysctls, seccompProfile. (use with caution) |
+| components.admissionController.securityContext | object | `{}` | DEPRECATED: use podSecurityContext instead. Kept as a fallback for backward compatibility with pod-level securityContext. |
+| components.admissionController.containerSecurityContext | object | `{}` | Set container-level securityContext for the admission controller container. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution) |
 | components.admissionController.strategy | object | `{}` | Set the rolling update strategy for the komodor admission controller |
 | components.admissionController.extraVolumes | list | `[]` | List of additional volumes to mount in the komodor admission controller deployment/pod      extraVolumes:        - volume:            name: webhook-tls            secret:              secretName: komodor-admission-controller-tls          volumeMount:            name: webhook-tls            mountPath: /etc/komodor/admission/tls            readOnly: true |
 | components.admissionController.leaderElectionLeaseName | string | `""` | The name to use for leader election leases. If not set, defaults to the admission controller deployment name |
@@ -314,14 +319,17 @@ Relevant values:
 | components.komodorMetrics.nodeSelector | object | `{}` | Set node selectors for the komodor metrics agent deployment |
 | components.komodorMetrics.tolerations | list | `[]` | Set tolerations for the komodor metrics agent deployment |
 | components.komodorMetrics.podAnnotations | object | `{}` | Set pod annotations for the komodor metrics agent deployment |
-| components.komodorMetrics.securityContext | object | `{}` | Set custom securityContext to the komodor metrics agent deployment (use with caution) |
+| components.komodorMetrics.podSecurityContext | object | `{}` | Set custom pod-level securityContext for the komodor metrics deployment. Supports pod-only fields: fsGroup, runAsUser, runAsGroup, runAsNonRoot, supplementalGroups, sysctls, seccompProfile. (use with caution) |
+| components.komodorMetrics.securityContext | object | `{}` | DEPRECATED: use podSecurityContext instead. Kept as a fallback for backward compatibility with pod-level securityContext. |
 | components.komodorMetrics.strategy | object | `{}` | Set the rolling update strategy for the komodor metrics agent deployment |
 | components.komodorMetrics.metricsInit | object | See sub-values | Configure the komodor metrics init container |
 | components.komodorMetrics.metricsInit.image | object | `{ "name": "komodor-agent", "tag": .Chart.AppVersion }` | Override the komodor agent metrics init image name or tag. |
 | components.komodorMetrics.metricsInit.resources | object | `{}` | Set custom resources to the komodor agent metrics init container |
+| components.komodorMetrics.metricsInit.securityContext | object | `{}` | Set container-level securityContext for the komodor metrics init and sidecar containers. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution) |
 | components.komodorMetrics.metricsInit.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorMetrics.metrics.image | object | `{"name":"telegraf","tag":"v2.0.40-alpine"}` | Override the komodor agent metrics image name or tag. |
 | components.komodorMetrics.metrics.resources | object | `{"limits":{"cpu":1,"memory":"4Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
+| components.komodorMetrics.metrics.securityContext | object | `{}` | Set container-level securityContext for the komodor metrics (telegraf) container. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution) |
 | components.komodorMetrics.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorMetrics.metrics.sidecar | object | `{"enabled":true}` | Configure the telegraf-init sidecar container |
 | components.komodorMetrics.metrics.sidecar.enabled | bool | `true` | Enable the telegraf-init sidecar container |
@@ -337,7 +345,8 @@ Relevant values:
 | components.komodorDaemon.nodeSelector | object | `{}` | Set node selectors for the komodor agent daemon |
 | components.komodorDaemon.tolerations | list | `[{"operator":"Exists"}]` | Add tolerations to the komodor agent daemon |
 | components.komodorDaemon.podAnnotations | object | `{}` | # Add annotations to the komodor agent watcher pod |
-| components.komodorDaemon.securityContext | object | `{"fsGroup":1001,"runAsGroup":1001,"runAsNonRoot":true,"runAsUser":1001}` | Set custom securityContext to the komodor agent daemon (use with caution) |
+| components.komodorDaemon.podSecurityContext | object | `{"fsGroup":1001,"runAsGroup":1001,"runAsNonRoot":true,"runAsUser":1001}` | Set custom pod-level securityContext for the komodor daemon. Supports pod-only fields: fsGroup, runAsUser, runAsGroup, runAsNonRoot, supplementalGroups, sysctls, seccompProfile. (use with caution) |
+| components.komodorDaemon.securityContext | object | `{}` | DEPRECATED: use podSecurityContext instead. Kept as a fallback for backward compatibility with pod-level securityContext. |
 | components.komodorDaemon.updateStrategy | object | `{}` | Set the rolling update strategy for the komodor agent daemon deployment |
 | components.komodorDaemon.metricsInit | object | See sub-values | Configure the komodor daemon metrics init container |
 | components.komodorDaemon.metricsInit.image | object | `{ "name": "init-daemon-agent", "tag": .Chart.AppVersion }` | Override the komodor agent metrics init image name or tag. |
@@ -401,7 +410,7 @@ Relevant values:
 | components.komodorDaemonWindows.metrics.quiet | bool | `false` | Set the quiet mode for the komodor agent metrics |
 | components.komodorDaemonWindows.metrics.sidecar | object | `{"enabled":true}` | Configure the telegraf-init sidecar container |
 | components.komodorDaemonWindows.metrics.sidecar.enabled | bool | `true` | Enable the telegraf-init sidecar container |
-| components.gpuAccess | object | `{"enabled":false,"image":"alpine:latest","labels":{},"nodeSelector":{},"pullPolicy":"IfNotPresent","resources":{"limits":{"cpu":"250m","memory":"100Mi"},"requests":{"cpu":"100m","memory":"50Mi"}},"tolerations":[{"effect":"NoSchedule","key":"nvidia.com/gpu","operator":"Exists"}]}` | settings for GPU host diagnostics accessor DaemonSet |
+| components.gpuAccess | object | `{"containerSecurityContext":{},"enabled":false,"image":"alpine:latest","labels":{},"nodeSelector":{},"podSecurityContext":{},"pullPolicy":"IfNotPresent","resources":{"limits":{"cpu":"250m","memory":"100Mi"},"requests":{"cpu":"100m","memory":"50Mi"}},"tolerations":[{"effect":"NoSchedule","key":"nvidia.com/gpu","operator":"Exists"}]}` | settings for GPU host diagnostics accessor DaemonSet |
 | components.gpuAccess.enabled | bool | `false` | Enable creating privileged CUDA container with host mounts to access GPU info |
 | components.gpuAccess.image | string | `"alpine:latest"` | CUDA image to be used for GPU access container |
 | components.gpuAccess.pullPolicy | string | `"IfNotPresent"` | Default Image pull policy for the GPU accessor image acceptable values <ifNotPresent\Always\Never>. |
@@ -409,6 +418,8 @@ Relevant values:
 | components.gpuAccess.labels | object | `{}` | Adds custom labels |
 | components.gpuAccess.nodeSelector | object | `{}` | Set node selectors for the komodor agent daemon |
 | components.gpuAccess.tolerations | list | `[{"effect":"NoSchedule","key":"nvidia.com/gpu","operator":"Exists"}]` | Add tolerations to the komodor agent daemon |
+| components.gpuAccess.podSecurityContext | object | `{}` | Set custom pod-level securityContext for the GPU accessor DaemonSet. (use with caution) |
+| components.gpuAccess.containerSecurityContext | object | `{}` | Set container-level securityContext for the GPU accessor container. When empty, defaults to privileged: true (matching gpuAccess.enabled). (use with caution) |
 | allowedResources.event | bool | `true` | Enables watching `event` |
 | allowedResources.deployment | bool | `true` | Enables watching `deployments` |
 | allowedResources.replicationController | bool | `true` | Enables watching `replicationControllers` |
