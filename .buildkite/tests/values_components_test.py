@@ -227,36 +227,115 @@ def test_override_pod_security_context(component_name, resource_kind, resource_n
         f"Expected podSecurityContext.fsGroup=3000 in pod spec, got {pod_security_context}"
 
 
-@pytest.mark.parametrize("component_name, container_path, deployment_name_suffix, capability_to_enable", [
-    ("komodorAgent", "spec.template.spec.containers.0.securityContext", "", None),
-    ("komodorAgent", "spec.template.spec.containers.1.securityContext", "", None),
+@pytest.mark.parametrize("resource_kind, resource_name_suffix, capability_to_enable, values_override, container_path", [
+    # komodorAgent — watcher (container 0) and supervisor (container 1)
+    ("Deployment", "", None,
+     """
+     components:
+       komodorAgent:
+         watcher:
+           securityContext:
+             allowPrivilegeEscalation: false
+             runAsUser: 1500
+             capabilities:
+               drop:
+                 - ALL
+         supervisor:
+           securityContext:
+             allowPrivilegeEscalation: false
+             runAsUser: 1600
+             capabilities:
+               drop:
+                 - ALL
+     """,
+     "spec.template.spec.containers.0.securityContext"),
+    ("Deployment", "", None,
+     """
+     components:
+       komodorAgent:
+         watcher:
+           securityContext:
+             allowPrivilegeEscalation: false
+             runAsUser: 1500
+             capabilities:
+               drop:
+                 - ALL
+         supervisor:
+           securityContext:
+             allowPrivilegeEscalation: false
+             runAsUser: 1600
+             capabilities:
+               drop:
+                 - ALL
+     """,
+     "spec.template.spec.containers.1.securityContext"),
+    # admissionController
+    ("Deployment", "-admission-controller", "admissionController.enabled",
+     """
+     components:
+       admissionController:
+         containerSecurityContext:
+           allowPrivilegeEscalation: false
+           runAsUser: 1500
+           capabilities:
+             drop:
+               - ALL
+     """,
+     "spec.template.spec.containers.0.securityContext"),
+    # komodorKubectlProxy
+    ("Deployment", "-proxy", "kubectlProxy.enabled",
+     """
+     components:
+       komodorKubectlProxy:
+         containerSecurityContext:
+           allowPrivilegeEscalation: false
+           runAsUser: 1500
+           capabilities:
+             drop:
+               - ALL
+     """,
+     "spec.template.spec.containers.0.securityContext"),
+    # komodorMetrics — main telegraf container (container 0)
+    ("Deployment", "-metrics", None,
+     """
+     components:
+       komodorMetrics:
+         metrics:
+           securityContext:
+             allowPrivilegeEscalation: false
+             runAsUser: 1500
+             capabilities:
+               drop:
+                 - ALL
+     """,
+     "spec.template.spec.containers.0.securityContext"),
+    # komodorDaemon — main metrics/telegraf container (container 0)
+    ("DaemonSet", "-daemon", None,
+     """
+     components:
+       komodorDaemon:
+         metrics:
+           securityContext:
+             allowPrivilegeEscalation: false
+             runAsNonRoot: true
+             capabilities:
+               drop:
+                 - ALL
+     """,
+     "spec.template.spec.containers.0.securityContext"),
 ])
-def test_override_container_security_context(component_name, container_path, deployment_name_suffix, capability_to_enable):
+def test_override_container_security_context(resource_kind, resource_name_suffix, capability_to_enable,
+                                             values_override, container_path):
     """Tests that per-container securityContext is applied at container level only."""
-    values_file = f"""
-    components:
-      {component_name}:
-        watcher:
-          securityContext:
-            allowPrivilegeEscalation: false
-            runAsUser: 1500
-            capabilities:
-              drop:
-                - ALL
-        supervisor:
-          securityContext:
-            allowPrivilegeEscalation: false
-            runAsUser: 1600
-            capabilities:
-              drop:
-                - ALL
-    """
     set_command = "test=test"
-    deployment_name = f"{RELEASE_NAME}-komodor-agent{deployment_name_suffix}"
-    container_sc = get_yaml_from_helm_template(set_command, "Deployment", deployment_name,
-                                               container_path, values_file=values_file)
+    if capability_to_enable:
+        set_command += f" --set capabilities.{capability_to_enable}=true"
 
-    assert container_sc is not None, f"Expected container securityContext at {container_path}"
+    resource_name = f"{RELEASE_NAME}-komodor-agent{resource_name_suffix}"
+    container_sc = get_yaml_from_helm_template(set_command, resource_kind, resource_name,
+                                               container_path, values_file=values_override)
+
+    assert container_sc is not None, f"Expected container securityContext at {container_path} in {resource_kind} {resource_name}"
     assert container_sc.get("allowPrivilegeEscalation") is False, \
         f"Expected allowPrivilegeEscalation=false in container securityContext, got {container_sc}"
     assert "ALL" in container_sc.get("capabilities", {}).get("drop", []), \
