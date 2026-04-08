@@ -1,0 +1,195 @@
+# hardened-values.yaml
+# Hardens the komodor-agent deployment by explicitly setting pod and container
+# security contexts across all workloads. Enforces non-root execution, dropped
+# capabilities, privilege escalation prevention, and runtime seccomp profiles.
+
+# Name of an existing secret containing the Komodor API key (key: apiKey).
+# Leave empty if passing the key directly via `--set apiKey=<key>` which will create a secret for you.
+apiKeySecret:
+# Required. Unique name to identify this cluster in the Komodor platform
+clusterName:
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Capabilities
+# ──────────────────────────────────────────────────────────────────────────────
+capabilities:
+  telemetry:
+    # Deploys the OpenTelemetry collector as a DaemonSet sidecar for log collection and internal telemetry collection (Komodor only!).
+    # The OTel collector requires running as root (runAsUser: 0) and extra privileges to read host log files.
+    # Set to false if your environment does not permit privileged/root containers.
+    deployOtelCollector: true
+
+# ──────────────────────────────────────────────────────────────────────────────
+# komodorAgent (Deployment)
+# ──────────────────────────────────────────────────────────────────────────────
+components:
+  komodorAgent:
+    # Pod security context (komodorAgent pod)
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+      seccompProfile:
+        type: RuntimeDefault
+
+    watcher:
+      # Container security context (komodorAgent / watcher container)
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        capabilities:
+          drop:
+            - ALL
+
+    supervisor:
+      # Container security context (komodorAgent / supervisor container)
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        capabilities:
+          drop:
+            - ALL
+
+  # ──────────────────────────────────────────────────────────────────────────────
+  # komodorKubectlProxy (Deployment)
+  # ──────────────────────────────────────────────────────────────────────────────
+  komodorKubectlProxy:
+    # Pod security context (komodorKubectlProxy pod)
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+      seccompProfile:
+        type: RuntimeDefault
+
+    # Container security context (komodorKubectlProxy / komodor-kubectl-proxy container)
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      capabilities:
+        drop:
+          - ALL
+
+  # ──────────────────────────────────────────────────────────────────────────────
+  # admissionController (Deployment)
+  # ──────────────────────────────────────────────────────────────────────────────
+  admissionController:
+    # Pod security context (admissionController pod)
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+      seccompProfile:
+        type: RuntimeDefault
+
+    # Container security context (admissionController / admission-controller container)
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      capabilities:
+        drop:
+          - ALL
+
+  # ──────────────────────────────────────────────────────────────────────────────
+  # komodorMetrics (Deployment)
+  # ──────────────────────────────────────────────────────────────────────────────
+  komodorMetrics:
+    # Pod security context (komodorMetrics pod)
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+      seccompProfile:
+        type: RuntimeDefault
+
+    metrics:
+      # Container security context (komodorMetrics / metrics container)
+      securityContext:
+        allowPrivilegeEscalation: false
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        capabilities:
+          drop:
+            - ALL
+
+    metricsInit:
+      # Container security context (komodorMetrics / telegraf-init and telegraf-init-sidecar containers)
+      securityContext:
+        allowPrivilegeEscalation: false
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        capabilities:
+          drop:
+            - ALL
+
+  # ──────────────────────────────────────────────────────────────────────────────
+  # komodorDaemon (DaemonSet)
+  # ──────────────────────────────────────────────────────────────────────────────
+  komodorDaemon:
+    # Pod security context (komodorDaemon pod)
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 1001
+      runAsGroup: 1001
+      fsGroup: 1001
+      seccompProfile:
+        type: RuntimeDefault
+
+    metrics:
+      # Container security context (komodorDaemon / metrics, init-daemon, and telegraf-init-sidecar containers)
+      securityContext:
+        allowPrivilegeEscalation: false
+        runAsNonRoot: true
+        capabilities:
+          drop:
+            - ALL
+          add: []
+
+    nodeEnricher:
+      # Container security context (komodorDaemon / node-enricher container)
+      securityContext:
+        allowPrivilegeEscalation: false
+        runAsNonRoot: true
+        capabilities:
+          drop:
+            - ALL
+          add: []
+
+    opentelemetry:
+      # Container security context (komodorDaemon / otel-collector container)
+      # Must run as root to read host log files — exempt from runAsNonRoot
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        runAsNonRoot: false
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop:
+            - ALL
+          add:
+            - DAC_OVERRIDE
+
+  # ──────────────────────────────────────────────────────────────────────────────
+  # gpuAccess (DaemonSet) — privileged by necessity; disable unless required
+  # ──────────────────────────────────────────────────────────────────────────────
+  gpuAccess:
+    enabled: false
+    # containerSecurityContext defaults to privileged: true when enabled

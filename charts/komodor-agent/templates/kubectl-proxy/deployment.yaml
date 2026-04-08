@@ -61,6 +61,7 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          {{- include "kubectlProxy.container.securityContext" . | nindent 10 }}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           volumeMounts:
@@ -74,10 +75,7 @@ spec:
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
-      {{- with .Values.components.komodorKubectlProxy.securityContext }}
-      securityContext:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+      {{- include "kubectlProxy.pod.securityContext" . | nindent 6 }}
       terminationGracePeriodSeconds: 30
       volumes:
         - name: komodor-kubectl-proxy-config

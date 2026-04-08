@@ -34,6 +34,7 @@
   {{- if gt (len .Values.components.komodorMetrics.metrics.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorMetrics.metrics.extraEnvVars | nindent 2 }}
   {{- end }}
+  {{ include "metrics.komodorMetrics.container.securityContext" . | nindent 2 }}
 {{- end }}
 
 {{- define "metrics.deployment.sidecar.container" }}
@@ -65,6 +66,7 @@
   {{- if gt (len .Values.components.komodorMetrics.metricsInit.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorMetrics.metricsInit.extraEnvVars | nindent 2 }}
   {{- end }}
+  {{ include "metrics.komodorMetrics.metricsInit.securityContext" . | nindent 2 }}
 {{- end }}
 {{- end }}
 
@@ -94,4 +96,5 @@
   {{- if gt (len .Values.components.komodorMetrics.metricsInit.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorMetrics.metricsInit.extraEnvVars | nindent 2 }}
   {{- end }}
+  {{ include "metrics.komodorMetrics.metricsInit.securityContext" . | nindent 2 }}
 {{- end }}
