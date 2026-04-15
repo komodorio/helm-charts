@@ -83,7 +83,7 @@ webhooks:
         port: {{ include "komodorAgent.admissionController.servicePort" . }}
       caBundle: {{ .Values.capabilities.admissionController.mutatingWebhook.caBundle | default $certList._2 }}
     rules:
-      - operations: [ "CREATE", "UPDATE" ]
+      - operations: [ "CREATE", "UPDATE", "DELETE" ]
         apiGroups: [ "autoscaling" ]
         apiVersions: [ "v2" ]
         resources: [ "horizontalpodautoscalers" ]
