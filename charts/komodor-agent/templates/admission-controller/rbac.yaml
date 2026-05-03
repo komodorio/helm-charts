@@ -44,6 +44,7 @@ rules:
       - get
       - watch
       - list
+      - patch
   - apiGroups:
       - batch
     resources:
