@@ -91,12 +91,12 @@
   {{- include "komodorAgent.proxy-conf" . | indent 4 }}
   {{- include "komodorAgent.supervisor.securityContext" . | nindent 2}}
   ports:
-    - name: http-healthz
+    - name: http-sup-health
       containerPort: {{ .Values.components.komodorAgent.supervisor.ports.healthCheck }}
   livenessProbe:
     httpGet:
       path: /healthz
-      port: http-healthz
+      port: http-sup-health
     periodSeconds: 60
     initialDelaySeconds: 15
     failureThreshold: 10
@@ -104,7 +104,7 @@
   readinessProbe:
     httpGet:
       path: /healthz
-      port: http-healthz
+      port: http-sup-health
     initialDelaySeconds: 5
     periodSeconds: 5
     failureThreshold: 3
