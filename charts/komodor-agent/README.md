@@ -154,7 +154,7 @@ Relevant values:
 | createRbac | bool | `true` | Creates the necessary RBAC resources for the agent - use with caution! |
 | telegrafImageVersion | string | `"v2.0.41-alpine"` | Telegraf version to be used |
 | telegrafWindowsImageVersion | string | `"v2.0.41"` | Telegraf version to be used for windows |
-| admissionControllerVersion | string | `"0.1.53"` | Admission controller version to be used |
+| admissionControllerVersion | string | `"0.1.54"` | Admission controller version to be used |
 | serviceAccount | object | See sub-values | Configure service account for the agent |
 | serviceAccount.create | bool | `true` | Creates a service account for the agent |
 | serviceAccount.name | string | `nil` | Name of the service account, Required if `serviceAccount.create` is false |

@@ -20,7 +20,7 @@ telegrafImageVersion: &telegrafVersion v2.0.41-alpine
 # telegrafWindowsImageVersion -- (string) Telegraf version to be used for windows
 telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.41
 # admissionControllerVersion -- (string) Admission controller version to be used
-admissionControllerVersion: &acVersion 0.1.53
+admissionControllerVersion: &acVersion 0.1.54
 
 # serviceAccount -- Configure service account for the agent
 # @default -- See sub-values
