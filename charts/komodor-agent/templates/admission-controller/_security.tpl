@@ -4,16 +4,13 @@ securityContext:
   {{- toYaml .Values.components.admissionController.podSecurityContext | nindent 2 }}
 {{- else if gt (len .Values.components.admissionController.securityContext) 0 }}
 securityContext:
-  {{- omit .Values.components.admissionController.securityContext "capabilities" "readOnlyRootFilesystem" "allowPrivilegeEscalation" | toYaml | nindent 2 }}
+  {{- toYaml .Values.components.admissionController.securityContext | nindent 2 }}
 {{- end }}
 {{- end }}
 
 {{- define "admissionController.container.securityContext" }}
-{{- if gt (len .Values.components.admissionController.containerSecurityContext) 0 }}
+{{- with .Values.components.admissionController.containerSecurityContext }}
 securityContext:
-  {{- toYaml .Values.components.admissionController.containerSecurityContext | nindent 2 }}
-{{- else if gt (len .Values.components.admissionController.securityContext) 0 }}
-securityContext:
-  {{- omit .Values.components.admissionController.securityContext "fsGroup" | toYaml | nindent 2 }}
+  {{- toYaml . | nindent 2 }}
 {{- end }}
 {{- end }}
