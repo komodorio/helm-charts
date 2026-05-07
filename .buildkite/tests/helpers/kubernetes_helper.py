@@ -5,6 +5,27 @@ from kubernetes import client
 from config import NAMESPACE
 
 
+# Error-level log messages from k8s-watcher that should NOT fail tests. 
+# Each entry is a list of substrings; a log line is
+# ignored when ALL substrings in any one entry are present in json_log["msg"].
+# Always include a brief comment on each entry explaining why it's safe to
+# ignore so future readers can prune the list when the underlying issue is
+# fixed.
+IGNORED_ERROR_LOG_SUBSTRINGS: list[list[str]] = [
+    # Expected during agent startup before backend registration completes.
+    ["Failed to run task", "failed with HTTP status 404"],
+    # Not in BE cache during agent startup.
+    ["failed to push RBAC data to agents-service"],
+]
+
+
+def _is_ignored_error_msg(msg: str) -> bool:
+    return any(
+        all(sub in msg for sub in patterns)
+        for patterns in IGNORED_ERROR_LOG_SUBSTRINGS
+    )
+
+
 def check_pods_running(kube_client, label_selector):
     pods = kube_client.list_pod_for_all_namespaces(label_selector=label_selector)
     if len(pods.items) == 0:
@@ -137,10 +158,12 @@ def look_for_errors_in_pod_log(pod_name, container_name="k8s-watcher"):
         if not line.startswith("{"):
             continue
         json_log = json.loads(line)
-        if "level" in json_log and json_log["level"] == "error":
-            if "Failed to run task" in json_log["msg"] and "failed with HTTP status 404" in json_log["msg"]:
-                continue # this is expected when the agent is starting up
-            assert False, f"Found error in logs of {pod_name}\nLog: {json_log['msg']}"
+        if json_log.get("level") != "error":
+            continue
+        msg = json_log.get("msg", "")
+        if _is_ignored_error_msg(msg):
+            continue
+        assert False, f"Found error in logs of {pod_name}\nLog: {msg}"
 
 
 def rollout_restart_and_wait(deployment_name, namespace):
