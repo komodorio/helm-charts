@@ -1,6 +1,6 @@
 {{- define "metrics.deployment.container" }}
 - name: metrics
-  command: ["/usr/bin/telegraf", "--config", "/etc/telegraf/telegraf.conf", "--watch-config", "notify"]
+  command: ["/usr/bin/telegraf", "--config", "/etc/telegraf/telegraf.conf", "--watch-config", "notify", "--non-strict-env-handling"]
   image: {{ .Values.imageRepo }}/{{ .Values.components.komodorMetrics.metrics.image.name}}:{{ .Values.components.komodorMetrics.metrics.image.tag }}
   imagePullPolicy: {{ .Values.pullPolicy }}
   resources:

@@ -1,7 +1,7 @@
 {{- define "metrics.daemonset.container" }}
 {{- if .Values.capabilities.metrics }}
 - name: metrics
-  command: ["/usr/bin/telegraf", "--config", "/etc/telegraf/telegraf.conf", "--watch-config", "notify"]
+  command: ["/usr/bin/telegraf", "--config", "/etc/telegraf/telegraf.conf", "--watch-config", "notify", "--non-strict-env-handling"]
   image: {{ .Values.imageRepo }}/{{ .Values.components.komodorDaemon.metrics.image.name}}:{{ .Values.components.komodorDaemon.metrics.image.tag }}
   imagePullPolicy: {{ .Values.pullPolicy }}
   resources:
@@ -45,7 +45,7 @@
 {{- define "metrics.daemonsetWindows.container" }}
 {{- if .Values.capabilities.metrics }}
 - name: metrics
-  command: ["C:/telegraf/telegraf.exe", "--config", "C:/telegraf/telegraf.conf", "--watch-config", "poll"]
+  command: ["C:/telegraf/telegraf.exe", "--config", "C:/telegraf/telegraf.conf", "--watch-config", "poll", "--non-strict-env-handling"]
   image: {{ .Values.imageRepo }}/{{ .Values.components.komodorDaemonWindows.metrics.image.name}}:{{ .Values.components.komodorDaemonWindows.metrics.image.tag }}
   imagePullPolicy: {{ .Values.pullPolicy }}
   resources:
