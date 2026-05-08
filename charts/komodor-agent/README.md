@@ -169,6 +169,7 @@ Relevant values:
 | customCa.enabled | bool | `false` | Enable custom CA certificate for the agent |
 | customCa.secretName | string | `nil` | Name of the secret containing the CA |
 | customCa.resources | dict | `{"limits":{"cpu":"10m","memory":"100Mi"},"requests":{"cpu":"1m","memory":"10Mi"}}` | Set custom resources to the custom CA container |
+| customCa.securityContext | dict | `{"allowPrivilegeEscalation":false,"readOnlyRootFilesystem":true,"runAsGroup":1000,"runAsNonRoot":true,"runAsUser":1000}` | Set container-level securityContext for the custom CA init container. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution) |
 | imageRepo | string | `"public.ecr.aws/komodor-public"` | Override the komodor agent image repository. |
 | pullPolicy | string | `"IfNotPresent"` | Default Image pull policy for the komodor agent image acceptable values <ifNotPresent\Always\Never>. |
 | imagePullSecret | string | `nil` | Set the image pull secret for the komodor agent |

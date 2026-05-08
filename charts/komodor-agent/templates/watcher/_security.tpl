@@ -22,6 +22,19 @@ securityContext:
 {{- end }}
 {{- end }}
 
+{{- define "komodorAgent.customCaInit.securityContext" }}
+securityContext:
+{{- if gt (len .Values.customCa.securityContext) 0 }}
+  {{- toYaml .Values.customCa.securityContext | nindent 2 }}
+{{- else }}
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  allowPrivilegeEscalation: false
+{{- end }}
+{{- end }}
+
 {{- define "komodorAgent.pod.securityContext" }}
 {{- if gt (len .Values.components.komodorAgent.podSecurityContext) 0 }}
 securityContext:
