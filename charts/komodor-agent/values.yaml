@@ -372,7 +372,6 @@ components:
     securityContext: {}
     # components.komodorKubectlProxy.containerSecurityContext -- Set container-level securityContext for the komodor kubectl proxy container. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution)
     containerSecurityContext: {}
-
     # components.komodorKubectlProxy.strategy -- Set the rolling update strategy for the komodor kubectl proxy deployment
     strategy: {}
 
