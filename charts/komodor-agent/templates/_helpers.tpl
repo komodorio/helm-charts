@@ -105,6 +105,23 @@ app.kubernetes.io/instance: {{ include "komodor.truncatedReleaseName"  . }}-gpu-
 {{ include "komodorAgent.commonLabels" . }}
 {{- end }}
 
+{{- define "sandbox.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "komodorAgent.name" . }}-sandbox
+app.kubernetes.io/instance: {{ include "komodor.truncatedReleaseName"  . }}-sandbox
+app.kubernetes.io/component: sandbox
+{{- end }}
+
+{{- define "sandbox.user.labels" -}}
+{{- if not (empty (((.Values.components).sandbox).labels)) }}
+{{ toYaml .Values.components.sandbox.labels }}
+{{- end }}
+{{- end}}
+
+{{- define "sandbox.labels" -}}
+{{ include "sandbox.selectorLabels" . }}
+{{ include "komodorAgent.commonLabels" . }}
+{{- end }}
+
 {{- define "komodorAgent.user.labels" -}}
 {{- if not (empty (((.Values.components).komodorAgent).labels)) }}
 {{ toYaml .Values.components.komodorAgent.labels }}

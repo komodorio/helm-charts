@@ -179,6 +179,11 @@ capabilities:
     httpRequests:
       # capabilities.tasks.httpRequests.skipTlsVerify -- (bool) Skip TLS certificate verification for HTTP requests (sets HTTP_REQUESTS_SKIP_TLS_VERIFY environment variable)
       skipTlsVerify: false
+    # capabilities.tasks.sandbox -- Configure reusable sandbox pod for bash command tasks
+    # @default -- See sub-values
+    sandbox:
+      # capabilities.tasks.sandbox.enabled -- (bool) Deploy a reusable sandbox pod for sandbox-bash-command tasks
+      enabled: false
 
   # capabilities.tunnel -- Configure the WebSocket tunnel feature
   # @default -- See sub-values
@@ -367,8 +372,50 @@ components:
     securityContext: {}
     # components.komodorKubectlProxy.containerSecurityContext -- Set container-level securityContext for the komodor kubectl proxy container. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution)
     containerSecurityContext: {}
+
     # components.komodorKubectlProxy.strategy -- Set the rolling update strategy for the komodor kubectl proxy deployment
     strategy: {}
+
+  # components.sandbox -- Configure the reusable sandbox pod for sandbox-bash-command tasks
+  # @default -- See sub-values
+  sandbox:
+    # components.sandbox.image -- Sandbox pod image used by sandbox-bash-command tasks. The image must include bash.
+    image: bash:5.2
+    # components.sandbox.pullPolicy -- Image pull policy for the sandbox pod
+    pullPolicy: IfNotPresent
+    # components.sandbox.command -- Container command for keeping the reusable sandbox pod warm
+    command: ["bash", "-lc"]
+    # components.sandbox.args -- Container args for keeping the reusable sandbox pod warm
+    args: ["trap : TERM INT; sleep infinity & wait"]
+    # components.sandbox.env -- Static environment variables for the sandbox pod
+    env: {}
+    # components.sandbox.extraEnvVars -- List of additional environment variables for the sandbox pod
+    extraEnvVars: []
+    # components.sandbox.resources -- Set resources for the sandbox pod
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 25m
+        memory: 64Mi
+    # components.sandbox.annotations -- Set annotations for the sandbox deployment
+    annotations: {}
+    # components.sandbox.podAnnotations -- Set annotations for the sandbox pod
+    podAnnotations: {}
+    # components.sandbox.labels -- Set additional labels for the sandbox pod and deployment
+    labels: {}
+    # components.sandbox.nodeSelector -- Set node selector for the sandbox pod
+    nodeSelector: {}
+    # components.sandbox.tolerations -- Set tolerations for the sandbox pod
+    tolerations: []
+    # components.sandbox.affinity -- Set affinity for the sandbox pod
+    affinity: {}
+    # components.sandbox.podSecurityContext -- Set custom pod-level securityContext for the sandbox pod. (use with caution)
+    podSecurityContext: {}
+    # components.sandbox.containerSecurityContext -- Set container-level securityContext for the sandbox container. (use with caution)
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
 
   # components.admissionController -- Configure the komodor admission controller component
   # @default -- See sub-values
