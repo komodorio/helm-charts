@@ -1,7 +1,8 @@
 import pytest
+import yaml
 
 from config import RELEASE_NAME
-from helpers.helm_helper import get_yaml_from_helm_template
+from helpers.helm_helper import get_yaml_from_helm_template, helm_agent_template
 from helpers.utils import get_filename_as_cluster_name
 
 CLUSTER_NAME = get_filename_as_cluster_name(__file__)
@@ -37,7 +38,8 @@ def run_label_test(set_path, value, deployment_name, resource_type, capability_t
     ("components.komodorDaemonWindows.labels.test", "test_value", f"{RELEASE_NAME}-komodor-agent-daemon-windows",
      "DaemonSet", None),
     ("components.komodorMetrics.labels.test", "test_value", f"{RELEASE_NAME}-komodor-agent-metrics", "Deployment", None),
-    ("components.komodorKubectlProxy.labels.test", "test_value", f"{RELEASE_NAME}-komodor-agent-proxy", "Deployment", "kubectlProxy.enabled")
+    ("components.komodorKubectlProxy.labels.test", "test_value", f"{RELEASE_NAME}-komodor-agent-proxy", "Deployment", "kubectlProxy.enabled"),
+    ("components.sandbox.labels.test", "test_value", f"{RELEASE_NAME}-komodor-agent-sandbox", "Deployment", "tasks.sandbox.enabled")
 ])
 def test_user_labels(set_path, value, deployment_name, resource_type, capability_to_enable):
     run_label_test(set_path, value, deployment_name, resource_type, capability_to_enable)
@@ -46,7 +48,8 @@ def test_user_labels(set_path, value, deployment_name, resource_type, capability
 @pytest.mark.parametrize("component_name, deployment_name_suffix, capability_to_enable", [
     ("komodorAgent", "", None),
     ("komodorMetrics", "-metrics", None),
-    ("komodorKubectlProxy", "-proxy", "kubectlProxy.enabled")
+    ("komodorKubectlProxy", "-proxy", "kubectlProxy.enabled"),
+    ("sandbox", "-sandbox", "tasks.sandbox.enabled")
 ])
 def test_override_deployment_tolerations(component_name, deployment_name_suffix, capability_to_enable):
     values_file = f"""
@@ -73,7 +76,8 @@ def test_override_deployment_tolerations(component_name, deployment_name_suffix,
 @pytest.mark.parametrize("component_name, deployment_name_suffix, capability_to_enable", [
     ("komodorAgent", "", None),
     ("komodorMetrics", "-metrics", None),
-    ("komodorKubectlProxy", "-proxy", "kubectlProxy.enabled")
+    ("komodorKubectlProxy", "-proxy", "kubectlProxy.enabled"),
+    ("sandbox", "-sandbox", "tasks.sandbox.enabled")
 ])
 def test_override_deployment_node_selector(component_name, deployment_name_suffix, capability_to_enable):
     set_path = f"components.{component_name}.nodeSelector.test_node_selector"
@@ -92,7 +96,8 @@ def test_override_deployment_node_selector(component_name, deployment_name_suffi
 @pytest.mark.parametrize("component_name, deployment_name_suffix, capability_to_enable", [
     ("komodorAgent", "", None),
     ("komodorMetrics", "-metrics", None),
-    ("komodorKubectlProxy", "-proxy", "kubectlProxy.enabled")
+    ("komodorKubectlProxy", "-proxy", "kubectlProxy.enabled"),
+    ("sandbox", "-sandbox", "tasks.sandbox.enabled")
 ])
 def test_override_deployment_annotations(component_name, deployment_name_suffix, capability_to_enable):
     set_path = f"components.{component_name}.annotations.test"
@@ -111,7 +116,8 @@ def test_override_deployment_annotations(component_name, deployment_name_suffix,
 @pytest.mark.parametrize("component_name, deployment_name_suffix, capability_to_enable", [
     ("komodorAgent", "", None),
     ("komodorMetrics", "-metrics", None),
-    ("komodorKubectlProxy", "-proxy", "kubectlProxy.enabled")
+    ("komodorKubectlProxy", "-proxy", "kubectlProxy.enabled"),
+    ("sandbox", "-sandbox", "tasks.sandbox.enabled")
 ])
 def test_override_deployment_affinity(component_name, deployment_name_suffix, capability_to_enable):
     values_file = f"""
@@ -166,6 +172,48 @@ def test_extra_env_vars(component, location, container, container_index, deploym
     assert  any(env_var["name"] == "TEST_ENV_VAR" for env_var in deployment_env_vars), f"Expected TEST_ENV_VAR in deployment env vars {deployment_env_vars}"
 
 
+def test_sandbox_deployment_disabled_by_default():
+    yaml_templates, exit_code = helm_agent_template()
+    assert exit_code == 0, f"helm template failed, output: {yaml_templates}"
+
+    documents = list(yaml.safe_load_all(yaml_templates))
+    sandbox_deployments = [
+        doc for doc in documents
+        if doc and doc.get("kind") == "Deployment" and
+        doc.get("metadata", {}).get("name") == f"{RELEASE_NAME}-komodor-agent-sandbox"
+    ]
+
+    assert len(sandbox_deployments) == 0, f"Expected sandbox deployment to be disabled by default, got {sandbox_deployments}"
+
+
+def test_sandbox_deployment_enabled_with_configurable_container():
+    values_file = """
+    components:
+      sandbox:
+        image: ghcr.io/komodor/agent-tools:test
+        command: ["bash", "-lc"]
+        args: ["sleep infinity"]
+        env:
+          STATIC_ENV: "static"
+        extraEnvVars:
+          - name: "EXTRA_ENV"
+            value: "extra"
+    """
+
+    deployment_name = f"{RELEASE_NAME}-komodor-agent-sandbox"
+    container = get_yaml_from_helm_template("capabilities.tasks.sandbox.enabled=true", "Deployment", deployment_name,
+                                           "spec.template.spec.containers.0", values_file=values_file)
+
+    assert container["name"] == "komodor-agent-sandbox", f"Expected sandbox container name, got {container}"
+    assert container["image"] == "ghcr.io/komodor/agent-tools:test", f"Expected custom sandbox image, got {container}"
+    assert container["command"] == ["bash", "-lc"], f"Expected custom sandbox command, got {container}"
+    assert container["args"] == ["sleep infinity"], f"Expected custom sandbox args, got {container}"
+    assert any(env_var["name"] == "STATIC_ENV" and env_var["value"] == "static" for env_var in container["env"]), \
+        f"Expected STATIC_ENV in env vars {container['env']}"
+    assert any(env_var["name"] == "EXTRA_ENV" and env_var["value"] == "extra" for env_var in container["env"]), \
+        f"Expected EXTRA_ENV in env vars {container['env']}"
+
+
 @pytest.mark.parametrize("component_name, resource_kind, deployment_name_suffix, capability_to_enable", [
     ("komodorAgent",       "Deployment", "",       None),
     ("komodorMetrics",     "Deployment", "-metrics", None),
@@ -197,7 +245,8 @@ def test_override_security_context(component_name, resource_kind, deployment_nam
     ("komodorAgent",       "Deployment", "",        None),
     ("komodorMetrics",     "Deployment", "-metrics", None),
     ("komodorDaemon",      "DaemonSet",  "-daemon",  None),
-    ("komodorKubectlProxy","Deployment", "-proxy",   "kubectlProxy.enabled")
+    ("komodorKubectlProxy","Deployment", "-proxy",   "kubectlProxy.enabled"),
+    ("sandbox",            "Deployment", "-sandbox", "tasks.sandbox.enabled")
 ])
 def test_override_pod_security_context(component_name, resource_kind, resource_name_suffix, capability_to_enable):
     """Tests that podSecurityContext is applied at pod level and takes precedence over the deprecated securityContext."""
@@ -321,6 +370,18 @@ def test_override_pod_security_context(component_name, resource_kind, resource_n
              capabilities:
                drop:
                  - ALL
+     """,
+     "spec.template.spec.containers.0.securityContext"),
+    ("Deployment", "-sandbox", "tasks.sandbox.enabled",
+     """
+     components:
+       sandbox:
+         containerSecurityContext:
+           allowPrivilegeEscalation: false
+           runAsUser: 1500
+           capabilities:
+             drop:
+               - ALL
      """,
      "spec.template.spec.containers.0.securityContext"),
 ])
