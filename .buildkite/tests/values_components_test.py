@@ -198,6 +198,9 @@ def test_sandbox_deployment_enabled_with_configurable_container():
         extraEnvVars:
           - name: "EXTRA_ENV"
             value: "extra"
+        service:
+          port: 9090
+          targetPort: 9091
     """
 
     deployment_name = f"{RELEASE_NAME}-komodor-agent-sandbox"
@@ -212,6 +215,21 @@ def test_sandbox_deployment_enabled_with_configurable_container():
         f"Expected STATIC_ENV in env vars {container['env']}"
     assert any(env_var["name"] == "EXTRA_ENV" and env_var["value"] == "extra" for env_var in container["env"]), \
         f"Expected EXTRA_ENV in env vars {container['env']}"
+    assert container["ports"][0]["containerPort"] == 9091, f"Expected custom target port, got {container}"
+
+    service = get_yaml_from_helm_template("capabilities.tasks.sandbox.enabled=true", "Service", deployment_name,
+                                          "spec", values_file=values_file)
+    assert service["ports"][0]["port"] == 9090, f"Expected custom service port, got {service}"
+    assert service["ports"][0]["targetPort"] == "http", f"Expected named targetPort, got {service}"
+
+    watcher_env = get_yaml_from_helm_template("capabilities.tasks.sandbox.enabled=true", "Deployment",
+                                              f"{RELEASE_NAME}-komodor-agent",
+                                              "spec.template.spec.containers.0.env", values_file=values_file)
+    assert any(
+        env_var["name"] == "SANDBOX_API_URL" and
+        env_var["value"] == f"http://{RELEASE_NAME}-komodor-agent-sandbox:9090"
+        for env_var in watcher_env
+    ), f"Expected SANDBOX_API_URL in watcher env vars {watcher_env}"
 
 
 @pytest.mark.parametrize("component_name, resource_kind, deployment_name_suffix, capability_to_enable", [

@@ -58,6 +58,27 @@ spec:
         {{- include "custom-ca.trusted-volume" .            | trim | nindent 8 }}
 ---
 {{- if .Values.capabilities.tasks.sandbox.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "komodorAgent.fullname" . }}-sandbox
+  {{- with .Values.components.sandbox.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "sandbox.labels" . | nindent 4 }}
+    {{- include "sandbox.user.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.components.sandbox.service.type }}
+  selector:
+    {{- include "sandbox.selectorLabels" . | nindent 4 }}
+  ports:
+    - name: http
+      port: {{ .Values.components.sandbox.service.port }}
+      targetPort: http
+      protocol: TCP
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -70,7 +91,7 @@ metadata:
     {{- include "sandbox.labels" . | nindent 4 }}
     {{- include "sandbox.user.labels" . | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.components.sandbox.replicas }}
   selector:
     matchLabels:
       {{- include "sandbox.selectorLabels" . | nindent 6 }}
@@ -106,10 +127,18 @@ spec:
         - name: komodor-agent-sandbox
           image: {{ .Values.components.sandbox.image }}
           imagePullPolicy: {{ .Values.components.sandbox.pullPolicy }}
+          {{- with .Values.components.sandbox.command }}
           command:
-            {{- toYaml .Values.components.sandbox.command | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.components.sandbox.args }}
           args:
-            {{- toYaml .Values.components.sandbox.args | nindent 12 }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.components.sandbox.service.targetPort }}
+              protocol: TCP
           {{- if or .Values.components.sandbox.env .Values.components.sandbox.extraEnvVars }}
           env:
             {{- range $name, $value := .Values.components.sandbox.env }}

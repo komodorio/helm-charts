@@ -287,22 +287,28 @@ Relevant values:
 | components.komodorKubectlProxy.securityContext | object | `{}` | DEPRECATED: use podSecurityContext instead. Kept as a fallback for backward compatibility with pod-level securityContext. |
 | components.komodorKubectlProxy.containerSecurityContext | object | `{}` | Set container-level securityContext for the komodor kubectl proxy container. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution) |
 | components.komodorKubectlProxy.strategy | object | `{}` | Set the rolling update strategy for the komodor kubectl proxy deployment |
-| components.sandbox | object | See sub-values | Configure the reusable sandbox pod for sandbox-bash-command tasks |
-| components.sandbox.image | string | `"bash:5.2"` | Sandbox pod image used by sandbox-bash-command tasks. The image must include bash. |
-| components.sandbox.pullPolicy | string | `"IfNotPresent"` | Image pull policy for the sandbox pod |
-| components.sandbox.command | list | `["bash","-lc"]` | Container command for keeping the reusable sandbox pod warm |
-| components.sandbox.args | list | `["trap : TERM INT; sleep infinity & wait"]` | Container args for keeping the reusable sandbox pod warm |
-| components.sandbox.env | object | `{}` | Static environment variables for the sandbox pod |
-| components.sandbox.extraEnvVars | list | `[]` | List of additional environment variables for the sandbox pod |
-| components.sandbox.resources | object | `{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"25m","memory":"64Mi"}}` | Set resources for the sandbox pod |
-| components.sandbox.annotations | object | `{}` | Set annotations for the sandbox deployment |
-| components.sandbox.podAnnotations | object | `{}` | Set annotations for the sandbox pod |
-| components.sandbox.labels | object | `{}` | Set additional labels for the sandbox pod and deployment |
-| components.sandbox.nodeSelector | object | `{}` | Set node selector for the sandbox pod |
-| components.sandbox.tolerations | list | `[]` | Set tolerations for the sandbox pod |
-| components.sandbox.affinity | object | `{}` | Set affinity for the sandbox pod |
-| components.sandbox.podSecurityContext | object | `{}` | Set custom pod-level securityContext for the sandbox pod. (use with caution) |
-| components.sandbox.containerSecurityContext | object | `{"allowPrivilegeEscalation":false}` | Set container-level securityContext for the sandbox container. (use with caution) |
+| components.sandbox | object | See sub-values | Configure the sandbox API deployment used by sandbox-bash-command tasks |
+| components.sandbox.replicas | int | `1` | Number of sandbox API replicas. Keep at 1 unless the sandbox API uses shared session state or sticky routing. |
+| components.sandbox.image | string | `"public.ecr.aws/komodor-public/komodor-agent-sandbox:latest"` | Sandbox API image. The image receives agent HTTP requests and manages sandbox lifecycle/reuse. |
+| components.sandbox.pullPolicy | string | `"IfNotPresent"` | Image pull policy for the sandbox API pod |
+| components.sandbox.command | list | `[]` | Optional container command override for the sandbox API pod |
+| components.sandbox.args | list | `[]` | Optional container args override for the sandbox API pod |
+| components.sandbox.service | object | See sub-values | Configure the sandbox API service |
+| components.sandbox.service.type | string | `"ClusterIP"` | Sandbox API service type |
+| components.sandbox.service.port | int | `8080` | Sandbox API service port |
+| components.sandbox.service.targetPort | int | `8080` | Sandbox API container port |
+| components.sandbox.service.annotations | object | `{}` | Set annotations for the sandbox API service |
+| components.sandbox.env | object | `{}` | Static environment variables for the sandbox API pod |
+| components.sandbox.extraEnvVars | list | `[]` | List of additional environment variables for the sandbox API pod |
+| components.sandbox.resources | object | `{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"25m","memory":"64Mi"}}` | Set resources for the sandbox API pod |
+| components.sandbox.annotations | object | `{}` | Set annotations for the sandbox API deployment |
+| components.sandbox.podAnnotations | object | `{}` | Set annotations for the sandbox API pod |
+| components.sandbox.labels | object | `{}` | Set additional labels for the sandbox API pod and deployment |
+| components.sandbox.nodeSelector | object | `{}` | Set node selector for the sandbox API pod |
+| components.sandbox.tolerations | list | `[]` | Set tolerations for the sandbox API pod |
+| components.sandbox.affinity | object | `{}` | Set affinity for the sandbox API pod |
+| components.sandbox.podSecurityContext | object | `{}` | Set custom pod-level securityContext for the sandbox API pod. (use with caution) |
+| components.sandbox.containerSecurityContext | object | `{"allowPrivilegeEscalation":false}` | Set container-level securityContext for the sandbox API container. (use with caution) |
 | components.admissionController | object | See sub-values | Configure the komodor admission controller component |
 | components.admissionController.replicas | int | `2` | Number of replicas for the admission controller deployment |
 | components.admissionController.serviceAccount | object | see sub-values | Configure the service account for the admission controller |
