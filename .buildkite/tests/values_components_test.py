@@ -172,6 +172,7 @@ def test_extra_volumes(component_name, resource_kind, deployment_name_suffix):
     values_file = f"""
     components:
       {component_name}:
+        enabled: true
         extraVolumes:
           - name: extra-volume
             emptyDir: {{}}
@@ -186,12 +187,11 @@ def test_extra_volumes(component_name, resource_kind, deployment_name_suffix):
     volumes = get_yaml_from_helm_template(set_command, resource_kind, resource_name,
                                           "spec.template.spec.volumes", values_file=values_file)
 
-    assert any(vm["name"] == "extra-volume" and vm["mountPath"] == "/extra" for vm in volume_mounts), \
+    assert len([vm["name"] == "extra-volume" and vm["mountPath"] == "/extra" for vm in volume_mounts]) > 0, \
         f"Expected extra-volume mount in container volumeMounts {volume_mounts}"
 
-    assert any(v["name"] == "extra-volume" and "emptyDir" in v for v in volumes), \
+    assert len([v["name"] == "extra-volume" and "emptyDir" in v for v in volumes]) > 0, \
         f"Expected extra-volume in pod volumes {volumes}"
-
 
 @pytest.mark.parametrize("component_name, resource_kind, deployment_name_suffix, capability_to_enable", [
     ("komodorAgent",       "Deployment", "",       None),
