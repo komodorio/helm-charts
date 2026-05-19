@@ -61,7 +61,7 @@ def test_override_deployment_tolerations(component_name, deployment_name_suffix,
     set_command = "test=test"
     if capability_to_enable:
         set_command += f" --set capabilities.{capability_to_enable}=true"
-        
+
     deployment_name = f"{RELEASE_NAME}-komodor-agent{deployment_name_suffix}"
     deployment_tolerations = get_yaml_from_helm_template(set_command, "Deployment", deployment_name,
                                                          "spec.template.spec.tolerations", values_file=values_file)
@@ -165,6 +165,34 @@ def test_extra_env_vars(component, location, container, container_index, deploym
 
     assert  any(env_var["name"] == "TEST_ENV_VAR" for env_var in deployment_env_vars), f"Expected TEST_ENV_VAR in deployment env vars {deployment_env_vars}"
 
+@pytest.mark.parametrize("component_name, resource_kind, deployment_name_suffix", [
+    ("admissionController",       "Deployment", "-admission-controller")
+])
+def test_extra_volumes(component_name, resource_kind, deployment_name_suffix):
+    values_file = f"""
+    components:
+      {component_name}:
+        enabled: true
+        extraVolumes:
+          - volume:
+              name: extra-volume
+              emptyDir: {{}}
+            volumeMount:
+              name: extra-volume
+              mountPath: /extra
+    """
+    set_command = "test=test"
+    resource_name = f"{RELEASE_NAME}-komodor-agent{deployment_name_suffix}"
+    volume_mounts = get_yaml_from_helm_template(set_command, resource_kind, resource_name,
+                                                "spec.template.spec.containers.0.volumeMounts", values_file=values_file)
+    volumes = get_yaml_from_helm_template(set_command, resource_kind, resource_name,
+                                          "spec.template.spec.volumes", values_file=values_file)
+
+    assert any(vm["name"] == "extra-volume" and vm["mountPath"] == "/extra" for vm in volume_mounts), \
+        f"Expected extra-volume mount in container volumeMounts {volume_mounts}"
+
+    assert any(v["name"] == "extra-volume" and "emptyDir" in v for v in volumes), \
+        f"Expected extra-volume in pod volumes {volumes}"
 
 @pytest.mark.parametrize("component_name, resource_kind, deployment_name_suffix, capability_to_enable", [
     ("komodorAgent",       "Deployment", "",       None),

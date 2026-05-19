@@ -77,6 +77,9 @@ spec:
             - name: configuration
               mountPath: /etc/komodor
               readOnly: true
+          {{- range .Values.components.admissionController.extraVolumes  }}
+            - {{- toYaml .volumeMount | nindent 14 }}
+          {{- end }}
       volumes:
         - name: webhook-tls
           secret:
@@ -85,6 +88,9 @@ spec:
           configMap:
             name: {{ include "komodorAgent.admissionController.fullname" . }}
             defaultMode: 420
+      {{- range .Values.components.admissionController.extraVolumes }}
+        - {{- toYaml .volume | nindent 10 }}
+      {{- end }}
       {{- with .Values.components.admissionController.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
