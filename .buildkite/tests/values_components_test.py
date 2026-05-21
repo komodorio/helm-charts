@@ -198,6 +198,7 @@ def test_extra_volumes(component_name, resource_kind, deployment_name_suffix):
     ("komodorAgent",       "Deployment", "",       None),
     ("komodorMetrics",     "Deployment", "-metrics", None),
     ("komodorDaemon",      "DaemonSet",  "-daemon", None),
+    ("admissionController","Deployment", "-admission-controller", "admissionController.enabled"),
     ("komodorKubectlProxy","Deployment", "-proxy",  "kubectlProxy.enabled")
 ])
 def test_override_security_context(component_name, resource_kind, deployment_name_suffix, capability_to_enable):
@@ -225,6 +226,7 @@ def test_override_security_context(component_name, resource_kind, deployment_nam
     ("komodorAgent",       "Deployment", "",        None),
     ("komodorMetrics",     "Deployment", "-metrics", None),
     ("komodorDaemon",      "DaemonSet",  "-daemon",  None),
+    ("admissionController","Deployment", "-admission-controller", "admissionController.enabled"),
     ("komodorKubectlProxy","Deployment", "-proxy",   "kubectlProxy.enabled")
 ])
 def test_override_pod_security_context(component_name, resource_kind, resource_name_suffix, capability_to_enable):
@@ -253,6 +255,90 @@ def test_override_pod_security_context(component_name, resource_kind, resource_n
         f"Expected podSecurityContext.runAsUser=2000 (not deprecated securityContext value 9999), got {pod_security_context}"
     assert pod_security_context.get("fsGroup") == 3000, \
         f"Expected podSecurityContext.fsGroup=3000 in pod spec, got {pod_security_context}"
+
+
+@pytest.mark.parametrize("resource_kind, resource_name_suffix, capability_to_enable", [
+    ("Deployment", "", None),
+    ("Deployment", "-metrics", None),
+    ("Deployment", "-admission-controller", "admissionController.enabled"),
+    ("Deployment", "-proxy", "kubectlProxy.enabled"),
+    ("DaemonSet", "-daemon-windows", None),
+    ("DaemonSet", "-gpu-host-access", None),
+])
+def test_global_pod_security_context(resource_kind, resource_name_suffix, capability_to_enable):
+    values_file = """
+    global:
+      podSecurityContext:
+        runAsUser: 2000
+        runAsGroup: 4000
+        fsGroup: 3000
+        runAsNonRoot: true
+    components:
+      gpuAccess:
+        enabled: true
+    """
+    set_command = "test=test"
+    if capability_to_enable:
+        set_command += f" --set capabilities.{capability_to_enable}=true"
+
+    resource_name = f"{RELEASE_NAME}-komodor-agent{resource_name_suffix}"
+    pod_security_context = get_yaml_from_helm_template(set_command, resource_kind, resource_name,
+                                                       "spec.template.spec.securityContext", values_file=values_file)
+
+    assert pod_security_context is not None, f"Expected global podSecurityContext in {resource_kind} {resource_name}"
+    assert pod_security_context.get("runAsUser") == 2000, \
+        f"Expected global podSecurityContext.runAsUser=2000, got {pod_security_context}"
+    assert pod_security_context.get("fsGroup") == 3000, \
+        f"Expected global podSecurityContext.fsGroup=3000, got {pod_security_context}"
+
+
+@pytest.mark.parametrize("resource_kind, resource_name_suffix, container_path", [
+    ("Deployment", "", "spec.template.spec.initContainers.0.securityContext"),
+    ("Deployment", "", "spec.template.spec.containers.0.securityContext"),
+    ("Deployment", "", "spec.template.spec.containers.1.securityContext"),
+    ("Deployment", "-metrics", "spec.template.spec.initContainers.0.securityContext"),
+    ("Deployment", "-metrics", "spec.template.spec.initContainers.1.securityContext"),
+    ("Deployment", "-metrics", "spec.template.spec.containers.0.securityContext"),
+    ("Deployment", "-metrics", "spec.template.spec.containers.1.securityContext"),
+    ("Deployment", "-admission-controller", "spec.template.spec.containers.0.securityContext"),
+    ("Deployment", "-proxy", "spec.template.spec.containers.0.securityContext"),
+    ("DaemonSet", "-daemon", "spec.template.spec.initContainers.0.securityContext"),
+    ("DaemonSet", "-daemon", "spec.template.spec.initContainers.1.securityContext"),
+    ("DaemonSet", "-daemon", "spec.template.spec.initContainers.2.securityContext"),
+    ("DaemonSet", "-daemon", "spec.template.spec.containers.0.securityContext"),
+    ("DaemonSet", "-daemon", "spec.template.spec.containers.1.securityContext"),
+    ("DaemonSet", "-daemon", "spec.template.spec.containers.2.securityContext"),
+    ("DaemonSet", "-daemon", "spec.template.spec.containers.3.securityContext"),
+    ("DaemonSet", "-daemon", "spec.template.spec.containers.4.securityContext"),
+    ("DaemonSet", "-daemon-windows", "spec.template.spec.initContainers.0.securityContext"),
+    ("DaemonSet", "-daemon-windows", "spec.template.spec.containers.0.securityContext"),
+    ("DaemonSet", "-daemon-windows", "spec.template.spec.containers.1.securityContext"),
+    ("DaemonSet", "-gpu-host-access", "spec.template.spec.containers.0.securityContext"),
+])
+def test_security_context_rendered_for_every_container_when_global_is_set(resource_kind, resource_name_suffix, container_path):
+    values_file = """
+    capabilities:
+      kubectlProxy:
+        enabled: true
+    global:
+      securityContext:
+        allowPrivilegeEscalation: false
+        runAsNonRoot: true
+      podSecurityContext:
+        runAsNonRoot: true
+    customCa:
+      enabled: true
+      secretName: test-custom-ca
+    components:
+      gpuAccess:
+        enabled: true
+    """
+    resource_name = f"{RELEASE_NAME}-komodor-agent{resource_name_suffix}"
+    security_context = get_yaml_from_helm_template("test=test", resource_kind, resource_name,
+                                                   container_path, values_file=values_file)
+
+    assert security_context is not None, \
+        f"Expected container securityContext at {container_path} in {resource_kind} {resource_name}"
 
 
 @pytest.mark.parametrize("resource_kind, resource_name_suffix, capability_to_enable, values_override, container_path", [

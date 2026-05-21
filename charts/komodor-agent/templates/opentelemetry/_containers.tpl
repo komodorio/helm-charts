@@ -119,6 +119,7 @@
   imagePullPolicy: {{ .Values.pullPolicy }}
   resources:
     {{ toYaml .Values.components.komodorDaemon.opentelemetry.otelInit.resources | trim | nindent 4 }}
+  {{ include "opentelemetry.daemonset.container.securityContext" . | nindent 2 }}
   command: ["otel_init"]
   volumeMounts:
   - name: configuration

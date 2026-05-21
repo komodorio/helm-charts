@@ -85,6 +85,7 @@
   {{- if gt (len .Values.components.komodorDaemonWindows.metrics.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorDaemonWindows.metrics.extraEnvVars | nindent 2 }}
   {{- end }}
+  {{ include "metrics.daemonsetWindows.container.securityContext" . | nindent 2 }}
 {{- end }}
 {{- end }}
 
@@ -156,6 +157,7 @@
   {{- if gt (len .Values.components.komodorDaemonWindows.metricsInit.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorDaemonWindows.metricsInit.extraEnvVars | nindent 2 }}
   {{- end }}
+  {{ include "metrics.daemonsetWindows.metricsInit.securityContext" . | nindent 2 }}
 {{- end }}
 {{- end }}
 
@@ -229,5 +231,6 @@
   {{- if gt (len .Values.components.komodorDaemonWindows.metricsInit.extraEnvVars) 0 }}
   {{ toYaml .Values.components.komodorDaemonWindows.metricsInit.extraEnvVars | nindent 2 }}
   {{- end }}
+  {{ include "metrics.daemonsetWindows.metricsInit.securityContext" . | nindent 2 }}
 {{- end }}
 {{- end }}

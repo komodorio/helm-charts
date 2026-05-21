@@ -1,6 +1,3 @@
 {{- define "opentelemetry.daemonset.container.securityContext" }}
-{{- with .Values.components.komodorDaemon.opentelemetry.securityContext }}
-securityContext:
-  {{ toYaml . | nindent 2 }}
-{{- end }}
+{{- include "komodorAgent.container.securityContext" (dict "root" $ "securityContext" .Values.components.komodorDaemon.opentelemetry.securityContext) }}
 {{- end }}
