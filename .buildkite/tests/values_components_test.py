@@ -381,6 +381,40 @@ def test_global_container_security_context_preserves_chart_defaults(resource_kin
             f"Expected chart default {key}={value} to be preserved in {security_context}"
 
 
+@pytest.mark.parametrize("container_path, expect_capability_add", [
+    ("spec.template.spec.containers.0.securityContext", True),
+    ("spec.template.spec.containers.1.securityContext", False),
+])
+def test_container_security_context_nested_overrides_do_not_leak(container_path, expect_capability_add):
+    values_file = """
+    global:
+      securityContext:
+        capabilities:
+          drop:
+            - ALL
+    components:
+      komodorAgent:
+        watcher:
+          securityContext:
+            capabilities:
+              add:
+                - NET_BIND_SERVICE
+    """
+    resource_name = f"{RELEASE_NAME}-komodor-agent"
+    security_context = get_yaml_from_helm_template("test=test", "Deployment", resource_name,
+                                                   container_path, values_file=values_file)
+
+    capabilities = security_context.get("capabilities", {})
+    assert "ALL" in capabilities.get("drop", []), \
+        f"Expected global capabilities.drop=[ALL], got {security_context}"
+    if expect_capability_add:
+        assert "NET_BIND_SERVICE" in capabilities.get("add", []), \
+            f"Expected watcher-specific capabilities.add=[NET_BIND_SERVICE], got {security_context}"
+    else:
+        assert "add" not in capabilities, \
+            f"Expected watcher-specific capabilities.add not to leak into supervisor, got {security_context}"
+
+
 @pytest.mark.parametrize("container_path", [
     "spec.template.spec.initContainers.1.securityContext",
     "spec.template.spec.containers.4.securityContext",
