@@ -1,10 +1,12 @@
 import pytest
+from pathlib import Path
 
 from config import RELEASE_NAME
 from helpers.helm_helper import get_yaml_from_helm_template
 from helpers.utils import get_filename_as_cluster_name
 
 CLUSTER_NAME = get_filename_as_cluster_name(__file__)
+HARDENED_VALUES = Path(__file__).parents[2] / "charts" / "komodor-agent" / "examples" / "hardened-values.yaml"
 
 
 @pytest.mark.parametrize("component_name, deployment_name_suffix", [
@@ -407,6 +409,32 @@ def test_otel_init_container_security_context(container_path):
         f"Expected otelInit.securityContext.allowPrivilegeEscalation=false, got {security_context}"
     assert "ALL" in security_context.get("capabilities", {}).get("drop", []), \
         f"Expected otelInit.securityContext.capabilities.drop=[ALL], got {security_context}"
+
+
+@pytest.mark.parametrize("resource_kind, resource_name_suffix, container_path", [
+    ("Deployment", "-metrics", "spec.template.spec.initContainers.0.securityContext"),
+    ("Deployment", "-metrics", "spec.template.spec.containers.0.securityContext"),
+    ("Deployment", "-metrics", "spec.template.spec.containers.1.securityContext"),
+    ("DaemonSet", "-daemon", "spec.template.spec.initContainers.0.securityContext"),
+    ("DaemonSet", "-daemon", "spec.template.spec.initContainers.1.securityContext"),
+    ("DaemonSet", "-daemon", "spec.template.spec.containers.0.securityContext"),
+    ("DaemonSet", "-daemon", "spec.template.spec.containers.1.securityContext"),
+    ("DaemonSet", "-daemon", "spec.template.spec.containers.2.securityContext"),
+    ("DaemonSet", "-daemon", "spec.template.spec.containers.3.securityContext"),
+    ("DaemonSet", "-daemon", "spec.template.spec.containers.4.securityContext"),
+])
+def test_hardened_values_linux_container_security_contexts(resource_kind, resource_name_suffix, container_path):
+    resource_name = f"{RELEASE_NAME}-komodor-agent{resource_name_suffix}"
+    security_context = get_yaml_from_helm_template("test=test", resource_kind, resource_name,
+                                                   container_path, values_file=HARDENED_VALUES.read_text())
+
+    assert security_context is not None, f"Expected securityContext at {container_path}"
+    assert security_context.get("runAsUser") != 0, \
+        f"Expected non-root runAsUser at {container_path}, got {security_context}"
+    assert security_context.get("runAsGroup") != 0, \
+        f"Expected non-root runAsGroup at {container_path}, got {security_context}"
+    assert security_context.get("readOnlyRootFilesystem") is True, \
+        f"Expected readOnlyRootFilesystem=true at {container_path}, got {security_context}"
 
 
 @pytest.mark.parametrize("resource_kind, resource_name_suffix, capability_to_enable, values_override, container_path", [

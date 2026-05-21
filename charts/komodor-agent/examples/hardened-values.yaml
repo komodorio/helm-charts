@@ -121,6 +121,7 @@ components:
       # Container security context (komodorMetrics / metrics container)
       securityContext:
         allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
         runAsNonRoot: true
         runAsUser: 1000
         runAsGroup: 1000
@@ -132,6 +133,7 @@ components:
       # Container security context (komodorMetrics / telegraf-init and telegraf-init-sidecar containers)
       securityContext:
         allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
         runAsNonRoot: true
         runAsUser: 1000
         runAsGroup: 1000
@@ -156,7 +158,10 @@ components:
       # Container security context (komodorDaemon / metrics, init-daemon, and telegraf-init-sidecar containers)
       securityContext:
         allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
         runAsNonRoot: true
+        runAsUser: 1001
+        runAsGroup: 1001
         capabilities:
           drop:
             - ALL
@@ -166,7 +171,10 @@ components:
       # Container security context (komodorDaemon / node-enricher container)
       securityContext:
         allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
         runAsNonRoot: true
+        runAsUser: 1001
+        runAsGroup: 1001
         capabilities:
           drop:
             - ALL
@@ -174,18 +182,32 @@ components:
 
     opentelemetry:
       # Container security context (komodorDaemon / otel-collector container)
-      # Must run as root to read host log files — exempt from runAsNonRoot
       securityContext:
-        runAsUser: 0
-        runAsGroup: 0
-        runAsNonRoot: false
+        runAsUser: 1001
+        runAsGroup: 1001
+        runAsNonRoot: true
         allowPrivilegeEscalation: false
         readOnlyRootFilesystem: true
         capabilities:
           drop:
             - ALL
-          add:
-            - DAC_OVERRIDE
+          add: []
+
+      otelInit:
+        # Removal of volumes and their mounts as they're not compatible with non-root containers.
+        volumes:
+          varlogpods: {}
+          varlibdockercontainers: {}
+        # Container security context (komodorDaemon / otel-init and otel-init-sidecar containers)
+        securityContext:
+          runAsUser: 1001
+          runAsGroup: 1001
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+              - ALL
 
   # ──────────────────────────────────────────────────────────────────────────────
   # gpuAccess (DaemonSet) — privileged by necessity; disable unless required
