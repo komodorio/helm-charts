@@ -341,6 +341,44 @@ def test_security_context_rendered_for_every_container_when_global_is_set(resour
         f"Expected container securityContext at {container_path} in {resource_kind} {resource_name}"
 
 
+@pytest.mark.parametrize("resource_kind, resource_name_suffix, container_path, expected_defaults", [
+    ("Deployment", "", "spec.template.spec.containers.0.securityContext", {
+        "allowPrivilegeEscalation": False,
+        "readOnlyRootFilesystem": True,
+        "runAsUser": 1000,
+        "runAsGroup": 1000,
+    }),
+    ("Deployment", "", "spec.template.spec.containers.1.securityContext", {
+        "allowPrivilegeEscalation": False,
+        "readOnlyRootFilesystem": True,
+        "runAsUser": 1000,
+        "runAsGroup": 1000,
+    }),
+    ("DaemonSet", "-gpu-host-access", "spec.template.spec.containers.0.securityContext", {
+        "privileged": True,
+    }),
+])
+def test_global_container_security_context_preserves_chart_defaults(resource_kind, resource_name_suffix, container_path,
+                                                                    expected_defaults):
+    values_file = """
+    global:
+      securityContext:
+        runAsNonRoot: true
+    components:
+      gpuAccess:
+        enabled: true
+    """
+    resource_name = f"{RELEASE_NAME}-komodor-agent{resource_name_suffix}"
+    security_context = get_yaml_from_helm_template("test=test", resource_kind, resource_name,
+                                                   container_path, values_file=values_file)
+
+    assert security_context.get("runAsNonRoot") is True, \
+        f"Expected global securityContext.runAsNonRoot=true in {security_context}"
+    for key, value in expected_defaults.items():
+        assert security_context.get(key) == value, \
+            f"Expected chart default {key}={value} to be preserved in {security_context}"
+
+
 @pytest.mark.parametrize("resource_kind, resource_name_suffix, capability_to_enable, values_override, container_path", [
     # komodorAgent — watcher (container 0) and supervisor (container 1)
     ("Deployment", "", None,
