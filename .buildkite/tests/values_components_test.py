@@ -379,6 +379,36 @@ def test_global_container_security_context_preserves_chart_defaults(resource_kin
             f"Expected chart default {key}={value} to be preserved in {security_context}"
 
 
+@pytest.mark.parametrize("container_path", [
+    "spec.template.spec.initContainers.1.securityContext",
+    "spec.template.spec.containers.4.securityContext",
+])
+def test_otel_init_container_security_context(container_path):
+    values_file = """
+    components:
+      komodorDaemon:
+        opentelemetry:
+          otelInit:
+            securityContext:
+              allowPrivilegeEscalation: false
+              runAsUser: 1500
+              capabilities:
+                drop:
+                  - ALL
+    """
+    resource_name = f"{RELEASE_NAME}-komodor-agent-daemon"
+    security_context = get_yaml_from_helm_template("test=test", "DaemonSet", resource_name,
+                                                   container_path, values_file=values_file)
+
+    assert security_context is not None, f"Expected securityContext at {container_path}"
+    assert security_context.get("runAsUser") == 1500, \
+        f"Expected otelInit.securityContext.runAsUser=1500, got {security_context}"
+    assert security_context.get("allowPrivilegeEscalation") is False, \
+        f"Expected otelInit.securityContext.allowPrivilegeEscalation=false, got {security_context}"
+    assert "ALL" in security_context.get("capabilities", {}).get("drop", []), \
+        f"Expected otelInit.securityContext.capabilities.drop=[ALL], got {security_context}"
+
+
 @pytest.mark.parametrize("resource_kind, resource_name_suffix, capability_to_enable, values_override, container_path", [
     # komodorAgent — watcher (container 0) and supervisor (container 1)
     ("Deployment", "", None,
@@ -475,6 +505,36 @@ def test_global_container_security_context_preserves_chart_defaults(resource_kin
                  - ALL
      """,
      "spec.template.spec.containers.0.securityContext"),
+    # komodorDaemon OpenTelemetry initContainer
+    ("DaemonSet", "-daemon", None,
+     """
+     components:
+       komodorDaemon:
+         opentelemetry:
+           otelInit:
+             securityContext:
+               allowPrivilegeEscalation: false
+               runAsUser: 1500
+               capabilities:
+                 drop:
+                   - ALL
+     """,
+     "spec.template.spec.initContainers.1.securityContext"),
+    # komodorDaemon OpenTelemetry init sidecar
+    ("DaemonSet", "-daemon", None,
+     """
+     components:
+       komodorDaemon:
+         opentelemetry:
+           otelInit:
+             securityContext:
+               allowPrivilegeEscalation: false
+               runAsUser: 1500
+               capabilities:
+                 drop:
+                   - ALL
+     """,
+     "spec.template.spec.containers.4.securityContext"),
 ])
 def test_override_container_security_context(resource_kind, resource_name_suffix, capability_to_enable,
                                              values_override, container_path):

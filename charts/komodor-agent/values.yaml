@@ -706,7 +706,16 @@ components:
           pollingIntervalSeconds: 300
           # components.komodorDaemon.opentelemetry.otelInit.sidecar.autoReloadConfig -- Automatically send SIGHUP to the OTel Collector to reload configuration on change (requires shareProcessNamespace)
           autoReloadConfig: true
-
+        # components.komodorDaemon.opentelemetry.otelInit.securityContext -- Set container-level securityContext for the OpenTelemetry init and sidecar containers. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution)
+        securityContext:
+          runAsUser: 0
+          runAsGroup: 0
+          runAsNonRoot: false
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+              - ALL
       # components.komodorDaemon.opentelemetry.volumes -- Configure volumes for OpenTelemetry collector
       volumes:
         # components.komodorDaemon.opentelemetry.volumes.varlogpods -- Configure varlogpods volume
