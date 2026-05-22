@@ -6,7 +6,7 @@ DOCKERFILE="${REPO_ROOT}/scripts/nginx/Dockerfile"
 VALUES="${REPO_ROOT}/charts/komodor-agent/values.yaml"
 
 dockerfile_version="$(awk -F: '/^FROM nginx:/ {print $2; exit}' "${DOCKERFILE}")"
-values_version="$(yq -r '.components.komodorKubectlProxy.image.tag' "${VALUES}")"
+values_version="$(yq '.components.komodorKubectlProxy.image.tag' "${VALUES}" | tr -d '"')"
 
 if [ -z "${dockerfile_version}" ]; then
     echo "ERROR: could not extract nginx version from ${DOCKERFILE}" >&2
