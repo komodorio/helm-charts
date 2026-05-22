@@ -7,7 +7,7 @@ if ! docker buildx version &> /dev/null; then
 fi
 
 # Authenticate with AWS ECR & Docker Hub
-komo ci docker-login
+komo ci docker-login --hub-login true --ecr-login true
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
