@@ -1,4 +1,4 @@
-FROM python:3.9-slim as builder
+FROM python:3.14-slim as builder
 
 # Install curl, wget, bash, and unzip
 RUN apt-get update && \
@@ -34,7 +34,7 @@ RUN wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform
 RUN kubectl version --client && helm version && gcloud version && terraform version
 
 # New stage for the final image
-FROM python:3.9-slim
+FROM python:3.14-slim
 
 RUN apt update && \
     apt install -y git && \
