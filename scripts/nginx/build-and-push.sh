@@ -16,7 +16,7 @@ DOCKERFILE="${SCRIPT_DIR}/Dockerfile"
 # Extract nginx version from the Dockerfile (single source of truth).
 # Reject multistage (>1 `FROM nginx:` lines) and unexpected suffixes
 # (` AS build`, `@sha256:...`, etc.).
-matches="$(grep -cE '^FROM[[:space:]]+nginx:' "${DOCKERFILE}")"
+matches="$(grep -cE '^FROM[[:space:]]+nginx:' "${DOCKERFILE}" || true)"
 if [ "${matches}" != "1" ]; then
     echo "ERROR: expected exactly one 'FROM nginx:...' line in ${DOCKERFILE}, found ${matches}" >&2
     exit 1
@@ -29,16 +29,16 @@ fi
 
 # Create/use buildx builder for multi-platform builds
 BUILDER_NAME="nginx-multiarch"
-if ! docker buildx inspect ${BUILDER_NAME} &> /dev/null; then
-    docker buildx create --name ${BUILDER_NAME} --use
+if ! docker buildx inspect "${BUILDER_NAME}" &> /dev/null; then
+    docker buildx create --name "${BUILDER_NAME}" --use
 else
-    docker buildx use ${BUILDER_NAME}
+    docker buildx use "${BUILDER_NAME}"
 fi
 
 # Build and push multi-arch image to both registries
 docker buildx build \
     --platform linux/amd64,linux/arm64 \
-    --tag public.ecr.aws/komodor-public/nginx:${NGINX_VERSION} \
-    --tag komodorio/nginx:${NGINX_VERSION} \
+    --tag "public.ecr.aws/komodor-public/nginx:${NGINX_VERSION}" \
+    --tag "komodorio/nginx:${NGINX_VERSION}" \
     --push \
     "${SCRIPT_DIR}"

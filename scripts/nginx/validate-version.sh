@@ -13,7 +13,7 @@ VALUES="${REPO_ROOT}/charts/komodor-agent/values.yaml"
 # Extract nginx version from the Dockerfile.
 # Reject multistage (>1 `FROM nginx:` lines) and unexpected suffixes
 # (` AS build`, `@sha256:...`, etc.).
-matches="$(grep -cE '^FROM[[:space:]]+nginx:' "${DOCKERFILE}")"
+matches="$(grep -cE '^FROM[[:space:]]+nginx:' "${DOCKERFILE}" || true)"
 if [ "${matches}" != "1" ]; then
     echo "ERROR: expected exactly one 'FROM nginx:...' line in ${DOCKERFILE}, found ${matches}" >&2
     exit 1
