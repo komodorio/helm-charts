@@ -45,7 +45,7 @@ steps:
     commands:
       - |
         set -euo pipefail
-        BASE_BRANCH="${BUILDKITE_PULL_REQUEST_BASE_BRANCH:-master}"
+        BASE_BRANCH="$${BUILDKITE_PULL_REQUEST_BASE_BRANCH:-master}"
         git fetch -q origin "$$BASE_BRANCH"
         if git diff --name-only "origin/$$BASE_BRANCH...HEAD" | grep -qx 'scripts/nginx/Dockerfile'; then
           echo "scripts/nginx/Dockerfile changed — building & pushing"

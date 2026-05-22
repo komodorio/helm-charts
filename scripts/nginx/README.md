@@ -7,28 +7,25 @@ The image is multi-arch (`linux/amd64`, `linux/arm64`) and published to:
 - `public.ecr.aws/komodor-public/nginx`
 - `komodorio/nginx`
 
-## Prerequisites
+## Updating the nginx version
+
+CI publishes the image automatically. To bump the version:
+
+1. Edit `scripts/nginx/Dockerfile` — the `FROM nginx:` line. This is the single source of truth.
+2. Edit `charts/komodor-agent/values.yaml` — `components.komodorKubectlProxy.image.tag` must match the Dockerfile tag.
+3. Open a PR. CI runs `scripts/nginx/validate-version.sh` on every build and fails if the two files disagree. When the PR diff touches the Dockerfile, CI also runs `scripts/nginx/build-and-push.sh` and publishes the new image to both registries.
+
+Prefer `-alpine*-slim` tags from the [official nginx repo on Docker Hub](https://hub.docker.com/_/nginx/tags).
+
+## Local build (rarely needed — CI publishes for you)
+
+Prerequisites:
 
 - Docker with `buildx` enabled
-- Authenticated to AWS ECR and Docker Hub (e.g. `komo ci docker-login`)
-
-## Build & push
+- Authenticated to AWS ECR and Docker Hub (`komo ci docker-login --hub-login true --ecr-login true`)
 
 ```bash
 bash scripts/nginx/build-and-push.sh
 ```
 
-The script creates/uses a buildx builder named `nginx-multiarch`, then builds and pushes both tags in one step.
-
-## Updating the nginx version
-
-Update the version string in **two** places and keep them in sync:
-
-1. `scripts/nginx/Dockerfile` — the `FROM nginx:` line (source of truth at build time; `build-and-push.sh` reads from here)
-2. `charts/komodor-agent/values.yaml` — `components.komodorKubectlProxy.image.tag` (what the chart pulls)
-
-Then run the build script to publish the new image, and open a PR with the two file changes.
-
-Notes:
-
-- Prefer `-alpine*-slim` tags from the [official nginx repo on Docker Hub](https://hub.docker.com/_/nginx/tags).
+The script reads the version from `Dockerfile`, creates/uses a buildx builder named `nginx-multiarch`, then builds and pushes both tags.
