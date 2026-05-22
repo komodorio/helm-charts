@@ -47,7 +47,10 @@ steps:
         set -euo pipefail
         BASE_BRANCH="$${BUILDKITE_PULL_REQUEST_BASE_BRANCH:-master}"
         git fetch -q origin "$$BASE_BRANCH"
-        if git diff --name-only "origin/$$BASE_BRANCH...HEAD" | grep -qx 'scripts/nginx/Dockerfile'; then
+        # Capture diff outside the `if` so `set -e` reaches a `git diff` failure
+        # (inside an `if` condition, set -e is disabled and the failure would be masked).
+        CHANGED="$$(git diff --name-only "origin/$$BASE_BRANCH...HEAD")"
+        if echo "$$CHANGED" | grep -qx 'scripts/nginx/Dockerfile'; then
           echo "scripts/nginx/Dockerfile changed — building & pushing"
           ./scripts/nginx/build-and-push.sh
         else

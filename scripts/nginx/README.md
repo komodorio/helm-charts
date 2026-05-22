@@ -22,10 +22,10 @@ Prefer `-alpine*-slim` tags from the [official nginx repo on Docker Hub](https:/
 Prerequisites:
 
 - Docker with `buildx` enabled
-- Authenticated to AWS ECR and Docker Hub (`komo ci docker-login --hub-login true --ecr-login true`)
+- The `komo` CLI (used by the script to authenticate)
 
 ```bash
 bash scripts/nginx/build-and-push.sh
 ```
 
-The script reads the version from `Dockerfile`, creates/uses a buildx builder named `nginx-multiarch`, then builds and pushes both tags.
+The script reads the version from `Dockerfile`, runs `komo ci docker-login --hub-login true --ecr-login true` to authenticate against AWS ECR and Docker Hub, creates/uses a buildx builder named `nginx-multiarch`, then builds and pushes both tags.
