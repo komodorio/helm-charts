@@ -5,12 +5,15 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 DOCKERFILE="${REPO_ROOT}/scripts/nginx/Dockerfile"
 VALUES="${REPO_ROOT}/charts/komodor-agent/values.yaml"
 
+echo "yq: $(yq --version 2>&1 | head -1)"
+
 dockerfile_version="$(awk -F: '/^FROM nginx:/ {print $2; exit}' "${DOCKERFILE}")"
-# mikefarah yq v3 wants `yq r file '.path'`; v4 (and python-yq) want `yq '.path' file`.
-if yq --version 2>&1 | grep -qE 'version[[:space:]]+v?3\.'; then
-    values_version="$(yq r "${VALUES}" '.components.komodorKubectlProxy.image.tag')"
-else
-    values_version="$(yq '.components.komodorKubectlProxy.image.tag' "${VALUES}" | tr -d '"')"
+
+# Try mikefarah-yq v4 / python-yq syntax first; fall back to mikefarah-yq v3
+# (which wants `yq r file '.path'` and errors on the v4 form).
+values_version="$(yq '.components.komodorKubectlProxy.image.tag' "${VALUES}" 2>/dev/null | tr -d '"')" || true
+if [ -z "${values_version}" ] || [ "${values_version}" = "null" ]; then
+    values_version="$(yq r "${VALUES}" '.components.komodorKubectlProxy.image.tag' 2>/dev/null)" || true
 fi
 
 if [ -z "${dockerfile_version}" ]; then
