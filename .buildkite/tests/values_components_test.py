@@ -453,19 +453,21 @@ def test_otel_init_container_security_context(container_path):
 ])
 def test_default_otel_collector_security_context_supports_host_log_collection(field_path, expected_value):
     resource_name = f"{RELEASE_NAME}-komodor-agent-daemon"
-    security_context = get_yaml_from_helm_template("test=test", "DaemonSet", resource_name,
-                                                   "spec.template.spec.containers.3.securityContext")
 
-    rendered_value = security_context
+    containers = get_yaml_from_helm_template("test=test", "DaemonSet", resource_name,
+                                                   "spec.template.spec.containers")
+    otel_collector = next(container for container in containers if container["name"] == "otel-collector")
+
+    rendered_value = otel_collector.get("securityContext", {})
     for key in field_path:
-        rendered_value = rendered_value[key]
+      rendered_value = rendered_value.get(key)
 
     if isinstance(rendered_value, list):
         assert expected_value in rendered_value, \
-            f"Expected {expected_value} in {field_path}, got {security_context}"
+            f"Expected {expected_value} in {field_path}, got {rendered_value}"
     else:
         assert rendered_value == expected_value, \
-            f"Expected {field_path}={expected_value}, got {security_context}"
+            f"Expected {field_path}={expected_value}, got {rendered_value}"
 
 
 @pytest.mark.parametrize("resource_kind, resource_name_suffix, container_path", [
