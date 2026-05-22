@@ -7,10 +7,16 @@ if ! docker buildx version &> /dev/null; then
 fi
 
 # Authenticate with AWS ECR & Docker Hub
-# komo ci docker-login
+komo ci docker-login
 
-NGINX_VERSION="1.29.8-alpine3.23-slim"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Extract nginx version from the Dockerfile (single source of truth).
+NGINX_VERSION="$(awk -F: '/^FROM nginx:/ {print $2; exit}' "${SCRIPT_DIR}/Dockerfile")"
+if [ -z "${NGINX_VERSION}" ]; then
+    echo "Failed to read nginx version from ${SCRIPT_DIR}/Dockerfile"
+    exit 1
+fi
 
 # Create/use buildx builder for multi-platform builds
 BUILDER_NAME="nginx-multiarch"
@@ -23,7 +29,6 @@ fi
 # Build and push multi-arch image to both registries
 docker buildx build \
     --platform linux/amd64,linux/arm64 \
-    --build-arg NGINX_VERSION=${NGINX_VERSION} \
     --tag public.ecr.aws/komodor-public/nginx:${NGINX_VERSION} \
     --tag komodorio/nginx:${NGINX_VERSION} \
     --push \
