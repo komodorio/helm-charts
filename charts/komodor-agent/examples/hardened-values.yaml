@@ -181,6 +181,12 @@ components:
           add: []
 
     opentelemetry:
+      # Disable host log collection in the hardened profile. The collector runs as non-root here,
+      # so mounting root-owned host log paths would fail at runtime under strict policies.
+      volumes:
+        varlogpods: null
+        varlibdockercontainers: null
+
       # Container security context (komodorDaemon / otel-collector container)
       securityContext:
         runAsUser: 1001
@@ -194,10 +200,6 @@ components:
           add: []
 
       otelInit:
-        # Removal of volumes and their mounts as they're not compatible with non-root containers.
-        volumes:
-          varlogpods: {}
-          varlibdockercontainers: {}
         # Container security context (komodorDaemon / otel-init and otel-init-sidecar containers)
         securityContext:
           runAsUser: 1001

@@ -471,6 +471,25 @@ def test_hardened_values_linux_container_security_contexts(resource_kind, resour
         f"Expected readOnlyRootFilesystem=true at {container_path}, got {security_context}"
 
 
+@pytest.mark.parametrize("volume_name, mount_path", [
+    ("opentelemetry-varlogpods", "/var/log/pods"),
+    ("opentelemetry-varlib-docker-containers", "/var/lib/docker/containers"),
+])
+def test_hardened_values_do_not_mount_otel_host_log_paths(volume_name, mount_path):
+    resource_name = f"{RELEASE_NAME}-komodor-agent-daemon"
+    values_file = HARDENED_VALUES.read_text()
+    pod_volumes = get_yaml_from_helm_template("test=test", "DaemonSet", resource_name,
+                                              "spec.template.spec.volumes", values_file=values_file)
+    containers = get_yaml_from_helm_template("test=test", "DaemonSet", resource_name,
+                                             "spec.template.spec.containers", values_file=values_file)
+    otel_collector = next(container for container in containers if container["name"] == "otel-collector")
+
+    assert volume_name not in [volume["name"] for volume in pod_volumes], \
+        f"Expected hardened values not to render hostPath volume {volume_name}"
+    assert mount_path not in [mount["mountPath"] for mount in otel_collector.get("volumeMounts", [])], \
+        f"Expected hardened values not to mount host path {mount_path} into otel-collector"
+
+
 @pytest.mark.parametrize("resource_kind, resource_name_suffix, capability_to_enable, values_override, container_path", [
     # komodorAgent — watcher (container 0) and supervisor (container 1)
     ("Deployment", "", None,
