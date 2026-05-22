@@ -6,7 +6,12 @@ DOCKERFILE="${REPO_ROOT}/scripts/nginx/Dockerfile"
 VALUES="${REPO_ROOT}/charts/komodor-agent/values.yaml"
 
 dockerfile_version="$(awk -F: '/^FROM nginx:/ {print $2; exit}' "${DOCKERFILE}")"
-values_version="$(yq '.components.komodorKubectlProxy.image.tag' "${VALUES}" | tr -d '"')"
+# mikefarah yq v3 wants `yq r file '.path'`; v4 (and python-yq) want `yq '.path' file`.
+if yq --version 2>&1 | grep -qE 'version[[:space:]]+v?3\.'; then
+    values_version="$(yq r "${VALUES}" '.components.komodorKubectlProxy.image.tag')"
+else
+    values_version="$(yq '.components.komodorKubectlProxy.image.tag' "${VALUES}" | tr -d '"')"
+fi
 
 if [ -z "${dockerfile_version}" ]; then
     echo "ERROR: could not extract nginx version from ${DOCKERFILE}" >&2
