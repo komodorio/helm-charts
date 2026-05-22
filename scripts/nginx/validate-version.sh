@@ -5,16 +5,11 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 DOCKERFILE="${REPO_ROOT}/scripts/nginx/Dockerfile"
 VALUES="${REPO_ROOT}/charts/komodor-agent/values.yaml"
 
-echo "yq: $(yq --version 2>&1 | head -1)"
-
 dockerfile_version="$(awk -F: '/^FROM nginx:/ {print $2; exit}' "${DOCKERFILE}")"
 
-# Try mikefarah-yq v4 / python-yq syntax first; fall back to mikefarah-yq v3
-# (which wants `yq r file '.path'` and errors on the v4 form).
-values_version="$(yq '.components.komodorKubectlProxy.image.tag' "${VALUES}" 2>/dev/null | tr -d '"')" || true
-if [ -z "${values_version}" ] || [ "${values_version}" = "null" ]; then
-    values_version="$(yq r "${VALUES}" '.components.komodorKubectlProxy.image.tag' 2>/dev/null)" || true
-fi
+# `yq eval` is supported on every mikefarah-yq v4 release, including the
+# v4.2.0 on the CI builder image (which doesn't accept the implicit form).
+values_version="$(yq eval '.components.komodorKubectlProxy.image.tag' "${VALUES}")"
 
 if [ -z "${dockerfile_version}" ]; then
     echo "ERROR: could not extract nginx version from ${DOCKERFILE}" >&2
