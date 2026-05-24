@@ -56,3 +56,105 @@ spec:
         {{- include "agent.deploy.volumes" .                | trim | nindent 8 }}
         {{- include "custom-ca.volume" .                    | trim | nindent 8 }}
         {{- include "custom-ca.trusted-volume" .            | trim | nindent 8 }}
+---
+{{- if .Values.capabilities.tasks.sandbox.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "komodorAgent.fullname" . }}-sandbox
+  {{- with .Values.components.sandbox.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "sandbox.labels" . | nindent 4 }}
+    {{- include "sandbox.user.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.components.sandbox.service.type }}
+  selector:
+    {{- include "sandbox.selectorLabels" . | nindent 4 }}
+  ports:
+    - name: http
+      port: {{ .Values.components.sandbox.service.port }}
+      targetPort: http
+      protocol: TCP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "komodorAgent.fullname" . }}-sandbox
+  {{- with .Values.components.sandbox.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  labels:
+    {{- include "sandbox.labels" . | nindent 4 }}
+    {{- include "sandbox.user.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.components.sandbox.replicas }}
+  selector:
+    matchLabels:
+      {{- include "sandbox.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "sandbox.selectorLabels" . | nindent 8 }}
+        {{- include "sandbox.user.labels" . | nindent 8 }}
+      {{- with .Values.components.sandbox.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      serviceAccountName: {{ include "komodorAgent.serviceAccountName" . }}
+      {{- with .Values.components.sandbox.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.components.sandbox.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      nodeSelector:
+        "kubernetes.io/os": "linux"
+        {{- if not (empty (((.Values.components).sandbox).nodeSelector)) }}
+        {{- toYaml .Values.components.sandbox.nodeSelector | nindent 8 }}
+        {{- end }}
+      {{- with .Values.components.sandbox.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: komodor-agent-sandbox
+          image: {{ .Values.components.sandbox.image }}
+          imagePullPolicy: {{ .Values.components.sandbox.pullPolicy }}
+          {{- with .Values.components.sandbox.command }}
+          command:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.components.sandbox.args }}
+          args:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.components.sandbox.service.targetPort }}
+              protocol: TCP
+          {{- if or .Values.components.sandbox.env .Values.components.sandbox.extraEnvVars }}
+          env:
+            {{- range $name, $value := .Values.components.sandbox.env }}
+            - name: {{ $name }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- with .Values.components.sandbox.extraEnvVars }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- end }}
+          {{- with .Values.components.sandbox.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.components.sandbox.containerSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+{{- end }}
