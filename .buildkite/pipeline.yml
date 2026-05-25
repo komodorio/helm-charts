@@ -31,6 +31,36 @@ steps:
     if: build.message !~ /feat\(OSS.+\):/i
     retry: *retry
 
+  - label: ":eyeglasses: Validate nginx version sync (Dockerfile ↔ values.yaml)"
+    key: validate-nginx-version
+    command: ./scripts/nginx/validate-version.sh
+    agents:
+      builder: "builder-dind-agent"
+    if: build.message !~ /feat\(OSS.+\):/i
+    retry: *retry
+
+  - label: ":docker: Build & push nginx image (on Dockerfile change)"
+    key: build-push-nginx
+    depends_on: validate-nginx-version
+    commands:
+      - |
+        set -euo pipefail
+        BASE_BRANCH="$${BUILDKITE_PULL_REQUEST_BASE_BRANCH:-master}"
+        git fetch -q origin "$$BASE_BRANCH"
+        # Capture diff outside the `if` so `set -e` reaches a `git diff` failure
+        # (inside an `if` condition, set -e is disabled and the failure would be masked).
+        CHANGED="$$(git diff --name-only "origin/$$BASE_BRANCH...HEAD")"
+        if echo "$$CHANGED" | grep -qx 'scripts/nginx/Dockerfile'; then
+          echo "scripts/nginx/Dockerfile changed — building & pushing"
+          ./scripts/nginx/build-and-push.sh
+        else
+          echo "scripts/nginx/Dockerfile unchanged — skipping build & push"
+        fi
+    agents:
+      builder: "builder-dind-agent"
+    if: build.message !~ /feat\(OSS.+\):/i
+    retry: *retry
+
   - label: ":test_tube: Validations tests"
     commands:
       - cd .buildkite/tests

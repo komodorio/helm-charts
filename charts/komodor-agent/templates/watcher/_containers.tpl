@@ -131,5 +131,6 @@
     {{- include "custom-ca.volumeMounts" .                 | nindent 4 }}
   resources:
       {{ toYaml .Values.customCa.resources | trim | nindent 6 }}
+  {{- include "komodorAgent.container.securityContext" (dict "root" $ "securityContext" .Values.customCa.securityContext) | nindent 2 }}
 {{- end }}
 {{- end -}}
