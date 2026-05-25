@@ -1,40 +1,31 @@
 {{- define "metrics.komodorMetrics.securityContext" }}
-{{- if gt (len .Values.components.komodorMetrics.podSecurityContext) 0 }}
-securityContext:
-  {{ toYaml .Values.components.komodorMetrics.podSecurityContext | nindent 2 }}
-{{- else if gt (len .Values.components.komodorMetrics.securityContext) 0 }}
-securityContext:
-  {{ toYaml .Values.components.komodorMetrics.securityContext | nindent 2 }}
-{{- end }}
+{{- include "komodorAgent.podSecurityContext" (dict "root" $ "podSecurityContext" .Values.components.komodorMetrics.podSecurityContext "deprecatedSecurityContext" .Values.components.komodorMetrics.securityContext) }}
 {{- end }}
 
 {{- define "metrics.komodorMetrics.container.securityContext" }}
-{{- with .Values.components.komodorMetrics.metrics.securityContext }}
-securityContext:
-  {{ toYaml . | nindent 2 }}
-{{- end }}
+{{- include "komodorAgent.container.securityContext" (dict "root" $ "securityContext" .Values.components.komodorMetrics.metrics.securityContext) }}
 {{- end }}
 
 {{- define "metrics.komodorMetrics.metricsInit.securityContext" }}
-{{- with .Values.components.komodorMetrics.metricsInit.securityContext }}
-securityContext:
-  {{ toYaml . | nindent 2 }}
-{{- end }}
+{{- include "komodorAgent.container.securityContext" (dict "root" $ "securityContext" .Values.components.komodorMetrics.metricsInit.securityContext) }}
 {{- end }}
 
 {{- define "metrics.komodorDaemon.securityContext" }}
-{{- if gt (len .Values.components.komodorDaemon.podSecurityContext) 0 }}
-securityContext:
-  {{ toYaml .Values.components.komodorDaemon.podSecurityContext | nindent 2 }}
-{{- else if gt (len .Values.components.komodorDaemon.securityContext) 0 }}
-securityContext:
-  {{ toYaml .Values.components.komodorDaemon.securityContext | nindent 2 }}
-{{- end }}
+{{- include "komodorAgent.podSecurityContext" (dict "root" $ "podSecurityContext" .Values.components.komodorDaemon.podSecurityContext "deprecatedSecurityContext" .Values.components.komodorDaemon.securityContext) }}
 {{- end }}
 
 {{- define "metrics.daemonset.container.securityContext" }}
-{{- with .Values.components.komodorDaemon.metrics.securityContext }}
-securityContext:
-  {{ toYaml . | nindent 2 }}
+{{- include "komodorAgent.container.securityContext" (dict "root" $ "securityContext" .Values.components.komodorDaemon.metrics.securityContext) }}
 {{- end }}
+
+{{- define "metrics.daemonsetWindows.container.securityContext" }}
+{{- include "komodorAgent.container.securityContext" (dict "root" $ "securityContext" .Values.components.komodorDaemonWindows.metrics.securityContext) }}
+{{- end }}
+
+{{- define "metrics.daemonsetWindows.metricsInit.securityContext" }}
+{{- include "komodorAgent.container.securityContext" (dict "root" $ "securityContext" .Values.components.komodorDaemonWindows.metricsInit.securityContext) }}
+{{- end }}
+
+{{- define "metrics.komodorDaemonWindows.securityContext" }}
+{{- include "komodorAgent.podSecurityContext" (dict "root" $ "podSecurityContext" .Values.components.komodorDaemonWindows.podSecurityContext) }}
 {{- end }}

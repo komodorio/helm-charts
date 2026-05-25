@@ -32,12 +32,23 @@
   - name: opentelemetry-config
     mountPath: /etc/otel
   {{- end }}
+  {{- $volumes := .Values.components.komodorDaemon.opentelemetry.volumes | default dict }}
+  {{- $varlogpods := $volumes.varlogpods | default dict }}
+  {{- $varlibdockercontainers := $volumes.varlibdockercontainers | default dict }}
+  {{- with $varlogpods }}
+  {{- if and .hostPath .mountPath }}
   - name: opentelemetry-varlogpods
-    mountPath: {{ .Values.components.komodorDaemon.opentelemetry.volumes.varlogpods.mountPath }}
+    mountPath: {{ .mountPath }}
     readOnly: true
+  {{- end }}
+  {{- end }}
+  {{- with $varlibdockercontainers }}
+  {{- if and .hostPath .mountPath }}
   - name: opentelemetry-varlib-docker-containers
-    mountPath: {{ .Values.components.komodorDaemon.opentelemetry.volumes.varlibdockercontainers.mountPath }}
+    mountPath: {{ .mountPath }}
     readOnly: true
+  {{- end }}
+  {{- end }}
   {{- include "custom-ca.trusted-volumeMounts" . | nindent 2 }}
   livenessProbe:
     httpGet:
@@ -84,7 +95,7 @@
   imagePullPolicy: {{ .Values.pullPolicy }}
   resources:
     {{ toYaml .Values.components.komodorDaemon.opentelemetry.otelInit.resources | trim | nindent 4 }}
-  {{ include "opentelemetry.daemonset.container.securityContext" . | nindent 2 }}
+  {{ include "opentelemetry.daemonset.otelInit.securityContext" . | nindent 2 }}
   command: ["otel_init"]
   volumeMounts:
   - name: configuration
@@ -119,6 +130,7 @@
   imagePullPolicy: {{ .Values.pullPolicy }}
   resources:
     {{ toYaml .Values.components.komodorDaemon.opentelemetry.otelInit.resources | trim | nindent 4 }}
+  {{ include "opentelemetry.daemonset.otelInit.securityContext" . | nindent 2 }}
   command: ["otel_init"]
   volumeMounts:
   - name: configuration

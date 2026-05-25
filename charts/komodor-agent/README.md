@@ -152,6 +152,9 @@ Relevant values:
 | tags | dict | `{}` | Tags the agent in order to identify it based on `key:value` properties separated by semicolon (`;`) example: `--set tags.env=staging,tags.team=payments` --- Can also be set in the values under `tags` as a dictionary of key:value strings |
 | clusterName | string | `nil` | **(*required*)** Name to be displayed in the Komodor web application |
 | createRbac | bool | `true` | Creates the necessary RBAC resources for the agent - use with caution! |
+| global | object | See sub-values | Global defaults applied across the chart. |
+| global.podSecurityContext | object | `{}` | Set a pod-level securityContext applied to all agent pods unless a component-specific podSecurityContext is defined. Supports pod-only fields: fsGroup, runAsUser, runAsGroup, runAsNonRoot, supplementalGroups, sysctls, seccompProfile. (use with caution) |
+| global.securityContext | object | `{}` | Set a container-level securityContext applied to all containers unless a container-specific securityContext is defined. Supports container fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution) |
 | telegrafImageVersion | string | `"v2.0.53-alpine"` | Telegraf version to be used |
 | telegrafWindowsImageVersion | string | `"v2.0.53"` | Telegraf version to be used for windows |
 | admissionControllerVersion | string | `"0.1.54"` | Admission controller version to be used |
@@ -169,6 +172,7 @@ Relevant values:
 | customCa.enabled | bool | `false` | Enable custom CA certificate for the agent |
 | customCa.secretName | string | `nil` | Name of the secret containing the CA |
 | customCa.resources | dict | `{"limits":{"cpu":"10m","memory":"100Mi"},"requests":{"cpu":"1m","memory":"10Mi"}}` | Set custom resources to the custom CA container |
+| customCa.securityContext | object | `{}` | Set container-level securityContext for the custom CA init container. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution) |
 | imageRepo | string | `"public.ecr.aws/komodor-public"` | Override the komodor agent image repository. |
 | pullPolicy | string | `"IfNotPresent"` | Default Image pull policy for the komodor agent image acceptable values <ifNotPresent\Always\Never>. |
 | imagePullSecret | string | `nil` | Set the image pull secret for the komodor agent |
@@ -380,6 +384,7 @@ Relevant values:
 | components.komodorDaemon.opentelemetry.otelInit.sidecar.enabled | bool | `true` | Enable the otel init sidecar for continuous config updates |
 | components.komodorDaemon.opentelemetry.otelInit.sidecar.pollingIntervalSeconds | int | `300` | Polling interval in seconds for config updates |
 | components.komodorDaemon.opentelemetry.otelInit.sidecar.autoReloadConfig | bool | `true` | Automatically send SIGHUP to the OTel Collector to reload configuration on change (requires shareProcessNamespace) |
+| components.komodorDaemon.opentelemetry.otelInit.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":0,"runAsNonRoot":false,"runAsUser":0}` | Set container-level securityContext for the OpenTelemetry init and sidecar containers. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution) |
 | components.komodorDaemon.opentelemetry.volumes | object | `{"varlibdockercontainers":{"hostPath":{"path":"/var/lib/docker/containers","type":""},"mountPath":"/var/lib/docker/containers"},"varlogpods":{"hostPath":{"path":"/var/log/pods","type":""},"mountPath":"/var/log/pods"}}` | Configure volumes for OpenTelemetry collector |
 | components.komodorDaemon.opentelemetry.volumes.varlogpods | object | `{"hostPath":{"path":"/var/log/pods","type":""},"mountPath":"/var/log/pods"}` | Configure varlogpods volume |
 | components.komodorDaemon.opentelemetry.volumes.varlogpods.hostPath | object | `{"path":"/var/log/pods","type":""}` | Configure hostPath for varlogpods volume |
@@ -399,15 +404,18 @@ Relevant values:
 | components.komodorDaemonWindows.nodeSelector | object | `{}` | Set node selectors for the komodor agent daemon |
 | components.komodorDaemonWindows.tolerations | list | `[{"operator":"Exists"}]` | Add tolerations to the komodor agent daemon |
 | components.komodorDaemonWindows.podAnnotations | object | `{}` | # Add annotations to the komodor agent watcher pod |
+| components.komodorDaemonWindows.podSecurityContext | object | `{}` | Set custom pod-level securityContext for the komodor Windows daemon. Configure only fields supported by Windows pods. (use with caution) |
 | components.komodorDaemonWindows.updateStrategy | object | `{}` | Set the rolling update strategy for the komodor agent daemon deployment |
 | components.komodorDaemonWindows.metricsInit | object | See sub-values | Configure the komodor daemon metrics init container |
 | components.komodorDaemonWindows.metricsInit.image | object | `{ "name": "init-daemon-agent", "tag": .Chart.AppVersion }` | Override the komodor agent metrics init image name or tag. |
 | components.komodorDaemonWindows.metricsInit.resources | object | `{"limits":{"cpu":1,"memory":"100Mi"},"requests":{"cpu":0.1,"memory":"50Mi"}}` | Set custom resources to the komodor agent metrics init container |
 | components.komodorDaemonWindows.metricsInit.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
-| components.komodorDaemonWindows.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf-windows","tag":"v2.0.53"},"quiet":false,"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}},"sidecar":{"enabled":true}}` | Configure the komodor daemon metrics components |
+| components.komodorDaemonWindows.metricsInit.securityContext | object | `{}` | Set container-level securityContext for the Windows daemon metrics init and sidecar containers. Configure only fields supported by Windows containers. (use with caution) |
+| components.komodorDaemonWindows.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf-windows","tag":"v2.0.53"},"quiet":false,"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}},"securityContext":{},"sidecar":{"enabled":true}}` | Configure the komodor daemon metrics components |
 | components.komodorDaemonWindows.metrics.image | object | `{"name":"telegraf-windows","tag":"v2.0.53"}` | Override the komodor agent metrics image name or tag. |
 | components.komodorDaemonWindows.metrics.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
 | components.komodorDaemonWindows.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
+| components.komodorDaemonWindows.metrics.securityContext | object | `{}` | Set container-level securityContext for the Windows daemon metrics container. Configure only fields supported by Windows containers. (use with caution) |
 | components.komodorDaemonWindows.metrics.quiet | bool | `false` | Set the quiet mode for the komodor agent metrics |
 | components.komodorDaemonWindows.metrics.sidecar | object | `{"enabled":true}` | Configure the telegraf-init sidecar container |
 | components.komodorDaemonWindows.metrics.sidecar.enabled | bool | `true` | Enable the telegraf-init sidecar container |
