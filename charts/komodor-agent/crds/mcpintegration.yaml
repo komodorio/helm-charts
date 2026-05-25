@@ -1,0 +1,280 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: mcpintegrations.app.komodor.com
+spec:
+  group: app.komodor.com
+  scope: Namespaced
+  names:
+    plural: mcpintegrations
+    singular: mcpintegration
+    kind: MCPIntegration
+    shortNames:
+      - mcpi
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - name: Phase
+          type: string
+          jsonPath: .status.phase
+        - name: IntegrationID
+          type: string
+          jsonPath: .status.integrationId
+        - name: Tools
+          type: integer
+          jsonPath: .status.toolCount
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp
+      schema:
+        openAPIV3Schema:
+          type: object
+          required: [spec]
+          properties:
+            spec:
+              type: object
+              required: [name, mcp_server, connectivity]
+              x-kubernetes-validations:
+                - rule: "has(self.skill_id) || has(self.skill_ref)"
+                  message: "exactly one of skill_id or skill_ref is required"
+                - rule: "!(has(self.skill_id) && has(self.skill_ref))"
+                  message: "skill_id and skill_ref are mutually exclusive"
+              properties:
+                name:
+                  type: string
+                  description: |
+                    Display name. Renaming an existing CR creates a new integration upstream;
+                    the previous integration is NOT auto-deleted. Use the UI to remove orphaned rows.
+                skill_id:
+                  type: string
+                  format: uuid
+                  description: UUID of the Klaudia skill this integration belongs to.
+                skill_ref:
+                  type: string
+                  description: Name of a KlaudiaSkill CR in the same namespace.
+                clusters:
+                  type: array
+                  items:
+                    type: string
+                  default: ["*"]
+                mode:
+                  type: string
+                  enum: [active, shadow, inactive]
+                  default: active
+                include_tools:
+                  type: array
+                  items:
+                    type: string
+                  description: Only these tools are enabled (allowlist). Empty means all.
+                exclude_tools:
+                  type: array
+                  items:
+                    type: string
+                  description: These tools are disabled (denylist).
+                mcp_server:
+                  type: object
+                  required: [url]
+                  properties:
+                    url:
+                      type: string
+                      format: uri
+                    transport:
+                      type: string
+                      enum: [sse, streamable-http]
+                      default: streamable-http
+                    headers:
+                      type: object
+                      additionalProperties:
+                        type: string
+                connectivity:
+                  type: object
+                  required: [mode]
+                  properties:
+                    mode:
+                      type: string
+                      enum: [public, agent-tunnel]
+                    agent_tunnel:
+                      type: object
+                      properties:
+                        provider_cluster:
+                          type: string
+                  x-kubernetes-validations:
+                    - rule: "self.mode != 'agent-tunnel' || has(self.agent_tunnel)"
+                      message: "connectivity.agent_tunnel must be set when mode is agent-tunnel"
+                    - rule: "self.mode == 'agent-tunnel' || !has(self.agent_tunnel)"
+                      message: "connectivity.agent_tunnel must not be set unless mode is agent-tunnel"
+                auth:
+                  type: object
+                  required: [method]
+                  properties:
+                    method:
+                      type: string
+                      enum: [static_token, oauth2_client_credentials, token_exchange]
+                    static_token:
+                      type: object
+                      properties:
+                        value:
+                          type: string
+                        value_ref:
+                          type: object
+                          required: [name, key]
+                          properties:
+                            name:
+                              type: string
+                            key:
+                              type: string
+                        header_name:
+                          type: string
+                        format:
+                          type: string
+                      x-kubernetes-validations:
+                        - rule: "has(self.value) != has(self.value_ref)"
+                          message: "exactly one of value or value_ref must be set"
+                    oauth2_client_credentials:
+                      type: object
+                      required: [token_url, client_id]
+                      properties:
+                        token_url:
+                          type: string
+                          format: uri
+                        client_id:
+                          type: string
+                        client_secret:
+                          type: string
+                        client_secret_ref:
+                          type: object
+                          required: [name, key]
+                          properties:
+                            name:
+                              type: string
+                            key:
+                              type: string
+                        grant_type:
+                          type: string
+                        scope:
+                          type: string
+                        audience:
+                          type: string
+                      x-kubernetes-validations:
+                        - rule: "!has(self.client_secret) || !has(self.client_secret_ref)"
+                          message: "client_secret and client_secret_ref are mutually exclusive"
+                    token_exchange:
+                      type: object
+                      required: [token_url, client_id]
+                      properties:
+                        token_url:
+                          type: string
+                          format: uri
+                        client_id:
+                          type: string
+                        client_secret:
+                          type: string
+                        client_secret_ref:
+                          type: object
+                          required: [name, key]
+                          properties:
+                            name:
+                              type: string
+                            key:
+                              type: string
+                        grant_type:
+                          type: string
+                        subject_token:
+                          type: object
+                          properties:
+                            type:
+                              type: string
+                            value:
+                              type: string
+                            file_path:
+                              type: string
+                            value_ref:
+                              type: object
+                              required: [name, key]
+                              properties:
+                                name:
+                                  type: string
+                                key:
+                                  type: string
+                          x-kubernetes-validations:
+                            - rule: "(has(self.value) ? 1 : 0) + (has(self.file_path) ? 1 : 0) + (has(self.value_ref) ? 1 : 0) == 1"
+                              message: "exactly one of value, file_path, or value_ref must be set"
+                        actor_token:
+                          type: object
+                          properties:
+                            type:
+                              type: string
+                            value:
+                              type: string
+                            file_path:
+                              type: string
+                            value_ref:
+                              type: object
+                              required: [name, key]
+                              properties:
+                                name:
+                                  type: string
+                                key:
+                                  type: string
+                          x-kubernetes-validations:
+                            - rule: "(has(self.value) ? 1 : 0) + (has(self.file_path) ? 1 : 0) + (has(self.value_ref) ? 1 : 0) == 1"
+                              message: "exactly one of value, file_path, or value_ref must be set"
+                      x-kubernetes-validations:
+                        - rule: "!has(self.client_secret) || !has(self.client_secret_ref)"
+                          message: "client_secret and client_secret_ref are mutually exclusive"
+                    token_header:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        format:
+                          type: string
+                    response:
+                      type: object
+                      properties:
+                        token_field:
+                          type: string
+                        token_type_field:
+                          type: string
+                        expires_in_field:
+                          type: string
+                  x-kubernetes-validations:
+                    - rule: "self.method != 'static_token' || has(self.static_token)"
+                      message: "auth.static_token must be set when method is static_token"
+                    - rule: "self.method != 'oauth2_client_credentials' || has(self.oauth2_client_credentials)"
+                      message: "auth.oauth2_client_credentials must be set when method is oauth2_client_credentials"
+                    - rule: "self.method != 'token_exchange' || has(self.token_exchange)"
+                      message: "auth.token_exchange must be set when method is token_exchange"
+                secret_refs:
+                  type: array
+                  description: Generic escape hatch for injecting secrets into header maps.
+                  items:
+                    type: object
+                    required: [path, secret_ref]
+                    properties:
+                      path:
+                        type: string
+                        description: Dot-separated path inside the configuration.
+                        x-kubernetes-validations:
+                          - rule: "self.startsWith('mcp_server.headers.')"
+                            message: "path must start with mcp_server.headers."
+                      secret_ref:
+                        type: object
+                        required: [name, key]
+                        properties:
+                          name:
+                            type: string
+                          key:
+                            type: string
+            status:
+              type: object
+              properties:
+                toolCount:
+                  type: integer
+                  description: Number of tools synced from Klaudia.
+              x-kubernetes-preserve-unknown-fields: true

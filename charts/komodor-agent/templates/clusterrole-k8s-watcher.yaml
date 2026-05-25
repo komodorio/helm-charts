@@ -530,4 +530,12 @@ rules:
     - get
     - watch
     - list
+{{- if .Values.capabilities.klaudiaIntegrationSync.enabled }}
+  - apiGroups: ["app.komodor.com"]
+    resources: ["mcpintegrations", "mcpintegrations/status", "skills", "skills/status"]
+    verbs: ["get", "list", "watch", "patch", "update"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+{{- end }}
 {{- end -}}
