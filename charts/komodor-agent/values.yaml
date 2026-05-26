@@ -226,7 +226,7 @@ capabilities:
     # capabilities.klaudiaIntegrationSync.httpTimeout -- (string) HTTP timeout for Klaudia API calls
     httpTimeout: "90s"
     # capabilities.klaudiaIntegrationSync.serverFetchInterval -- (string) How often to refresh server-side status (tools/status) on otherwise unchanged CRs. Set to "0s" to fetch every reconcile.
-    serverFetchInterval: "20m"
+    serverFetchInterval: "10m"
 
   # capabilities.admissionController -- Configure the komodor admission controller capabilities
   # @default -- See sub-values

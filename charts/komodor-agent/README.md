@@ -232,7 +232,7 @@ Relevant values:
 | capabilities.klaudiaIntegrationSync.serverHost | string | `""` | Override the Klaudia API base URL |
 | capabilities.klaudiaIntegrationSync.resyncInterval | string | `"2m"` | How often to force-resync all CRs even if unchanged |
 | capabilities.klaudiaIntegrationSync.httpTimeout | string | `"90s"` | HTTP timeout for Klaudia API calls |
-| capabilities.klaudiaIntegrationSync.serverFetchInterval | string | `"20m"` | How often to refresh server-side status (tools/status) on otherwise unchanged CRs. Set to "0s" to fetch every reconcile. |
+| capabilities.klaudiaIntegrationSync.serverFetchInterval | string | `"10m"` | How often to refresh server-side status (tools/status) on otherwise unchanged CRs. Set to "0s" to fetch every reconcile. |
 | capabilities.admissionController | object | See sub-values | Configure the komodor admission controller capabilities |
 | capabilities.admissionController.enabled | bool | `true` | Enable the komodor admission controller |
 | capabilities.admissionController.pdb | object | `{"enabled":true}` | Configure the PodDisruptionBudget for the admission controller |
