@@ -36,3 +36,10 @@ ClusterRole name for node-enricher container
 {{- define "komodorAgent.clusterRole.nodeEnricher" -}}
 {{- printf "%s-node-enricher" (include "komodorAgent.fullname" .) }}
 {{- end }}
+
+{{/*
+Role name for Klaudia integration sync (namespaced RBAC)
+*/}}
+{{- define "komodorAgent.role.klaudiaIntegrationSync" -}}
+{{- printf "%s-klaudia-integration-sync" (include "komodorAgent.fullname" .) }}
+{{- end }}
