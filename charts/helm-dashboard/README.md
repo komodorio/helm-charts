@@ -77,13 +77,35 @@ The following table lists the configurable parameters of the chart and their def
 | `dashboard.persistence.size`          | Persistent Volume size                                                                         | `100M`                           |
 | `dashboard.persistence.finalizers`    | Finalizers for the Persistent Volume Claim                                                     | `[kubernetes.io/pvc-protection]`                             |
 | `dashboard.persistence.lookupVolumeName` | Lookup volume name for the Persistent Volume Claim                                             | `true`                             |
-| `updateStrategy.type`                 | Set up update strategy for helm-dashboard installation.                                        | `RollingUpdate`                  |             
+| `updateStrategy.type`                 | Set up update strategy for helm-dashboard installation.                                        | `RollingUpdate`                  |
 | `extraArgs`                           | Set the arguments to be supplied to the helm-dashboard binary                                  | `[--no-browser, --bind=0.0.0.0]` |
 | `testImage.repository`                | Test image registry/name                                                                       | `busybox`                        |
 | `testImage.tag`                       | Test image tag                                                                                 | `lastest`                        |
 | `testImage.imagePullSecrets`          | Specify Docker-registry secret names as an array                                               | `[]`                             |
 | `testImage.pullPolicy`                | Test image pull policy                                                                         | `IfNotPresent`                   |
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
+
+## Memory Behaviour With Large Repositories
+
+When Helm Dashboard is connected to very large Helm repositories (for example, the [Bitnami repository](https://charts.bitnami.com/bitnami)), memory usage can increase significantly while browsing charts and versions.
+
+This is expected behaviour in cluster mode, because the dashboard needs to fetch and process a large index and chart metadata. Repositories with many charts and many historical versions can create short-lived but high memory pressure.
+
+### Mitigation Guidance
+
+1. Increase memory requests and limits for `helm-dashboard`.
+2. Prefer curated or mirrored repositories with only required charts and versions.
+3. Reduce attached repositories to those required for day-to-day operations.
+4. Pin chart versions where practical instead of browsing many historical versions.
+5. Run the workload on nodes with enough memory headroom.
+
+Example override for larger repositories:
+
+```bash
+helm upgrade --install helm-dashboard komodorio/helm-dashboard \
+  --set resources.requests.memory=1Gi \
+  --set resources.limits.memory=4Gi
+```
 
 ```bash
 helm upgrade --install helm-dashboard komodorio/helm-dashboard --set dashboard.allowWriteActions=true --set service.port=9090

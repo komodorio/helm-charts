@@ -1,4 +1,3 @@
-ARG NGINX_VERSION=1.30.0-alpine3.23-slim
-FROM nginx:${NGINX_VERSION}
+FROM nginx:1.31.1-alpine3.23-slim
 
 RUN apk add --no-cache openssl

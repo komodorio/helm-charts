@@ -1,16 +1,7 @@
 {{- define "admissionController.pod.securityContext" }}
-{{- if gt (len .Values.components.admissionController.podSecurityContext) 0 }}
-securityContext:
-  {{- toYaml .Values.components.admissionController.podSecurityContext | nindent 2 }}
-{{- else if gt (len .Values.components.admissionController.securityContext) 0 }}
-securityContext:
-  {{- toYaml .Values.components.admissionController.securityContext | nindent 2 }}
-{{- end }}
+{{- include "komodorAgent.podSecurityContext" (dict "root" $ "podSecurityContext" .Values.components.admissionController.podSecurityContext "deprecatedSecurityContext" .Values.components.admissionController.securityContext) }}
 {{- end }}
 
 {{- define "admissionController.container.securityContext" }}
-{{- with .Values.components.admissionController.containerSecurityContext }}
-securityContext:
-  {{- toYaml . | nindent 2 }}
-{{- end }}
+{{- include "komodorAgent.container.securityContext" (dict "root" $ "securityContext" .Values.components.admissionController.containerSecurityContext) }}
 {{- end }}

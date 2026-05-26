@@ -1,13 +1,20 @@
 {{- define "opentelemetry.volume" }}
 {{- if and .Values.capabilities.telemetry.enabled .Values.capabilities.telemetry.deployOtelCollector }}
+{{- $volumes := .Values.components.komodorDaemon.opentelemetry.volumes | default dict -}}
+{{- $varlogpods := $volumes.varlogpods | default dict -}}
+{{- $varlibdockercontainers := $volumes.varlibdockercontainers | default dict -}}
+{{- with $varlogpods.hostPath }}
 - name: opentelemetry-varlogpods
   hostPath:
-    path: {{ .Values.components.komodorDaemon.opentelemetry.volumes.varlogpods.hostPath.path }}
-    type: {{ .Values.components.komodorDaemon.opentelemetry.volumes.varlogpods.hostPath.type }}
+    path: {{ .path }}
+    type: {{ .type }}
+{{- end }}
+{{- with $varlibdockercontainers.hostPath }}
 - name: opentelemetry-varlib-docker-containers
   hostPath:
-    path: {{ .Values.components.komodorDaemon.opentelemetry.volumes.varlibdockercontainers.hostPath.path }}
-    type: {{ .Values.components.komodorDaemon.opentelemetry.volumes.varlibdockercontainers.hostPath.type }}
+    path: {{ .path }}
+    type: {{ .type }}
+{{- end }}
 {{- if .Values.components.komodorDaemon.opentelemetry.otelInit.enabled }}
 - name: {{ include "opentelemetry.shared.volume.name" . }}
   emptyDir: {}

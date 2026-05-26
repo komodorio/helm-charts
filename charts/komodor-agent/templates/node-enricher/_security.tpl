@@ -1,6 +1,3 @@
 {{- define "node_enricher.daemonset.container.securityContext" }}
-{{- with .Values.components.komodorDaemon.nodeEnricher.securityContext }}
-securityContext:
-  {{ toYaml . | nindent 2 }}
-{{- end }}
+{{- include "komodorAgent.container.securityContext" (dict "root" $ "securityContext" .Values.components.komodorDaemon.nodeEnricher.securityContext) }}
 {{- end }}
