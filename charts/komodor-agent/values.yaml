@@ -34,7 +34,7 @@ telegrafImageVersion: &telegrafVersion v2.0.53-alpine
 # telegrafWindowsImageVersion -- (string) Telegraf version to be used for windows
 telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.53
 # admissionControllerVersion -- (string) Admission controller version to be used
-admissionControllerVersion: &acVersion 0.1.54
+admissionControllerVersion: &acVersion 0.1.55
 
 # serviceAccount -- Configure service account for the agent
 # @default -- See sub-values
@@ -77,8 +77,13 @@ customCa:
     requests:
       cpu: 1m
       memory: 10Mi
-  # customCa.securityContext -- Set container-level securityContext for the custom CA init container. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution)
-  securityContext: {}
+  # customCa.securityContext -- (dict) Set container-level securityContext for the custom CA init container. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution)
+  securityContext:
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    allowPrivilegeEscalation: false
 
 # imageRepo -- (string) Override the komodor agent image repository.
 imageRepo: public.ecr.aws/komodor-public

@@ -160,7 +160,7 @@ Relevant values:
 | global.securityContext | object | `{}` | Set a container-level securityContext applied to all containers unless a container-specific securityContext is defined. Supports container fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution) |
 | telegrafImageVersion | string | `"v2.0.53-alpine"` | Telegraf version to be used |
 | telegrafWindowsImageVersion | string | `"v2.0.53"` | Telegraf version to be used for windows |
-| admissionControllerVersion | string | `"0.1.54"` | Admission controller version to be used |
+| admissionControllerVersion | string | `"0.1.55"` | Admission controller version to be used |
 | serviceAccount | object | See sub-values | Configure service account for the agent |
 | serviceAccount.create | bool | `true` | Creates a service account for the agent |
 | serviceAccount.name | string | `nil` | Name of the service account, Required if `serviceAccount.create` is false |
@@ -175,7 +175,7 @@ Relevant values:
 | customCa.enabled | bool | `false` | Enable custom CA certificate for the agent |
 | customCa.secretName | string | `nil` | Name of the secret containing the CA |
 | customCa.resources | dict | `{"limits":{"cpu":"10m","memory":"100Mi"},"requests":{"cpu":"1m","memory":"10Mi"}}` | Set custom resources to the custom CA container |
-| customCa.securityContext | object | `{}` | Set container-level securityContext for the custom CA init container. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution) |
+| customCa.securityContext | dict | `{"allowPrivilegeEscalation":false,"readOnlyRootFilesystem":true,"runAsGroup":1000,"runAsNonRoot":true,"runAsUser":1000}` | Set container-level securityContext for the custom CA init container. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution) |
 | imageRepo | string | `"public.ecr.aws/komodor-public"` | Override the komodor agent image repository. |
 | pullPolicy | string | `"IfNotPresent"` | Default Image pull policy for the komodor agent image acceptable values <ifNotPresent\Always\Never>. |
 | imagePullSecret | string | `nil` | Set the image pull secret for the komodor agent |

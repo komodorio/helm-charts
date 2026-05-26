@@ -119,6 +119,7 @@
 {{- if (.Values.customCa).enabled  }}
 - name: init-cert
   image: {{ .Values.imageRepo }}/{{ .Values.components.komodorAgent.supervisor.image.name}}:{{ .Values.components.komodorAgent.supervisor.image.tag | default .Chart.AppVersion }}
+  {{- include "komodorAgent.customCaInit.securityContext" . | nindent 2 }}
   command:
     - sh
     - -c
