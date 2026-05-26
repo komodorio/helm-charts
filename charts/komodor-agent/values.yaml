@@ -71,8 +71,13 @@ customCa:
     requests:
       cpu: 1m
       memory: 10Mi
-  # customCa.securityContext -- Set container-level securityContext for the custom CA init container. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution)
-  securityContext: {}
+  # customCa.securityContext -- (dict) Set container-level securityContext for the custom CA init container. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution)
+  securityContext:
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    allowPrivilegeEscalation: false
 
 # imageRepo -- (string) Override the komodor agent image repository.
 imageRepo: public.ecr.aws/komodor-public
