@@ -57,11 +57,6 @@ spec:
                 skill_ref:
                   type: string
                   description: Name of a KlaudiaSkill CR in the same namespace.
-                clusters:
-                  type: array
-                  items:
-                    type: string
-                  default: ["*"]
                 mode:
                   type: string
                   enum: [active, shadow, inactive]
@@ -130,8 +125,6 @@ spec:
                               type: string
                         header_name:
                           type: string
-                        format:
-                          type: string
                       x-kubernetes-validations:
                         - rule: "has(self.value) != has(self.value_ref)"
                           message: "exactly one of value or value_ref must be set"
@@ -161,11 +154,13 @@ spec:
                         audience:
                           type: string
                       x-kubernetes-validations:
+                        - rule: "has(self.client_secret) || has(self.client_secret_ref)"
+                          message: "client_secret or client_secret_ref is required"
                         - rule: "!has(self.client_secret) || !has(self.client_secret_ref)"
                           message: "client_secret and client_secret_ref are mutually exclusive"
                     token_exchange:
                       type: object
-                      required: [token_url, client_id]
+                      required: [token_url, subject_token]
                       properties:
                         token_url:
                           type: string
@@ -183,6 +178,12 @@ spec:
                             key:
                               type: string
                         grant_type:
+                          type: string
+                        audience:
+                          type: string
+                        requested_token_type:
+                          type: string
+                        scope:
                           type: string
                         subject_token:
                           type: object
@@ -227,13 +228,6 @@ spec:
                       x-kubernetes-validations:
                         - rule: "!has(self.client_secret) || !has(self.client_secret_ref)"
                           message: "client_secret and client_secret_ref are mutually exclusive"
-                    token_header:
-                      type: object
-                      properties:
-                        name:
-                          type: string
-                        format:
-                          type: string
                     response:
                       type: object
                       properties:
