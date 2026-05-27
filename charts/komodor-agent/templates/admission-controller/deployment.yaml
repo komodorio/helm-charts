@@ -47,9 +47,13 @@ spec:
               scheme: HTTPS
           readinessProbe:
             httpGet:
-              path: /healthz
+              path: /readyz
               port: https
               scheme: HTTPS
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 2
           resources:
             {{- toYaml .Values.components.admissionController.resources | nindent 12 }}
           env:
