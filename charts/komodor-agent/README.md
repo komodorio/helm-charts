@@ -212,6 +212,7 @@ Relevant values:
 | capabilities.redaction.secret | object | `{"enable":true,"keepOnlyHelmReleases":false}` | Configuration for the "Secret" resource type |
 | capabilities.redaction.secret.enable | bool | `true` | Enable redaction for the "Secret" resource type |
 | capabilities.redaction.secret.keepOnlyHelmReleases | bool | `false` | Determine if only helm releases should be collected, if true - wipe and redact all other secrets data |
+| capabilities.redaction.byKind | list | `[]` | Redact specific fields from resources by kind using jq field selectors. Each entry specifies a `kind`, optional `group` (for CRDs), and `fields` (list of jq expressions). Example: byKind:   - kind: ExternalSecret     group: external-secrets.io     fields:       - .spec.data[].remoteRef.key       - .spec.dataFrom[].extract.key |
 | capabilities.telemetry | object | See sub-values | Configure the agent telemetry capabilities |
 | capabilities.telemetry.enabled | bool | `true` | Enable telemetry capabilities by the komodor agent |
 | capabilities.telemetry.collectApiServerMetrics | bool | `false` | Collect metrics from the api server (Should only be used for debugging purposes) |
