@@ -8,6 +8,7 @@ communications:
   wsHost: wss://staging.app.komodor.com
   telemetryServerHost: https://staging.telemetry.komodor.com
   mgmtServerHost: https://staging.app.komodor.com
+  publicApiServerHost: https://staging.api.komodor.com
 
 capabilities:
   telemetry:

@@ -44,9 +44,6 @@ data:
     {{- end }}
     klaudiaIntegrationSync:
       enabled: {{ .Values.capabilities.klaudiaIntegrationSync.enabled }}
-      {{- if .Values.capabilities.klaudiaIntegrationSync.serverHost }}
-      serverHost: {{ .Values.capabilities.klaudiaIntegrationSync.serverHost | quote }}
-      {{- end }}
       resyncInterval: {{ .Values.capabilities.klaudiaIntegrationSync.resyncInterval | quote }}
       httpTimeout: {{ .Values.capabilities.klaudiaIntegrationSync.httpTimeout | quote }}
       serverFetchInterval: {{ .Values.capabilities.klaudiaIntegrationSync.serverFetchInterval | quote }}

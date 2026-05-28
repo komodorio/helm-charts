@@ -34,7 +34,7 @@ telegrafImageVersion: &telegrafVersion v2.0.53-alpine
 # telegrafWindowsImageVersion -- (string) Telegraf version to be used for windows
 telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.53
 # admissionControllerVersion -- (string) Admission controller version to be used
-admissionControllerVersion: &acVersion 0.1.55
+admissionControllerVersion: &acVersion 0.1.56
 
 # serviceAccount -- Configure service account for the agent
 # @default -- See sub-values
@@ -219,8 +219,6 @@ capabilities:
   klaudiaIntegrationSync:
     # capabilities.klaudiaIntegrationSync.enabled -- (bool) Enable KomodorMCPIntegration and KomodorSkill CR sync controller
     enabled: false
-    # capabilities.klaudiaIntegrationSync.serverHost -- (string) Override the Klaudia API base URL
-    serverHost: ""
     # capabilities.klaudiaIntegrationSync.resyncInterval -- (string) How often to force-resync all CRs even if unchanged
     resyncInterval: "2m"
     # capabilities.klaudiaIntegrationSync.httpTimeout -- (string) HTTP timeout for Klaudia API calls
@@ -983,3 +981,4 @@ communications:
   tasksServerHost:
   telemetryServerHost:
   mgmtServerHost:
+  publicApiServerHost:
