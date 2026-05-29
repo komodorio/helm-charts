@@ -47,6 +47,7 @@ steps:
         set -euo pipefail
         BASE_BRANCH="$${BUILDKITE_PULL_REQUEST_BASE_BRANCH:-master}"
         git fetch -q origin "$$BASE_BRANCH"
+        git fetch -q --unshallow 2>/dev/null || git fetch -q --deepen=100 || true
         # Capture diff outside the `if` so `set -e` reaches a `git diff` failure
         # (inside an `if` condition, set -e is disabled and the failure would be masked).
         CHANGED="$$(git diff --name-only "origin/$$BASE_BRANCH...HEAD")"
