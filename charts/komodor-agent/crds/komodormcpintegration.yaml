@@ -22,12 +22,21 @@ spec:
         - name: Phase
           type: string
           jsonPath: .status.phase
+        - name: Mode
+          type: string
+          jsonPath: .spec.mode
         - name: IntegrationID
           type: string
           jsonPath: .status.integrationId
+        - name: ServerStatus
+          type: string
+          jsonPath: .status.serverStatus
         - name: Tools
           type: integer
           jsonPath: .status.toolCount
+        - name: LastSync
+          type: date
+          jsonPath: .status.lastSyncTime
         - name: Age
           type: date
           jsonPath: .metadata.creationTimestamp
@@ -109,7 +118,12 @@ spec:
                   properties:
                     method:
                       type: string
-                      enum: [static_token, oauth2_client_credentials, token_exchange]
+                      enum:
+                        [
+                          static_token,
+                          oauth2_client_credentials,
+                          token_exchange,
+                        ]
                     static_token:
                       type: object
                       properties:
@@ -268,7 +282,60 @@ spec:
             status:
               type: object
               properties:
+                phase:
+                  type: string
+                  enum: [Synced, Pending, Error]
+                integrationId:
+                  type: string
+                  description: Upstream Klaudia integration UUID.
+                serverStatus:
+                  type: string
+                  description: Integration status as reported by Klaudia.
                 toolCount:
                   type: integer
                   description: Number of tools synced from Klaudia.
-              x-kubernetes-preserve-unknown-fields: true
+                tools:
+                  type: array
+                  items:
+                    type: object
+                    required: [name, enabled]
+                    properties:
+                      name:
+                        type: string
+                      description:
+                        type: string
+                      enabled:
+                        type: boolean
+                observedGeneration:
+                  type: integer
+                  format: int64
+                lastSyncedSkillId:
+                  type: string
+                  description: Resolved skill UUID used in the last successful sync.
+                lastSyncedSecretResourceVersion:
+                  type: string
+                lastSyncTime:
+                  type: string
+                  format: date-time
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      [type, status, lastTransitionTime, reason, message]
+                    properties:
+                      type:
+                        type: string
+                      status:
+                        type: string
+                        enum: ["True", "False", Unknown]
+                      lastTransitionTime:
+                        type: string
+                        format: date-time
+                      reason:
+                        type: string
+                      message:
+                        type: string
+                      observedGeneration:
+                        type: integer
+                        format: int64

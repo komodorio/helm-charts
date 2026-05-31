@@ -49,12 +49,6 @@ spec:
                   type: string
                   maxLength: 50000
                   description: System-prompt instructions for the skill.
-                use_cases:
-                  type: array
-                  items:
-                    type: string
-                    enum: [chat, rca]
-                  default: [chat, rca]
                 clusters:
                   type: array
                   items:
