@@ -169,6 +169,15 @@ capabilities:
       enable: true
       # capabilities.redaction.secret.keepOnlyHelmReleases -- (bool) Determine if only helm releases should be collected, if true - wipe and redact all other secrets data
       keepOnlyHelmReleases: false
+    # capabilities.redaction.byKind -- (list) Redact specific fields from resources by kind using jq field selectors. Each entry specifies a `kind`, optional `group` (for CRDs), and `fields` (list of jq expressions).
+    # Example:
+    # byKind:
+    #   - kind: ExternalSecret
+    #     group: external-secrets.io
+    #     fields:
+    #       - .spec.data[].remoteRef.key
+    #       - .spec.dataFrom[].extract.key
+    byKind: []
 
   # capabilities.telemetry -- Configure the agent telemetry capabilities
   # @default -- See sub-values
