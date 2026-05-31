@@ -223,7 +223,9 @@ capabilities:
     #   - plain hosts (e.g. "myservice") — any port on that host
     whitelist: []
 
-  # capabilities.klaudiaIntegrationSync -- Sync KomodorMCPIntegration and KomodorSkill CRs to the Klaudia API
+  # capabilities.klaudiaIntegrationSync -- Sync KomodorMCPIntegration and KomodorSkill CRs to the Klaudia API.
+  # CRs (and any Secrets they reference) must be created in the agent's release namespace;
+  # CRs in other namespaces are silently ignored by the sync controller.
   # @default -- See sub-values
   klaudiaIntegrationSync:
     # capabilities.klaudiaIntegrationSync.enabled -- (bool) Enable KomodorMCPIntegration and KomodorSkill CR sync controller
