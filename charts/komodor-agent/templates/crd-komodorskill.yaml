@@ -49,6 +49,10 @@ spec:
                   type: string
                   maxLength: 50000
                   description: System-prompt instructions for the skill.
+                isEnabled:
+                  type: boolean
+                  default: true
+                  description: Whether the skill is enabled in Klaudia.
                 clusters:
                   type: array
                   items:
