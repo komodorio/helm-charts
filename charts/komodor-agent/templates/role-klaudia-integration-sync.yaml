@@ -1,0 +1,28 @@
+{{- if and .Values.createRbac (((.Values.capabilities).klaudiaIntegrationSync).enabled) -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "komodorAgent.role.klaudiaIntegrationSync" . }}
+  namespace: {{ .Release.Namespace }}
+rules:
+  - apiGroups: ["app.komodor.com"]
+    resources: ["komodormcpintegrations", "komodormcpintegrations/status", "komodorskills", "komodorskills/status"]
+    verbs: ["get", "list", "watch", "patch", "update"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "komodorAgent.role.klaudiaIntegrationSync" . }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "komodorAgent.role.klaudiaIntegrationSync" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "komodorAgent.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end -}}

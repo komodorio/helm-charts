@@ -1,0 +1,59 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: komodorskills.app.komodor.com
+spec:
+  group: app.komodor.com
+  scope: Namespaced
+  names:
+    plural: komodorskills
+    singular: komodorskill
+    kind: KomodorSkill
+    shortNames:
+      - komodorskill
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - name: Phase
+          type: string
+          jsonPath: .status.phase
+        - name: SkillID
+          type: string
+          jsonPath: .status.skillId
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp
+      schema:
+        openAPIV3Schema:
+          type: object
+          required: [spec]
+          properties:
+            spec:
+              type: object
+              required: [name, description, instructions]
+              properties:
+                name:
+                  type: string
+                  maxLength: 200
+                  description: Display name of the skill in Klaudia.
+                description:
+                  type: string
+                  maxLength: 2000
+                  description: Short description of the skill shown in Klaudia.
+                instructions:
+                  type: string
+                  maxLength: 50000
+                  description: System-prompt instructions for the skill.
+                clusters:
+                  type: array
+                  items:
+                    type: string
+                  default: ["*"]
+            status:
+              type: object
+              x-kubernetes-preserve-unknown-fields: true

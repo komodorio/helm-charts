@@ -148,6 +148,9 @@ Relevant values:
 | site | string | "us" | Komodor site, allowed values: "us", "eu" |
 | apiKey | guid | `nil` | **(*required*)** To be obtained from komodor app during onboarding |
 | apiKeySecret | string | `nil` | Secret name containing Komodor agent api key |
+| publicApiKey | guid | `nil` | Komodor public API key. Required when features that depend on it are enabled (currently capabilities.klaudiaIntegrationSync). |
+| publicApiKeySecret | string | `nil` | Existing Kubernetes secret containing the public API key |
+| publicApiKeySecretKey | string | `nil` | Key inside publicApiKeySecret (defaults to publicApiKey) |
 | createNamespace | bool | `true` | Creates the namespace |
 | tags | dict | `{}` | Tags the agent in order to identify it based on `key:value` properties separated by semicolon (`;`) example: `--set tags.env=staging,tags.team=payments` --- Can also be set in the values under `tags` as a dictionary of key:value strings |
 | clusterName | string | `nil` | **(*required*)** Name to be displayed in the Komodor web application |
@@ -225,6 +228,11 @@ Relevant values:
 | capabilities.tunnel | object | See sub-values | Configure the WebSocket tunnel feature |
 | capabilities.tunnel.enabled | bool | `true` | Enable the network tunnel for remote WebSocket connections |
 | capabilities.tunnel.whitelist | list | `[]` | Allowed destinations for tunnel connections (empty = allow all) If no entries are configured, all destinations are allowed (default-allow). Entries can be:   - CIDR ranges (e.g. "10.0.0.0/8") — any port, matched against resolved IPs   - "host:port" pairs (e.g. "myservice:8080") — exact match   - plain hosts (e.g. "myservice") — any port on that host |
+| capabilities.klaudiaIntegrationSync | object | See sub-values | Sync KomodorMCPIntegration and KomodorSkill CRs to the Klaudia API |
+| capabilities.klaudiaIntegrationSync.enabled | bool | `false` | Enable KomodorMCPIntegration and KomodorSkill CR sync controller |
+| capabilities.klaudiaIntegrationSync.resyncInterval | string | `"2m"` | How often to force-resync all CRs even if unchanged |
+| capabilities.klaudiaIntegrationSync.httpTimeout | string | `"90s"` | HTTP timeout for Klaudia API calls |
+| capabilities.klaudiaIntegrationSync.serverFetchInterval | string | `"10m"` | How often to refresh server-side status (tools/status) on otherwise unchanged CRs. Set to "0s" to fetch every reconcile. |
 | capabilities.admissionController | object | See sub-values | Configure the komodor admission controller capabilities |
 | capabilities.admissionController.enabled | bool | `true` | Enable the komodor admission controller |
 | capabilities.admissionController.pdb | object | `{"enabled":true}` | Configure the PodDisruptionBudget for the admission controller |

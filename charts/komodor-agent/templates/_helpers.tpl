@@ -153,3 +153,25 @@ valueFrom:
     key: apiKey
     {{- end }}
 {{- end }}
+
+{{/*
+Public API Key secret name
+*/}}
+{{- define "komodorAgent.publicApiKey.secret.name" -}}
+{{ include "komodorAgent.name" . }}-public-api-key-secret
+{{- end -}}
+
+{{/*
+Public API Key secret reference - returns the entire valueFrom block
+*/}}
+{{- define "komodorAgent.publicApiKeySecretRef" -}}
+valueFrom:
+  secretKeyRef:
+    {{- if .Values.publicApiKeySecret }}
+    name: {{ .Values.publicApiKeySecret | required "Existing secret name required!" }}
+    key: {{ default "publicApiKey" .Values.publicApiKeySecretKey }}
+    {{- else }}
+    name: {{ include "komodorAgent.publicApiKey.secret.name" . }}
+    key: {{ default "publicApiKey" .Values.publicApiKeySecretKey }}
+    {{- end }}
+{{- end }}

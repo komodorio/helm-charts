@@ -42,6 +42,11 @@ data:
       remote:
         enabled: false
     {{- end }}
+    klaudiaIntegrationSync:
+      enabled: {{ .Values.capabilities.klaudiaIntegrationSync.enabled }}
+      resyncInterval: {{ .Values.capabilities.klaudiaIntegrationSync.resyncInterval | quote }}
+      httpTimeout: {{ .Values.capabilities.klaudiaIntegrationSync.httpTimeout | quote }}
+      serverFetchInterval: {{ .Values.capabilities.klaudiaIntegrationSync.serverFetchInterval | quote }}
     resync:
       period: "0"
 

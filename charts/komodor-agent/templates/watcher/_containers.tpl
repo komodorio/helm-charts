@@ -27,8 +27,18 @@
   env:
   - name: KOMOKW_API_KEY
     {{ include "komodorAgent.apiKeySecretRef" . | nindent 4 }}
+  {{- if ((.Values.capabilities).klaudiaIntegrationSync).enabled }}
+  - name: KOMOKW_PUBLIC_API_KEY
+    {{ include "komodorAgent.publicApiKeySecretRef" . | nindent 4 }}
+  - name: KOMOKW_PUBLIC_API_SERVER_HOST
+    value: {{ include "communication.publicApiServerHost" . | quote }}
+  {{- end }}
   - name: KOMOKW_CLUSTER_NAME
     value: {{ .Values.clusterName }}
+  - name: POD_NAMESPACE
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.namespace
   - name: HELM_CACHE_HOME
     value: /opt/watcher/helm/cache
   - name: HELM_CONFIG_HOME
