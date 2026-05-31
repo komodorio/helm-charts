@@ -32,6 +32,12 @@ spec:
         openAPIV3Schema:
           type: object
           required: [spec]
+          description: |
+            KomodorSkill syncs a Klaudia AI skill to the Klaudia API.
+            IMPORTANT: this resource must be created in the same namespace where the
+            Komodor agent is installed (the Helm release namespace). Resources placed
+            in any other namespace are silently ignored by the sync controller — no
+            status is written and no error is reported.
           properties:
             spec:
               type: object
