@@ -30,9 +30,9 @@ global:
   securityContext: {}
 
 # telegrafImageVersion -- (string) Telegraf version to be used
-telegrafImageVersion: &telegrafVersion v2.0.53-alpine
+telegrafImageVersion: &telegrafVersion v2.0.56-alpine
 # telegrafWindowsImageVersion -- (string) Telegraf version to be used for windows
-telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.53
+telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.56
 # admissionControllerVersion -- (string) Admission controller version to be used
 admissionControllerVersion: &acVersion 0.1.58
 
