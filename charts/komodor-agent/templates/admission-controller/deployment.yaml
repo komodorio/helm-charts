@@ -45,13 +45,17 @@ spec:
               path: /healthz
               port: https
               scheme: HTTPS
+            initialDelaySeconds: 60
+            periodSeconds: 600
+            timeoutSeconds: 5
+            failureThreshold: 3
           readinessProbe:
             httpGet:
               path: /readyz
               port: https
               scheme: HTTPS
             initialDelaySeconds: 30
-            periodSeconds: 10
+            periodSeconds: 30
             timeoutSeconds: 3
             failureThreshold: 2
           resources:
