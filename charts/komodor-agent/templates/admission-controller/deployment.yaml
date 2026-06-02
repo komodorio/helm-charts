@@ -42,7 +42,7 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /healthz
+              path: /livez
               port: https
               scheme: HTTPS
             initialDelaySeconds: 60
