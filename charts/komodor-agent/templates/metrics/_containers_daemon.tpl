@@ -108,7 +108,7 @@
   - name: KOMOKW_RUNTIME_MODE
     value: init
   - name: KOMOKW_COMPONENT
-    value: {{ .Chart.Name  }}-daemon
+    value: komodor-agent-daemon
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
   - name: KOMOKW_API_KEY
@@ -139,7 +139,7 @@
   - name: KOMOKW_RUNTIME_MODE
     value: init
   - name: KOMOKW_COMPONENT
-    value: {{ .Chart.Name  }}-daemon-windows
+    value: komodor-agent-daemon-windows
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
   - name: KOMOKW_API_KEY
@@ -180,7 +180,7 @@
   - name: KOMOKW_RUNTIME_MODE
     value: sidecar
   - name: KOMOKW_COMPONENT
-    value: {{ .Chart.Name  }}-daemon
+    value: komodor-agent-daemon
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
   - name: KOMOKW_API_KEY
@@ -213,7 +213,7 @@
   - name: KOMOKW_RUNTIME_MODE
     value: sidecar
   - name: KOMOKW_COMPONENT
-    value: {{ .Chart.Name  }}-daemon-windows
+    value: komodor-agent-daemon-windows
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
   - name: KOMOKW_API_KEY

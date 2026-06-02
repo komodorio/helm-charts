@@ -56,7 +56,7 @@
   - name: KOMOKW_RUNTIME_MODE
     value: sidecar
   - name: KOMOKW_COMPONENT
-    value: {{ .Chart.Name  }}-metrics
+    value: komodor-agent-metrics
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
   - name: KOMOKW_API_KEY
@@ -88,7 +88,7 @@
   - name: KOMOKW_RUNTIME_MODE
     value: init
   - name: KOMOKW_COMPONENT
-    value: {{ .Chart.Name  }}-metrics
+    value: komodor-agent-metrics
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
   - name: KOMOKW_API_KEY
