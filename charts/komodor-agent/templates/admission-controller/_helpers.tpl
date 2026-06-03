@@ -38,7 +38,7 @@ Admission Controller selector labels
 */}}
 {{- define "komodorAgent.admissionController.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "komodorAgent.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/instance: {{ include "komodor.truncatedReleaseName" . }}
 app.kubernetes.io/component: admission-controller
 {{- with .Values.components.admissionController.labels }}
 {{ toYaml . }}
