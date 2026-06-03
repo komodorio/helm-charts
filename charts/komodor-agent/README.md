@@ -245,6 +245,10 @@ Relevant values:
 | capabilities.admissionController.webhookServer.tlsCertFile | string | /etc/komodor/admission/tls/tls.crt | Path to the TLS certificate file for the webhook server. If set, overrides the default certificate generation |
 | capabilities.admissionController.webhookServer.tlsKeyFile | string | /etc/komodor/admission/tls/tls.key | Path to the TLS key file for the webhook server. If set, overrides the default certificate generation |
 | capabilities.admissionController.webhookServer.reuseGeneratedTlsSecret | bool | true | If true, the webhook server will reuse the generated TLS secret. If false, the webhook server will recreate a new TLS secret on every upgrade. |
+| capabilities.admissionController.webhookServer.staticTlsCertData | object | See sub-values | Provide static certificate data to use instead of generating. Useful when rendering the chart outside of a cluster. If all three fields are set, they take priority over cert regeneration but are still overridden by existing in-cluster secrets when reuseGeneratedTlsSecret is true. |
+| capabilities.admissionController.webhookServer.staticTlsCertData.tlsCert | string | `nil` | Base64-encoded TLS certificate (tls.crt) |
+| capabilities.admissionController.webhookServer.staticTlsCertData.tlsKey | string | `nil` | Base64-encoded TLS private key (tls.key) |
+| capabilities.admissionController.webhookServer.staticTlsCertData.caCert | string | `nil` | Base64-encoded CA certificate (ca.crt) |
 | capabilities.admissionController.mutatingWebhook | object | See sub-values | Configure the mutating webhook |
 | capabilities.admissionController.mutatingWebhook.selfManage | bool | `false` | If true, the mutating webhook will be managed by the chart. If false, the mutating webhook will be managed by the user. |
 | capabilities.admissionController.mutatingWebhook.timeoutSeconds | int | `5` | Timeout for the webhook call in seconds |

@@ -266,6 +266,15 @@ capabilities:
       # capabilities.admissionController.webhookServer.reuseGeneratedTlsSecret -- (bool) If true, the webhook server will reuse the generated TLS secret. If false, the webhook server will recreate a new TLS secret on every upgrade.
       # @default -- true
       reuseGeneratedTlsSecret: true
+      # capabilities.admissionController.webhookServer.staticTlsCertData -- Provide static certificate data to use instead of generating. Useful when rendering the chart outside of a cluster. If all three fields are set, they take priority over cert regeneration but are still overridden by existing in-cluster secrets when reuseGeneratedTlsSecret is true.
+      # @default -- See sub-values
+      staticTlsCertData:
+        # capabilities.admissionController.webhookServer.staticTlsCertData.tlsCert -- (string) Base64-encoded TLS certificate (tls.crt)
+        tlsCert:
+        # capabilities.admissionController.webhookServer.staticTlsCertData.tlsKey -- (string) Base64-encoded TLS private key (tls.key)
+        tlsKey:
+        # capabilities.admissionController.webhookServer.staticTlsCertData.caCert -- (string) Base64-encoded CA certificate (ca.crt)
+        caCert:
     # capabilities.admissionController.mutatingWebhook -- Configure the mutating webhook
     # @default -- See sub-values
     mutatingWebhook:
