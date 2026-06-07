@@ -167,12 +167,23 @@ def test_extra_env_vars(component, location, container, container_index, deploym
 
     assert  any(env_var["name"] == "TEST_ENV_VAR" for env_var in deployment_env_vars), f"Expected TEST_ENV_VAR in deployment env vars {deployment_env_vars}"
 
-@pytest.mark.parametrize("component_name, resource_kind, deployment_name_suffix", [
-    ("admissionController", "Deployment", "-admission-controller"),
-    ("komodorAgent",        "Deployment", ""),
+@pytest.mark.parametrize("component_name, resource_kind, deployment_name_suffix, values_override", [
+    ("admissionController", "Deployment", "-admission-controller", None),
+    ("komodorAgent",        "Deployment", "", """
+    components:
+      komodorAgent:
+        watcher:
+          extraVolumes:
+            - volume:
+                name: extra-volume
+                emptyDir: {}
+              volumeMount:
+                name: extra-volume
+                mountPath: /extra
+    """),
 ])
-def test_extra_volumes(component_name, resource_kind, deployment_name_suffix):
-    values_file = f"""
+def test_extra_volumes(component_name, resource_kind, deployment_name_suffix, values_override):
+    values_file = values_override or f"""
     components:
       {component_name}:
         enabled: true
