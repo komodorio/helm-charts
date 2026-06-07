@@ -168,7 +168,8 @@ def test_extra_env_vars(component, location, container, container_index, deploym
     assert  any(env_var["name"] == "TEST_ENV_VAR" for env_var in deployment_env_vars), f"Expected TEST_ENV_VAR in deployment env vars {deployment_env_vars}"
 
 @pytest.mark.parametrize("component_name, resource_kind, deployment_name_suffix", [
-    ("admissionController",       "Deployment", "-admission-controller")
+    ("admissionController", "Deployment", "-admission-controller"),
+    ("komodorAgent",        "Deployment", ""),
 ])
 def test_extra_volumes(component_name, resource_kind, deployment_name_suffix):
     values_file = f"""

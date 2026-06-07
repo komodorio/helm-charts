@@ -24,6 +24,9 @@
     mountPath: /.kube
   {{- end }}
   {{- include "custom-ca.trusted-volumeMounts" .  |  nindent 2 }}
+  {{- range .Values.components.komodorAgent.watcher.extraVolumes }}
+  - {{- toYaml .volumeMount | nindent 4 }}
+  {{- end }}
   env:
   - name: KOMOKW_API_KEY
     {{ include "komodorAgent.apiKeySecretRef" . | nindent 4 }}
