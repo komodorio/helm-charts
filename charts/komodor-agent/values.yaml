@@ -365,6 +365,22 @@ components:
         healthCheck: 8090
       # components.komodorAgent.watcher.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
       extraEnvVars: []
+      # components.komodorAgent.watcher.extraVolumes -- List of additional volumes and their mounts to add to the watcher container.
+      # Example (projected ServiceAccount token):
+      #      extraVolumes:
+      #        - volume:
+      #            name: workload-identity-token
+      #            projected:
+      #              sources:
+      #                - serviceAccountToken:
+      #                    path: token
+      #                    expirationSeconds: 3600
+      #                    audience: <token-exchange-audience>
+      #          volumeMount:
+      #            name: workload-identity-token
+      #            mountPath: /var/run/secrets/tokens
+      #            readOnly: true
+      extraVolumes: []
 
     supervisor:
       # components.komodorAgent.supervisor.image -- Override the komodor agent supervisor image name or tag.
