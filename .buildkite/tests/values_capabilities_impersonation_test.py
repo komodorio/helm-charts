@@ -60,6 +60,7 @@ def test_impersonation_enabled_crb_sa():
     assert len(subjects) == 1, "Expected exactly one subject"
     assert subjects[0]["kind"] == "ServiceAccount"
     assert subjects[0]["namespace"] == NAMESPACE
+    assert subjects[0]["name"] == f"{RELEASE_NAME}-komodor-agent"
 
 
 def test_impersonation_enabled_crb_group():
