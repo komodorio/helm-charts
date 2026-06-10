@@ -36,4 +36,11 @@ data:
       {{- if .Values.capabilities.admissionController.rightsizing.recommendationsSyncInterval }}
       recommendationsSyncInterval: {{ .Values.capabilities.admissionController.rightsizing.recommendationsSyncInterval }}
       {{- end }}
+    telemetry:
+      enable: {{ and .Values.capabilities.telemetry.enabled .Values.capabilities.admissionController.telemetry.enabled }}
+      {{- if .Values.capabilities.telemetry.deployOtelCollector }}
+      serverHost: {{ include "komodorAgent.openTelemetry.serviceFqdn" . }}
+      {{- else }}
+      serverHost: {{ include "communication.telemetryServerHost" . }}
+      {{- end }}
 {{- end }}

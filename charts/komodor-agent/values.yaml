@@ -314,6 +314,12 @@ capabilities:
       # @default -- "1m"
       #recommendationsSyncInterval: "1m"
 
+    # capabilities.admissionController.telemetry -- Configure the telemetry capabilities for the admission controller
+    # @default -- See sub-values
+    telemetry:
+      # capabilities.admissionController.telemetry.enabled -- (bool) Enable telemetry capabilities by the komodor admission controller
+      enabled: false
+
 # components -- Configure the agent components
 # @default -- See sub-values
 components:
