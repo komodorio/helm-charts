@@ -318,7 +318,7 @@ capabilities:
     # @default -- See sub-values
     telemetry:
       # capabilities.admissionController.telemetry.enabled -- (bool) Enable telemetry capabilities by the komodor admission controller
-      enabled: true
+      enabled: false
 
 # components -- Configure the agent components
 # @default -- See sub-values

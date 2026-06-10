@@ -263,7 +263,7 @@ Relevant values:
 | capabilities.admissionController.binpacking.addNodeAffinityToMarkedPods | bool | `true` | Add node affinity to marked pods to prefer scheduling on nodes with already unevictable pods (requires enabling per cluster in UI in addition) |
 | capabilities.admissionController.rightsizing | object | See sub-values | Configure the rightsizing capabilities for the admission controller |
 | capabilities.admissionController.telemetry | object | See sub-values | Configure the telemetry capabilities for the admission controller |
-| capabilities.admissionController.telemetry.enabled | bool | `true` | Enable telemetry capabilities by the komodor admission controller |
+| capabilities.admissionController.telemetry.enabled | bool | `false` | Enable telemetry capabilities by the komodor admission controller |
 | components | object | See sub-values | Configure the agent components |
 | components.komodorAgent | object | See sub-values | Configure the komodor agent components |
 | components.komodorAgent.PriorityClassValue | int | `10000000` | Set the priority class value for the komodor agent deployment |
