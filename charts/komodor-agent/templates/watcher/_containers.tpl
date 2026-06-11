@@ -50,6 +50,10 @@
     value: /opt/watcher/helm/data
   - name: HOME
     value: /tmp/home
+  {{- with .Values.components.komodorAgent.watcher.resources.limits.memory }}
+  - name: GOMEMLIMIT
+    value: {{ include "komodorAgent.goMemLimit" (dict "mem" .) | quote }}
+  {{- end }}
   {{- if .Values.capabilities.tasks.httpRequests.skipTlsVerify }}
   - name: HTTP_REQUESTS_SKIP_TLS_VERIFY
     value: "true"

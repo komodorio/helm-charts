@@ -162,6 +162,40 @@ Public API Key secret name
 {{- end -}}
 
 {{/*
+GOMEMLIMIT calculation — returns N% (default 90%) of a Kubernetes memory limit
+in Go-runtime units (MiB). Falls back to plain unit conversion if ratio is empty
+or input has no Ki/Mi/Gi/Ti suffix. Usage:
+  {{ include "komodorAgent.goMemLimit" (dict "mem" .Values.x.resources.limits.memory) }}
+  {{ include "komodorAgent.goMemLimit" (dict "mem" "8Gi" "ratio" "0.8") }}
+*/}}
+{{- define "komodorAgent.goMemLimit" -}}
+{{- $mem := .mem | toString -}}
+{{- $ratio := "0.9" -}}
+{{- if hasKey . "ratio" -}}
+{{- $ratio = .ratio | toString -}}
+{{- end -}}
+{{- if and (ne $ratio "") (ne $ratio "0") -}}
+  {{- $memMiB := 0.0 -}}
+  {{- if hasSuffix "Ti" $mem -}}
+  {{- $memMiB = mulf ($mem | trimSuffix "Ti" | float64) 1048576.0 -}}
+  {{- else if hasSuffix "Gi" $mem -}}
+  {{- $memMiB = mulf ($mem | trimSuffix "Gi" | float64) 1024.0 -}}
+  {{- else if hasSuffix "Mi" $mem -}}
+  {{- $memMiB = $mem | trimSuffix "Mi" | float64 -}}
+  {{- else if hasSuffix "Ki" $mem -}}
+  {{- $memMiB = divf ($mem | trimSuffix "Ki" | float64) 1024.0 -}}
+  {{- end -}}
+  {{- if gt $memMiB 0.0 -}}
+  {{- mulf $memMiB ($ratio | float64) | floor | printf "%.0fMiB" -}}
+  {{- else -}}
+  {{- $mem | replace "Ki" "KiB" | replace "Mi" "MiB" | replace "Gi" "GiB" | replace "Ti" "TiB" -}}
+  {{- end -}}
+{{- else -}}
+  {{- $mem | replace "Ki" "KiB" | replace "Mi" "MiB" | replace "Gi" "GiB" | replace "Ti" "TiB" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Public API Key secret reference - returns the entire valueFrom block
 */}}
 {{- define "komodorAgent.publicApiKeySecretRef" -}}
