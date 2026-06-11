@@ -228,6 +228,8 @@ Relevant values:
 | capabilities.tunnel | object | See sub-values | Configure the WebSocket tunnel feature |
 | capabilities.tunnel.enabled | bool | `true` | Enable the network tunnel for remote WebSocket connections |
 | capabilities.tunnel.whitelist | list | `[]` | Allowed destinations for tunnel connections (empty = allow all) If no entries are configured, all destinations are allowed (default-allow). Entries can be:   - CIDR ranges (e.g. "10.0.0.0/8") — any port, matched against resolved IPs   - "host:port" pairs (e.g. "myservice:8080") — exact match   - plain hosts (e.g. "myservice") — any port on that host |
+| capabilities.tunnel.kubeapiserver | object | See sub-values | Configure Kubernetes API server tunneling |
+| capabilities.tunnel.kubeapiserver.enabled | bool | `true` | Enable tunneling to the Kubernetes API server |
 | capabilities.klaudiaIntegrationSync | object | See sub-values | Sync KomodorMCPIntegration and KomodorSkill CRs to the Klaudia API. CRs (and any Secrets they reference) must be created in the agent's release namespace; CRs in other namespaces are silently ignored by the sync controller. |
 | capabilities.klaudiaIntegrationSync.enabled | bool | `false` | Enable KomodorMCPIntegration and KomodorSkill CR sync controller |
 | capabilities.klaudiaIntegrationSync.resyncInterval | string | `"2m"` | How often to force-resync all CRs even if unchanged |
