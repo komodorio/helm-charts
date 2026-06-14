@@ -9,7 +9,6 @@ data:
     clusterName: {{ .Values.clusterName }}
     chartVersion: {{ .Chart.Version | quote }}
     enableAgentTaskExecution: true
-    enableAgentTaskExecutionV2: true
     allowReadingPodLogs: {{ .Values.capabilities.logs.enabled}}
     enableHelm: {{ .Values.capabilities.helm.enabled }}
     daemon:
