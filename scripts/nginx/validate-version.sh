@@ -33,12 +33,17 @@ if [ -z "${values_version}" ] || [ "${values_version}" = "null" ]; then
     exit 1
 fi
 
-if [ "${dockerfile_version}" != "${values_version}" ]; then
-    echo "ERROR: nginx version mismatch" >&2
-    echo "  ${DOCKERFILE}: ${dockerfile_version}" >&2
-    echo "  ${VALUES} (.components.komodorKubectlProxy.image.tag): ${values_version}" >&2
-    echo "Update both files to the same tag." >&2
-    exit 1
-fi
+# values.yaml tag must start with the Dockerfile version so suffixes like
+# `-patch1` on the published image don't trip the check.
+case "${values_version}" in
+    "${dockerfile_version}"|"${dockerfile_version}"-*) ;;
+    *)
+        echo "ERROR: nginx version mismatch" >&2
+        echo "  ${DOCKERFILE}: ${dockerfile_version}" >&2
+        echo "  ${VALUES} (.components.komodorKubectlProxy.image.tag): ${values_version}" >&2
+        echo "values.yaml tag must equal the Dockerfile version or start with '<version>-'." >&2
+        exit 1
+        ;;
+esac
 
-echo "nginx version OK: ${dockerfile_version} (Dockerfile == values.yaml)"
+echo "nginx version OK: Dockerfile ${dockerfile_version}, values.yaml ${values_version}"
