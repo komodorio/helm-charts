@@ -160,7 +160,7 @@ Relevant values:
 | global.securityContext | object | `{}` | Set a container-level securityContext applied to all containers unless a container-specific securityContext is defined. Supports container fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution) |
 | telegrafImageVersion | string | `"v2.0.59-alpine"` | Telegraf version to be used |
 | telegrafWindowsImageVersion | string | `"v2.0.59"` | Telegraf version to be used for windows |
-| admissionControllerVersion | string | `"0.1.61"` | Admission controller version to be used |
+| admissionControllerVersion | string | `"0.1.62"` | Admission controller version to be used |
 | serviceAccount | object | See sub-values | Configure service account for the agent |
 | serviceAccount.create | bool | `true` | Creates a service account for the agent |
 | serviceAccount.name | string | `nil` | Name of the service account, Required if `serviceAccount.create` is false |
