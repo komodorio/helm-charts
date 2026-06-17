@@ -188,14 +188,18 @@ components:
       volumes:
         varlibdockercontainers: null
 
-      # Container security context (komodorDaemon / otel-collector container)
+      # Container security context (komodorDaemon / otel-collector container).
+      # Drop ALL capabilities, then add back only DAC_OVERRIDE so the collector can read the
+      # root-owned host log files under /var/log/pods regardless of their permission bits
+      # (portable across nodes/runtimes where those files are not world-readable).
       securityContext:
         allowPrivilegeEscalation: false
         readOnlyRootFilesystem: true
         capabilities:
           drop:
             - ALL
-          add: []
+          add:
+            - DAC_OVERRIDE
 
       otelInit:
         # Container security context (komodorDaemon / otel-init and otel-init-sidecar containers)
