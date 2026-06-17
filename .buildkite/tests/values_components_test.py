@@ -491,7 +491,8 @@ def test_default_otel_collector_security_context_supports_host_log_collection(fi
     ("DaemonSet", "-daemon", "spec.template.spec.containers.0.securityContext"),
     ("DaemonSet", "-daemon", "spec.template.spec.containers.1.securityContext"),
     ("DaemonSet", "-daemon", "spec.template.spec.containers.2.securityContext"),
-    ("DaemonSet", "-daemon", "spec.template.spec.containers.3.securityContext"),
+    # containers.3 (otel-collector) is intentionally root under the hardened profile to
+    # support host log collection — covered by test_hardened_otel_collector_* below.
     ("DaemonSet", "-daemon", "spec.template.spec.containers.4.securityContext"),
 ])
 def test_hardened_values_linux_container_security_contexts(resource_kind, resource_name_suffix, container_path):
@@ -508,8 +509,36 @@ def test_hardened_values_linux_container_security_contexts(resource_kind, resour
         f"Expected readOnlyRootFilesystem=true at {container_path}, got {security_context}"
 
 
+@pytest.mark.parametrize("field_path, expected_value", [
+    (["runAsUser"], 0),
+    (["runAsGroup"], 0),
+    (["runAsNonRoot"], False),
+    (["readOnlyRootFilesystem"], True),
+    (["capabilities", "add"], "DAC_OVERRIDE"),
+])
+def test_hardened_otel_collector_security_context_supports_host_log_collection(field_path, expected_value):
+    """Under the hardened profile the otel-collector still runs as root with DAC_OVERRIDE so it
+    can read root-owned host log files under /var/log/pods (the rest of the daemon stays non-root)."""
+    resource_name = f"{RELEASE_NAME}-komodor-agent-daemon"
+    containers = get_yaml_from_helm_template("test=test", "DaemonSet", resource_name,
+                                             "spec.template.spec.containers",
+                                             values_file=HARDENED_VALUES.read_text())
+    otel_collector = next(container for container in containers if container["name"] == "otel-collector")
+
+    rendered_value = otel_collector.get("securityContext", {})
+    for key in field_path:
+        rendered_value = rendered_value.get(key)
+
+    if isinstance(rendered_value, list):
+        assert expected_value in rendered_value, \
+            f"Expected {expected_value} in {field_path}, got {rendered_value}"
+    else:
+        assert rendered_value == expected_value, \
+            f"Expected {field_path}={expected_value}, got {rendered_value}"
+
+
 @pytest.mark.parametrize("volume_name, mount_path", [
-    ("opentelemetry-varlogpods", "/var/log/pods"),
+    # Legacy docker hostPath stays disabled in the hardened profile (absent on containerd nodes).
     ("opentelemetry-varlib-docker-containers", "/var/lib/docker/containers"),
 ])
 def test_hardened_values_do_not_mount_otel_host_log_paths(volume_name, mount_path):
@@ -525,6 +554,25 @@ def test_hardened_values_do_not_mount_otel_host_log_paths(volume_name, mount_pat
         f"Expected hardened values not to render hostPath volume {volume_name}"
     assert mount_path not in [mount["mountPath"] for mount in otel_collector.get("volumeMounts", [])], \
         f"Expected hardened values not to mount host path {mount_path} into otel-collector"
+
+
+@pytest.mark.parametrize("volume_name, mount_path", [
+    ("opentelemetry-varlogpods", "/var/log/pods"),
+])
+def test_hardened_values_mount_pod_log_path_for_collection(volume_name, mount_path):
+    """The hardened profile keeps /var/log/pods mounted so the collector can ship pod logs."""
+    resource_name = f"{RELEASE_NAME}-komodor-agent-daemon"
+    values_file = HARDENED_VALUES.read_text()
+    pod_volumes = get_yaml_from_helm_template("test=test", "DaemonSet", resource_name,
+                                              "spec.template.spec.volumes", values_file=values_file)
+    containers = get_yaml_from_helm_template("test=test", "DaemonSet", resource_name,
+                                             "spec.template.spec.containers", values_file=values_file)
+    otel_collector = next(container for container in containers if container["name"] == "otel-collector")
+
+    assert volume_name in [volume["name"] for volume in pod_volumes], \
+        f"Expected hardened values to render hostPath volume {volume_name}"
+    assert mount_path in [mount["mountPath"] for mount in otel_collector.get("volumeMounts", [])], \
+        f"Expected hardened values to mount host path {mount_path} into otel-collector"
 
 
 @pytest.mark.parametrize("resource_kind, resource_name_suffix, capability_to_enable, values_override, container_path", [
