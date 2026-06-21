@@ -430,17 +430,6 @@ rules:
     - pods/portforward
     verbs:
     - create
-{{- if .Values.allowedResources.podDisruptionBudget }}
-  - apiGroups:
-    - policy
-    resources:
-    - poddisruptionbudgets
-    verbs:
-    - delete
-    - patch
-    - update
-    - create
-{{- end }}
 {{- end}}
 {{- if .Values.capabilities.cost.hpa }}
   - apiGroups:
