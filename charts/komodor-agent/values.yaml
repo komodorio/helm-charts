@@ -118,10 +118,12 @@ capabilities:
   rbac: true
   # capabilities.rbacTempTokens -- (bool) Allow komodor to create temporary tokens for service accounts
   rbacTempTokens: true
+
   # capabilities.impersonation -- Allow the agent to impersonate users (for audit attribution)
   # and a fixed group that carries the agent's own permissions, so user-triggered actions
   # are attributed to the real user while authorized via the agent's existing ClusterRole.
   # @default -- See sub-values
+  # SECURITY: this flag grants impersonate-any-user
   impersonation:
     # capabilities.impersonation.enabled -- (bool) Grant the agent impersonate on users + the komodor agent group
     enabled: false
