@@ -191,6 +191,8 @@ Relevant values:
 | capabilities.helm.readonly | bool | `false` | Allow komodor to read helm resources only (remove create/update/delete permissions from secrets) |
 | capabilities.rbac | bool | `true` | Allow komodor to create and manage serviceaccounts, roles and bindings in cluster |
 | capabilities.rbacTempTokens | bool | `true` | Allow komodor to create temporary tokens for service accounts |
+| capabilities.impersonation | object | See sub-values | Allow the agent to impersonate users (for audit attribution) and a fixed group that carries the agent's own permissions, so user-triggered actions are attributed to the real user while authorized via the agent's existing ClusterRole. SECURITY: this flag grants impersonate-any-user |
+| capabilities.impersonation.enabled | bool | `false` | Grant the agent impersonate on users + the komodor agent group |
 | capabilities.rbacClusterSyncParams | object | See sub-values | Configure the agent cluster sync capabilities |
 | capabilities.rbacClusterSyncParams.enabled | bool | `false` | Enable cluster sync configuration from helm chart |
 | capabilities.rbacClusterSyncParams.clusterURL | string | `nil` | URL of the cluster to sync with |
