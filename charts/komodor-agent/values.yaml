@@ -30,11 +30,11 @@ global:
   securityContext: {}
 
 # telegrafImageVersion -- (string) Telegraf version to be used
-telegrafImageVersion: &telegrafVersion v2.0.53-alpine
+telegrafImageVersion: &telegrafVersion v2.0.68-alpine
 # telegrafWindowsImageVersion -- (string) Telegraf version to be used for windows
-telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.53
+telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.68
 # admissionControllerVersion -- (string) Admission controller version to be used
-admissionControllerVersion: &acVersion 0.1.57
+admissionControllerVersion: &acVersion 0.1.66
 
 # serviceAccount -- Configure service account for the agent
 # @default -- See sub-values
@@ -229,6 +229,11 @@ capabilities:
     #   - "host:port" pairs (e.g. "myservice:8080") — exact match
     #   - plain hosts (e.g. "myservice") — any port on that host
     whitelist: []
+    # capabilities.tunnel.kubeapiserver -- Configure Kubernetes API server tunneling
+    # @default -- See sub-values
+    kubeapiserver:
+      # capabilities.tunnel.kubeapiserver.enabled -- (bool) Enable tunneling to the Kubernetes API server
+      enabled: true
 
   # capabilities.klaudiaIntegrationSync -- Sync KomodorMCPIntegration and KomodorSkill CRs to the Klaudia API.
   # CRs (and any Secrets they reference) must be created in the agent's release namespace;
@@ -273,6 +278,15 @@ capabilities:
       # capabilities.admissionController.webhookServer.reuseGeneratedTlsSecret -- (bool) If true, the webhook server will reuse the generated TLS secret. If false, the webhook server will recreate a new TLS secret on every upgrade.
       # @default -- true
       reuseGeneratedTlsSecret: true
+      # capabilities.admissionController.webhookServer.staticTlsCertData -- Provide static certificate data to use instead of generating. Useful when rendering the chart outside of a cluster. If all three fields are set, they take priority over cert regeneration but are still overridden by existing in-cluster secrets when reuseGeneratedTlsSecret is true.
+      # @default -- See sub-values
+      staticTlsCertData:
+        # capabilities.admissionController.webhookServer.staticTlsCertData.tlsCert -- (string) Base64-encoded TLS certificate (tls.crt)
+        tlsCert:
+        # capabilities.admissionController.webhookServer.staticTlsCertData.tlsKey -- (string) Base64-encoded TLS private key (tls.key)
+        tlsKey:
+        # capabilities.admissionController.webhookServer.staticTlsCertData.caCert -- (string) Base64-encoded CA certificate (ca.crt)
+        caCert:
     # capabilities.admissionController.mutatingWebhook -- Configure the mutating webhook
     # @default -- See sub-values
     mutatingWebhook:
@@ -311,6 +325,12 @@ capabilities:
       # capabilities.admissionController.rightsizing.recommendationsSyncInterval -- (string) Interval for syncing rightsizing recommendations. It should be a valid duration string (e.g., "30s", "1m", "5m", "1h").
       # @default -- "1m"
       #recommendationsSyncInterval: "1m"
+
+    # capabilities.admissionController.telemetry -- Configure the telemetry capabilities for the admission controller
+    # @default -- See sub-values
+    telemetry:
+      # capabilities.admissionController.telemetry.enabled -- (bool) Enable telemetry capabilities by the komodor admission controller
+      enabled: false
 
 # components -- Configure the agent components
 # @default -- See sub-values
@@ -363,6 +383,22 @@ components:
         healthCheck: 8090
       # components.komodorAgent.watcher.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
       extraEnvVars: []
+      # components.komodorAgent.watcher.extraVolumes -- List of additional volumes and their mounts to add to the watcher container.
+      # Example (projected ServiceAccount token):
+      #      extraVolumes:
+      #        - volume:
+      #            name: workload-identity-token
+      #            projected:
+      #              sources:
+      #                - serviceAccountToken:
+      #                    path: token
+      #                    expirationSeconds: 3600
+      #                    audience: <token-exchange-audience>
+      #          volumeMount:
+      #            name: workload-identity-token
+      #            mountPath: /var/run/secrets/tokens
+      #            readOnly: true
+      extraVolumes: []
 
     supervisor:
       # components.komodorAgent.supervisor.image -- Override the komodor agent supervisor image name or tag.
@@ -393,7 +429,7 @@ components:
     # @default -- see sub-values
     image:
       name: nginx
-      tag: 1.31.1-alpine3.23-slim
+      tag: 1.31.2-alpine3.23-slim
     # components.komodorKubectlProxy.resources -- Set custom resources to the komodor kubectl proxy container
     resources: {}
     # components.komodorKubectlProxy.PriorityClassValue -- Set the priority class value for the komodor kubectl proxy deployment
@@ -695,7 +731,7 @@ components:
       # components.komodorDaemon.opentelemetry.image -- Override the OpenTelemetry collector image name or tag.
       image:
         name: komodor-otel-collector
-        tag: 0.1.10
+        tag: 0.1.11
       # components.komodorDaemon.opentelemetry.resources -- Set custom resources to the OpenTelemetry collector container
       resources:
         limits:

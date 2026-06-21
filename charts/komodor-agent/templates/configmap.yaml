@@ -9,7 +9,6 @@ data:
     clusterName: {{ .Values.clusterName }}
     chartVersion: {{ .Chart.Version | quote }}
     enableAgentTaskExecution: true
-    enableAgentTaskExecutionV2: true
     allowReadingPodLogs: {{ .Values.capabilities.logs.enabled}}
     enableHelm: {{ .Values.capabilities.helm.enabled }}
     daemon:
@@ -53,6 +52,8 @@ data:
     tunnel:
       enabled: {{ .Values.capabilities.tunnel.enabled }}
       whitelist: {{ toYaml .Values.capabilities.tunnel.whitelist | trim | nindent 8 }}
+      kubeapiserver:
+        enabled: {{ .Values.capabilities.tunnel.kubeapiserver.enabled }}
 
     resources:
       {{- toYaml .Values.allowedResources | trim | nindent 6 }}

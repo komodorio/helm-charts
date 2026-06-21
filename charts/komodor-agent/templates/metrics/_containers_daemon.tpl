@@ -29,8 +29,10 @@
     value: {{ .Values.components.komodorDaemon.metrics.quiet | default false | quote }}
   - name: KOMODOR_SERVER_URL
     value: {{ include "communication.serverHost" . | quote }}
+  {{- with .Values.components.komodorDaemon.metrics.resources.limits.memory }}
   - name: GOMEMLIMIT
-    value: {{ .Values.components.komodorDaemon.metrics.resources.limits.memory | replace "Ki" "KiB" | replace "Mi" "MiB" | replace "Gi" "GiB" | replace "Ti" "TiB" | quote }}
+    value: {{ include "komodorAgent.goMemLimit" (dict "mem" .) | quote }}
+  {{- end }}
   {{- if .Values.components.komodorDaemon.disableHttp2 }}
   - name: GODEBUG
     value: http2client=0
@@ -76,8 +78,10 @@
         fieldPath: status.hostIP
   - name: KOMODOR_SERVER_URL
     value: {{ include "communication.serverHost" . | quote }}
+  {{- with .Values.components.komodorDaemonWindows.metrics.resources.limits.memory }}
   - name: GOMEMLIMIT
-    value: {{ .Values.components.komodorDaemonWindows.metrics.resources.limits.memory | replace "Ki" "KiB" | replace "Mi" "MiB" | replace "Gi" "GiB" | replace "Ti" "TiB" | quote }}
+    value: {{ include "komodorAgent.goMemLimit" (dict "mem" .) | quote }}
+  {{- end }}
   {{- if .Values.components.komodorDaemon.disableHttp2 }}
   - name: GODEBUG
     value: http2client=0
@@ -108,7 +112,7 @@
   - name: KOMOKW_RUNTIME_MODE
     value: init
   - name: KOMOKW_COMPONENT
-    value: {{ .Chart.Name  }}-daemon
+    value: komodor-agent-daemon
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
   - name: KOMOKW_API_KEY
@@ -139,7 +143,7 @@
   - name: KOMOKW_RUNTIME_MODE
     value: init
   - name: KOMOKW_COMPONENT
-    value: {{ .Chart.Name  }}-daemon-windows
+    value: komodor-agent-daemon-windows
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
   - name: KOMOKW_API_KEY
@@ -180,7 +184,7 @@
   - name: KOMOKW_RUNTIME_MODE
     value: sidecar
   - name: KOMOKW_COMPONENT
-    value: {{ .Chart.Name  }}-daemon
+    value: komodor-agent-daemon
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
   - name: KOMOKW_API_KEY
@@ -213,7 +217,7 @@
   - name: KOMOKW_RUNTIME_MODE
     value: sidecar
   - name: KOMOKW_COMPONENT
-    value: {{ .Chart.Name  }}-daemon-windows
+    value: komodor-agent-daemon-windows
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
   - name: KOMOKW_API_KEY

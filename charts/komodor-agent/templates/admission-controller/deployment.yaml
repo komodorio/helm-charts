@@ -55,8 +55,10 @@ spec:
           env:
             - name: KOMO_API_KEY
               {{- include "komodorAgent.apiKeySecretRef" . | nindent 14 }}
+            {{- with .Values.components.admissionController.resources.limits.memory }}
             - name: GOMEMLIMIT
-              value: {{ .Values.components.admissionController.resources.limits.memory | replace "Ki" "KiB" | replace "Mi" "MiB" | replace "Gi" "GiB" | replace "Ti" "TiB" | quote }}
+              value: {{ include "komodorAgent.goMemLimit" (dict "mem" .) | quote }}
+            {{- end }}
             - name: POD_IP
               valueFrom:
                 fieldRef:

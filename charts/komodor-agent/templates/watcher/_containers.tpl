@@ -24,6 +24,9 @@
     mountPath: /.kube
   {{- end }}
   {{- include "custom-ca.trusted-volumeMounts" .  |  nindent 2 }}
+  {{- range .Values.components.komodorAgent.watcher.extraVolumes }}
+  - {{- toYaml .volumeMount | nindent 4 }}
+  {{- end }}
   env:
   - name: KOMOKW_API_KEY
     {{ include "komodorAgent.apiKeySecretRef" . | nindent 4 }}
@@ -47,6 +50,10 @@
     value: /opt/watcher/helm/data
   - name: HOME
     value: /tmp/home
+  {{- with .Values.components.komodorAgent.watcher.resources.limits.memory }}
+  - name: GOMEMLIMIT
+    value: {{ include "komodorAgent.goMemLimit" (dict "mem" .) | quote }}
+  {{- end }}
   {{- if .Values.capabilities.tasks.httpRequests.skipTlsVerify }}
   - name: HTTP_REQUESTS_SKIP_TLS_VERIFY
     value: "true"

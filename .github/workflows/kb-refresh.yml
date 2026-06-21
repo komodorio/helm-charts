@@ -1,0 +1,43 @@
+name: KB refresh (helm-charts)
+
+# On ANY merge to master, refresh the knowledge base. helm-charts maps to a single
+# KB record (`helm-charts`) — the umbrella/chart definitions and deploy topology. We
+# trigger the KB pipeline with CHANGED=helm-charts so that record gets a fresh
+# deterministic + AI refresh. The KB repo is updated; helm-charts is not.
+
+on:
+  push:
+    branches: [master]   # any path
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger knowledge-base pipeline
+        env:
+          BUILDKITE_API_TOKEN: ${{ secrets.BUILDKITE_API_TOKEN }}
+          BK_ORG: komodor               # Buildkite org slug (NOT the GitHub org "komodorio")
+          BK_PIPELINE: knowledge-base
+        run: |
+          if [ -z "$BUILDKITE_API_TOKEN" ]; then echo "BUILDKITE_API_TOKEN not set — skipping."; exit 0; fi
+          resp=$(curl -sS -w $'\n%{http_code}' -X POST \
+            "https://api.buildkite.com/v2/organizations/${BK_ORG}/pipelines/${BK_PIPELINE}/builds" \
+            -H "Authorization: Bearer ${BUILDKITE_API_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "commit": "HEAD",
+              "branch": "master",
+              "message": "KB refresh — helm-charts change (${{ github.sha }})",
+              "env": { "CHANGED": "helm-charts" }
+            }')
+          code=${resp##*$'\n'}; body=${resp%$'\n'*}
+          echo "$body"
+          if [ "$code" -ge 200 ] && [ "$code" -lt 300 ]; then
+            echo "Triggered KB refresh (helm-charts) [HTTP $code]."
+          else
+            echo "::error::Buildkite trigger failed (HTTP $code): $body"; exit 1
+          fi

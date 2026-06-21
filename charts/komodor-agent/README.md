@@ -2,7 +2,7 @@
 
 Watches and sends kubernetes resource-related events
 
-![AppVersion: 0.2.216](https://img.shields.io/badge/AppVersion-0.2.216-informational?style=flat-square)
+![AppVersion: 0.2.221](https://img.shields.io/badge/AppVersion-0.2.221-informational?style=flat-square)
 
 ## TL;DR;
 
@@ -158,9 +158,9 @@ Relevant values:
 | global | object | See sub-values | Global defaults applied across the chart. |
 | global.podSecurityContext | object | `{}` | Set a pod-level securityContext applied to all agent pods unless a component-specific podSecurityContext is defined. Supports pod-only fields: fsGroup, runAsUser, runAsGroup, runAsNonRoot, supplementalGroups, sysctls, seccompProfile. (use with caution) |
 | global.securityContext | object | `{}` | Set a container-level securityContext applied to all containers unless a container-specific securityContext is defined. Supports container fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution) |
-| telegrafImageVersion | string | `"v2.0.53-alpine"` | Telegraf version to be used |
-| telegrafWindowsImageVersion | string | `"v2.0.53"` | Telegraf version to be used for windows |
-| admissionControllerVersion | string | `"0.1.57"` | Admission controller version to be used |
+| telegrafImageVersion | string | `"v2.0.68-alpine"` | Telegraf version to be used |
+| telegrafWindowsImageVersion | string | `"v2.0.68"` | Telegraf version to be used for windows |
+| admissionControllerVersion | string | `"0.1.66"` | Admission controller version to be used |
 | serviceAccount | object | See sub-values | Configure service account for the agent |
 | serviceAccount.create | bool | `true` | Creates a service account for the agent |
 | serviceAccount.name | string | `nil` | Name of the service account, Required if `serviceAccount.create` is false |
@@ -230,6 +230,8 @@ Relevant values:
 | capabilities.tunnel | object | See sub-values | Configure the WebSocket tunnel feature |
 | capabilities.tunnel.enabled | bool | `true` | Enable the network tunnel for remote WebSocket connections |
 | capabilities.tunnel.whitelist | list | `[]` | Allowed destinations for tunnel connections (empty = allow all) If no entries are configured, all destinations are allowed (default-allow). Entries can be:   - CIDR ranges (e.g. "10.0.0.0/8") — any port, matched against resolved IPs   - "host:port" pairs (e.g. "myservice:8080") — exact match   - plain hosts (e.g. "myservice") — any port on that host |
+| capabilities.tunnel.kubeapiserver | object | See sub-values | Configure Kubernetes API server tunneling |
+| capabilities.tunnel.kubeapiserver.enabled | bool | `true` | Enable tunneling to the Kubernetes API server |
 | capabilities.klaudiaIntegrationSync | object | See sub-values | Sync KomodorMCPIntegration and KomodorSkill CRs to the Klaudia API. CRs (and any Secrets they reference) must be created in the agent's release namespace; CRs in other namespaces are silently ignored by the sync controller. |
 | capabilities.klaudiaIntegrationSync.enabled | bool | `false` | Enable KomodorMCPIntegration and KomodorSkill CR sync controller |
 | capabilities.klaudiaIntegrationSync.resyncInterval | string | `"2m"` | How often to force-resync all CRs even if unchanged |
@@ -247,6 +249,10 @@ Relevant values:
 | capabilities.admissionController.webhookServer.tlsCertFile | string | /etc/komodor/admission/tls/tls.crt | Path to the TLS certificate file for the webhook server. If set, overrides the default certificate generation |
 | capabilities.admissionController.webhookServer.tlsKeyFile | string | /etc/komodor/admission/tls/tls.key | Path to the TLS key file for the webhook server. If set, overrides the default certificate generation |
 | capabilities.admissionController.webhookServer.reuseGeneratedTlsSecret | bool | true | If true, the webhook server will reuse the generated TLS secret. If false, the webhook server will recreate a new TLS secret on every upgrade. |
+| capabilities.admissionController.webhookServer.staticTlsCertData | object | See sub-values | Provide static certificate data to use instead of generating. Useful when rendering the chart outside of a cluster. If all three fields are set, they take priority over cert regeneration but are still overridden by existing in-cluster secrets when reuseGeneratedTlsSecret is true. |
+| capabilities.admissionController.webhookServer.staticTlsCertData.tlsCert | string | `nil` | Base64-encoded TLS certificate (tls.crt) |
+| capabilities.admissionController.webhookServer.staticTlsCertData.tlsKey | string | `nil` | Base64-encoded TLS private key (tls.key) |
+| capabilities.admissionController.webhookServer.staticTlsCertData.caCert | string | `nil` | Base64-encoded CA certificate (ca.crt) |
 | capabilities.admissionController.mutatingWebhook | object | See sub-values | Configure the mutating webhook |
 | capabilities.admissionController.mutatingWebhook.selfManage | bool | `false` | If true, the mutating webhook will be managed by the chart. If false, the mutating webhook will be managed by the user. |
 | capabilities.admissionController.mutatingWebhook.timeoutSeconds | int | `5` | Timeout for the webhook call in seconds |
@@ -260,6 +266,8 @@ Relevant values:
 | capabilities.admissionController.binpacking.markUnevictable | bool | `true` | Add a label to mark pods as unevictable (requires enabling per cluster in UI in addition) |
 | capabilities.admissionController.binpacking.addNodeAffinityToMarkedPods | bool | `true` | Add node affinity to marked pods to prefer scheduling on nodes with already unevictable pods (requires enabling per cluster in UI in addition) |
 | capabilities.admissionController.rightsizing | object | See sub-values | Configure the rightsizing capabilities for the admission controller |
+| capabilities.admissionController.telemetry | object | See sub-values | Configure the telemetry capabilities for the admission controller |
+| capabilities.admissionController.telemetry.enabled | bool | `false` | Enable telemetry capabilities by the komodor admission controller |
 | components | object | See sub-values | Configure the agent components |
 | components.komodorAgent | object | See sub-values | Configure the komodor agent components |
 | components.komodorAgent.PriorityClassValue | int | `10000000` | Set the priority class value for the komodor agent deployment |
@@ -279,6 +287,7 @@ Relevant values:
 | components.komodorAgent.watcher.ports | object | `{"healthCheck":8090}` | Override the komodor agent watcher ports configuration |
 | components.komodorAgent.watcher.ports.healthCheck | int | `8090` | Override the health check port of the komodor agent watcher |
 | components.komodorAgent.watcher.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
+| components.komodorAgent.watcher.extraVolumes | list | `[]` | List of additional volumes and their mounts to add to the watcher container. Example (projected ServiceAccount token):      extraVolumes:        - volume:            name: workload-identity-token            projected:              sources:                - serviceAccountToken:                    path: token                    expirationSeconds: 3600                    audience: <token-exchange-audience>          volumeMount:            name: workload-identity-token            mountPath: /var/run/secrets/tokens            readOnly: true |
 | components.komodorAgent.supervisor.image | object | `{ "name": "supervisor", "tag": .Chart.AppVersion }` | Override the komodor agent supervisor image name or tag. |
 | components.komodorAgent.supervisor.resources | object | `{"requests":{"cpu":0.1,"memory":"256Mi"}}` | Set custom resources to the komodor agent supervisor container |
 | components.komodorAgent.supervisor.securityContext | object | `{}` | Set container-level securityContext for the komodor agent supervisor container. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution) |
@@ -343,7 +352,7 @@ Relevant values:
 | components.komodorMetrics.metricsInit.resources | object | `{}` | Set custom resources to the komodor agent metrics init container |
 | components.komodorMetrics.metricsInit.securityContext | object | `{}` | Set container-level securityContext for the komodor metrics init and sidecar containers. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution) |
 | components.komodorMetrics.metricsInit.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
-| components.komodorMetrics.metrics.image | object | `{"name":"telegraf","tag":"v2.0.53-alpine"}` | Override the komodor agent metrics image name or tag. |
+| components.komodorMetrics.metrics.image | object | `{"name":"telegraf","tag":"v2.0.68-alpine"}` | Override the komodor agent metrics image name or tag. |
 | components.komodorMetrics.metrics.resources | object | `{"limits":{"cpu":1,"memory":"4Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
 | components.komodorMetrics.metrics.securityContext | object | `{}` | Set container-level securityContext for the komodor metrics (telegraf) container. Supports container-only fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution) |
 | components.komodorMetrics.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
@@ -368,8 +377,8 @@ Relevant values:
 | components.komodorDaemon.metricsInit.image | object | `{ "name": "init-daemon-agent", "tag": .Chart.AppVersion }` | Override the komodor agent metrics init image name or tag. |
 | components.komodorDaemon.metricsInit.resources | object | `{"limits":{"cpu":1,"memory":"100Mi"},"requests":{"cpu":0.1,"memory":"50Mi"}}` | Set custom resources to the komodor agent metrics init container |
 | components.komodorDaemon.metricsInit.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
-| components.komodorDaemon.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf","tag":"v2.0.53-alpine"},"quiet":false,"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"add":[],"drop":["ALL"]},"runAsNonRoot":true},"sidecar":{"enabled":true}}` | Configure the komodor daemon metrics components |
-| components.komodorDaemon.metrics.image | object | `{"name":"telegraf","tag":"v2.0.53-alpine"}` | Override the komodor agent metrics image name or tag. |
+| components.komodorDaemon.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf","tag":"v2.0.68-alpine"},"quiet":false,"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"add":[],"drop":["ALL"]},"runAsNonRoot":true},"sidecar":{"enabled":true}}` | Configure the komodor daemon metrics components |
+| components.komodorDaemon.metrics.image | object | `{"name":"telegraf","tag":"v2.0.68-alpine"}` | Override the komodor agent metrics image name or tag. |
 | components.komodorDaemon.metrics.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
 | components.komodorDaemon.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemon.metrics.quiet | bool | `false` | Set the quiet mode for the komodor agent metrics |
@@ -382,7 +391,7 @@ Relevant values:
 | components.komodorDaemon.nodeEnricher.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemon.nodeEnricher.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"add":[],"drop":["ALL"]},"runAsNonRoot":true}` | Set custom securityContext to the komodor agent node enricher container |
 | components.komodorDaemon.opentelemetry | object | See sub-values | Configure the komodor daemon OpenTelemetry collector components |
-| components.komodorDaemon.opentelemetry.image | object | `{"name":"komodor-otel-collector","tag":"0.1.10"}` | Override the OpenTelemetry collector image name or tag. |
+| components.komodorDaemon.opentelemetry.image | object | `{"name":"komodor-otel-collector","tag":"0.1.11"}` | Override the OpenTelemetry collector image name or tag. |
 | components.komodorDaemon.opentelemetry.resources | object | `{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Set custom resources to the OpenTelemetry collector container |
 | components.komodorDaemon.opentelemetry.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemon.opentelemetry.otelInit | object | See sub-values | Configure the OTel init/sidecar containers for remote configuration |
@@ -422,8 +431,8 @@ Relevant values:
 | components.komodorDaemonWindows.metricsInit.resources | object | `{"limits":{"cpu":1,"memory":"100Mi"},"requests":{"cpu":0.1,"memory":"50Mi"}}` | Set custom resources to the komodor agent metrics init container |
 | components.komodorDaemonWindows.metricsInit.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemonWindows.metricsInit.securityContext | object | `{}` | Set container-level securityContext for the Windows daemon metrics init and sidecar containers. Configure only fields supported by Windows containers. (use with caution) |
-| components.komodorDaemonWindows.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf-windows","tag":"v2.0.53"},"quiet":false,"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}},"securityContext":{},"sidecar":{"enabled":true}}` | Configure the komodor daemon metrics components |
-| components.komodorDaemonWindows.metrics.image | object | `{"name":"telegraf-windows","tag":"v2.0.53"}` | Override the komodor agent metrics image name or tag. |
+| components.komodorDaemonWindows.metrics | object | `{"extraEnvVars":[],"image":{"name":"telegraf-windows","tag":"v2.0.68"},"quiet":false,"resources":{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}},"securityContext":{},"sidecar":{"enabled":true}}` | Configure the komodor daemon metrics components |
+| components.komodorDaemonWindows.metrics.image | object | `{"name":"telegraf-windows","tag":"v2.0.68"}` | Override the komodor agent metrics image name or tag. |
 | components.komodorDaemonWindows.metrics.resources | object | `{"limits":{"cpu":1,"memory":"1Gi"},"requests":{"cpu":0.1,"memory":"384Mi"}}` | Set custom resources to the komodor agent metrics container |
 | components.komodorDaemonWindows.metrics.extraEnvVars | list | `[]` | List of additional environment variables, Each entry is a key-value pair |
 | components.komodorDaemonWindows.metrics.securityContext | object | `{}` | Set container-level securityContext for the Windows daemon metrics container. Configure only fields supported by Windows containers. (use with caution) |
