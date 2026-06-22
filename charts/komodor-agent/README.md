@@ -417,7 +417,7 @@ Relevant values:
 | components.komodorDaemon.opentelemetry.volumes.varlibdockercontainers.hostPath.type | string | `""` | Type of hostPath ("" (Empty string, default = no checks), Directory, DirectoryOrCreate, File, FileOrCreate, Socket, CharDevice, BlockDevice) |
 | components.komodorDaemon.opentelemetry.volumes.varlibdockercontainers.mountPath | string | `"/var/lib/docker/containers"` | Mount path inside the container for docker containers |
 | components.komodorDaemonWindows | object | See sub-values | Configure the komodor agent components |
-| components.komodorDaemonWindows.enabled | bool | `true` | Enable the Windows daemonset. Set to false on Linux-only clusters (e.g. OpenShift) to omit the Windows daemonset entirely. |
+| components.komodorDaemonWindows.enabled | bool | `true` | Enable the Windows daemonset. Set to false on Linux-only clusters to omit the Windows daemonset entirely. |
 | components.komodorDaemonWindows.dnsPolicy | string | `"ClusterFirst"` | Set dns policy for the komodor agent daemon |
 | components.komodorDaemonWindows.affinity | object | `{}` | Set node affinity for the komodor agent daemon |
 | components.komodorDaemonWindows.annotations | object | `{}` | Adds custom annotations - Example: `--set annotations."app\.komodor\.com/app"="komodor-agent"` |
