@@ -257,6 +257,22 @@ steps:
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
   - wait
 
+  - label: ":mega: Notify Slack about new komodor-agent release"
+    commands:
+      - |
+        CHART_VERSION="$$(buildkite-agent meta-data get komodor-agent-version)"
+        AGENT_VERSION="$$(buildkite-agent meta-data get agent-version)"
+        curl -fsS -X POST -H 'Content-type: application/json' \
+          --data "{\"text\":\":rocket: New *komodor-agent* chart released: \`$$CHART_VERSION\` (agent \`$$AGENT_VERSION\`)\nhttps://github.com/komodorio/helm-charts/releases/tag/komodor-agent/$$CHART_VERSION\"}" \
+          "$$SLACK_WEBHOOK_URL"
+    agents:
+      builder: "builder-dind-agent"
+    plugins:
+      - zacharymctague/aws-ssm#v1.0.0:
+          parameters:
+            SLACK_WEBHOOK_URL: /app/ci/slack/release-webhook
+    if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
+
   - label: ":magic_wand: Install new komodor-agent version on komodor staging :kubernetes: cluster"
     commands:
       - komo ctx staging
