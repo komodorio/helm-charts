@@ -17,6 +17,14 @@ rules:
   verbs:
   - get
   - list
+# watch on pods lets the metrics daemon serve pod enrichment from an informer
+# cache (kube_consolidated use_pod_informer) instead of per-pod API GETs
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - watch
 - apiGroups:
   - apps
   resources:
