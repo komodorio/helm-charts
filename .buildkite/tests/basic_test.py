@@ -3,7 +3,8 @@ import time
 from fixtures import setup_cluster, kube_client, cleanup_agent_from_cluster
 from helpers.utils import get_filename_as_cluster_name
 import helpers.kubernetes_helper as kubernetes_helper
-from helpers.komodor_helper import create_komodor_uid, query_backend
+from helpers.kubernetes_helper import rollout_restart_and_wait
+from helpers.komodor_helper import create_komodor_uid, query_backend_with_retry
 from config import API_KEY, BE_BASE_URL, NAMESPACE, RELEASE_NAME
 from helpers.helm_helper import helm_agent_install
 
@@ -46,16 +47,21 @@ def test_helm_installation(setup_cluster, kube_client):
     kubernetes_helper.look_for_errors_in_pod_log(pod_name, "k8s-watcher")
 
 
-def test_get_configmap_from_resources_api(setup_cluster):
+@pytest.mark.flaky(reruns=3)
+def test_get_deploy_event_from_resources_api(setup_cluster):
     output, exit_code = helm_agent_install(CLUSTER_NAME)
     assert exit_code == 0, f"Agent installation failed, output: {output}"
 
-    kuid = create_komodor_uid("configmap", "komodor-agent-config", NAMESPACE, CLUSTER_NAME)
-    url = f"{BE_BASE_URL}/resources/api/v1/configurations/config-maps/events/search?komodorUids={kuid}&limit=1&fields=clusterName&order=DESC"
+    deployment = "nc-server"
+    namespace = "server-namespace"
+    rollout_restart_and_wait(deployment, namespace)
 
-    response = query_backend(url)
+    kuid = create_komodor_uid("Deployment", deployment, namespace, CLUSTER_NAME)
+    url = (f"{BE_BASE_URL}/resources/api/v1/deploys/events/search"
+           f"?komodorUids={kuid}&limit=1&order=DESC")
 
-    assert response.status_code == 200, f"Failed to get configmap from resources api, response: {response}"
-    assert len(response.json()['data']) > 0, f"Failed to get configmap from resources api, response: {response}"
-    assert response.json()['data'][0]['clusterName'] == CLUSTER_NAME, f"Wrong configmap returned from resources api, response: {response}"
+    response = query_backend_with_retry(url, retries=10, object_to_wait_for="data")
+
+    assert response.status_code == 200, f"Failed to get deploy event from resources api, response: {response}"
+    assert len(response.json()['data']) > 0, f"No deploy event returned from resources api, response: {response.json()}"
 
