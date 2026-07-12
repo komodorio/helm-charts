@@ -296,6 +296,8 @@ steps:
   - label: ":magic_wand: Install new komodor-agent version reporting to komodor production (US) :kubernetes: cluster"
     commands:
       - ./.buildkite/pipeline_scripts/update_agent.sh production production komodor-agent
+      - ./.buildkite/pipeline_scripts/update_agent.sh agentops-production agentops-production komodor-agent
+      - ./.buildkite/pipeline_scripts/update_agent.sh agentops-staging agentops-staging komodor-agent
      # Install komodor agent on EU-production cluster report to US-production cluster
       - ./.buildkite/pipeline_scripts/update_agent.sh eu-production eu-production "komodor-agent-us" "" "komodor-agent-report-to-us"
       - ./.buildkite/pipeline_scripts/update_agent.sh production production-rc-chart komodor-agent-rc "" "komodor-agent-rc" "rc"
