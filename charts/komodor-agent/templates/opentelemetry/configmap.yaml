@@ -91,9 +91,14 @@ data:
           - "/var/log/pods/*komodor-podmotion*/*/*.log"
         exclude:
           - "/var/log/pods/*{{ include "komodorAgent.fullname" . }}*/otel-collector/*.log"
+          {{- range .Values.components.komodorDaemon.opentelemetry.logCollection.excludeNamespaces }}
+          # IOPS safety: never tail logs from this namespace
+          - "/var/log/pods/{{ . }}_*/*/*.log"
+          {{- end }}
         include_file_name: false
         include_file_path: true
         poll_interval: 500ms
+        # start_at MUST remain "end": "beginning" re-reads entire existing logs and causes a read-IOPS burst.
         start_at: end
         max_log_size: 1MiB
         attributes:
