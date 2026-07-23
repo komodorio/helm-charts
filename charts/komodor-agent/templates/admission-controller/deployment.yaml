@@ -42,14 +42,22 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /healthz
+              path: /livez
               port: https
               scheme: HTTPS
+            initialDelaySeconds: 60
+            periodSeconds: 600
+            timeoutSeconds: 5
+            failureThreshold: 3
           readinessProbe:
             httpGet:
-              path: /healthz
+              path: /readyz
               port: https
               scheme: HTTPS
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 3
+            failureThreshold: 2
           resources:
             {{- toYaml .Values.components.admissionController.resources | nindent 12 }}
           env:
