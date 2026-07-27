@@ -20,6 +20,15 @@ It doesn't produce any Kubernetes resources - it only validates input values.
   {{- end }}
 {{- end }}
 
+{{- /* Validate publicApiKey when a dependent capability is enabled */ -}}
+{{- if ((.Values.capabilities).klaudiaIntegrationSync).enabled }}
+  {{- if not .Values.publicApiKeySecret }}
+    {{- if not .Values.publicApiKey }}
+      {{- fail "publicApiKey (or publicApiKeySecret) is required when capabilities.klaudiaIntegrationSync.enabled is true" }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+
 {{- /* Validate serviceAccount configuration */ -}}
 {{- if not .Values.serviceAccount.create }}
   {{- if not .Values.serviceAccount.name }}

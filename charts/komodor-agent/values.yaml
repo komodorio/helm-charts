@@ -5,6 +5,12 @@ site: "us"
 apiKey:
 # apiKeySecret -- (string) Secret name containing Komodor agent api key
 apiKeySecret:
+# publicApiKey -- (guid) Komodor public API key. Required when features that depend on it are enabled (currently capabilities.klaudiaIntegrationSync).
+publicApiKey:
+# publicApiKeySecret -- (string) Existing Kubernetes secret containing the public API key
+publicApiKeySecret:
+# publicApiKeySecretKey -- (string) Key inside publicApiKeySecret (defaults to publicApiKey)
+publicApiKeySecretKey:
 # createNamespace -- Creates the namespace
 createNamespace: true
 # tags -- (dict) Tags the agent in order to identify it based on `key:value` properties separated by semicolon (`;`)
@@ -24,11 +30,11 @@ global:
   securityContext: {}
 
 # telegrafImageVersion -- (string) Telegraf version to be used
-telegrafImageVersion: &telegrafVersion v2.0.53-alpine
+telegrafImageVersion: &telegrafVersion v2.0.77-alpine
 # telegrafWindowsImageVersion -- (string) Telegraf version to be used for windows
-telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.53
+telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.77
 # admissionControllerVersion -- (string) Admission controller version to be used
-admissionControllerVersion: &acVersion 0.1.55
+admissionControllerVersion: &acVersion 0.1.71
 
 # serviceAccount -- Configure service account for the agent
 # @default -- See sub-values
@@ -112,6 +118,15 @@ capabilities:
   rbac: true
   # capabilities.rbacTempTokens -- (bool) Allow komodor to create temporary tokens for service accounts
   rbacTempTokens: true
+
+  # capabilities.impersonation -- Allow the agent to impersonate users (for audit attribution)
+  # and a fixed group that carries the agent's own permissions, so user-triggered actions
+  # are attributed to the real user while authorized via the agent's existing ClusterRole.
+  # @default -- See sub-values
+  # SECURITY: this flag grants impersonate-any-user
+  impersonation:
+    # capabilities.impersonation.enabled -- (bool) Grant the agent impersonate on users + the komodor agent group
+    enabled: false
   # capabilities.rbacClusterSyncParams -- Configure the agent cluster sync capabilities
   # @default -- See sub-values
   rbacClusterSyncParams:
@@ -169,6 +184,15 @@ capabilities:
       enable: true
       # capabilities.redaction.secret.keepOnlyHelmReleases -- (bool) Determine if only helm releases should be collected, if true - wipe and redact all other secrets data
       keepOnlyHelmReleases: false
+    # capabilities.redaction.byKind -- (list) Redact specific fields from resources by kind using jq field selectors. Each entry specifies a `kind`, optional `group` (for CRDs), and `fields` (list of jq expressions).
+    # Example:
+    # byKind:
+    #   - kind: ExternalSecret
+    #     group: external-secrets.io
+    #     fields:
+    #       - .spec.data[].remoteRef.key
+    #       - .spec.dataFrom[].extract.key
+    byKind: []
 
   # capabilities.telemetry -- Configure the agent telemetry capabilities
   # @default -- See sub-values
@@ -207,6 +231,25 @@ capabilities:
     #   - "host:port" pairs (e.g. "myservice:8080") — exact match
     #   - plain hosts (e.g. "myservice") — any port on that host
     whitelist: []
+    # capabilities.tunnel.kubeapiserver -- Configure Kubernetes API server tunneling
+    # @default -- See sub-values
+    kubeapiserver:
+      # capabilities.tunnel.kubeapiserver.enabled -- (bool) Enable tunneling to the Kubernetes API server
+      enabled: true
+
+  # capabilities.klaudiaIntegrationSync -- Sync KomodorMCPIntegration and KomodorSkill CRs to the Klaudia API.
+  # CRs (and any Secrets they reference) must be created in the agent's release namespace;
+  # CRs in other namespaces are silently ignored by the sync controller.
+  # @default -- See sub-values
+  klaudiaIntegrationSync:
+    # capabilities.klaudiaIntegrationSync.enabled -- (bool) Enable KomodorMCPIntegration and KomodorSkill CR sync controller
+    enabled: false
+    # capabilities.klaudiaIntegrationSync.resyncInterval -- (string) How often to force-resync all CRs even if unchanged
+    resyncInterval: "2m"
+    # capabilities.klaudiaIntegrationSync.httpTimeout -- (string) HTTP timeout for Klaudia API calls
+    httpTimeout: "90s"
+    # capabilities.klaudiaIntegrationSync.serverFetchInterval -- (string) How often to refresh server-side status (tools/status) on otherwise unchanged CRs. Set to "0s" to fetch every reconcile.
+    serverFetchInterval: "10m"
 
   # capabilities.admissionController -- Configure the komodor admission controller capabilities
   # @default -- See sub-values
@@ -237,6 +280,15 @@ capabilities:
       # capabilities.admissionController.webhookServer.reuseGeneratedTlsSecret -- (bool) If true, the webhook server will reuse the generated TLS secret. If false, the webhook server will recreate a new TLS secret on every upgrade.
       # @default -- true
       reuseGeneratedTlsSecret: true
+      # capabilities.admissionController.webhookServer.staticTlsCertData -- Provide static certificate data to use instead of generating. Useful when rendering the chart outside of a cluster. If all three fields are set, they take priority over cert regeneration but are still overridden by existing in-cluster secrets when reuseGeneratedTlsSecret is true.
+      # @default -- See sub-values
+      staticTlsCertData:
+        # capabilities.admissionController.webhookServer.staticTlsCertData.tlsCert -- (string) Base64-encoded TLS certificate (tls.crt)
+        tlsCert:
+        # capabilities.admissionController.webhookServer.staticTlsCertData.tlsKey -- (string) Base64-encoded TLS private key (tls.key)
+        tlsKey:
+        # capabilities.admissionController.webhookServer.staticTlsCertData.caCert -- (string) Base64-encoded CA certificate (ca.crt)
+        caCert:
     # capabilities.admissionController.mutatingWebhook -- Configure the mutating webhook
     # @default -- See sub-values
     mutatingWebhook:
@@ -275,6 +327,12 @@ capabilities:
       # capabilities.admissionController.rightsizing.recommendationsSyncInterval -- (string) Interval for syncing rightsizing recommendations. It should be a valid duration string (e.g., "30s", "1m", "5m", "1h").
       # @default -- "1m"
       #recommendationsSyncInterval: "1m"
+
+    # capabilities.admissionController.telemetry -- Configure the telemetry capabilities for the admission controller
+    # @default -- See sub-values
+    telemetry:
+      # capabilities.admissionController.telemetry.enabled -- (bool) Enable telemetry capabilities by the komodor admission controller
+      enabled: false
 
 # components -- Configure the agent components
 # @default -- See sub-values
@@ -327,6 +385,22 @@ components:
         healthCheck: 8090
       # components.komodorAgent.watcher.extraEnvVars -- List of additional environment variables, Each entry is a key-value pair
       extraEnvVars: []
+      # components.komodorAgent.watcher.extraVolumes -- List of additional volumes and their mounts to add to the watcher container.
+      # Example (projected ServiceAccount token):
+      #      extraVolumes:
+      #        - volume:
+      #            name: workload-identity-token
+      #            projected:
+      #              sources:
+      #                - serviceAccountToken:
+      #                    path: token
+      #                    expirationSeconds: 3600
+      #                    audience: <token-exchange-audience>
+      #          volumeMount:
+      #            name: workload-identity-token
+      #            mountPath: /var/run/secrets/tokens
+      #            readOnly: true
+      extraVolumes: []
 
     supervisor:
       # components.komodorAgent.supervisor.image -- Override the komodor agent supervisor image name or tag.
@@ -357,7 +431,7 @@ components:
     # @default -- see sub-values
     image:
       name: nginx
-      tag: 1.31.1-alpine3.23-slim
+      tag: 1.31.3-alpine3.24-slim
     # components.komodorKubectlProxy.resources -- Set custom resources to the komodor kubectl proxy container
     resources: {}
     # components.komodorKubectlProxy.PriorityClassValue -- Set the priority class value for the komodor kubectl proxy deployment
@@ -659,7 +733,7 @@ components:
       # components.komodorDaemon.opentelemetry.image -- Override the OpenTelemetry collector image name or tag.
       image:
         name: komodor-otel-collector
-        tag: 0.1.10
+        tag: 0.1.12
       # components.komodorDaemon.opentelemetry.resources -- Set custom resources to the OpenTelemetry collector container
       resources:
         limits:
@@ -747,6 +821,8 @@ components:
   # components.komodorDaemonWindows -- Configure the komodor agent components
   # @default -- See sub-values
   komodorDaemonWindows:
+    # components.komodorDaemonWindows.enabled -- (bool) Enable the Windows daemonset. Set to false on Linux-only clusters to omit the Windows daemonset entirely.
+    enabled: true
     # components.komodorDaemonWindows.dnsPolicy -- Set dns policy for the komodor agent daemon
     dnsPolicy: ClusterFirst
     # components.komodorDaemonWindows.affinity -- Set node affinity for the komodor agent daemon
@@ -963,3 +1039,4 @@ communications:
   tasksServerHost:
   telemetryServerHost:
   mgmtServerHost:
+  publicApiServerHost:

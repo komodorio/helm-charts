@@ -76,8 +76,10 @@
     {{ include "komodorAgent.apiKeySecretRef" . | nindent 4 }}
   - name: KOMO_CLUSTER_NAME
     value: {{ .Values.clusterName }}
+  {{- with .Values.components.komodorDaemon.opentelemetry.resources.limits.memory }}
   - name: GOMEMLIMIT
-    value: {{ .Values.components.komodorDaemon.opentelemetry.resources.limits.memory | replace "Ki" "KiB" | replace "Mi" "MiB" | replace "Gi" "GiB" | replace "Ti" "TiB" | quote }}
+    value: {{ include "komodorAgent.goMemLimit" (dict "mem" .) | quote }}
+  {{- end }}
   - name: KOMODOR_SERVER_URL
     value: {{ include "communication.telemetryServerHost" . }}
   {{- include "komodorAgent.opentelemetry.healthEndpointsEnvironment" . | nindent 2 }}
@@ -108,7 +110,7 @@
   - name: KOMOKW_RUNTIME_MODE
     value: sidecar
   - name: KOMOKW_COMPONENT
-    value: {{ .Chart.Name }}-opentelemetry
+    value: komodor-agent-opentelemetry
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
   - name: KOMOKW_API_KEY
@@ -143,7 +145,7 @@
   - name: KOMOKW_RUNTIME_MODE
     value: init
   - name: KOMOKW_COMPONENT
-    value: {{ .Chart.Name }}-opentelemetry
+    value: komodor-agent-opentelemetry
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
   - name: KOMOKW_API_KEY

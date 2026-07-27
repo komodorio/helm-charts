@@ -22,7 +22,7 @@ def main(chart, new_version):
     is_rc = "-RC" in new_version.upper()
     version_updated = False
 
-    for _ in range(10):
+    for _ in range(30):
         run_cmd("helm repo update")
         current_version = get_current_version(chart, new_version, is_rc)
         if current_version == new_version:

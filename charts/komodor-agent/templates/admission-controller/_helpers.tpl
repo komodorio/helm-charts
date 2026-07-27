@@ -38,7 +38,7 @@ Admission Controller selector labels
 */}}
 {{- define "komodorAgent.admissionController.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "komodorAgent.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/instance: {{ include "komodor.truncatedReleaseName" . }}
 app.kubernetes.io/component: admission-controller
 {{- with .Values.components.admissionController.labels }}
 {{ toYaml . }}
@@ -97,8 +97,15 @@ In a SPECIFIC ORDER. TLS.CRT is first, then TLS.KEY, and finally CA.CRT.
     {{- $tlsSecret := lookup "v1" "Secret" .Release.Namespace $tlsSecretName -}}
     {{- $caSecret := lookup "v1" "Secret" .Release.Namespace $caSecretName -}}
 
+    {{- $staticTlsCertData := default dict .Values.capabilities.admissionController.webhookServer.staticTlsCertData -}}
+    {{- $providedTlsCert := get $staticTlsCertData "tlsCert" -}}
+    {{- $providedTlsKey := get $staticTlsCertData "tlsKey" -}}
+    {{- $providedCaCert := get $staticTlsCertData "caCert" -}}
+
     {{- if and .Values.capabilities.admissionController.webhookServer.reuseGeneratedTlsSecret (and (not (empty $tlsSecret)) (not (empty $caSecret))) -}}
         {{- printf "%s$%s$%s" (index $tlsSecret.data "tls.crt") (index $tlsSecret.data "tls.key") (index $caSecret.data "tls.crt") -}}
+    {{- else if and $providedTlsCert (and $providedTlsKey $providedCaCert) -}}
+        {{- printf "%s$%s$%s" $providedTlsCert $providedTlsKey $providedCaCert -}}
     {{- else -}}
         {{- $ca := genCA (print "*." .Release.Namespace ".svc") 3650 -}}
         {{- $cn := print (include "komodorAgent.admissionController.serviceName" .) "." .Release.Namespace ".svc" -}}

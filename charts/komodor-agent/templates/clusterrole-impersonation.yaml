@@ -1,0 +1,15 @@
+{{- if and .Values.createRbac .Values.capabilities.impersonation.enabled -}}
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "komodorAgent.clusterRole.impersonation" . }}
+rules:
+  - apiGroups: [""]
+    resources: ["users"]
+    verbs: ["impersonate"]
+  - apiGroups: [""]
+    resources: ["groups"]
+    resourceNames:
+      - {{ include "komodorAgent.impersonationGroup" . | quote }}
+    verbs: ["impersonate"]
+{{- end -}}

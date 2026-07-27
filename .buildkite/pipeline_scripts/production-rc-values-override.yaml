@@ -11,3 +11,5 @@ capabilities:
       enabled: true
     mutatingWebhook:
       selfManage: false
+  impersonation:
+    enabled: true

@@ -25,8 +25,10 @@
     valueFrom:
       fieldRef:
         fieldPath: status.hostIP
+  {{- with .Values.components.komodorMetrics.metrics.resources.limits.memory }}
   - name: GOMEMLIMIT
-    value: {{ .Values.components.komodorMetrics.metrics.resources.limits.memory | replace "Ki" "KiB" | replace "Mi" "MiB" | replace "Gi" "GiB" | replace "Ti" "TiB" | quote }}
+    value: {{ include "komodorAgent.goMemLimit" (dict "mem" .) | quote }}
+  {{- end }}
   {{- if .Values.components.komodorMetrics.disableHttp2 }}
   - name: GODEBUG
     value: http2client=0
@@ -56,7 +58,7 @@
   - name: KOMOKW_RUNTIME_MODE
     value: sidecar
   - name: KOMOKW_COMPONENT
-    value: {{ .Chart.Name  }}-metrics
+    value: komodor-agent-metrics
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
   - name: KOMOKW_API_KEY
@@ -88,7 +90,7 @@
   - name: KOMOKW_RUNTIME_MODE
     value: init
   - name: KOMOKW_COMPONENT
-    value: {{ .Chart.Name  }}-metrics
+    value: komodor-agent-metrics
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
   - name: KOMOKW_API_KEY

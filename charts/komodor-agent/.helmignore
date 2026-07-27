@@ -26,3 +26,4 @@
 kube-install/
 Makefile
 helm-fan-out.sh
+helm-docs

@@ -1,4 +1,4 @@
-{{- if ne .Values.capabilities.metrics false }}
+{{- if and (ne .Values.capabilities.metrics false) (ne (((.Values.components).komodorDaemonWindows).enabled) false) }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:

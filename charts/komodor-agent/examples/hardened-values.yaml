@@ -181,23 +181,25 @@ components:
           add: []
 
     opentelemetry:
-      # Disable host log collection in the hardened profile. The collector runs as non-root here,
-      # so mounting root-owned host log paths would fail at runtime under strict policies.
+      # Keep pod log collection working under the hardened profile by mounting /var/log/pods
+      # (default varlogpods volume). The collector inherits the chart default root context
+      # for this container so it can read the host log files. The legacy docker hostPath
+      # (/var/lib/docker/containers) stays disabled — not present on containerd nodes.
       volumes:
-        varlogpods: null
         varlibdockercontainers: null
 
-      # Container security context (komodorDaemon / otel-collector container)
+      # Container security context (komodorDaemon / otel-collector container).
+      # Drop ALL capabilities, then add back only DAC_OVERRIDE so the collector can read the
+      # root-owned host log files under /var/log/pods regardless of their permission bits
+      # (portable across nodes/runtimes where those files are not world-readable).
       securityContext:
-        runAsUser: 1001
-        runAsGroup: 1001
-        runAsNonRoot: true
         allowPrivilegeEscalation: false
         readOnlyRootFilesystem: true
         capabilities:
           drop:
             - ALL
-          add: []
+          add:
+            - DAC_OVERRIDE
 
       otelInit:
         # Container security context (komodorDaemon / otel-init and otel-init-sidecar containers)

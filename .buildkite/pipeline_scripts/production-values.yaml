@@ -15,6 +15,8 @@ capabilities:
       addNodeAffinityToMarkedPods: true
     mutatingWebhook:
       selfManage: true # do not create the mutating webhook configuration since we need to install the agent multiple times it will conflict
+  impersonation:
+    enabled: true
 
 allowedResources:
   secret: true

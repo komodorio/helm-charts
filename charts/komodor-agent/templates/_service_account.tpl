@@ -36,3 +36,25 @@ ClusterRole name for node-enricher container
 {{- define "komodorAgent.clusterRole.nodeEnricher" -}}
 {{- printf "%s-node-enricher" (include "komodorAgent.fullname" .) }}
 {{- end }}
+
+{{/*
+Role name for Klaudia integration sync (namespaced RBAC)
+*/}}
+{{- define "komodorAgent.role.klaudiaIntegrationSync" -}}
+{{- printf "%s-klaudia-integration-sync" (include "komodorAgent.fullname" .) }}
+{{- end }}
+
+{{/*
+ClusterRole name for impersonation (users + pinned group)
+*/}}
+{{- define "komodorAgent.clusterRole.impersonation" -}}
+{{- printf "%s-impersonation" (include "komodorAgent.fullname" .) }}
+{{- end }}
+
+{{/*
+The group the agent impersonates to carry k8s-watcher permissions.
+Must match exactly what the agent code passes as --as-group.
+*/}}
+{{- define "komodorAgent.impersonationGroup" -}}
+komodor:agent-actions
+{{- end }}
