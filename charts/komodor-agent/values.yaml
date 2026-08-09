@@ -30,9 +30,9 @@ global:
   securityContext: {}
 
 # telegrafImageVersion -- (string) Telegraf version to be used
-telegrafImageVersion: &telegrafVersion v2.0.78-alpine
+telegrafImageVersion: &telegrafVersion v2.0.81-alpine
 # telegrafWindowsImageVersion -- (string) Telegraf version to be used for windows
-telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.78
+telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.81
 # admissionControllerVersion -- (string) Admission controller version to be used
 admissionControllerVersion: &acVersion 0.1.71
 
@@ -733,7 +733,7 @@ components:
       # components.komodorDaemon.opentelemetry.image -- Override the OpenTelemetry collector image name or tag.
       image:
         name: komodor-otel-collector
-        tag: 0.1.12
+        tag: 0.1.13
       # components.komodorDaemon.opentelemetry.resources -- Set custom resources to the OpenTelemetry collector container
       resources:
         limits:
