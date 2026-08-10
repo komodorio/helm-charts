@@ -15,7 +15,6 @@ The Komodor agent deploys an [OpenTelemetry Collector](https://opentelemetry.io/
   │  ┌──────────────────────────────────┐            │  :4317  OTLP/gRPC│   │
   │  │  /var/log/pods  (host mount)     │            │                  │   │
   │  │  • komodor-daemon/*/*/*.log      │ ─ tail ──► │  filelog/komodor │   │
-  │  │  • komodor-podmotion/*/*/*.log   │            │                  │   │
   │  └──────────────────────────────────┘            │                  │   │
   │                                                  │                  │   │
   │  ┌──────────────────────────────────┐  health    │                  │   │
@@ -32,10 +31,6 @@ The Komodor agent deploys an [OpenTelemetry Collector](https://opentelemetry.io/
   │  admission-controller            │ ────────────────────────────────────►│
   └──────────────────────────────────┘         (via ClusterIP service :4318)│
                                                                              │
-  ┌──────────────────────────────────┐  Prometheus scrape                   │
-  │  komodor-podmotion pods          │ ◄───────────────────────────────────►│
-  │  (annotation: scrape=true)       │  kubernetes_sd (all nodes)           │
-  └──────────────────────────────────┘                                      │
                                                        │                    │
                           ┌────────────────────────────┤                   │
                           │                            │                    │
@@ -84,18 +79,15 @@ Receives OpenTelemetry traces from `k8s-watcher` and the `admission-controller` 
 
 ---
 
-### `metrics` — Agent & pod-motion metrics
+### `metrics` — Agent metrics
 
 | | |
 |---|---|
-| **Receivers** | `otlp` (HTTP `:4318`), `prometheus/komodor-podmotion` |
+| **Receivers** | `otlp` (HTTP `:4318`) |
 | **Processors** | `memory_limiter` → `attributes/upsert-cluster` → `batch` |
 | **Destination** | **Komodor backend** |
 
-Two sources feed this pipeline:
-
-- **OTLP** — internal metrics pushed by `k8s-watcher` and the `admission-controller`.
-- **Prometheus scrape (`komodor-podmotion`)** — the collector scrapes any pod in the cluster annotated with `prometheus.io/scrape: "true"` and labelled `app.kubernetes.io/name: komodor-podmotion`. The `komodor.cluster.name` attribute is stamped on every datapoint before forwarding.
+- **OTLP** — internal metrics pushed by `k8s-watcher` and the `admission-controller`. The `komodor.cluster.name` attribute is stamped on every datapoint before forwarding.
 
 ---
 
@@ -110,7 +102,6 @@ Two sources feed this pipeline:
 Tails log files from `/var/log/pods` on the host for:
 
 - All containers of the `komodor-daemon` pod (except the `otel-collector` container itself, to avoid log loops).
-- All `komodor-podmotion` pods.
 
 Each log line is enriched with `namespace`, `pod`, `container`, and `komodor.cluster.name` attributes. The collector attempts to parse Kubernetes container-runtime headers and JSON-structured log bodies; unparseable lines are forwarded as-is.
 
@@ -205,7 +196,7 @@ Memory is managed at the pipeline level by the `memory_limiter` processor (75% l
 |---|---|---|
 | Traces | Komodor backend | Internal agent operational traces |
 | Metrics | Komodor backend | Internal agent operational metrics |
-| Logs | Komodor backend | Structured logs from all agent containers and komodor-podmotion pods |
+| Logs | Komodor backend | Structured logs from all agent containers |
 | Health metrics | **Your Prometheus** (`:9090`) | `httpcheck.*` agent health checks as well as select operational metrics we consider critical and actionable |
 | Collector internals | **Your Prometheus** (`:8888`) | OTel Collector pipeline throughput, error rates, memory usage |
 
