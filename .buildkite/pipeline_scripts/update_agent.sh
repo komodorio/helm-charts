@@ -40,13 +40,25 @@ if [ -f ./.buildkite/pipeline_scripts/${environment}-override-values.yaml ]; the
   EXTRA_VALUES_ARG="-f ./.buildkite/pipeline_scripts/${environment}-override-values.yaml"
 fi
 
-# Carry the live release's values forward. On a cluster where this release does not exist yet,
-# `helm get values` exits 1 with "release: not found" — and with `set -e` that kills the whole step,
-# taking every other cluster in it down too. Start from empty values instead so the FIRST install on
-# a new cluster is just a normal `--install`.
-helm get values "$RELEASE_NAME" -n "${NAMESPACE}" > current-values.yaml 2>/dev/null \
-  || echo "{}" > current-values.yaml
-helm upgrade --install "${RELEASE_NAME}"  komodorio/komodor-agent -n "${NAMESPACE}" --create-namespace -f current-values.yaml  --dry-run
+# Carry the live release's values forward, and preview that they still render.
+#
+# Both lines below assume the release already EXISTS, which breaks the first install on a new
+# cluster in two different ways:
+#   1. `helm get values` exits 1 with "release: not found";
+#   2. the dry-run passes ONLY current-values.yaml — no --set clusterName/apiKey, no
+#      production-values.yaml — so with empty values the chart fails its own validation
+#      ("clusterName is a required value!").
+# Under `set -e` either one kills the whole step, taking every other cluster in it down too.
+#
+# There is nothing to carry forward or preview on a cluster with no release, so skip both and let
+# the real install below (which passes every required flag) do the work. Clusters that already have
+# the release are completely unaffected — same two commands, same order, same output.
+if helm get values "$RELEASE_NAME" -n "${NAMESPACE}" > current-values.yaml 2>/dev/null; then
+  helm upgrade --install "${RELEASE_NAME}"  komodorio/komodor-agent -n "${NAMESPACE}" --create-namespace -f current-values.yaml  --dry-run
+else
+  echo "No existing '${RELEASE_NAME}' release in ${NAMESPACE} — first install on this cluster; skipping the values-preservation dry-run."
+  : > current-values.yaml
+fi
 helm upgrade --install "${RELEASE_NAME}"  komodorio/komodor-agent \
   --namespace="${NAMESPACE}" --create-namespace \
   --set clusterName="${CLUSTER_NAME}" \
