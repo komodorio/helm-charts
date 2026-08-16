@@ -40,7 +40,12 @@ if [ -f ./.buildkite/pipeline_scripts/${environment}-override-values.yaml ]; the
   EXTRA_VALUES_ARG="-f ./.buildkite/pipeline_scripts/${environment}-override-values.yaml"
 fi
 
-helm get values "$RELEASE_NAME" -n "${NAMESPACE}" > current-values.yaml
+# Carry the live release's values forward. On a cluster where this release does not exist yet,
+# `helm get values` exits 1 with "release: not found" — and with `set -e` that kills the whole step,
+# taking every other cluster in it down too. Start from empty values instead so the FIRST install on
+# a new cluster is just a normal `--install`.
+helm get values "$RELEASE_NAME" -n "${NAMESPACE}" > current-values.yaml 2>/dev/null \
+  || echo "{}" > current-values.yaml
 helm upgrade --install "${RELEASE_NAME}"  komodorio/komodor-agent -n "${NAMESPACE}" --create-namespace -f current-values.yaml  --dry-run
 helm upgrade --install "${RELEASE_NAME}"  komodorio/komodor-agent \
   --namespace="${NAMESPACE}" --create-namespace \
