@@ -433,6 +433,15 @@ rules:
 {{- end}}
 {{- if .Values.capabilities.cost.hpa }}
   - apiGroups:
+    - autoscaling
+    resources:
+    - horizontalpodautoscalers
+    verbs:
+    - get
+    - list
+    - patch
+    - update
+  - apiGroups:
     - keda.sh
     resources:
     - scaledjobs
