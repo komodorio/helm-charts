@@ -106,7 +106,7 @@ capabilities:
   # capabilities.cost -- Configure the agent cost capabilities
   # @default -- See sub-values
   cost:
-    # capabilities.cost.hpa -- (bool) Enable patch and update permissions for KEDA ScaledObjects and ScaledJobs
+    # capabilities.cost.hpa -- (bool) Grant the k8s-watcher patch/update on HorizontalPodAutoscalers and KEDA ScaledObjects/ScaledJobs, independently of `capabilities.actions`. Required for HPA right-sizing when `actions=false`.
     hpa: true
   # capabilities.helm -- Enable helm capabilities by the komodor agent
   helm:
