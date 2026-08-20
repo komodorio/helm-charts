@@ -185,7 +185,7 @@ Relevant values:
 | capabilities.actions | bool | `true` | Allow users to perform actions on the cluster, granular access control is defined in the application<boolean> |
 | capabilities.crActions | bool | `true` | Allow komodor service account to edit and delete custom resources in the cluster |
 | capabilities.cost | object | See sub-values | Configure the agent cost capabilities |
-| capabilities.cost.hpa | bool | `true` | Enable patch and update permissions for KEDA ScaledObjects and ScaledJobs |
+| capabilities.cost.hpa | bool | `true` | Grant the k8s-watcher patch/update on HorizontalPodAutoscalers and KEDA ScaledObjects/ScaledJobs, independently of `capabilities.actions`. Required for HPA right-sizing when `actions=false`. |
 | capabilities.helm | object | `{"enabled":true,"readonly":false}` | Enable helm capabilities by the komodor agent |
 | capabilities.helm.enabled | bool | `true` | Enable helm capabilities by the komodor agent |
 | capabilities.helm.readonly | bool | `false` | Allow komodor to read helm resources only (remove create/update/delete permissions from secrets) |
