@@ -490,6 +490,10 @@ components:
     PriorityClassValue: 10000000
     # components.admissionController.priorityClassName -- Use an existing priority class for the komodor admission-controller deployment. If not set, will create and use a priority class with PriorityClassValue. WARNING: priorityClassName is immutable and cannot be changed after initial deployment
     priorityClassName: ""
+    # components.admissionController.spotAvoidance -- Extra spot-avoidance guards that are cloud-specific and unsafe by default.
+    spotAvoidance:
+      # components.admissionController.spotAvoidance.eksManagedNodeGroups -- (bool) When true, appends `eks.amazonaws.com/capacityType NotIn [SPOT]` to every entry under `affinity.nodeAffinity.preferredDuringSchedulingIgnoredDuringExecution[].preference.matchExpressions` (preferred branch only — has no effect if you override `nodeAffinity` with only `requiredDuringSchedulingIgnoredDuringExecution`; also, expressions within a preference are AND'd, so any custom preferences you set will also require non-SPOT). ONLY safe on EKS clusters using Managed Node Groups — set true to preserve the pre-fix behavior on MNG clusters. MUST remain false on EKS Auto Mode: `eks.amazonaws.com` is a restricted label domain there and `capacityType` is not a well-known key, so Karpenter rejects NodeClaim creation and node provisioning halts cluster-wide.
+      eksManagedNodeGroups: false
     # components.admissionController.affinity -- Set affinity rules for the komodor admission controller deployment. Split into nodeAffinity, podAffinity, and podAntiAffinity. If podAntiAffinity is not set, defaults to preferred pod anti-affinity on hostname
     affinity:
       # components.admissionController.affinity.nodeAffinity -- Set node affinity for the komodor admission controller deployment
@@ -498,10 +502,6 @@ components:
           - weight: 100
             preference:
               matchExpressions:
-                - key: eks.amazonaws.com/capacityType
-                  operator: NotIn
-                  values:
-                    - SPOT
                 - key: karpenter.sh/capacity-type
                   operator: NotIn
                   values:

@@ -98,7 +98,15 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       affinity:
-        {{- with .Values.components.admissionController.affinity.nodeAffinity }}
+        {{- $nodeAff := .Values.components.admissionController.affinity.nodeAffinity }}
+        {{- if and $nodeAff .Values.components.admissionController.spotAvoidance.eksManagedNodeGroups }}
+          {{- $nodeAff = deepCopy $nodeAff }}
+          {{- range $pref := (default (list) $nodeAff.preferredDuringSchedulingIgnoredDuringExecution) }}
+            {{- $expr := dict "key" "eks.amazonaws.com/capacityType" "operator" "NotIn" "values" (list "SPOT") }}
+            {{- $_ := set $pref.preference "matchExpressions" (append (default (list) $pref.preference.matchExpressions) $expr) }}
+          {{- end }}
+        {{- end }}
+        {{- with $nodeAff }}
         nodeAffinity:
           {{- toYaml . | nindent 10 }}
         {{- end }}
