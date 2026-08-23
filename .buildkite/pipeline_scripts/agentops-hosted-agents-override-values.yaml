@@ -1,0 +1,41 @@
+# agentops-hosted-agents (us-east-2, account 913615820321) — the cluster that runs production
+# hosted customer agents.
+#
+# This file exists because production-values.yaml is wrong for this cluster in both directions:
+#
+#   * It gives komodorDaemon and komodorMetrics tolerations for `komodor.io/sensitive` and
+#     `dedicated=ws-redis`. NEITHER taint exists here.
+#   * It gives komodorAgent, admissionController and komodorKubectlProxy no tolerations at all.
+#
+# Every Karpenter NodePool on this cluster is tainted on purpose: `platform` carries
+# `komodor.io/agentops-hosted-agents-core` and `agents-production` carries
+# `agentops.komodor.com/env=production`, so a workload that tolerates nothing goes Pending rather
+# than landing on whatever pool happens to be untainted. Without this file every komodor-agent
+# workload stays Pending on this cluster.
+#
+# Helm replaces lists rather than merging them, so each `tolerations` below fully supersedes the
+# production-values.yaml one.
+components:
+  # The daemon must observe EVERY node, the agent pool included. A blanket `Exists` is the chart's
+  # own default and stays correct when a pool is added later; naming the two taints explicitly
+  # would silently stop monitoring the next pool someone introduces, and a monitoring DaemonSet
+  # that misses a pool reports healthy while seeing nothing.
+  komodorDaemon:
+    tolerations:
+      - operator: Exists
+
+  # The Deployments tolerate the core taint only. That is what confines them to `platform` — no
+  # nodeSelector needed, because not tolerating the agents-pool taint is what keeps them off
+  # capacity sized for customer workers.
+  komodorAgent:
+    tolerations: &coreToleration
+      - key: komodor.io/agentops-hosted-agents-core
+        operator: Equal
+        value: "true"
+        effect: NoSchedule
+  admissionController:
+    tolerations: *coreToleration
+  komodorMetrics:
+    tolerations: *coreToleration
+  komodorKubectlProxy:
+    tolerations: *coreToleration

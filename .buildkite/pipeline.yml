@@ -311,6 +311,22 @@ steps:
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
 
 
+  # Its own step on purpose. The step above installs six targets in one `set -e` shell, so any
+  # single failure there — a komo context the agent does not know yet, an unreachable cluster —
+  # aborts the rest, and this is the newest and least-proven target of the set. Isolated, a failure
+  # here costs this cluster only.
+  - label: ":magic_wand: Install new komodor-agent version on agentops-hosted-agents :kubernetes: cluster"
+    commands:
+      - ./.buildkite/pipeline_scripts/update_agent.sh agentops-hosted-agents agentops-hosted-agents komodor-agent
+    agents:
+      builder: "builder-dind-agent"
+    plugins:
+      - zacharymctague/aws-ssm#v1.0.0:
+          parameters:
+            API_KEY: /komodor/production/kubernetes/api-key
+    if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
+
+
   - label: ":magic_wand: Install new komodor-agent version reporting to komodor eu-production (EU) :kubernetes: cluster"
     commands:
       # Install komodor agent on eu-production cluster report to eu-production cluster
