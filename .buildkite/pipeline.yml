@@ -299,6 +299,7 @@ steps:
       - ./.buildkite/pipeline_scripts/update_agent.sh agentops-production agentops-production komodor-agent
       - ./.buildkite/pipeline_scripts/update_agent.sh agentops-staging agentops-staging komodor-agent
       - ./.buildkite/pipeline_scripts/update_agent.sh agentops-demo agentops-demo komodor-agent
+      - ./.buildkite/pipeline_scripts/update_agent.sh agentops-hosted-agents agentops-hosted-agents komodor-agent
      # Install komodor agent on EU-production cluster report to US-production cluster
       - ./.buildkite/pipeline_scripts/update_agent.sh eu-production eu-production "komodor-agent-us" "" "komodor-agent-report-to-us"
       - ./.buildkite/pipeline_scripts/update_agent.sh production production-rc-chart komodor-agent-rc "" "komodor-agent-rc" "rc"
