@@ -299,10 +299,25 @@ steps:
       - ./.buildkite/pipeline_scripts/update_agent.sh agentops-production agentops-production komodor-agent
       - ./.buildkite/pipeline_scripts/update_agent.sh agentops-staging agentops-staging komodor-agent
       - ./.buildkite/pipeline_scripts/update_agent.sh agentops-demo agentops-demo komodor-agent
-      - ./.buildkite/pipeline_scripts/update_agent.sh agentops-hosted-agents agentops-hosted-agents komodor-agent
      # Install komodor agent on EU-production cluster report to US-production cluster
       - ./.buildkite/pipeline_scripts/update_agent.sh eu-production eu-production "komodor-agent-us" "" "komodor-agent-report-to-us"
       - ./.buildkite/pipeline_scripts/update_agent.sh production production-rc-chart komodor-agent-rc "" "komodor-agent-rc" "rc"
+    agents:
+      builder: "builder-dind-agent"
+    plugins:
+      - zacharymctague/aws-ssm#v1.0.0:
+          parameters:
+            API_KEY: /komodor/production/kubernetes/api-key
+    if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
+
+
+  # Its own step on purpose. The step above installs six targets in one `set -e` shell, so any
+  # single failure there — a komo context the agent does not know yet, an unreachable cluster —
+  # aborts the rest, and this is the newest and least-proven target of the set. Isolated, a failure
+  # here costs this cluster only.
+  - label: ":magic_wand: Install new komodor-agent version on agentops-hosted-agents :kubernetes: cluster"
+    commands:
+      - ./.buildkite/pipeline_scripts/update_agent.sh agentops-hosted-agents agentops-hosted-agents komodor-agent
     agents:
       builder: "builder-dind-agent"
     plugins:
