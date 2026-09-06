@@ -135,15 +135,6 @@ Two things to know before using one:
   needs, and lowering it is what brings the agent's own memory throttle into reach:
   `--set components.komodorAgent.watcher.resources.limits.memory=2Gi`.
 
-Two limitations of the `cost` profile are worth knowing before you switch an existing install:
-
-- Right-sizing keeps applying automatically through the admission controller, but because the
-  profile turns off `capabilities.actions`, **applying a recommendation by hand from the UI, or
-  through self-healing, is refused**. `capabilities.actions` is a single switch covering every
-  mutating action, so there is no way to allow only that one.
-- The agent still advertises live resource browsing for every kind, so **browsing a kind the
-  profile no longer grants read on returns a permission error** rather than "not supported".
-
 ## Api Key
 
 The Komodor kubernetes api key can be provided in the helm upgrade command, in the `values.yaml` file or can be taken from an existing kubernetes secret resource.
