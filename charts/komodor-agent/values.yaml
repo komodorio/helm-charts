@@ -117,7 +117,7 @@ capabilities:
   # capabilities.resourceInfo -- Configure the agent resource-info collection subsystem
   # @default -- See sub-values
   resourceInfo:
-    # capabilities.resourceInfo.enabled -- (bool) Enable the in-watcher resource-info collector. Rendered into the agent ConfigMap as a default, so a remote configuration push still overrides it.
+    # capabilities.resourceInfo.enabled -- (bool) Enable the in-watcher resource-info collector.
     enabled: false
   # capabilities.helm -- Enable helm capabilities by the komodor agent
   helm:
