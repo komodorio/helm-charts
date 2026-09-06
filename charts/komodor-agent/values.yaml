@@ -108,6 +108,11 @@ capabilities:
   cost:
     # capabilities.cost.hpa -- (bool) Grant the k8s-watcher patch/update on HorizontalPodAutoscalers and KEDA ScaledObjects/ScaledJobs, independently of `capabilities.actions`. Required for HPA right-sizing when `actions=false`.
     hpa: true
+  # capabilities.resourceInfo -- Configure the agent resource-info collection subsystem
+  # @default -- See sub-values
+  resourceInfo:
+    # capabilities.resourceInfo.enabled -- (bool) Enable the in-watcher resource-info collector. Rendered into the agent ConfigMap as a default, so a remote configuration push still overrides it.
+    enabled: false
   # capabilities.helm -- Enable helm capabilities by the komodor agent
   helm:
     # capabilities.helm.enabled -- (bool) Enable helm capabilities by the komodor agent

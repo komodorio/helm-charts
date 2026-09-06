@@ -186,6 +186,8 @@ Relevant values:
 | capabilities.crActions | bool | `true` | Allow komodor service account to edit and delete custom resources in the cluster |
 | capabilities.cost | object | See sub-values | Configure the agent cost capabilities |
 | capabilities.cost.hpa | bool | `true` | Grant the k8s-watcher patch/update on HorizontalPodAutoscalers and KEDA ScaledObjects/ScaledJobs, independently of `capabilities.actions`. Required for HPA right-sizing when `actions=false`. |
+| capabilities.resourceInfo | object | See sub-values | Configure the agent resource-info collection subsystem |
+| capabilities.resourceInfo.enabled | bool | `false` | Enable the in-watcher resource-info collector. Rendered into the agent ConfigMap as a default, so a remote configuration push still overrides it. |
 | capabilities.helm | object | `{"enabled":true,"readonly":false}` | Enable helm capabilities by the komodor agent |
 | capabilities.helm.enabled | bool | `true` | Enable helm capabilities by the komodor agent |
 | capabilities.helm.readonly | bool | `false` | Allow komodor to read helm resources only (remove create/update/delete permissions from secrets) |
