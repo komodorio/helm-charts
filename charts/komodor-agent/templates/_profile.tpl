@@ -20,7 +20,21 @@ Helm gives no render-order guarantee, so every template that reads a key written
 include this helper before its first read. `values_profile_test.py` enforces that statically.
 */}}
 {{- define "applyProfile" -}}
-{{- if eq (.Values.profile | default "") "cost" -}}
+{{/*
+Validate here rather than in validations.yaml. Helm renders templates deepest-path-first, so
+validations.yaml is not first and a bad value would surface as a raw template error from this
+file before its check ever ran. Comparing as a string also keeps `--set profile=false` from
+being read as a bool: it is a value like any other, not a way to turn the preset off, and
+silently installing a full agent because someone typed it is the worst outcome here.
+*/}}
+{{- $profile := "" -}}
+{{- if not (kindIs "invalid" .Values.profile) -}}
+{{- $profile = .Values.profile | toString -}}
+{{- end -}}
+{{- if not (has $profile (list "" "cost")) -}}
+{{- fail (printf "profile must be \"cost\", or unset for a default install; got %q. profile is a string, so --set profile=false sets a profile named \"false\" rather than disabling the preset." $profile) -}}
+{{- end -}}
+{{- if eq $profile "cost" -}}
 
 {{/* capabilities.helm may still be a bare bool at this point; set needs a map */}}
 {{- include "migrateHelmValues" . -}}

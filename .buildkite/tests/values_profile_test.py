@@ -173,12 +173,30 @@ class TestProfileIsInertByDefault:
         agent_config, _ = config_maps(render("--set capabilities.resourceInfo.enabled=true"))
         assert agent_config["resourceInfo"]["enabled"] is True
 
-    def test_unknown_profile_is_rejected(self):
+    @pytest.mark.parametrize("value", [
+        "nope",
+        "Cost",   # the value is case sensitive
+        "false",  # helm reads this as a bool; it is a profile name, not a way to disable one
+        "true",
+        "1",
+    ])
+    def test_an_unrecognised_profile_is_rejected(self, value):
+        """
+        The check lives in the helper, not in validations.yaml. Helm renders deepest-path-first,
+        so validations.yaml is not the first template and a bad value would otherwise surface as
+        a raw "incompatible types for comparison" from _profile.tpl. A falsy value silently
+        installing a full agent is the failure that actually costs something.
+        """
         output, exit_code = helm_agent_template(
-            settings=f"--set apiKey={API_KEY} --set clusterName=c --set site=us --set profile=nope"
+            settings=f"--set apiKey={API_KEY} --set clusterName=c --set site=us --set profile={value}"
         )
-        assert exit_code != 0, "an unknown profile rendered instead of failing"
-        assert "profile must be one of" in output
+        assert exit_code != 0, f"profile={value} rendered instead of failing"
+        assert "profile must be" in output, output
+
+    @pytest.mark.parametrize("extra", ["", '--set profile=""', "--set profile=null"])
+    def test_an_empty_profile_is_the_default_install(self, extra):
+        _, installed = config_maps(render(extra))
+        assert installed["allowedResources"]["allowReadAll"] is True
 
 
 class TestCostProfile:
