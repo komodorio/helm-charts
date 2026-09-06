@@ -255,6 +255,39 @@ class TestCostProfile:
                 f"{kind}/{name} does not render by default either, so this asserted nothing"
             assert (kind, name) not in cost_names, f"{kind}/{name} still rendered under profile=cost"
 
+    def test_cost_profile_lowers_the_watcher_memory_limit(self, cost_render, default_render):
+        """
+        The limit drives the agent's own throttle, not scheduling. Requests, the CPU limit and
+        the supervisor stay at their chart defaults.
+        """
+        def watcher(docs):
+            deployment = next(
+                d for d in docs
+                if d["kind"] == "Deployment" and d["metadata"]["name"] == FULLNAME
+            )
+            containers = deployment["spec"]["template"]["spec"]["containers"]
+            return next(c for c in containers if c["name"] == "k8s-watcher")
+
+        assert watcher(default_render)["resources"]["limits"]["memory"] == "8Gi"
+        cost = watcher(cost_render)
+        assert cost["resources"]["limits"]["memory"] == "2Gi"
+        assert cost["resources"]["limits"]["cpu"] == 2
+        assert cost["resources"]["requests"] == {"cpu": 0.25, "memory": "256Mi"}
+
+        go_mem_limit = next(e for e in cost["env"] if e["name"] == "GOMEMLIMIT")["value"]
+        assert go_mem_limit == "1843MiB", "GOMEMLIMIT (2Gi x the 0.9 ratio) no longer follows the profile limit"
+
+    def test_cost_profile_leaves_the_supervisor_alone(self, cost_render):
+        deployment = next(
+            d for d in cost_render
+            if d["kind"] == "Deployment" and d["metadata"]["name"] == FULLNAME
+        )
+        supervisor = next(
+            c for c in deployment["spec"]["template"]["spec"]["containers"]
+            if c["name"] == "supervisor"
+        )
+        assert supervisor["resources"] == {"requests": {"cpu": 0.1, "memory": "256Mi"}}
+
     def test_cost_profile_wins_over_an_explicit_set(self):
         """The one place a profile differs from an equivalent values file."""
         docs = render("--set profile=cost --set capabilities.kubectlProxy.enabled=true")

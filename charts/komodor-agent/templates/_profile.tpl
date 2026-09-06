@@ -48,6 +48,21 @@ include this helper before its first read. `values_profile_test.py` enforces tha
 
 {{- $_ := set .Values.components.komodorDaemonWindows "enabled" false -}}
 
+{{/*
+The watcher memory limit is not a scheduling number. Kubernetes schedules on requests, which
+this profile leaves alone; the limit is what the agent reads back to size its own throttle
+(cmd/watcher/watcher.go passes the container limit into StartMemoryStatusPeriodicRunner, which
+pauses at 20% remaining). The 8Gi default is sized for ~50 informers, so the agent would not
+start protecting itself until it was using 6.4Gi - by which point the node has evicted it. A
+cost-profile watcher runs one informer, so 2Gi puts the pause path above ~1.6Gi and leaves the
+throttle reachable without it firing in normal operation. GOMEMLIMIT follows the same value.
+*/}}
+{{- $watcherResources := .Values.components.komodorAgent.watcher.resources -}}
+{{- if not (kindIs "map" $watcherResources.limits) -}}
+{{- $_ := set $watcherResources "limits" dict -}}
+{{- end -}}
+{{- $_ := set $watcherResources.limits "memory" "2Gi" -}}
+
 {{- $allowed := .Values.allowedResources -}}
 {{/*
 Kept on, and deliberately not pinned here: node, metrics, namespace, pod, deployment,
