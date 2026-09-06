@@ -1,3 +1,4 @@
+import yaml
 import pytest
 from config import API_KEY
 from helpers.utils import get_filename_as_cluster_name
@@ -199,3 +200,124 @@ class TestCombinedValidations:
         # Should fail on first validation (site)
         assert "site is required" in output or "clusterName is a required" in output or "apiKey is a required" in output, \
             f"Expected validation error message, got: {output}"
+
+
+class TestAllowedResourcesEmptyRuleValidation:
+    """Tests that an apiGroup rule is dropped, not emptied, when its kinds are disabled"""
+
+    K8S_WATCHER_SUFFIX = "-k8s-watcher"
+    READ_VERBS = {"get", "watch", "list"}
+
+    # group -> (apiGroups as rendered, {allowedResources key: rendered resource})
+    RESOURCE_GROUPS = {
+        "core": (
+            [""],
+            {
+                "configMap": "configmaps",
+                "endpoints": "endpoints",
+                "event": "events",
+                "limitRange": "limitranges",
+                "namespace": "namespaces",
+                "node": "nodes",
+                "persistentVolume": "persistentvolumes",
+                "persistentVolumeClaim": "persistentvolumeclaims",
+                "pod": "pods",
+                "podTemplate": "podtemplates",
+                "replicationController": "replicationcontrollers",
+                "resourceQuota": "resourcequotas",
+                "secret": "secrets",
+                "service": "services",
+                "serviceAccount": "serviceaccounts",
+            },
+        ),
+        "batch": (
+            ["batch"],
+            {"cronjob": "cronjobs", "job": "jobs"},
+        ),
+        "storage.k8s.io": (
+            ["storage.k8s.io"],
+            {
+                "csiDriver": "csidrivers",
+                "csiNode": "csinodes",
+                "csiStorageCapacity": "csistoragecapacities",
+                "storageClass": "storageclasses",
+                "volumeAttachment": "volumeattachments",
+            },
+        ),
+        # one key set drives two rules: extensions and networking.k8s.io
+        "networking": (
+            ["extensions", "networking.k8s.io"],
+            {
+                "ingress": "ingresses",
+                "ingressClass": "ingressclasses",
+                "networkPolicy": "networkpolicies",
+            },
+        ),
+    }
+
+    ALL_KEYS = [key for _, keys in RESOURCE_GROUPS.values() for key in keys]
+    KEPT_KEY_CASES = [(group, key) for group, (_, keys) in RESOURCE_GROUPS.items() for key in keys]
+
+    @staticmethod
+    def _render(disabled_keys, extra_settings=""):
+        settings = f"--set apiKey={API_KEY} --set clusterName={CLUSTER_NAME} --set site=us {extra_settings} " + \
+                   " ".join(f"--set allowedResources.{key}=false" for key in disabled_keys)
+        output, exit_code = helm_agent_template(settings=settings)
+        assert exit_code == 0, f"helm template failed, output: {output}"
+        return output
+
+    @staticmethod
+    def _rbac_rules(output):
+        for doc in yaml.safe_load_all(output):
+            if doc and doc.get("kind") in ("ClusterRole", "Role"):
+                for rule in doc.get("rules") or []:
+                    yield doc["metadata"]["name"], rule
+
+    def _assert_no_empty_rules(self, output):
+        """A rule rendering `resources: null` is rejected by the API server with
+        "resource rules must supply at least one resource". helm template still
+        exits 0, so this asserts on the parsed rules rather than the exit code."""
+        watcher_rules = 0
+        for name, rule in self._rbac_rules(output):
+            assert rule.get("resources") or rule.get("nonResourceURLs"), \
+                f"{name} renders a rule with no resources, the API server will reject it: {rule}"
+            if name.endswith(self.K8S_WATCHER_SUFFIX):
+                watcher_rules += 1
+        assert watcher_rules, "no k8s-watcher ClusterRole was rendered, so this test asserted nothing"
+
+    @pytest.mark.parametrize("group", RESOURCE_GROUPS.keys())
+    def test_that_disabling_a_whole_group_leaves_no_empty_rule(self, group):
+        """Test that disabling every kind in one apiGroup drops the rule instead of emptying it"""
+        _, keys = self.RESOURCE_GROUPS[group]
+        self._assert_no_empty_rules(self._render(keys))
+
+    def test_that_disabling_every_group_leaves_no_empty_rule(self):
+        """Test that all conditional kinds across all groups can be disabled at once"""
+        self._assert_no_empty_rules(self._render(self.ALL_KEYS))
+
+    @pytest.mark.parametrize("group,kept_key", KEPT_KEY_CASES)
+    def test_that_one_kind_left_enabled_still_renders_the_rule(self, group, kept_key):
+        """Test that a guard missing a key does not drop a rule that still has kinds"""
+        api_groups, keys = self.RESOURCE_GROUPS[group]
+        kept_resource = keys[kept_key]
+        # capabilities.helm adds its own `"" -> secrets` read rule to the same ClusterRole,
+        # which would satisfy the assertion below even if the core guard had lost `secret`
+        output = self._render(
+            [key for key in keys if key != kept_key],
+            extra_settings="--set capabilities.helm.enabled=false",
+        )
+        self._assert_no_empty_rules(output)
+
+        # scope to the k8s-watcher role: the metrics ClusterRoles carry an identical
+        # extensions/networking.k8s.io -> ingresses read rule and would mask a regression
+        for api_group in api_groups:
+            matching = [
+                rule for name, rule in self._rbac_rules(output)
+                if name.endswith(self.K8S_WATCHER_SUFFIX)
+                and api_group in (rule.get("apiGroups") or [])
+                and set(rule.get("verbs") or []) == self.READ_VERBS
+                and kept_resource in (rule.get("resources") or [])
+            ]
+            assert matching, \
+                f"apiGroup '{api_group}' lost its read rule for '{kept_resource}' " \
+                f"even though allowedResources.{kept_key} is still true"
