@@ -273,38 +273,43 @@ class TestCostProfile:
                 f"{kind}/{name} does not render by default either, so this asserted nothing"
             assert (kind, name) not in cost_names, f"{kind}/{name} still rendered under profile=cost"
 
-    def test_cost_profile_lowers_the_watcher_memory_limit(self, cost_render, default_render):
+    def test_cost_profile_leaves_workload_sizing_alone(self, cost_render, default_render):
         """
-        The limit drives the agent's own throttle, not scheduling. Requests, the CPU limit and
-        the supervisor stay at their chart defaults.
+        Requests and limits are the operator's to set - utilities/memory-planning exists to tell
+        them what to put there - so the profile does not write them. A cost install that wants a
+        smaller watcher passes the value itself.
         """
-        def watcher(docs):
+        def containers(docs):
             deployment = next(
                 d for d in docs
                 if d["kind"] == "Deployment" and d["metadata"]["name"] == FULLNAME
             )
-            containers = deployment["spec"]["template"]["spec"]["containers"]
-            return next(c for c in containers if c["name"] == "k8s-watcher")
+            return {c["name"]: c for c in deployment["spec"]["template"]["spec"]["containers"]}
 
-        assert watcher(default_render)["resources"]["limits"]["memory"] == "8Gi"
-        cost = watcher(cost_render)
-        assert cost["resources"]["limits"]["memory"] == "2Gi"
-        assert cost["resources"]["limits"]["cpu"] == 2
-        assert cost["resources"]["requests"] == {"cpu": 0.25, "memory": "256Mi"}
+        cost, default = containers(cost_render), containers(default_render)
+        for name in ("k8s-watcher", "supervisor"):
+            assert cost[name]["resources"] == default[name]["resources"], \
+                f"profile=cost changed {name} resources"
 
-        go_mem_limit = next(e for e in cost["env"] if e["name"] == "GOMEMLIMIT")["value"]
-        assert go_mem_limit == "1843MiB", "GOMEMLIMIT (2Gi x the 0.9 ratio) no longer follows the profile limit"
+        watcher = cost["k8s-watcher"]["resources"]
+        assert watcher["limits"] == {"cpu": 2, "memory": "8Gi"}
+        assert watcher["requests"] == {"cpu": 0.25, "memory": "256Mi"}
 
-    def test_cost_profile_leaves_the_supervisor_alone(self, cost_render):
+    def test_a_cost_install_can_still_lower_the_watcher_memory_limit(self):
+        docs = render(
+            "--set profile=cost "
+            "--set components.komodorAgent.watcher.resources.limits.memory=2Gi"
+        )
         deployment = next(
-            d for d in cost_render
-            if d["kind"] == "Deployment" and d["metadata"]["name"] == FULLNAME
+            d for d in docs if d["kind"] == "Deployment" and d["metadata"]["name"] == FULLNAME
         )
-        supervisor = next(
+        watcher = next(
             c for c in deployment["spec"]["template"]["spec"]["containers"]
-            if c["name"] == "supervisor"
+            if c["name"] == "k8s-watcher"
         )
-        assert supervisor["resources"] == {"requests": {"cpu": 0.1, "memory": "256Mi"}}
+        assert watcher["resources"]["limits"]["memory"] == "2Gi"
+        go_mem_limit = next(e for e in watcher["env"] if e["name"] == "GOMEMLIMIT")["value"]
+        assert go_mem_limit == "1843MiB", "GOMEMLIMIT no longer follows the configured limit"
 
     def test_cost_profile_wins_over_an_explicit_set(self):
         """The one place a profile differs from an equivalent values file."""
@@ -360,9 +365,8 @@ class TestProfileSurvivesAwkwardValues:
     """
 
     @pytest.mark.parametrize("extra", [
-        # both already fail to render without the profile, so the helper's guards are what
-        # keeps them working rather than a regression it has to avoid
-        "--set components.komodorAgent.watcher.resources.limits=null",
+        # already fails to render without the profile too, so the helper's guard is what keeps
+        # it working rather than a regression it has to avoid
         "--set allowedResources.argoWorkflows=null",
     ])
     def test_profile_renders(self, extra):

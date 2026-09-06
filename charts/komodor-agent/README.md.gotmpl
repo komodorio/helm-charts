@@ -129,6 +129,11 @@ Two things to know before using one:
 - **`allowedResources.customReadAPIGroups` is left alone**, so add the API groups of any CRDs
   you want the agent to read alongside the profile, for example
   `--set allowedResources.customReadAPIGroups={sparkoperator.k8s.io}`.
+- **A profile never touches resource requests or limits.** Sizing stays yours — see
+  [Memory Planning](#memory-planning-recommended) above. A cost-profile watcher runs far fewer
+  informers than a full agent, so the default `8Gi` watcher limit is usually much larger than it
+  needs, and lowering it is what brings the agent's own memory throttle into reach:
+  `--set components.komodorAgent.watcher.resources.limits.memory=2Gi`.
 
 Two limitations of the `cost` profile are worth knowing before you switch an existing install:
 
