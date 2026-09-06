@@ -1,5 +1,6 @@
 {{- if .Values.createRbac -}}
 {{- include "migrateHelmValues" . -}}
+{{- $allowed := .Values.allowedResources -}}
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -83,6 +84,7 @@ rules:
     - get
     - watch
     - list
+{{- if or $allowed.configMap $allowed.endpoints $allowed.event $allowed.limitRange $allowed.namespace $allowed.node $allowed.persistentVolume $allowed.persistentVolumeClaim $allowed.pod $allowed.podTemplate $allowed.replicationController $allowed.resourceQuota $allowed.secret $allowed.service $allowed.serviceAccount }}
   - apiGroups:
     - ""
     resources:
@@ -135,6 +137,7 @@ rules:
     - get
     - watch
     - list
+{{- end }}
   - apiGroups:
     - apps
     resources:
@@ -149,6 +152,7 @@ rules:
     - get
     - watch
     - list
+{{- if or $allowed.cronjob $allowed.job }}
   - apiGroups:
     - batch
     resources:
@@ -162,6 +166,8 @@ rules:
     - get
     - watch
     - list
+{{- end }}
+{{- if or $allowed.csiDriver $allowed.csiNode $allowed.csiStorageCapacity $allowed.storageClass $allowed.volumeAttachment }}
   - apiGroups:
     - storage.k8s.io
     resources:
@@ -184,6 +190,7 @@ rules:
     - get
     - watch
     - list
+{{- end }}
 {{- if and .Values.allowedResources.customReadAPIGroups (gt (len .Values.allowedResources.customReadAPIGroups) 0) }}
   - apiGroups:
     {{- toYaml .Values.allowedResources.customReadAPIGroups | nindent 6 }}
@@ -221,6 +228,7 @@ rules:
     - watch
     - list
 {{- end }}
+{{- if or $allowed.ingress $allowed.ingressClass $allowed.networkPolicy }}
   - apiGroups:
     - extensions
     resources:
@@ -237,6 +245,8 @@ rules:
     - get
     - watch
     - list
+{{- end }}
+{{- if or $allowed.ingress $allowed.ingressClass $allowed.networkPolicy }}
   - apiGroups:
     - networking.k8s.io
     resources:
@@ -253,6 +263,7 @@ rules:
     - get
     - watch
     - list
+{{- end }}
 {{- if .Values.allowedResources.lease }}
   - apiGroups:
     - coordination.k8s.io
