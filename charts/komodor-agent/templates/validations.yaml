@@ -37,7 +37,7 @@ It doesn't produce any Kubernetes resources - it only validates input values.
 {{- end }}
 
 {{- /* Validate admission controller serviceAccount configuration */ -}}
-{{- if .Values.components.admissionController.enabled }}
+{{- if .Values.capabilities.admissionController.enabled }}
   {{- if not .Values.components.admissionController.serviceAccount.create }}
     {{- if not .Values.components.admissionController.serviceAccount.name }}
       {{- fail "you must provide a components.admissionController.serviceAccount.name when components.admissionController.serviceAccount.create is not set to true" }}

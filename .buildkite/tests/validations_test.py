@@ -114,7 +114,7 @@ class TestAdmissionControllerServiceAccountValidation:
     def test_missing_admission_controller_sa_name_when_not_creating(self):
         """Test that admission controller serviceAccount.name is required when create is false"""
         settings = f"--set apiKey={API_KEY} --set clusterName={CLUSTER_NAME} --set site=us " \
-                   f"--set components.admissionController.enabled=true " \
+                   f"--set capabilities.admissionController.enabled=true " \
                    f"--set components.admissionController.serviceAccount.create=false"
         output, exit_code = helm_agent_template(settings=settings)
 
@@ -126,7 +126,7 @@ class TestAdmissionControllerServiceAccountValidation:
     def test_admission_controller_sa_name_provided_when_not_creating(self):
         """Test that providing admission controller serviceAccount.name when create is false works"""
         settings = f"--set apiKey={API_KEY} --set clusterName={CLUSTER_NAME} --set site=us " \
-                   f"--set components.admissionController.enabled=true " \
+                   f"--set capabilities.admissionController.enabled=true " \
                    f"--set components.admissionController.serviceAccount.create=false " \
                    f"--set components.admissionController.serviceAccount.name=my-ac-sa"
         output, exit_code = helm_agent_template(settings=settings)
@@ -137,7 +137,7 @@ class TestAdmissionControllerServiceAccountValidation:
     def test_admission_controller_disabled_skips_validation(self):
         """Test that admission controller SA validation is skipped when disabled"""
         settings = f"--set apiKey={API_KEY} --set clusterName={CLUSTER_NAME} --set site=us " \
-                   f"--set components.admissionController.enabled=false " \
+                   f"--set capabilities.admissionController.enabled=false " \
                    f"--set components.admissionController.serviceAccount.create=false"
         output, exit_code = helm_agent_template(settings=settings)
 
