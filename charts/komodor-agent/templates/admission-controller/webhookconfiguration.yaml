@@ -1,3 +1,4 @@
+{{- include "applyProfile" . -}}
 {{/*
 We need to put all resources that need certificate or CA Bundle together,
 so the template is executed just once and all the certs match.

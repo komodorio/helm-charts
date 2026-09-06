@@ -103,6 +103,42 @@ The command deploys the komodor-agent on the Kubernetes cluster with default con
 
 > **Tip**: List all releases using `helm list`
 
+## Install profiles
+
+`profile` installs a preset that turns off the capabilities the preset does not need:
+
+```bash
+helm upgrade --install komodor-agent komodorio/komodor-agent \
+  --set apiKey=<YOUR_API_KEY_HERE> \
+  --set clusterName=<CLUSTER_NAME> \
+  --set profile=cost
+```
+
+| Profile | What it does |
+| --- | --- |
+| `""` (default) | Nothing. Every value is exactly as documented below. |
+| `cost` | A read-only, cost-only agent. Keeps metrics collection, the admission controller and HPA right-sizing. Turns off actions, helm, RBAC management, pod logs, the node enricher, resource-info, agent telemetry and the OpenTelemetry collector, the WebSocket tunnel, the kubectl proxy, the Klaudia integration sync and the Windows daemonset, and narrows the agent's cluster read permissions to the resource kinds the cost flows actually read. |
+
+Two things to know before using one:
+
+- **A profile takes precedence over `--set` for the keys it writes.** This is the one way it
+  differs from passing a values file. A profile only ever turns capabilities off, so you can
+  still shrink an install further — `--set profile=cost --set capabilities.metrics=false`
+  works — but you cannot turn one of the profile's own switches back on. Drop the profile and
+  set the individual keys if you need that.
+- **`allowedResources.customReadAPIGroups` is left alone**, so add the API groups of any CRDs
+  you want the agent to read alongside the profile, for example
+  `--set allowedResources.customReadAPIGroups={sparkoperator.k8s.io}`.
+
+Two limitations of the `cost` profile are worth knowing before you switch an existing install:
+
+- Right-sizing keeps applying automatically through the admission controller, but because the
+  profile turns off `capabilities.actions`, **applying a recommendation by hand from the UI, or
+  through self-healing, is refused**. `capabilities.actions` is a single switch covering every
+  mutating action, so there is no way to allow only that one.
+- The agent still advertises live resource browsing for every kind, so **browsing a kind the
+  profile no longer grants read on returns a permission error** rather than "not supported".
+
 ## Api Key
 
 The Komodor kubernetes api key can be provided in the helm upgrade command, in the `values.yaml` file or can be taken from an existing kubernetes secret resource.

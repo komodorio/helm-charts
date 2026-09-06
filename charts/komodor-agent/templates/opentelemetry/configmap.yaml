@@ -1,3 +1,4 @@
+{{- include "applyProfile" . -}}
 {{/*
 DEPRECATED: This static ConfigMap is only used as a fallback when otelInit is disabled
 (components.komodorDaemon.opentelemetry.otelInit.enabled=false).

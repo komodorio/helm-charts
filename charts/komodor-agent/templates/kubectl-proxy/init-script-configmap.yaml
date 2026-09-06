@@ -1,3 +1,4 @@
+{{- include "applyProfile" . -}}
 {{- if .Values.capabilities.kubectlProxy.enabled }}
 apiVersion: v1
 kind: ConfigMap

@@ -1,3 +1,4 @@
+{{- include "applyProfile" . -}}
 Thank you for installing {{ .Chart.Name }}.
 
 The Komodor Agent was installed in namespace: {{ .Release.Namespace }}

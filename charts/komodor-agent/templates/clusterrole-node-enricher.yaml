@@ -1,3 +1,4 @@
+{{- include "applyProfile" . -}}
 {{- if .Values.createRbac -}}
 {{- if .Values.capabilities.nodeEnricher }}
 kind: ClusterRole

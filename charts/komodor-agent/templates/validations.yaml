@@ -1,7 +1,14 @@
+{{- include "applyProfile" . -}}
 {{- /*
 This file contains validations that run before rendering any templates.
 It doesn't produce any Kubernetes resources - it only validates input values.
 */ -}}
+
+{{- /* Validate profile value. applyProfile above ignores anything it does not recognise, so an unknown value fails here rather than silently doing nothing. */ -}}
+{{- $profile := .Values.profile | default "" -}}
+{{- if not (has $profile (list "" "cost")) }}
+  {{- fail (printf "profile must be one of \"\" (default) or \"cost\", got %q" $profile) }}
+{{- end }}
 
 {{- /* Validate site value */ -}}
 {{- if not (or (eq .Values.site "eu") (eq .Values.site "us")) }}

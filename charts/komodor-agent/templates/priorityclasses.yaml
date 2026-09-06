@@ -1,3 +1,4 @@
+{{- include "applyProfile" . -}}
 {{- if not .Values.components.komodorDaemon.priorityClassName }}
 ---
 apiVersion: scheduling.k8s.io/v1

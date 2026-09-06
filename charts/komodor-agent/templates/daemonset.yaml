@@ -1,3 +1,4 @@
+{{- include "applyProfile" . -}}
 {{- if or (ne .Values.capabilities.metrics false) (and .Values.capabilities.telemetry.enabled .Values.capabilities.telemetry.deployOtelCollector) }}
 apiVersion: apps/v1
 kind: DaemonSet
