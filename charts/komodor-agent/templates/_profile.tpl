@@ -4,10 +4,9 @@ applyProfile resolves `--set profile=<name>` into concrete chart values.
 Three rules govern what a profile is allowed to do:
 
   1. It only ever sets values. It never deletes a key and never writes null.
-     `installed-values.yaml` below is a verbatim dump of .Values that is shipped to the
-     Komodor backend at identify, and the backend type-asserts on `capabilities.*` — a null
-     there makes actions-api fail open on every mutating action type and silently disables
-     right-sizing.
+     `installed-values.yaml` below is a verbatim dump of .Values that is sent to Komodor, and
+     the backend type-asserts on `capabilities.*` — a null there reads as "capability on" for
+     every mutating action type and silently disables right-sizing.
 
   2. It only turns capabilities off. Anything a profile depends on staying on is left at its
      chart default rather than pinned here, so an operator can still shrink the install
@@ -51,7 +50,7 @@ silently installing a full agent because someone typed it is the worst outcome h
 {{- $_ := set $caps "nodeEnricher" false -}}
 {{- $_ := set $caps.logs "enabled" false -}}
 {{- $_ := set $caps.resourceInfo "enabled" false -}}
-{{/* komodor-internal agent observability; drops the otel collector daemonset sidecar */}}
+{{/* the agent's own observability; drops the otel collector daemonset sidecar */}}
 {{- $_ := set $caps.telemetry "enabled" false -}}
 {{- $_ := set $caps.telemetry "deployOtelCollector" false -}}
 {{/* remote access paths */}}
@@ -77,14 +76,11 @@ allowedResources is dumped verbatim into the agent ConfigMap, so it has to be na
 explicitly to take effect.
 
 rollout, argoWorkflows.workflows and argoWorkflows.cronWorkflows stay on, and that is load
-bearing rather than an oversight. resources-api asks every cluster for rollouts.argoproj.io,
-workflows.argoproj.io and cronworkflows.argoproj.io whenever the matching CRD is installed
-(crdBackedKinds, services/resources-api/pkg/reconcilers/resources/komodor_service/
-crd_support.go). Without the RBAC the agent answers with a forbidden error rather than the
-"no supported kubernetes resource found" string that parsers.go swallows, and
-GetParallelResultsFor aborts the whole batch - so komodor_service reconciliation stops for
-that cluster and nothing is ever marked deleted. Rollout is also a rightsizable service kind
-(pkg/komodor_cost/rightsizable_service_kinds.go). workflowTemplates and
+bearing rather than an oversight. Komodor asks every cluster for rollouts.argoproj.io,
+workflows.argoproj.io and cronworkflows.argoproj.io whenever the matching CRD is installed.
+Without the RBAC the agent answers forbidden instead of "not supported", and a forbidden is
+not tolerated the same way - the cluster's resource sync stops and nothing is ever marked
+deleted. Rollout is also a right-sizable workload kind. workflowTemplates and
 clusterWorkflowTemplates are gated separately in the ClusterRole and nothing requests them,
 so those two do come off.
 */}}

@@ -54,14 +54,14 @@ ALLOWED_RESOURCES_OFF = [
 ALLOWED_RESOURCES_ON = [
     "node", "metrics", "namespace", "pod",
     "deployment", "statefulSet", "daemonSet", "job", "cronjob",
-    # resources-api requests rollouts.argoproj.io from every cluster whose CRD is installed
-    # (crdBackedKinds in komodor_service/crd_support.go). Without the read the agent answers
-    # forbidden, which the reconciler does not swallow, and reconciliation stops for the
-    # cluster. Rollout is also a rightsizable service kind.
+    # Komodor requests rollouts.argoproj.io from every cluster whose CRD is installed. Without
+    # the read the agent answers forbidden rather than "not supported", which is not tolerated
+    # the same way, and the cluster's resource sync stops. Rollout is also a right-sizable
+    # workload kind.
     "rollout",
 ]
 
-# Same reason: workflows and cronworkflows are the other two crdBackedKinds. The remaining two
+# Same reason: workflows and cronworkflows are the other two CRD-backed kinds. The remaining two
 # argo sub-keys are gated separately in the ClusterRole and nothing requests them.
 ARGO_WORKFLOWS_ON = ["workflows", "cronWorkflows"]
 ARGO_WORKFLOWS_OFF = ["workflowTemplates", "clusterWorkflowTemplates"]
@@ -395,9 +395,9 @@ class TestProfileSurvivesAwkwardValues:
 
 class TestInstalledValuesStayConcrete:
     """
-    installed-values.yaml is shipped to the backend at identify and type-asserted there. A null
-    under capabilities makes actions-api fail open and silently disables right-sizing, so a
-    profile must set concrete values and never delete a key.
+    installed-values.yaml is sent to Komodor and type-asserted there. A null under capabilities
+    reads as "capability on" and silently disables right-sizing, so a profile must set concrete
+    values and never delete a key.
     """
 
     @pytest.mark.parametrize("extra", ["", "--set profile=cost"])
