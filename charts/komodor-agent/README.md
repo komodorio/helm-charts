@@ -104,6 +104,38 @@ The command deploys the komodor-agent on the Kubernetes cluster with default con
 
 > **Tip**: List all releases using `helm list`
 
+## Install profiles
+
+`profile` installs a preset that turns off the capabilities the preset does not need:
+
+```bash
+helm upgrade --install komodor-agent komodorio/komodor-agent \
+  --set apiKey=<YOUR_API_KEY_HERE> \
+  --set clusterName=<CLUSTER_NAME> \
+  --set profile=cost
+```
+
+| Profile | What it does |
+| --- | --- |
+| `""` (default) | Nothing. Every value is exactly as documented below. |
+| `cost` | A read-only, cost-only agent. Keeps metrics collection, the admission controller and HPA right-sizing. Turns off actions, helm, RBAC management, pod logs, the node enricher, resource-info, agent telemetry and the OpenTelemetry collector, the WebSocket tunnel, the kubectl proxy, the Klaudia integration sync and the Windows daemonset, and narrows the agent's cluster read permissions to the resource kinds the cost flows actually read. |
+
+Two things to know before using one:
+
+- **A profile takes precedence over `--set` for the keys it writes.** This is the one way it
+  differs from passing a values file. A profile only ever turns capabilities off, so you can
+  still shrink an install further — `--set profile=cost --set capabilities.metrics=false`
+  works — but you cannot turn one of the profile's own switches back on. Drop the profile and
+  set the individual keys if you need that.
+- **`allowedResources.customReadAPIGroups` is left alone**, so add the API groups of any CRDs
+  you want the agent to read alongside the profile, for example
+  `--set allowedResources.customReadAPIGroups={sparkoperator.k8s.io}`.
+- **A profile never touches resource requests or limits.** Sizing stays yours — see
+  [Memory Planning](#memory-planning-recommended) above. A cost-profile watcher runs far fewer
+  informers than a full agent, so the default `8Gi` watcher limit is usually much larger than it
+  needs, and lowering it is what brings the agent's own memory throttle into reach:
+  `--set components.komodorAgent.watcher.resources.limits.memory=2Gi`.
+
 ## Api Key
 
 The Komodor kubernetes api key can be provided in the helm upgrade command, in the `values.yaml` file or can be taken from an existing kubernetes secret resource.
@@ -155,6 +187,7 @@ Relevant values:
 | tags | dict | `{}` | Tags the agent in order to identify it based on `key:value` properties separated by semicolon (`;`) example: `--set tags.env=staging,tags.team=payments` --- Can also be set in the values under `tags` as a dictionary of key:value strings |
 | clusterName | string | `nil` | **(*required*)** Name to be displayed in the Komodor web application |
 | createRbac | bool | `true` | Creates the necessary RBAC resources for the agent - use with caution! |
+| profile | string | `""` | Install a preset that turns off the capabilities the preset does not need. Allowed values: `""` (default, nothing is changed) and `cost` (a cost-only agent). Values a profile writes take precedence over `--set`, so use `--set profile=cost` to shrink an install and leave the individual keys alone unless you are turning something further off. |
 | global | object | See sub-values | Global defaults applied across the chart. |
 | global.podSecurityContext | object | `{}` | Set a pod-level securityContext applied to all agent pods unless a component-specific podSecurityContext is defined. Supports pod-only fields: fsGroup, runAsUser, runAsGroup, runAsNonRoot, supplementalGroups, sysctls, seccompProfile. (use with caution) |
 | global.securityContext | object | `{}` | Set a container-level securityContext applied to all containers unless a container-specific securityContext is defined. Supports container fields: allowPrivilegeEscalation, capabilities, privileged, readOnlyRootFilesystem, runAsUser, runAsGroup, runAsNonRoot, seccompProfile. (use with caution) |
@@ -186,6 +219,8 @@ Relevant values:
 | capabilities.crActions | bool | `true` | Allow komodor service account to edit and delete custom resources in the cluster |
 | capabilities.cost | object | See sub-values | Configure the agent cost capabilities |
 | capabilities.cost.hpa | bool | `true` | Grant the k8s-watcher patch/update on HorizontalPodAutoscalers and KEDA ScaledObjects/ScaledJobs, independently of `capabilities.actions`. Required for HPA right-sizing when `actions=false`. |
+| capabilities.resourceInfo | object | See sub-values | Configure the agent resource-info collection subsystem |
+| capabilities.resourceInfo.enabled | bool | `false` | Enable the in-watcher resource-info collector. |
 | capabilities.helm | object | `{"enabled":true,"readonly":false}` | Enable helm capabilities by the komodor agent |
 | capabilities.helm.enabled | bool | `true` | Enable helm capabilities by the komodor agent |
 | capabilities.helm.readonly | bool | `false` | Allow komodor to read helm resources only (remove create/update/delete permissions from secrets) |

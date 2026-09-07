@@ -46,7 +46,11 @@ steps:
       - |
         set -euo pipefail
         BASE_BRANCH="$${BUILDKITE_PULL_REQUEST_BASE_BRANCH:-master}"
-        git fetch -q origin "$$BASE_BRANCH"
+        # Buildkite clones --depth 1, which implies --single-branch, so the only configured
+        # refspec is the default branch. `git fetch origin <branch>` then writes FETCH_HEAD
+        # but no origin/<branch> ref, and the diff below fails on any PR whose base is not
+        # the default branch (i.e. every stacked PR). Fetch into the tracking ref explicitly.
+        git fetch -q origin "+refs/heads/$$BASE_BRANCH:refs/remotes/origin/$$BASE_BRANCH"
         git fetch -q --unshallow 2>/dev/null || git fetch -q --deepen=100 || true
         # Capture diff outside the `if` so `set -e` reaches a `git diff` failure
         # (inside an `if` condition, set -e is disabled and the failure would be masked).

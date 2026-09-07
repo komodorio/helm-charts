@@ -1,3 +1,4 @@
+{{- include "applyProfile" . -}}
 apiVersion: v1
 kind: ResourceQuota
 metadata:

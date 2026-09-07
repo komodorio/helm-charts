@@ -1,3 +1,4 @@
+{{- include "applyProfile" . -}}
 {{- /*
 This file contains validations that run before rendering any templates.
 It doesn't produce any Kubernetes resources - it only validates input values.

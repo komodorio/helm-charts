@@ -1,3 +1,4 @@
+{{- include "applyProfile" . -}}
 {{- if .Values.createRbac -}}
 {{- include "migrateHelmValues" . -}}
 {{- $allowed := .Values.allowedResources -}}

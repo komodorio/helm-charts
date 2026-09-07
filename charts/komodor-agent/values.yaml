@@ -21,6 +21,12 @@ clusterName:
 # createRbac -- Creates the necessary RBAC resources for the agent - use with caution!
 createRbac: true
 
+# profile -- (string) Install a preset that turns off the capabilities the preset does not need.
+# Allowed values: `""` (default, nothing is changed) and `cost` (a cost-only agent).
+# Values a profile writes take precedence over `--set`, so use `--set profile=cost` to shrink an
+# install and leave the individual keys alone unless you are turning something further off.
+profile: ""
+
 # global -- Global defaults applied across the chart.
 # @default -- See sub-values
 global:
@@ -108,6 +114,11 @@ capabilities:
   cost:
     # capabilities.cost.hpa -- (bool) Grant the k8s-watcher patch/update on HorizontalPodAutoscalers and KEDA ScaledObjects/ScaledJobs, independently of `capabilities.actions`. Required for HPA right-sizing when `actions=false`.
     hpa: true
+  # capabilities.resourceInfo -- Configure the agent resource-info collection subsystem
+  # @default -- See sub-values
+  resourceInfo:
+    # capabilities.resourceInfo.enabled -- (bool) Enable the in-watcher resource-info collector.
+    enabled: false
   # capabilities.helm -- Enable helm capabilities by the komodor agent
   helm:
     # capabilities.helm.enabled -- (bool) Enable helm capabilities by the komodor agent

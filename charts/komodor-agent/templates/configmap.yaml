@@ -1,3 +1,4 @@
+{{- include "applyProfile" . -}}
 {{- include "migrateHelmValues" . -}}
 apiVersion: v1
 kind: ConfigMap
@@ -46,6 +47,8 @@ data:
       resyncInterval: {{ .Values.capabilities.klaudiaIntegrationSync.resyncInterval | quote }}
       httpTimeout: {{ .Values.capabilities.klaudiaIntegrationSync.httpTimeout | quote }}
       serverFetchInterval: {{ .Values.capabilities.klaudiaIntegrationSync.serverFetchInterval | quote }}
+    resourceInfo:
+      enabled: {{ .Values.capabilities.resourceInfo.enabled }}
     resync:
       period: "0"
 
