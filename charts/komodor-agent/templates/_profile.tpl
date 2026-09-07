@@ -63,28 +63,42 @@ silently installing a full agent because someone typed it is the worst outcome h
 
 {{- $allowed := .Values.allowedResources -}}
 {{/*
-Kept on, and deliberately not pinned here: node, metrics, namespace, pod, deployment,
-statefulSet, daemonSet, job, cronjob — the kinds the cost flows read — and
+Kept on, and deliberately not pinned here: node, metrics, namespace, pod — and
 customReadAPIGroups, which an operator sets per cluster alongside the profile.
-
-replicaSet is off even though the other workload kinds stay on: it is not a source kind for
-any reconciler, and telegraf carries its own apps/replicasets read, so dropping it degrades
-only a backend fallback telegraf does not use.
 
 customResourceDefinition has no entry in values.yaml but defaults true in the agent, and
 allowedResources is dumped verbatim into the agent ConfigMap, so it has to be named
 explicitly to take effect.
 
-rollout, argoWorkflows.workflows and argoWorkflows.cronWorkflows stay on, and that is load
-bearing rather than an oversight. Komodor asks every cluster for rollouts.argoproj.io,
-workflows.argoproj.io and cronworkflows.argoproj.io whenever the matching CRD is installed.
-Without the RBAC the agent answers forbidden instead of "not supported", and a forbidden is
-not tolerated the same way - the cluster's resource sync stops and nothing is ever marked
-deleted. Rollout is also a right-sizable workload kind. workflowTemplates and
-clusterWorkflowTemplates are gated separately in the ClusterRole and nothing requests them,
-so those two do come off.
+deployment, statefulSet, daemonSet and rollout are off even though the cost flows report on
+them. Their pods carry the workload identity in the agent's own komodor_top_owner_ref tag,
+and every one of those kinds is on the backend's owner_ref_verified allowlist, so that tag is
+trusted and the service is never looked up. Cost and right-sizing keep working with no
+informer at all.
+
+job and cronjob are off too, and unlike the four above that is a real trade rather than a free
+one. CronJob is NOT on the owner_ref_verified allowlist, so its pods only get a service
+identity from a resources-api lookup, and that lookup is fed by these informers. Without them
+their komodor_service_kind stays null, which drops them out of the service-level cost
+breakdown and out of right-sizing. Their node capacity cost is still counted at the cluster
+level; their allocated cost is not. Accepted deliberately: the backend has no komodor_service
+data for a cost cluster to look up anyway, and for any account without the per-account
+enrichment flag - off by default - this is already the behaviour today.
+
+replicaSet is off for a different reason: it is not a source kind for any reconciler. The
+ConfigMap is the whole effect there - the watcher ClusterRole keeps replicasets ungated so its
+apps rule can never render an empty resources list.
+
+argoWorkflows.workflows and argoWorkflows.cronWorkflows come off too. An earlier revision kept
+them because Komodor asked every cluster for workflows.argoproj.io whenever the CRD was
+installed, and a forbidden answer aborted the whole komodor_service batch so nothing was ever
+marked deleted. That no longer happens: resources-api skips every reconciler for a cost-profile
+cluster (komodorio/mono#30520). That makes this a deploy-order dependency the chart cannot
+check for itself - the cost profile must not reach a backend predating that change.
+workflowTemplates and clusterWorkflowTemplates were already off.
 */}}
 {{- $off := list "allowReadAll" -}}
+{{- $off = concat $off (list "deployment" "statefulSet" "daemonSet" "rollout" "job" "cronjob") -}}
 {{- $off = concat $off (list "replicaSet" "horizontalPodAutoscaler" "podDisruptionBudget" "priorityClass") -}}
 {{- $off = concat $off (list "persistentVolume" "persistentVolumeClaim" "storageClass" "volumeAttachment") -}}
 {{- $off = concat $off (list "csiDriver" "csiNode" "csiStorageCapacity") -}}
@@ -102,7 +116,7 @@ so those two do come off.
 {{- if not (kindIs "map" $allowed.argoWorkflows) -}}
 {{- $_ := set $allowed "argoWorkflows" dict -}}
 {{- end -}}
-{{- range $key := list "workflowTemplates" "clusterWorkflowTemplates" -}}
+{{- range $key := list "workflows" "cronWorkflows" "workflowTemplates" "clusterWorkflowTemplates" -}}
 {{- $_ := set $allowed.argoWorkflows $key false -}}
 {{- end -}}
 
