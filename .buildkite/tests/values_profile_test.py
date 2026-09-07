@@ -38,7 +38,7 @@ PROFILED_CAPABILITY_PATHS = [
 
 ALLOWED_RESOURCES_OFF = [
     "allowReadAll",
-    "deployment", "statefulSet", "daemonSet", "rollout", "job", "cronjob",
+    "deployment", "statefulSet", "daemonSet", "rollout", "job", "cronjob", "node",
     "replicaSet", "horizontalPodAutoscaler", "podDisruptionBudget", "priorityClass",
     "persistentVolume", "persistentVolumeClaim", "storageClass", "csiDriver", "csiNode",
     "csiStorageCapacity", "volumeAttachment",
@@ -52,7 +52,26 @@ ALLOWED_RESOURCES_OFF = [
 ]
 
 # Left at the chart default on purpose, so an operator can still shrink the install further.
-ALLOWED_RESOURCES_ON = ["node", "metrics", "namespace", "pod"]
+ALLOWED_RESOURCES_ON = ["metrics", "namespace", "pod"]
+
+# The RBAC the cost pipeline needs, as (apiGroup, resource, required verbs). This is a floor on the
+# agent ServiceAccount's *effective* permissions across every ClusterRole bound to it - not on the
+# k8s-watcher role alone, which is what makes turning `node` off safe: the two metrics ClusterRoles
+# bind the same SA and grant core nodes/pods/namespaces with no allowedResources gating.
+#
+# Concretely this protects: telegraf reading kubelet and cAdvisor; per-node pricing, which resolves
+# from the node object telegraf sends; and the agent's own one-shot node list at startup, which is
+# where cluster region and the node labels the backend derives the cloud provider from come from.
+# Lose that last one and a customer's enterprise discount silently becomes zero.
+COST_RBAC_FLOOR = [
+    ("", "nodes", {"get", "list"}),
+    ("", "pods", {"get", "list"}),
+    ("", "namespaces", {"get", "list"}),
+    ("", "nodes/stats", {"get", "list"}),
+    ("", "nodes/proxy", {"get", "list"}),
+    ("metrics.k8s.io", "pods", {"get", "list"}),
+    ("metrics.k8s.io", "nodes", {"get", "list"}),
+]
 
 ARGO_WORKFLOWS_OFF = ["workflows", "cronWorkflows", "workflowTemplates", "clusterWorkflowTemplates"]
 
@@ -124,6 +143,30 @@ def config_maps(docs):
         yaml.safe_load(cm["data"]["komodor-k8s-watcher.yaml"]),
         yaml.safe_load(cm["data"]["installed-values.yaml"]),
     )
+
+
+def agent_sa_effective_permissions(docs):
+    """Union of every rule in every ClusterRole bound to the agent ServiceAccount, keyed by
+    (apiGroup, resource). Keying on the resource alone would conflate core/pods with
+    metrics.k8s.io/pods and make the floor below pass when it should not."""
+    sa = next(
+        d["metadata"]["name"] for d in docs
+        if d["kind"] == "ServiceAccount" and d["metadata"]["name"].endswith("-komodor-agent")
+    )
+    roles = {d["metadata"]["name"]: d for d in docs if d["kind"] == "ClusterRole"}
+    bound = [
+        d["roleRef"]["name"] for d in docs if d["kind"] == "ClusterRoleBinding"
+        for subject in d.get("subjects") or []
+        if subject.get("kind") == "ServiceAccount" and subject.get("name") == sa
+    ]
+    assert bound, f"no ClusterRole is bound to {sa}, so this asserted nothing"
+    granted = {}
+    for name in bound:
+        for rule in (roles.get(name) or {}).get("rules") or []:
+            for group in rule.get("apiGroups") or []:
+                for resource in rule.get("resources") or []:
+                    granted.setdefault((group, resource), set()).update(rule.get("verbs") or [])
+    return granted
 
 
 def watcher_rules(docs):
@@ -295,6 +338,33 @@ class TestCostProfile:
         """
         _, installed = config_maps(cost_render)
         assert installed["profile"] == "cost"
+
+    @pytest.mark.parametrize("group,resource,verbs", COST_RBAC_FLOOR)
+    def test_cost_profile_keeps_the_rbac_the_cost_pipeline_needs(self, cost_render, group, resource, verbs):
+        """
+        The profile exists to shrink the agent, not to break cost collection. Assert the floor on
+        the ServiceAccount's effective permissions rather than on any single ClusterRole.
+        """
+        granted = agent_sa_effective_permissions(cost_render).get((group, resource), set())
+        missing = verbs - granted
+        assert not missing, f"profile=cost drops {sorted(missing)} on {group or 'core'}/{resource}"
+
+    def test_cost_profile_keeps_node_reads_despite_turning_the_node_kind_off(self, cost_render):
+        """
+        `allowedResources.node: false` stops the watcher's node informer. It must NOT stop the
+        agent listing a node at startup: that call populates clusterregion and nodelabels, and the
+        backend resolves the cloud provider - and the enterprise discount - from those labels.
+
+        This holds because the metrics ClusterRoles are gated on capabilities.metrics rather than
+        on allowedResources, so it would break the moment someone gates them differently.
+        """
+        _, installed = config_maps(cost_render)
+        assert installed["allowedResources"]["node"] is False
+
+        granted = agent_sa_effective_permissions(cost_render)
+        assert {"get", "list"} <= granted.get(("", "nodes"), set()), \
+            "the agent can no longer list nodes, so nodelabels will be empty and the provider " \
+            "will resolve to KUBERNETES with a silently zeroed enterprise discount"
 
     def test_cost_profile_turns_off_resource_info_in_the_agent_config(self, cost_render):
         agent_config, _ = config_maps(cost_render)
