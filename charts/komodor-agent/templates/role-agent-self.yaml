@@ -1,0 +1,42 @@
+{{- include "applyProfile" . -}}
+{{- if .Values.createRbac -}}
+{{- /* The supervisor watches the agent's own pod and, on a watcher restart, reads that pod's
+       previous logs to send a crash report. Both are scoped to its own namespace and its own
+       pod name (internal/monitoring/crash_report_monitor.go).
+
+       It cannot rely on the cluster-wide grants for either. `pods/log` there is gated on
+       capabilities.logs, which is about reading *customer* pod logs — a different feature that
+       the cost profile turns off — and `watch` on pods comes only from the metrics Deployment's
+       ClusterRole. Losing either silently breaks crash reporting, so the agent grants itself
+       what it needs on its own resources instead of depending on unrelated toggles. */}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "komodorAgent.role.agentSelf" . }}
+  namespace: {{ .Release.Namespace }}
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
+  # Crash reports attach the agent pod's own events; without this they still send, but empty.
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "komodorAgent.role.agentSelf" . }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "komodorAgent.role.agentSelf" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "komodorAgent.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end -}}

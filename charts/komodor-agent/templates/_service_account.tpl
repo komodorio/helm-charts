@@ -38,6 +38,13 @@ ClusterRole name for node-enricher container
 {{- end }}
 
 {{/*
+Role name for the agent's permissions on its own pod (crash reporting)
+*/}}
+{{- define "komodorAgent.role.agentSelf" -}}
+{{- printf "%s-self" (include "komodorAgent.fullname" .) }}
+{{- end }}
+
+{{/*
 Role name for Klaudia integration sync (namespaced RBAC)
 */}}
 {{- define "komodorAgent.role.klaudiaIntegrationSync" -}}
