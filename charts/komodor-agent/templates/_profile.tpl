@@ -109,6 +109,13 @@ workflowTemplates and clusterWorkflowTemplates were already off.
 {{- $off := list "allowReadAll" -}}
 {{- $off = concat $off (list "deployment" "statefulSet" "daemonSet" "rollout" "job" "cronjob") -}}
 {{- $off = concat $off (list "node") -}}
+{{- /* Stage 3. The watcher's pod and namespace informers feed resources-api, which
+       metrics-enricher calls to resolve pod ownership. Turning them off is a deliberate
+       trade: cost rows are still written (insertHourlyPodSummary runs unconditionally),
+       but they stay unenriched, so cost is attributed by cluster/node and not by service.
+       Telegraf is unaffected — clusterrole-daemon-metrics and clusterrole-metrics-deployment
+       grant pods, namespaces and nodes without any allowedResources gating. */}}
+{{- $off = concat $off (list "pod" "namespace") -}}
 {{- $off = concat $off (list "replicaSet" "horizontalPodAutoscaler" "podDisruptionBudget" "priorityClass") -}}
 {{- $off = concat $off (list "persistentVolume" "persistentVolumeClaim" "storageClass" "volumeAttachment") -}}
 {{- $off = concat $off (list "csiDriver" "csiNode" "csiStorageCapacity") -}}

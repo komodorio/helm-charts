@@ -39,6 +39,7 @@ PROFILED_CAPABILITY_PATHS = [
 ALLOWED_RESOURCES_OFF = [
     "allowReadAll",
     "deployment", "statefulSet", "daemonSet", "rollout", "job", "cronjob", "node",
+    "pod", "namespace",
     "replicaSet", "horizontalPodAutoscaler", "podDisruptionBudget", "priorityClass",
     "persistentVolume", "persistentVolumeClaim", "storageClass", "csiDriver", "csiNode",
     "csiStorageCapacity", "volumeAttachment",
@@ -52,7 +53,8 @@ ALLOWED_RESOURCES_OFF = [
 ]
 
 # Left at the chart default on purpose, so an operator can still shrink the install further.
-ALLOWED_RESOURCES_ON = ["metrics", "namespace", "pod"]
+# `metrics` is telegraf, which is the cost data itself, so it never comes off.
+ALLOWED_RESOURCES_ON = ["metrics"]
 
 # The RBAC the cost pipeline needs, as (apiGroup, resource, required verbs). This is a floor on the
 # agent ServiceAccount's *effective* permissions across every ClusterRole bound to it - not on the
@@ -82,12 +84,18 @@ ARGO_WORKFLOWS_OFF = ["workflows", "cronWorkflows", "workflowTemplates", "cluste
 WATCHER_READS_DROPPED = [
     "deployments", "statefulsets", "daemonsets", "rollouts", "workflows", "cronworkflows",
     "jobs", "cronjobs",
+    "namespaces",
 ]
 
 # pods and nodes are deliberately absent: they survive the profile through rules this assertion
 # does not scope to (the ungated core pods rule, and metrics.k8s.io), so they cannot fail here.
 # validations_test.py already protects them, scoped by apiGroup and verbs.
-WATCHER_READS_KEPT = ["namespaces", "replicasets"]
+#
+# Only replicasets is left: it is the ungated entry that stops the apps rule rendering an empty
+# resources list, so it is a structural guarantee rather than something the cost flows read.
+# The cost pipeline's own floor is COST_RBAC_FLOOR, which is scoped to the ServiceAccount's
+# effective permissions and still requires core pods and namespaces via the metrics ClusterRoles.
+WATCHER_READS_KEPT = ["replicasets"]
 
 # What the cost flows need and the profile must not touch.
 COST_CAPABILITIES_ON = [
