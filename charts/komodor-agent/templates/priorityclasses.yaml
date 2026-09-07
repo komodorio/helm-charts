@@ -20,7 +20,7 @@ value: {{ .Values.components.komodorAgent.PriorityClassValue }}
 globalDefault: false
 description: "This priority class should be used for Komodor agent pods only."
 {{- end }}
-{{- if not .Values.components.komodorMetrics.priorityClassName }}
+{{- if and .Values.capabilities.metrics (not .Values.components.komodorMetrics.priorityClassName) }}
 ---
 apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
