@@ -1,14 +1,7 @@
 {{- include "applyProfile" . -}}
 {{- if .Values.createRbac -}}
-{{- /* The supervisor watches the agent's own pod and, on a watcher restart, reads that pod's
-       previous logs to send a crash report. Both are scoped to its own namespace and its own
-       pod name (internal/monitoring/crash_report_monitor.go).
-
-       It cannot rely on the cluster-wide grants for either. `pods/log` there is gated on
-       capabilities.logs, which is about reading *customer* pod logs — a different feature that
-       the cost profile turns off — and `watch` on pods comes only from the metrics Deployment's
-       ClusterRole. Losing either silently breaks crash reporting, so the agent grants itself
-       what it needs on its own resources instead of depending on unrelated toggles. */}}
+{{- /* The supervisor reads the agent's own pod and its logs for crash reports; the cluster-wide
+       grants for those are gated on unrelated features (capabilities.logs, capabilities.metrics). */}}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -21,7 +14,6 @@ rules:
   - apiGroups: [""]
     resources: ["pods/log"]
     verbs: ["get"]
-  # Crash reports attach the agent pod's own events; without this they still send, but empty.
   - apiGroups: [""]
     resources: ["events"]
     verbs: ["get", "list"]
