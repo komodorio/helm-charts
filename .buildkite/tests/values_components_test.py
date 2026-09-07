@@ -1,8 +1,9 @@
 import pytest
+import yaml
 from pathlib import Path
 
 from config import RELEASE_NAME
-from helpers.helm_helper import get_yaml_from_helm_template
+from helpers.helm_helper import get_yaml_from_helm_template, helm_agent_template
 from helpers.utils import get_filename_as_cluster_name
 
 CLUSTER_NAME = get_filename_as_cluster_name(__file__)
@@ -747,3 +748,32 @@ def test_override_update_strategy(component_name, deployment_name_suffix, strate
                                                       f"spec.{strategy_key}", values_file=values_file)
 
     assert deployment_strategy["type"] == "RollingUpdate", f"Expected rollingUpdate in deployment tolerations {deployment_strategy}"
+
+
+METRICS_OBJECTS = [
+    ("Deployment", f"{RELEASE_NAME}-komodor-agent-metrics"),
+    ("PriorityClass", f"{RELEASE_NAME}-metrics-high-priority"),
+]
+
+
+def rendered_objects(additional_settings=""):
+    templates, exit_code = helm_agent_template(additional_settings=additional_settings)
+    assert exit_code == 0, f"helm template failed, output: {templates}"
+    return {(doc.get("kind"), doc.get("metadata", {}).get("name")) for doc in yaml.safe_load_all(templates) if doc}
+
+
+@pytest.mark.parametrize("kind, name", METRICS_OBJECTS)
+def test_metrics_objects_render_by_default(kind, name):
+    assert (kind, name) in rendered_objects(), f"{kind} {name} missing from a default install"
+
+
+@pytest.mark.parametrize("kind, name", METRICS_OBJECTS)
+def test_metrics_objects_are_dropped_when_metrics_is_off(kind, name):
+    rendered = rendered_objects("--set capabilities.metrics=false")
+    assert (kind, name) not in rendered, f"{kind} {name} still rendered with capabilities.metrics=false"
+
+
+@pytest.mark.parametrize("kind, name", METRICS_OBJECTS)
+def test_metrics_objects_survive_create_rbac_false(kind, name):
+    # createRbac only gates the ClusterRole. Guards against re-gating the workload on the wrong key.
+    assert (kind, name) in rendered_objects("--set createRbac=false"), f"{kind} {name} dropped by createRbac=false"

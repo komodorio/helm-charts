@@ -1,3 +1,4 @@
+{{- if .Values.capabilities.metrics }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -48,3 +49,4 @@ spec:
       initContainers:
         {{- include "ca-init.container" .                 | nindent 8 }}
         {{- include "metrics.deployment.init.container" . | nindent 8 }}
+{{- end }}
