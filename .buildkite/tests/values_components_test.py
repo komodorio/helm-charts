@@ -777,3 +777,44 @@ def test_metrics_objects_are_dropped_when_metrics_is_off(kind, name):
 def test_metrics_objects_survive_create_rbac_false(kind, name):
     # createRbac only gates the ClusterRole. Guards against re-gating the workload on the wrong key.
     assert (kind, name) in rendered_objects("--set createRbac=false"), f"{kind} {name} dropped by createRbac=false"
+
+
+# The agent reads its own container memory limit from /etc/podinfo/mem_limit and skips the
+# 20%-remaining safety check entirely when it cannot: podinfo.LoadMemoryLimitSafely returns
+# Limit -1, and periodic_memory_stats.Run returns early on -1 without calling
+# checkMemoryThreshold. The mount used to be gated on capabilities.events.enableMemLimitChecks,
+# a key with no entry in values.yaml, so Helm's nil-safe lookup made the guard false forever:
+# the volume rendered on every install and the mount on none. Nothing asserted it.
+def _watcher_pod_spec(output):
+    for doc in yaml.safe_load_all(output):
+        if doc and doc.get("kind") == "Deployment" and doc["metadata"]["name"].endswith("komodor-agent"):
+            return doc["spec"]["template"]["spec"]
+    raise AssertionError("no watcher Deployment was rendered, so this test asserted nothing")
+
+
+@pytest.mark.parametrize("extra", ["", "--set profile=cost"])
+def test_that_the_watcher_mounts_podinfo(extra):
+    output, exit_code = helm_agent_template(additional_settings=extra)
+    assert exit_code == 0, f"helm template failed, output: {output}"
+    spec = _watcher_pod_spec(output)
+
+    assert "podinfo" in {v["name"] for v in spec["volumes"]}, "the podinfo volume is missing"
+    watcher = next(c for c in spec["containers"] if c["name"] == "k8s-watcher")
+    mounts = {m["mountPath"] for m in watcher.get("volumeMounts", [])}
+    assert "/etc/podinfo" in mounts, (
+        "the watcher does not mount podinfo, so it cannot read its own memory limit and the "
+        "memory safety check will never run"
+    )
+
+
+def test_that_the_podinfo_volume_reports_the_watcher_container_limit():
+    """A downwardAPI resourceFieldRef naming the wrong container or resource renders perfectly
+    well and yields nothing useful, so assert what it points at rather than that it exists."""
+    output, exit_code = helm_agent_template()
+    assert exit_code == 0, f"helm template failed, output: {output}"
+    volume = next(v for v in _watcher_pod_spec(output)["volumes"] if v["name"] == "podinfo")
+
+    item = volume["downwardAPI"]["items"][0]
+    assert item["path"] == "mem_limit"
+    assert item["resourceFieldRef"]["resource"] == "limits.memory"
+    assert item["resourceFieldRef"]["containerName"] == "k8s-watcher"

@@ -11,10 +11,13 @@
     mountPath: /etc/komodor
   - name: tmp
     mountPath: /tmp
-  {{- if ((.Values.capabilities).events).enableMemLimitChecks }}
+  {{- /* Unconditional, matching the volume in _volumes.tpl. This was gated on
+         capabilities.events.enableMemLimitChecks, a key with no entry in values.yaml, so the
+         guard was always nil and the mount rendered on no install at all. The agent reads
+         /etc/podinfo/mem_limit to learn its own container memory limit; without it the limit
+         stays -1 and the 20%-remaining safety check is skipped outright. */}}
   - name: podinfo
     mountPath: /etc/podinfo
-  {{- end }}
   {{- if (.Values.capabilities).helm.enabled }}
   - name: helm-data
     mountPath: /opt/watcher/helm
