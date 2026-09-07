@@ -230,6 +230,15 @@ class TestAllowedResourcesEmptyRuleValidation:
                 "serviceAccount": "serviceaccounts",
             },
         ),
+        "apps": (
+            ["apps"],
+            {
+                "controllerRevision": "controllerrevisions",
+                "daemonSet": "daemonsets",
+                "deployment": "deployments",
+                "statefulSet": "statefulsets",
+            },
+        ),
         "batch": (
             ["batch"],
             {"cronjob": "cronjobs", "job": "jobs"},

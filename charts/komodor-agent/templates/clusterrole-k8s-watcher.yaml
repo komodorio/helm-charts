@@ -145,10 +145,19 @@ rules:
 {{- if .Values.allowedResources.controllerRevision }}
     - controllerrevisions
 {{- end }}
+{{- if .Values.allowedResources.daemonSet }}
     - daemonsets
+{{- end }}
+{{- if .Values.allowedResources.deployment }}
     - deployments
+{{- end }}
+{{- /* Ungated on purpose. With every gated kind above turned off this is the only entry left,
+       and it is what stops the rule rendering an empty resources list, which the API server
+       rejects. Do not "tidy" it onto allowedResources.replicaSet. */}}
     - replicasets
+{{- if .Values.allowedResources.statefulSet }}
     - statefulsets
+{{- end }}
     verbs:
     - get
     - watch

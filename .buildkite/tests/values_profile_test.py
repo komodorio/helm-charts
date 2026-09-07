@@ -38,6 +38,7 @@ PROFILED_CAPABILITY_PATHS = [
 
 ALLOWED_RESOURCES_OFF = [
     "allowReadAll",
+    "deployment", "statefulSet", "daemonSet", "rollout", "job", "cronjob",
     "replicaSet", "horizontalPodAutoscaler", "podDisruptionBudget", "priorityClass",
     "persistentVolume", "persistentVolumeClaim", "storageClass", "csiDriver", "csiNode",
     "csiStorageCapacity", "volumeAttachment",
@@ -51,20 +52,23 @@ ALLOWED_RESOURCES_OFF = [
 ]
 
 # Left at the chart default on purpose, so an operator can still shrink the install further.
-ALLOWED_RESOURCES_ON = [
-    "node", "metrics", "namespace", "pod",
-    "deployment", "statefulSet", "daemonSet", "job", "cronjob",
-    # Komodor requests rollouts.argoproj.io from every cluster whose CRD is installed. Without
-    # the read the agent answers forbidden rather than "not supported", which is not tolerated
-    # the same way, and the cluster's resource sync stops. Rollout is also a right-sizable
-    # workload kind.
-    "rollout",
+ALLOWED_RESOURCES_ON = ["node", "metrics", "namespace", "pod"]
+
+ARGO_WORKFLOWS_OFF = ["workflows", "cronWorkflows", "workflowTemplates", "clusterWorkflowTemplates"]
+
+# Workload reads the profile drops from the k8s-watcher role. deployments/statefulsets/daemonsets/
+# rollouts/workflows are on the backend's owner_ref_verified allowlist, so their identity travels in
+# the agent's own tag and nothing is lost. jobs/cronjobs are not, so their pods lose their service
+# name - accepted, since a cost cluster has no komodor_service data to look up either way.
+WATCHER_READS_DROPPED = [
+    "deployments", "statefulsets", "daemonsets", "rollouts", "workflows", "cronworkflows",
+    "jobs", "cronjobs",
 ]
 
-# Same reason: workflows and cronworkflows are the other two CRD-backed kinds. The remaining two
-# argo sub-keys are gated separately in the ClusterRole and nothing requests them.
-ARGO_WORKFLOWS_ON = ["workflows", "cronWorkflows"]
-ARGO_WORKFLOWS_OFF = ["workflowTemplates", "clusterWorkflowTemplates"]
+# pods and nodes are deliberately absent: they survive the profile through rules this assertion
+# does not scope to (the ungated core pods rule, and metrics.k8s.io), so they cannot fail here.
+# validations_test.py already protects them, scoped by apiGroup and verbs.
+WATCHER_READS_KEPT = ["namespaces", "replicasets"]
 
 # What the cost flows need and the profile must not touch.
 COST_CAPABILITIES_ON = [
@@ -120,6 +124,21 @@ def config_maps(docs):
         yaml.safe_load(cm["data"]["komodor-k8s-watcher.yaml"]),
         yaml.safe_load(cm["data"]["installed-values.yaml"]),
     )
+
+
+def watcher_rules(docs):
+    return [
+        rule
+        for doc in docs
+        if doc["kind"] == "ClusterRole" and doc["metadata"]["name"].endswith("-k8s-watcher")
+        for rule in doc.get("rules") or []
+    ]
+
+
+def watcher_granted_resources(docs):
+    granted = {resource for rule in watcher_rules(docs) for resource in rule.get("resources") or []}
+    assert granted, "no k8s-watcher ClusterRole rules were rendered, so this asserted nothing"
+    return granted
 
 
 def lookup(tree, dotted):
@@ -217,29 +236,65 @@ class TestCostProfile:
         _, installed = config_maps(cost_render)
         assert installed["allowedResources"][key] is True
 
-    def test_cost_profile_keeps_the_argo_kinds_the_reconciler_requests(self, cost_render):
+    def test_cost_profile_turns_off_every_argo_workflows_key(self, cost_render):
         _, installed = config_maps(cost_render)
         argo = installed["allowedResources"]["argoWorkflows"]
-        for key in ARGO_WORKFLOWS_ON:
-            assert argo[key] is True
         for key in ARGO_WORKFLOWS_OFF:
             assert argo[key] is False
 
-    def test_cost_profile_grants_read_on_the_argo_kinds(self, cost_render):
+    @pytest.mark.parametrize("resource", WATCHER_READS_DROPPED)
+    def test_cost_profile_drops_the_workload_read_grants(self, cost_render, resource):
         """
-        The config key is not enough - the reconciler fails on a 403, so the ClusterRole has to
-        carry the read as well.
+        Turning the config key off is not enough - the k8s-watcher role has to stop granting the
+        read, which is what stops the informer.
+
+        Note this is the watcher role only. Every agent workload shares one ServiceAccount, and
+        the two metrics ClusterRoles independently grant it `get` on the apps and batch kinds, so
+        what the profile actually removes cluster-wide is `list`/`watch`. Only the argoproj.io
+        kinds disappear from the ServiceAccount entirely.
         """
-        rules = [
-            rule
-            for doc in cost_render
-            if doc["kind"] == "ClusterRole" and doc["metadata"]["name"].endswith("-k8s-watcher")
-            for rule in doc.get("rules") or []
-            if "argoproj.io" in (rule.get("apiGroups") or [])
-        ]
-        granted = {resource for rule in rules for resource in rule.get("resources") or []}
-        for resource in ("rollouts", "workflows", "cronworkflows"):
-            assert resource in granted, f"profile=cost does not grant read on argoproj.io/{resource}"
+        assert resource not in watcher_granted_resources(cost_render)
+
+    @pytest.mark.parametrize("resource", WATCHER_READS_KEPT)
+    def test_cost_profile_keeps_the_reads_the_cost_flows_still_need(self, cost_render, resource):
+        assert resource in watcher_granted_resources(cost_render)
+
+    def test_cost_profile_leaves_only_the_right_sizing_mutating_grants(self, cost_render):
+        """
+        rollouts carried a `patch` verb alongside its read, so dropping the read drops a mutating
+        grant too. What must survive is HPA and KEDA right-sizing, which the profile keeps on
+        purpose - so assert the exact set rather than just the absence of rollouts.
+        """
+        mutating = {"create", "update", "patch", "delete", "deletecollection"}
+        surviving = {
+            (tuple(rule.get("apiGroups") or []), tuple(sorted(rule.get("resources") or [])))
+            for rule in watcher_rules(cost_render)
+            if mutating & set(rule.get("verbs") or [])
+        }
+        assert surviving == {
+            (("autoscaling",), ("horizontalpodautoscalers",)),
+            (("keda.sh",), ("scaledjobs", "scaledobjects")),
+        }, surviving
+
+    def test_cost_profile_drops_the_argoproj_rules_entirely(self, cost_render):
+        argo = [r for r in watcher_rules(cost_render) if "argoproj.io" in (r.get("apiGroups") or [])]
+        assert argo == [], f"argoproj.io rules survive the cost profile: {argo}"
+
+    def test_cost_profile_is_reported_to_the_backend(self, cost_render):
+        """
+        This chart's half of a cross-repo contract, and the only half testable here.
+
+        resources-api skips its reconcilers for a cost cluster by reading exactly this value -
+        `GetInstallProfile()` looks up installed-values.profile (komodorio/mono#30520). Stop
+        emitting it and the filter silently stops matching: every reconciler resumes against
+        cost clusters and asks them for kinds this profile no longer grants, which 403s and
+        aborts the komodor_service batch so nothing is ever marked deleted.
+
+        installed-values.yaml is a verbatim dump of .Values, so this holds today by accident of
+        `--set profile=cost` rather than by anything deliberate. Pin it.
+        """
+        _, installed = config_maps(cost_render)
+        assert installed["profile"] == "cost"
 
     def test_cost_profile_turns_off_resource_info_in_the_agent_config(self, cost_render):
         agent_config, _ = config_maps(cost_render)
