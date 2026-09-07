@@ -280,6 +280,22 @@ class TestCostProfile:
         argo = [r for r in watcher_rules(cost_render) if "argoproj.io" in (r.get("apiGroups") or [])]
         assert argo == [], f"argoproj.io rules survive the cost profile: {argo}"
 
+    def test_cost_profile_is_reported_to_the_backend(self, cost_render):
+        """
+        This chart's half of a cross-repo contract, and the only half testable here.
+
+        resources-api skips its reconcilers for a cost cluster by reading exactly this value -
+        `GetInstallProfile()` looks up installed-values.profile (komodorio/mono#30520). Stop
+        emitting it and the filter silently stops matching: every reconciler resumes against
+        cost clusters and asks them for kinds this profile no longer grants, which 403s and
+        aborts the komodor_service batch so nothing is ever marked deleted.
+
+        installed-values.yaml is a verbatim dump of .Values, so this holds today by accident of
+        `--set profile=cost` rather than by anything deliberate. Pin it.
+        """
+        _, installed = config_maps(cost_render)
+        assert installed["profile"] == "cost"
+
     def test_cost_profile_turns_off_resource_info_in_the_agent_config(self, cost_render):
         agent_config, _ = config_maps(cost_render)
         assert agent_config["resourceInfo"]["enabled"] is False
