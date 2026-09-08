@@ -63,8 +63,17 @@ silently installing a full agent because someone typed it is the worst outcome h
 
 {{- $allowed := .Values.allowedResources -}}
 {{/*
-Kept on, and deliberately not pinned here: node, metrics, namespace, pod — and
-customReadAPIGroups, which an operator sets per cluster alongside the profile.
+Kept on, and deliberately not pinned here: metrics, namespace, pod — and customReadAPIGroups,
+which an operator sets per cluster alongside the profile.
+
+node is off, and the thing that makes that safe is not obvious: three ClusterRoles bind the
+agent's single ServiceAccount, and the two metrics ones grant core nodes/pods/namespaces
+get+list with no allowedResources gating at all - only capabilities.metrics, which this profile
+keeps on. So turning node off stops the watcher's node informer while leaving the SA able to
+read nodes. That matters because the agent lists one node at startup to learn its own region
+and node labels, and because the backend resolves the cloud provider - and therefore the
+enterprise discount - from those labels. Losing them would zero a customer's discount silently.
+values_profile_test.py pins that read as a floor rather than leaving it to this comment.
 
 customResourceDefinition has no entry in values.yaml but defaults true in the agent, and
 allowedResources is dumped verbatim into the agent ConfigMap, so it has to be named
@@ -99,6 +108,8 @@ workflowTemplates and clusterWorkflowTemplates were already off.
 */}}
 {{- $off := list "allowReadAll" -}}
 {{- $off = concat $off (list "deployment" "statefulSet" "daemonSet" "rollout" "job" "cronjob") -}}
+{{- $off = concat $off (list "node") -}}
+{{- $off = concat $off (list "pod" "namespace") -}}
 {{- $off = concat $off (list "replicaSet" "horizontalPodAutoscaler" "podDisruptionBudget" "priorityClass") -}}
 {{- $off = concat $off (list "persistentVolume" "persistentVolumeClaim" "storageClass" "volumeAttachment") -}}
 {{- $off = concat $off (list "csiDriver" "csiNode" "csiStorageCapacity") -}}

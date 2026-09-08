@@ -38,7 +38,8 @@ PROFILED_CAPABILITY_PATHS = [
 
 ALLOWED_RESOURCES_OFF = [
     "allowReadAll",
-    "deployment", "statefulSet", "daemonSet", "rollout", "job", "cronjob",
+    "deployment", "statefulSet", "daemonSet", "rollout", "job", "cronjob", "node",
+    "pod", "namespace",
     "replicaSet", "horizontalPodAutoscaler", "podDisruptionBudget", "priorityClass",
     "persistentVolume", "persistentVolumeClaim", "storageClass", "csiDriver", "csiNode",
     "csiStorageCapacity", "volumeAttachment",
@@ -52,7 +53,27 @@ ALLOWED_RESOURCES_OFF = [
 ]
 
 # Left at the chart default on purpose, so an operator can still shrink the install further.
-ALLOWED_RESOURCES_ON = ["node", "metrics", "namespace", "pod"]
+# `metrics` is telegraf, which is the cost data itself, so it never comes off.
+ALLOWED_RESOURCES_ON = ["metrics"]
+
+# The RBAC the cost pipeline needs, as (apiGroup, resource, required verbs). This is a floor on the
+# agent ServiceAccount's *effective* permissions across every ClusterRole bound to it - not on the
+# k8s-watcher role alone, which is what makes turning `node` off safe: the two metrics ClusterRoles
+# bind the same SA and grant core nodes/pods/namespaces with no allowedResources gating.
+#
+# Concretely this protects: telegraf reading kubelet and cAdvisor; per-node pricing, which resolves
+# from the node object telegraf sends; and the agent's own one-shot node list at startup, which is
+# where cluster region and the node labels the backend derives the cloud provider from come from.
+# Lose that last one and a customer's enterprise discount silently becomes zero.
+COST_RBAC_FLOOR = [
+    ("", "nodes", {"get", "list"}),
+    ("", "pods", {"get", "list"}),
+    ("", "namespaces", {"get", "list"}),
+    ("", "nodes/stats", {"get", "list"}),
+    ("", "nodes/proxy", {"get", "list"}),
+    ("metrics.k8s.io", "pods", {"get", "list"}),
+    ("metrics.k8s.io", "nodes", {"get", "list"}),
+]
 
 ARGO_WORKFLOWS_OFF = ["workflows", "cronWorkflows", "workflowTemplates", "clusterWorkflowTemplates"]
 
@@ -63,12 +84,18 @@ ARGO_WORKFLOWS_OFF = ["workflows", "cronWorkflows", "workflowTemplates", "cluste
 WATCHER_READS_DROPPED = [
     "deployments", "statefulsets", "daemonsets", "rollouts", "workflows", "cronworkflows",
     "jobs", "cronjobs",
+    "namespaces",
 ]
 
 # pods and nodes are deliberately absent: they survive the profile through rules this assertion
 # does not scope to (the ungated core pods rule, and metrics.k8s.io), so they cannot fail here.
 # validations_test.py already protects them, scoped by apiGroup and verbs.
-WATCHER_READS_KEPT = ["namespaces", "replicasets"]
+#
+# Only replicasets is left: it is the ungated entry that stops the apps rule rendering an empty
+# resources list, so it is a structural guarantee rather than something the cost flows read.
+# The cost pipeline's own floor is COST_RBAC_FLOOR, which is scoped to the ServiceAccount's
+# effective permissions and still requires core pods and namespaces via the metrics ClusterRoles.
+WATCHER_READS_KEPT = ["replicasets"]
 
 # What the cost flows need and the profile must not touch.
 COST_CAPABILITIES_ON = [
@@ -124,6 +151,30 @@ def config_maps(docs):
         yaml.safe_load(cm["data"]["komodor-k8s-watcher.yaml"]),
         yaml.safe_load(cm["data"]["installed-values.yaml"]),
     )
+
+
+def agent_sa_effective_permissions(docs):
+    """Union of every rule in every ClusterRole bound to the agent ServiceAccount, keyed by
+    (apiGroup, resource). Keying on the resource alone would conflate core/pods with
+    metrics.k8s.io/pods and make the floor below pass when it should not."""
+    sa = next(
+        d["metadata"]["name"] for d in docs
+        if d["kind"] == "ServiceAccount" and d["metadata"]["name"].endswith("-komodor-agent")
+    )
+    roles = {d["metadata"]["name"]: d for d in docs if d["kind"] == "ClusterRole"}
+    bound = [
+        d["roleRef"]["name"] for d in docs if d["kind"] == "ClusterRoleBinding"
+        for subject in d.get("subjects") or []
+        if subject.get("kind") == "ServiceAccount" and subject.get("name") == sa
+    ]
+    assert bound, f"no ClusterRole is bound to {sa}, so this asserted nothing"
+    granted = {}
+    for name in bound:
+        for rule in (roles.get(name) or {}).get("rules") or []:
+            for group in rule.get("apiGroups") or []:
+                for resource in rule.get("resources") or []:
+                    granted.setdefault((group, resource), set()).update(rule.get("verbs") or [])
+    return granted
 
 
 def watcher_rules(docs):
@@ -186,11 +237,17 @@ class TestProfileIsInertByDefault:
         assert installed["profile"] == ""
 
     def test_resource_info_is_written_into_the_agent_config(self, default_render):
-        """HC-4's key is a default in the agent config file, so remote config can still win."""
+        """
+        HC-4's key lands in the agent config file, which remote config merges over at startup - so
+        on a default install this is a default Komodor can still override, and it defaults to true
+        because remote config enables resource-info for every agent anyway. An operator can still
+        set it false; that only stops being advisory under profile=cost, which additionally emits
+        KOMOKW_RESOURCE_INFO_ENABLED to beat the merge.
+        """
         agent_config, _ = config_maps(default_render)
-        assert agent_config["resourceInfo"]["enabled"] is False
-        agent_config, _ = config_maps(render("--set capabilities.resourceInfo.enabled=true"))
         assert agent_config["resourceInfo"]["enabled"] is True
+        agent_config, _ = config_maps(render("--set capabilities.resourceInfo.enabled=false"))
+        assert agent_config["resourceInfo"]["enabled"] is False
 
     @pytest.mark.parametrize("value", [
         "nope",
@@ -296,6 +353,33 @@ class TestCostProfile:
         _, installed = config_maps(cost_render)
         assert installed["profile"] == "cost"
 
+    @pytest.mark.parametrize("group,resource,verbs", COST_RBAC_FLOOR)
+    def test_cost_profile_keeps_the_rbac_the_cost_pipeline_needs(self, cost_render, group, resource, verbs):
+        """
+        The profile exists to shrink the agent, not to break cost collection. Assert the floor on
+        the ServiceAccount's effective permissions rather than on any single ClusterRole.
+        """
+        granted = agent_sa_effective_permissions(cost_render).get((group, resource), set())
+        missing = verbs - granted
+        assert not missing, f"profile=cost drops {sorted(missing)} on {group or 'core'}/{resource}"
+
+    def test_cost_profile_keeps_node_reads_despite_turning_the_node_kind_off(self, cost_render):
+        """
+        `allowedResources.node: false` stops the watcher's node informer. It must NOT stop the
+        agent listing a node at startup: that call populates clusterregion and nodelabels, and the
+        backend resolves the cloud provider - and the enterprise discount - from those labels.
+
+        This holds because the metrics ClusterRoles are gated on capabilities.metrics rather than
+        on allowedResources, so it would break the moment someone gates them differently.
+        """
+        _, installed = config_maps(cost_render)
+        assert installed["allowedResources"]["node"] is False
+
+        granted = agent_sa_effective_permissions(cost_render)
+        assert {"get", "list"} <= granted.get(("", "nodes"), set()), \
+            "the agent can no longer list nodes, so nodelabels will be empty and the provider " \
+            "will resolve to KUBERNETES with a silently zeroed enterprise discount"
+
     def test_cost_profile_turns_off_resource_info_in_the_agent_config(self, cost_render):
         agent_config, _ = config_maps(cost_render)
         assert agent_config["resourceInfo"]["enabled"] is False
@@ -327,6 +411,37 @@ class TestCostProfile:
             assert (kind, name) in default_names, \
                 f"{kind}/{name} does not render by default either, so this asserted nothing"
             assert (kind, name) not in cost_names, f"{kind}/{name} still rendered under profile=cost"
+
+    def test_cost_profile_forces_resource_info_off_with_an_env_var(self, cost_render, default_render):
+        """
+        capabilities.resourceInfo.enabled only reaches the agent's ConfigMap, and the agent merges
+        the backend's remote config over that at startup (viper.MergeConfig, same layer, merged
+        last). Remote config is mandatory - a failed fetch exits the process - and it always
+        enables resource-info, so the ConfigMap value alone is inert. An env var sits in a higher
+        viper layer and wins.
+
+        Emitted on an explicit false only. The default is true, so a default install emits nothing
+        and Komodor keeps remote control, which is what komodorio/planning#241 wanted. profile=cost
+        sets the key false, and so can an operator - either way it now actually takes effect.
+        """
+        def watcher_env(docs):
+            deployment = next(
+                d for d in docs
+                if d["kind"] == "Deployment" and d["metadata"]["name"] == FULLNAME
+            )
+            watcher = next(
+                c for c in deployment["spec"]["template"]["spec"]["containers"]
+                if c["name"] == "k8s-watcher"
+            )
+            return {e["name"]: e.get("value") for e in watcher.get("env", [])}
+
+        assert watcher_env(cost_render).get("KOMOKW_RESOURCE_INFO_ENABLED") == "false"
+        assert "KOMOKW_RESOURCE_INFO_ENABLED" not in watcher_env(default_render), \
+            "a default install must keep letting remote config decide"
+
+        explicit_off = render("--set capabilities.resourceInfo.enabled=false")
+        assert watcher_env(explicit_off).get("KOMOKW_RESOURCE_INFO_ENABLED") == "false", \
+            "an operator setting the key false must actually get resource-info off"
 
     def test_cost_profile_leaves_workload_sizing_alone(self, cost_render, default_render):
         """
