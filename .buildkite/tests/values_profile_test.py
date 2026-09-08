@@ -237,11 +237,17 @@ class TestProfileIsInertByDefault:
         assert installed["profile"] == ""
 
     def test_resource_info_is_written_into_the_agent_config(self, default_render):
-        """HC-4's key is a default in the agent config file, so remote config can still win."""
+        """
+        HC-4's key lands in the agent config file, which remote config merges over at startup - so
+        on a default install this is a default Komodor can still override, and it defaults to true
+        because remote config enables resource-info for every agent anyway. An operator can still
+        set it false; that only stops being advisory under profile=cost, which additionally emits
+        KOMOKW_RESOURCE_INFO_ENABLED to beat the merge.
+        """
         agent_config, _ = config_maps(default_render)
-        assert agent_config["resourceInfo"]["enabled"] is False
-        agent_config, _ = config_maps(render("--set capabilities.resourceInfo.enabled=true"))
         assert agent_config["resourceInfo"]["enabled"] is True
+        agent_config, _ = config_maps(render("--set capabilities.resourceInfo.enabled=false"))
+        assert agent_config["resourceInfo"]["enabled"] is False
 
     @pytest.mark.parametrize("value", [
         "nope",
@@ -405,6 +411,37 @@ class TestCostProfile:
             assert (kind, name) in default_names, \
                 f"{kind}/{name} does not render by default either, so this asserted nothing"
             assert (kind, name) not in cost_names, f"{kind}/{name} still rendered under profile=cost"
+
+    def test_cost_profile_forces_resource_info_off_with_an_env_var(self, cost_render, default_render):
+        """
+        capabilities.resourceInfo.enabled only reaches the agent's ConfigMap, and the agent merges
+        the backend's remote config over that at startup (viper.MergeConfig, same layer, merged
+        last). Remote config is mandatory - a failed fetch exits the process - and it always
+        enables resource-info, so the ConfigMap value alone is inert. An env var sits in a higher
+        viper layer and wins.
+
+        Emitted on an explicit false only. The default is true, so a default install emits nothing
+        and Komodor keeps remote control, which is what komodorio/planning#241 wanted. profile=cost
+        sets the key false, and so can an operator - either way it now actually takes effect.
+        """
+        def watcher_env(docs):
+            deployment = next(
+                d for d in docs
+                if d["kind"] == "Deployment" and d["metadata"]["name"] == FULLNAME
+            )
+            watcher = next(
+                c for c in deployment["spec"]["template"]["spec"]["containers"]
+                if c["name"] == "k8s-watcher"
+            )
+            return {e["name"]: e.get("value") for e in watcher.get("env", [])}
+
+        assert watcher_env(cost_render).get("KOMOKW_RESOURCE_INFO_ENABLED") == "false"
+        assert "KOMOKW_RESOURCE_INFO_ENABLED" not in watcher_env(default_render), \
+            "a default install must keep letting remote config decide"
+
+        explicit_off = render("--set capabilities.resourceInfo.enabled=false")
+        assert watcher_env(explicit_off).get("KOMOKW_RESOURCE_INFO_ENABLED") == "false", \
+            "an operator setting the key false must actually get resource-info off"
 
     def test_cost_profile_leaves_workload_sizing_alone(self, cost_render, default_render):
         """

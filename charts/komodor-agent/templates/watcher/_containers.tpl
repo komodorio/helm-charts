@@ -38,6 +38,11 @@
   {{- end }}
   - name: KOMOKW_CLUSTER_NAME
     value: {{ .Values.clusterName }}
+{{- if eq ((.Values.capabilities).resourceInfo).enabled false }}
+{{- /* Only an env var beats the remote config the agent merges over its ConfigMap. */}}
+  - name: KOMOKW_RESOURCE_INFO_ENABLED
+    value: "false"
+{{- end }}
   - name: POD_NAMESPACE
     valueFrom:
       fieldRef:
