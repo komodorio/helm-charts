@@ -59,8 +59,6 @@ silently installing a full agent because someone typed it is the worst outcome h
 {{- $_ := set $caps.kubectlProxy "enabled" false -}}
 {{- $_ := set $caps.klaudiaIntegrationSync "enabled" false -}}
 
-{{/* components.komodorDaemonWindows stays on: it is the telegraf daemon for Windows nodes. */}}
-
 {{- $allowed := .Values.allowedResources -}}
 {{/*
 Kept on, and deliberately not pinned here: metrics — and customReadAPIGroups, which an operator
