@@ -59,12 +59,12 @@ silently installing a full agent because someone typed it is the worst outcome h
 {{- $_ := set $caps.kubectlProxy "enabled" false -}}
 {{- $_ := set $caps.klaudiaIntegrationSync "enabled" false -}}
 
-{{- $_ := set .Values.components.komodorDaemonWindows "enabled" false -}}
+{{/* components.komodorDaemonWindows stays on: it is the telegraf daemon for Windows nodes. */}}
 
 {{- $allowed := .Values.allowedResources -}}
 {{/*
-Kept on, and deliberately not pinned here: metrics, namespace, pod — and customReadAPIGroups,
-which an operator sets per cluster alongside the profile.
+Kept on, and deliberately not pinned here: metrics — and customReadAPIGroups, which an operator
+sets per cluster alongside the profile.
 
 node is off, and the thing that makes that safe is not obvious: three ClusterRoles bind the
 agent's single ServiceAccount, and the two metrics ones grant core nodes/pods/namespaces

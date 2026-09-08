@@ -118,7 +118,7 @@ helm upgrade --install komodor-agent komodorio/komodor-agent \
 | Profile | What it does |
 | --- | --- |
 | `""` (default) | Nothing. Every value is exactly as documented below. |
-| `cost` | A read-only, cost-only agent. Keeps metrics collection, the admission controller and HPA right-sizing. Turns off actions, helm, RBAC management, pod logs, the node enricher, resource-info, agent telemetry and the OpenTelemetry collector, the WebSocket tunnel, the kubectl proxy, the Klaudia integration sync and the Windows daemonset, and narrows the agent's cluster read permissions to the resource kinds the cost flows actually read. |
+| `cost` | A read-only, cost-only agent. Keeps metrics collection, the admission controller and HPA right-sizing. Turns off actions, helm, RBAC management, pod logs, the node enricher, resource-info, agent telemetry and the OpenTelemetry collector, the WebSocket tunnel, the kubectl proxy, and the Klaudia integration sync, and narrows the agent's cluster read permissions to the resource kinds the cost flows actually read. |
 
 Two things to know before using one:
 
