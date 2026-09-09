@@ -61,4 +61,43 @@ rules:
   - pods
   verbs:
   - watch
+# komodor_binpacking_state runs informers over the cluster's schedulable state, so it needs
+# list+watch where the rules above grant only get. Same set clusterrole-admission-controller.yaml
+# already grants, minus the writes.
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  - persistentvolumes
+  - persistentvolumeclaims
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - policy
+  resources:
+  - poddisruptionbudgets
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  - replicasets
+  - statefulsets
+  - daemonsets
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - batch
+  resources:
+  - jobs
+  - cronjobs
+  verbs:
+  - list
+  - watch
 {{- end -}}

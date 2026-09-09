@@ -65,13 +65,25 @@ ALLOWED_RESOURCES_ON = ["metrics"]
 # where cluster region and the node labels the backend derives the cloud provider from come from.
 # Lose that last one and a customer's enterprise discount silently becomes zero.
 COST_RBAC_FLOOR = [
-    ("", "nodes", {"get", "list"}),
-    ("", "pods", {"get", "list"}),
+    ("", "nodes", {"get", "list", "watch"}),
+    ("", "pods", {"get", "list", "watch"}),
     ("", "namespaces", {"get", "list"}),
     ("", "nodes/stats", {"get", "list"}),
     ("", "nodes/proxy", {"get", "list"}),
     ("metrics.k8s.io", "pods", {"get", "list"}),
     ("metrics.k8s.io", "nodes", {"get", "list"}),
+    ("autoscaling", "horizontalpodautoscalers", {"get", "list"}),
+    # komodor_binpacking_state informers. list+watch or the informer never syncs and the input
+    # produces no state at all, which is what happened for the first three cost releases.
+    ("", "persistentvolumes", {"get", "list", "watch"}),
+    ("", "persistentvolumeclaims", {"get", "list", "watch"}),
+    ("policy", "poddisruptionbudgets", {"get", "list", "watch"}),
+    ("apps", "deployments", {"list", "watch"}),
+    ("apps", "replicasets", {"list", "watch"}),
+    ("apps", "statefulsets", {"list", "watch"}),
+    ("apps", "daemonsets", {"list", "watch"}),
+    ("batch", "jobs", {"list", "watch"}),
+    ("batch", "cronjobs", {"list", "watch"}),
 ]
 
 ARGO_WORKFLOWS_OFF = ["workflows", "cronWorkflows", "workflowTemplates", "clusterWorkflowTemplates"]
