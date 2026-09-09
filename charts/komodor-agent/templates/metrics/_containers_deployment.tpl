@@ -58,7 +58,7 @@
   - name: KOMOKW_RUNTIME_MODE
     value: sidecar
   - name: KOMOKW_COMPONENT
-    value: komodor-agent-metrics
+    value: {{ include "komodorAgent.metricsRemoteConfigComponent" . }}
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
   - name: KOMOKW_API_KEY
@@ -90,7 +90,7 @@
   - name: KOMOKW_RUNTIME_MODE
     value: init
   - name: KOMOKW_COMPONENT
-    value: komodor-agent-metrics
+    value: {{ include "komodorAgent.metricsRemoteConfigComponent" . }}
   - name: NAMESPACE
     value: {{ .Release.Namespace }}
   - name: KOMOKW_API_KEY

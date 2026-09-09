@@ -12,6 +12,19 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
+{{/*
+The remote-config component the metrics Deployment asks Komodor for. A cost install runs a reduced
+set of telegraf inputs, so it asks for a different one. Reads .Values.profile directly rather than a
+key applyProfile writes, so it has no ordering dependency on that helper.
+*/}}
+{{- define "komodorAgent.metricsRemoteConfigComponent" -}}
+{{- if eq (.Values.profile | toString) "cost" -}}
+komodor-agent-metrics-cost
+{{- else -}}
+komodor-agent-metrics
+{{- end -}}
+{{- end }}
+
 {{- define "komodorAgent.fullname" -}}
 {{- if .Values.fullnameOverride }} 
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
