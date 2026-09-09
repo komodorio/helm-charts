@@ -532,6 +532,30 @@ class TestCostProfile:
         )
         assert any("telegraf" in part for part in metrics["command"])
 
+    def test_cost_profile_asks_komodor_for_the_reduced_input_set(self, cost_render, default_render):
+        """
+        Both the init container and the sidecar fetch the telegraf config, so both have to ask for
+        the same component. The name must match the config directory in
+        services/agents-service/pkg/remote_config_telegraf/configs, and agents-service must know it
+        before this ships: an unknown component is a 400, which telegraf_init panics on.
+        """
+        def components(docs, workload):
+            deployment = next(
+                d for d in docs if d["kind"] == "Deployment" and d["metadata"]["name"] == workload
+            )
+            spec = deployment["spec"]["template"]["spec"]
+            containers = spec["containers"] + spec.get("initContainers", [])
+            return [
+                e["value"]
+                for c in containers
+                for e in c.get("env") or []
+                if e["name"] == "KOMOKW_COMPONENT"
+            ]
+
+        metrics = f"{FULLNAME}-metrics"
+        assert components(cost_render, metrics) == ["komodor-agent-metrics-cost"] * 2
+        assert components(default_render, metrics) == ["komodor-agent-metrics"] * 2
+
     def test_cost_profile_grants_no_wildcard_or_empty_rules(self, cost_render):
         bound = {
             d["roleRef"]["name"]
