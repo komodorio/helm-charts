@@ -33,7 +33,6 @@ PROFILED_CAPABILITY_PATHS = [
     "capabilities.tunnel.kubeapiserver.enabled",
     "capabilities.kubectlProxy.enabled",
     "capabilities.klaudiaIntegrationSync.enabled",
-    "components.komodorDaemonWindows.enabled",
 ]
 
 ALLOWED_RESOURCES_OFF = [
@@ -401,7 +400,6 @@ class TestCostProfile:
 
     def test_cost_profile_drops_the_workloads_it_disables(self, cost_render, default_render):
         gone = [
-            ("DaemonSet", f"{FULLNAME}-daemon-windows"),
             ("ClusterRole", f"{FULLNAME}-node-enricher"),
             ("Service", f"{FULLNAME}-otel-collector"),
         ]
@@ -504,6 +502,23 @@ class TestCostProfile:
         assert ("Deployment", FULLNAME) in kinds
         assert ("Deployment", f"{FULLNAME}-metrics") in kinds
         assert ("Deployment", f"{FULLNAME}-admission-controller") in kinds
+
+    @pytest.mark.parametrize("name", [f"{FULLNAME}-daemon", f"{FULLNAME}-daemon-windows"])
+    def test_cost_profile_keeps_every_telegraf_daemonset(self, cost_render, name):
+        """The Windows daemonset is the only cost collection a Windows node gets."""
+        kinds = {(d["kind"], d["metadata"]["name"]) for d in cost_render}
+        assert ("DaemonSet", name) in kinds
+
+    def test_cost_profile_windows_daemonset_still_runs_telegraf(self, cost_render):
+        """A rendered DaemonSet proves nothing if the metrics container dropped out of it."""
+        daemon = next(
+            d for d in cost_render
+            if d["kind"] == "DaemonSet" and d["metadata"]["name"] == f"{FULLNAME}-daemon-windows"
+        )
+        metrics = next(
+            c for c in daemon["spec"]["template"]["spec"]["containers"] if c["name"] == "metrics"
+        )
+        assert any("telegraf" in part for part in metrics["command"])
 
     def test_cost_profile_grants_no_wildcard_or_empty_rules(self, cost_render):
         bound = {
