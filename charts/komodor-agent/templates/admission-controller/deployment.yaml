@@ -32,6 +32,10 @@ spec:
       priorityClassName: {{ .Values.components.admissionController.priorityClassName | default (include "komodorAgent.admissionController.priorityClassName" .) }}
       serviceAccountName: {{ include "komodorAgent.admissionController.serviceAccountName" . }}
       {{- include "admissionController.pod.securityContext" . | nindent 6 }}
+      {{- with (include "ca-init.container" . | trim) }}
+      initContainers:
+        {{- . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ include "komodorAgent.admissionController.containername" . }}
           {{- include "admissionController.container.securityContext" . | nindent 10 }}
@@ -80,6 +84,9 @@ spec:
             - name: configuration
               mountPath: /etc/komodor
               readOnly: true
+            {{- with (include "custom-ca.trusted-volumeMounts" . | trim) }}
+            {{- . | nindent 12 }}
+            {{- end }}
           {{- range .Values.components.admissionController.extraVolumes  }}
             - {{- toYaml .volumeMount | nindent 14 }}
           {{- end }}
@@ -91,6 +98,12 @@ spec:
           configMap:
             name: {{ include "komodorAgent.admissionController.fullname" . }}
             defaultMode: 420
+        {{- with (include "custom-ca.volume" . | trim) }}
+        {{- . | nindent 8 }}
+        {{- end }}
+        {{- with (include "custom-ca.trusted-volume" . | trim) }}
+        {{- . | nindent 8 }}
+        {{- end }}
       {{- range .Values.components.admissionController.extraVolumes }}
         - {{- toYaml .volume | nindent 10 }}
       {{- end }}
