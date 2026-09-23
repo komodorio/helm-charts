@@ -1,4 +1,4 @@
-name: publish helm dashboard chart
+name: publish komoplane chart
 
 on:
   workflow_dispatch:
@@ -6,12 +6,12 @@ on:
     branches:
       - master
     paths:
-      - "charts/helm-dashboard/**"
+      - "charts/komoplane/**"
 
 env:
   HELM_REP: helm-charts
   GH_OWNER: komodorio
-  CHART_DIR: charts/helm-dashboard
+  CHART_DIR: charts/komoplane
 
 jobs:
   publish-chart:
