@@ -1,0 +1,32 @@
+# kaop-onprem (us-east-1, account 913615820321) — the KAOP on-prem reference cluster. It hosts two
+# stock AgentOps installs, `kaop` and `kaop-entra`, each on its own label-only Karpenter NodePool
+# (`kaop.komodor.com/stack=onprem|entra`), plus the managed node group `kaop-onprem-base`.
+# No node here carries a taint.
+#
+# production-values.yaml is wrong for this cluster in three ways:
+#   * its daemon/metrics tolerations name taints that do not exist here;
+#   * nothing pins the agent's Deployments, so they would land on (or scale up) the two installs'
+#     NodePools;
+#   * it enables the admission controller with binpacking, whose webhook sees every pod create —
+#     including the AgentOps installs, which must stay exactly what a customer runs.
+#
+# Helm replaces lists rather than merging them, so each `tolerations` below supersedes the
+# production-values.yaml one.
+capabilities:
+  admissionController:
+    enabled: false
+
+components:
+  # The daemon must observe every node; the chart's own blanket `Exists` stays correct if a
+  # tainted pool is added later.
+  komodorDaemon:
+    tolerations:
+      - operator: Exists
+  komodorAgent:
+    nodeSelector: &base
+      eks.amazonaws.com/nodegroup: kaop-onprem-base
+  komodorMetrics:
+    tolerations: []
+    nodeSelector: *base
+  komodorKubectlProxy:
+    nodeSelector: *base
