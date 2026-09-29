@@ -1,0 +1,16 @@
+name: devops-agent PR review
+on:
+  pull_request:
+    types: [review_requested]
+concurrency:
+  group: devops-agent-pr-review-${{ github.event.pull_request.number }}-${{ github.event.pull_request.head.sha }}
+  cancel-in-progress: true
+jobs:
+  request:
+    # Only when komodor-bot is the requested reviewer, and only for same-repo branches (never forks).
+    if: >-
+      github.event.requested_reviewer.login == 'komodor-bot' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    uses: komodorio/agent-skills/.github/workflows/devops-agent-pr-review.yml@master
+    secrets:
+      webhook_token: ${{ secrets.DEVOPS_AGENT_WEBHOOK_TOKEN }}
