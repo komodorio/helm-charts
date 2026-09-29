@@ -330,6 +330,20 @@ steps:
             API_KEY: /komodor/production/kubernetes/api-key
     if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
 
+  # The KAOP on-prem reference cluster (komodorio/agentops#9847). Its own step for the same reason as
+  # agentops-hosted-agents: a failure here costs this cluster only. Needs `komo ctx kaop-onprem`
+  # (build-tools#419) and kaop-onprem in agentops-ci-remote-role's DescribeCluster list (infra#836).
+  - label: ":magic_wand: Install new komodor-agent version on kaop-onprem :kubernetes: cluster"
+    commands:
+      - ./.buildkite/pipeline_scripts/update_agent.sh kaop-onprem kaop-onprem komodor-agent
+    agents:
+      builder: "builder-dind-agent"
+    plugins:
+      - zacharymctague/aws-ssm#v1.0.0:
+          parameters:
+            API_KEY: /komodor/production/kubernetes/api-key
+    if: build.message !~ /feat\(OSS.+\):/i && build.branch == "master"
+
 
   - label: ":magic_wand: Install new komodor-agent version reporting to komodor eu-production (EU) :kubernetes: cluster"
     commands:
