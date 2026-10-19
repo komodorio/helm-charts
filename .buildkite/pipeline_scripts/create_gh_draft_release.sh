@@ -93,7 +93,8 @@ process_repository "$HELM_CHART_REPO" "$HELM_CHART_REPO_GA_TAG" "$HELM_CHART_REP
 process_repository "$AGENT_REPO" "$AGENT_REPO_GA_TAG" "$AGENT_REPO_RC_TAG" "Agent Updates"
 
 # Process Admission Controller Repository
-process_repository "$AC_REPO" "$AC_REPO_GA_TAG" "$AC_REPO_RC_TAG" "Admission Controller Updates"
+# admission-controller git tags are v-prefixed (since v0.1.72); the chart and image versions are bare
+process_repository "$AC_REPO" "v${AC_REPO_GA_TAG}" "v${AC_REPO_RC_TAG}" "Admission Controller Updates"
 
 add_images_to_release
 
