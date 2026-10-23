@@ -36,9 +36,9 @@ global:
   securityContext: {}
 
 # telegrafImageVersion -- (string) Telegraf version to be used
-telegrafImageVersion: &telegrafVersion v2.0.88-alpine
+telegrafImageVersion: &telegrafVersion v2.0.89-alpine
 # telegrafWindowsImageVersion -- (string) Telegraf version to be used for windows
-telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.88
+telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.89
 # admissionControllerVersion -- (string) Admission controller version to be used
 admissionControllerVersion: &acVersion 0.1.78
 
@@ -442,7 +442,7 @@ components:
     # @default -- see sub-values
     image:
       name: nginx
-      tag: 1.31.7-alpine3.24-slim
+      tag: 1.31.8-alpine3.24-slim
     # components.komodorKubectlProxy.resources -- Set custom resources to the komodor kubectl proxy container
     resources: {}
     # components.komodorKubectlProxy.PriorityClassValue -- Set the priority class value for the komodor kubectl proxy deployment
@@ -744,7 +744,7 @@ components:
       # components.komodorDaemon.opentelemetry.image -- Override the OpenTelemetry collector image name or tag.
       image:
         name: komodor-otel-collector
-        tag: 0.1.15
+        tag: 0.1.16
       # components.komodorDaemon.opentelemetry.resources -- Set custom resources to the OpenTelemetry collector container
       resources:
         limits:
