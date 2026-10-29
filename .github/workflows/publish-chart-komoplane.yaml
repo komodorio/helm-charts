@@ -13,13 +13,16 @@ env:
   GH_OWNER: komodorio
   CHART_DIR: charts/helm-dashboard
 
+permissions:
+  contents: write
+
 jobs:
   publish-chart:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       - name: Install chart-releaser
