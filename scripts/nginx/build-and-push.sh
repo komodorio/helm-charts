@@ -26,6 +26,9 @@ if [ -z "${NGINX_VERSION}" ]; then
     echo "ERROR: 'FROM nginx:' line in ${DOCKERFILE} has an unexpected suffix (e.g. ' AS <stage>' or '@sha256:...'). Use a bare 'FROM nginx:<tag>' line." >&2
     exit 1
 fi
+# Optional `ARG REVISION=<x>` republishes the same nginx version as `<version>-<x>`.
+REVISION="$(sed -nE 's/^ARG[[:space:]]+REVISION=([A-Za-z0-9._-]+)[[:space:]]*$/\1/p' "${DOCKERFILE}")"
+IMAGE_TAG="${NGINX_VERSION}${REVISION:+-${REVISION}}"
 
 # Create/use buildx builder for multi-platform builds
 BUILDER_NAME="nginx-multiarch"
@@ -38,7 +41,7 @@ fi
 # Build and push multi-arch image to both registries
 docker buildx build \
     --platform linux/amd64,linux/arm64 \
-    --tag "public.ecr.aws/komodor-public/nginx:${NGINX_VERSION}" \
-    --tag "komodorio/nginx:${NGINX_VERSION}" \
+    --tag "public.ecr.aws/komodor-public/nginx:${IMAGE_TAG}" \
+    --tag "komodorio/nginx:${IMAGE_TAG}" \
     --push \
     "${SCRIPT_DIR}"

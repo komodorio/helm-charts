@@ -15,6 +15,8 @@ CI publishes the image automatically. To bump the version:
 2. Edit `charts/komodor-agent/values.yaml` — `components.komodorKubectlProxy.image.tag` must match the Dockerfile tag.
 3. Open a PR. CI runs `scripts/nginx/validate-version.sh` on every build and fails if the two files disagree. When the PR diff touches the Dockerfile, CI also runs `scripts/nginx/build-and-push.sh` and publishes the new image to both registries.
 
+To rebuild the same nginx version with fresh Alpine packages (for example, for an Alpine CVE fix), set `ARG REVISION=<x>` under the `FROM` line. The image is then published as `<version>-<x>`, and the values.yaml tag must use that same name. Remove the `ARG` on the next nginx version bump.
+
 Prefer `-alpine*-slim` tags from the [official nginx repo on Docker Hub](https://hub.docker.com/_/nginx/tags).
 
 ## Local build (rarely needed — CI publishes for you)
