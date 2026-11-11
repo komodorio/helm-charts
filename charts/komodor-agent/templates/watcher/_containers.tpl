@@ -137,7 +137,6 @@
 {{- if (.Values.customCa).enabled  }}
 - name: init-cert
   image: {{ .Values.imageRepo }}/{{ .Values.components.komodorAgent.supervisor.image.name}}:{{ .Values.components.komodorAgent.supervisor.image.tag | default .Chart.AppVersion }}
-  {{- include "komodorAgent.customCaInit.securityContext" . | nindent 2 }}
   command:
     - sh
     - -c
@@ -150,6 +149,6 @@
     {{- include "custom-ca.volumeMounts" .                 | nindent 4 }}
   resources:
       {{ toYaml .Values.customCa.resources | trim | nindent 6 }}
-  {{- include "komodorAgent.container.securityContext" (dict "root" $ "securityContext" .Values.customCa.securityContext) | nindent 2 }}
+  {{- include "komodorAgent.container.securityContext" (dict "root" $ "securityContext" .Values.customCa.securityContext "defaultSecurityContext" (dict "readOnlyRootFilesystem" true "runAsNonRoot" true "runAsUser" 1000 "runAsGroup" 1000 "allowPrivilegeEscalation" false)) | nindent 2 }}
 {{- end }}
 {{- end -}}
