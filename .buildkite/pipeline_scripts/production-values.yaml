@@ -36,6 +36,29 @@ components:
         operator: "Equal"
         value: "ws-redis"
         effect: "NoSchedule"
+    # Requests ~= 14-day p95 x 1.3 measured in `production` (the busiest cluster using this file);
+    # limits stay at chart defaults. Chart default was 401m / 622Mi per pod -> now 151m / 504Mi.
+    # Applies to every release update_agent.sh installs with this file. finops 2026-11-17 #7.
+    metrics: # telegraf: 14d per-pod hourly cpu p95 99m (peak 318m), mem p95 263Mi (peak 397Mi)
+      resources:
+        requests:
+          cpu: 130m
+          memory: 350Mi
+    metricsInit: # init container + telegraf-init-sidecar: p95 1m / 21Mi, max 3m / 28Mi
+      resources:
+        requests:
+          cpu: 5m
+          memory: 32Mi
+    opentelemetry: # otel-collector: p95 4m / 60Mi, peak 49m / 77Mi
+      resources:
+        requests:
+          cpu: 10m
+          memory: 80Mi
+      otelInit: # otel-init-sidecar: p95 1m / 22Mi, max 1m / 28Mi
+        resources:
+          requests:
+            cpu: 5m
+            memory: 32Mi
   komodorMetrics:
     tolerations:
       - key: "komodor.io/sensitive"
