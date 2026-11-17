@@ -1,0 +1,11 @@
+# eu-production only: applied after production-values.yaml by update_agent.sh (both EU-side releases).
+# EU nodes are far lighter than US production, which sized the shared 130m / 350Mi telegraf request.
+# EU 14d per-pod hourly: cpu p95 14m (5-min peak 36m), mem p95 150Mi (5-min peak 191Mi) -> p95 x 1.3.
+# Komodor rightsizing had held these pods at ~20m / 168Mi before #673. finops 2026-11-17 #7.
+components:
+  komodorDaemon:
+    metrics:
+      resources:
+        requests:
+          cpu: 20m
+          memory: 200Mi
