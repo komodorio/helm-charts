@@ -36,6 +36,12 @@ components:
         operator: "Equal"
         value: "ws-redis"
         effect: "NoSchedule"
+      # Dedicated Karpenter NodePool for the pod-placement-sim CronJobs (komodorio/infra#1148).
+      # Without this, no node agent runs there and those pods' metrics never reach ClickHouse.
+      - key: "komodor.io/pod-placement-sim"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
     # Requests ~= 14-day p95 x 1.3 measured in `production` (the busiest cluster using this file);
     # limits stay at chart defaults. Chart default was 401m / 622Mi per pod -> now 151m / 504Mi.
     # Applies to every release update_agent.sh installs with this file. finops 2026-11-17 #7.
