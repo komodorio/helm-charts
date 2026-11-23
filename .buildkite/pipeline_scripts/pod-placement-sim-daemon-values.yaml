@@ -1,0 +1,21 @@
+# Applied by update_agent.sh after the other values files, only to the release that reports a cluster to the
+# US site under its own name: komodor-agent in production and komodor-agent-us in eu-production. One node
+# agent per pod-placement-sim node is enough (komodorio/infra#1148): the other releases on those clusters
+# (komodor-agent-rc, komodor-agent-eu, and komodor-agent with site eu in eu-production) stay off it, which
+# saves ~0.3 cores and ~1 GiB of requests per node in production. Helm replaces lists, so this repeats
+# production-values.yaml's komodorDaemon tolerations and adds the pool's.
+components:
+  komodorDaemon:
+    tolerations:
+      - key: "komodor.io/sensitive"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
+      - key: dedicated
+        operator: "Equal"
+        value: "ws-redis"
+        effect: "NoSchedule"
+      - key: "komodor.io/pod-placement-sim"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"

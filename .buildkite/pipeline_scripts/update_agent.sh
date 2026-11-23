@@ -40,6 +40,13 @@ if [ -f ./.buildkite/pipeline_scripts/${environment}-override-values.yaml ]; the
   EXTRA_VALUES_ARG="-f ./.buildkite/pipeline_scripts/${environment}-override-values.yaml"
 fi
 
+# One node agent on the pod-placement-sim NodePool: only the release reporting the cluster to the US site
+# under its own name tolerates it (komodor-agent in production, komodor-agent-us in eu-production).
+POD_PLACEMENT_SIM_ARG=""
+if [ "$SITE" == "us" ] && { [ "$CLUSTER_NAME" == "production" ] || [ "$CLUSTER_NAME" == "eu-production" ]; }; then
+  POD_PLACEMENT_SIM_ARG="-f ./.buildkite/pipeline_scripts/pod-placement-sim-daemon-values.yaml"
+fi
+
 # Carry the live release's values forward, and preview that they still render.
 #
 # Both lines below assume the release already EXISTS, which breaks the first install on a new
@@ -65,4 +72,4 @@ helm upgrade --install "${RELEASE_NAME}"  komodorio/komodor-agent \
   --set apiKey="$KOMODOR_AGENT_API_KEY" \
   --set tags="env:${environment}" $CHART_VERSION \
   --set site="${SITE}" \
-  -f ./.buildkite/pipeline_scripts/production-values.yaml $EXTRA_VALUES_ARG
+  -f ./.buildkite/pipeline_scripts/production-values.yaml $EXTRA_VALUES_ARG $POD_PLACEMENT_SIM_ARG
