@@ -36,11 +36,11 @@ global:
   securityContext: {}
 
 # telegrafImageVersion -- (string) Telegraf version to be used
-telegrafImageVersion: &telegrafVersion v2.0.92-alpine
+telegrafImageVersion: &telegrafVersion v2.0.93-alpine
 # telegrafWindowsImageVersion -- (string) Telegraf version to be used for windows
-telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.92
+telegrafWindowsImageVersion: &telegrafWindowsVersion v2.0.93
 # admissionControllerVersion -- (string) Admission controller version to be used
-admissionControllerVersion: &acVersion 0.1.81
+admissionControllerVersion: &acVersion 0.1.82
 
 # serviceAccount -- Configure service account for the agent
 # @default -- See sub-values
@@ -442,7 +442,7 @@ components:
     # @default -- see sub-values
     image:
       name: nginx
-      tag: 1.31.9-alpine3.24-slim
+      tag: 1.31.10-alpine3.24-slim
     # components.komodorKubectlProxy.resources -- Set custom resources to the komodor kubectl proxy container
     resources: {}
     # components.komodorKubectlProxy.PriorityClassValue -- Set the priority class value for the komodor kubectl proxy deployment
